@@ -2,7 +2,9 @@ package io.groovybot.bot.core.entity;
 
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.permission.UserPermissions;
+import io.groovybot.bot.io.ErrorReporter;
 import lombok.Getter;
+import org.apache.log4j.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,13 +22,18 @@ public class User extends DatabaseEntitiy {
         boolean tierTwo = false;
         Boolean owner = GroovyBot.getInstance().getConfig().getJSONArray("owners").toString().contains(String.valueOf(entityId));
         PreparedStatement ps = getConnection().prepareStatement("SELECT * FROM premium WHERE user_id = ?");
+        PreparedStatement userStatement = getConnection().prepareStatement("SELECT * FROM users WHERE id = ?");
+        userStatement.setLong(1, entityId);
+        ResultSet userResult = userStatement.executeQuery();
         ps.setLong(1, entityId);
         ResultSet rs = ps.executeQuery();
         if (rs.next()) {
             tierOne = rs.getString("type").equals("1");
             tierTwo = rs.getString("type").equals("2");
-            locale = Locale.forLanguageTag(rs.getString("locale").replace("_", "-"));
-        } else {
+        }
+        if (userResult.next())
+            locale = Locale.forLanguageTag(userResult.getString("locale").replace("_", "-"));
+        else {
             PreparedStatement insertStatement = getConnection().prepareStatement("INSERT INTO users (id, locale) VALUES (?, ?)");
             insertStatement.setLong(1, entityId);
             insertStatement.setString(2, locale.toLanguageTag().replace("-", "_"));

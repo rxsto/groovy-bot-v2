@@ -27,9 +27,9 @@ public class Cache<T extends DatabaseEntitiy> {
                 return out;
             } catch (Exception e) {
                 log.error("[CACHE] An error occurred while updating entity in cache", e);
+                return null;
             }
         }
-        return null;
     }
 
     public void update(T instance) {

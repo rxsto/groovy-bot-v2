@@ -36,10 +36,11 @@ public class Guild extends DatabaseEntitiy {
 
     @Override
     public void updateInDatabase() throws Exception {
-        PreparedStatement ps = getConnection().prepareStatement("UPDATE guilds SET volume = ?, prefix = ?, dj_mode = ?");
+        PreparedStatement ps = getConnection().prepareStatement("UPDATE guilds SET volume = ?, prefix = ?, dj_mode = ? WHERE id = ?");
         ps.setInt(1, volume);
         ps.setString(2, prefix);
         ps.setBoolean(3, djMode);
+        ps.setLong(4, entityId);
         ps.execute();
     }
 

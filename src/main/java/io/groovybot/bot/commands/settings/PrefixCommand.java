@@ -19,6 +19,6 @@ public class PrefixCommand extends Command {
         if (args.length == 0)
             return send(info(event.translate("command.prefix.current.title"), String.format(event.translate("command.prefix.current.description"), guild.getPrefix())));
         guild.setPrefix(args[0]);
-        return send(success(event.translate("command.prefix.set.title"), String.format(event.translate("command.prefix.set.description"), guild.getPrefix())));
+        return send(success(event.translate("command.prefix.set.title"), String.format(event.translate("command.prefix.set.description"), args[0])));
     }
 }

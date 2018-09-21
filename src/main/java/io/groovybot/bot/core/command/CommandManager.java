@@ -10,6 +10,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,10 +41,11 @@ public class CommandManager {
         if (commandEvent == null)
             return;
         Command command = commandAssociations.get(commandEvent.getInvocation());
+        if (command == null)
+            return;
         if (commandEvent.getArgs().length > 0)
-            if (command.getSubCommandAssociations().containsKey(commandEvent.getArgs()[0]))
-                command = command.getSubCommandAssociations().get(commandEvent.getArgs()[0]);
-        if (command != null)
+            if (command.getSubCommandAssociations().containsKey(commandEvent.getInvocation()))
+                command = command.getSubCommandAssociations().get(commandEvent.getInvocation());
             call(command, commandEvent);
     }
 
@@ -81,9 +83,10 @@ public class CommandManager {
         if (prefix != null) {
             String beheaded = content.substring(prefix.length()).trim();
             String[] allArgs = beheaded.split("\\s+");
+            String invocation = allArgs[0];
             String[] args = new String[allArgs.length -1];
-            System.arraycopy(allArgs, 1, allArgs, 0, args.length);
-            return new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), GroovyBot.getInstance(), args, allArgs[0]);
+            System.arraycopy(allArgs, 1, args, 0, args.length);
+            return new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), GroovyBot.getInstance(), args, invocation);
         }
         return null;
     }
