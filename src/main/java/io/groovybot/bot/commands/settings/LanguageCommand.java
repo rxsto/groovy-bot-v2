@@ -7,6 +7,7 @@ import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.entity.User;
+import io.groovybot.bot.core.translation.TranslationManager;
 
 import java.util.Locale;
 
@@ -20,16 +21,22 @@ public class LanguageCommand extends Command {
     public Result run(String[] args, CommandEvent event) {
         User user = GroovyBot.getInstance().getUserCache().get(event.getAuthor().getIdLong());
         if (args.length == 0)
-            return send(info(event.translate("command.language.info.title"), String.format(event.translate("command.language.info.description"), user.getLocale().getLanguage())));
+            return send(info(event.translate("command.language.info.title"), String.format(event.translate("command.language.info.description"), user.getLocale().getLanguage(), formatAvalibleLanguages(event.getGroovyBot().getTranslationManager()))));
         Locale locale;
         try {
             locale = Locale.forLanguageTag(args[0].replace("_", "-"));
         } catch (Exception e) {
             return send(error(event.translate("command.language.invalid.title"), event.translate("command.language.invalid.description")));
         }
-        if (event.getGroovyBot().getTranslationManager().getLocaleByLocale(locale) == null)
+        if (!event.getGroovyBot().getTranslationManager().isTranslated(locale))
             return send(error(event.translate("command.language.nottranslated.title"), event.translate("command.language.nottranslated.description")));
         user.setLocale(locale);
         return send(success(event.translate("command.language.set.title"), String.format(event.translate("command.language.set.description"), locale.getLanguage())));
+    }
+
+    private String formatAvalibleLanguages(TranslationManager translationManager){
+        StringBuilder builder = new StringBuilder();
+        translationManager.getLocales().forEach(locale -> builder.append(locale.getLanguageName()).append("(`").append(locale.getLocale().toLanguageTag().replace("-", "_")).append("`)").append("\n"));
+        return builder.toString();
     }
 }

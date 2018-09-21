@@ -6,17 +6,19 @@ import lombok.extern.log4j.Log4j;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Log4j
 public class TranslationManager {
 
+    @Getter
     private final List<TranslationLocale> locales;
     @Getter
     private final TranslationLocale defaultLocale;
 
     public TranslationManager() {
-        defaultLocale = new TranslationLocale(this, new java.util.Locale("en", "US"), "English (United States)") {
+        defaultLocale = new TranslationLocale(this, new Locale("en", "US"), "English (United States)") {
             @Override
             public String translate(String key) {
                 if (getResourceBundle().containsKey(key))
@@ -32,8 +34,12 @@ public class TranslationManager {
         locales.add(defaultLocale);
     }
 
-    public TranslationLocale getLocaleByLocale(java.util.Locale locale) {
+    public TranslationLocale getLocaleByLocale(Locale locale) {
         return locales.parallelStream().filter(locale1 -> locale1.getLocale().equals(locale)).collect(Collectors.toList()).get(0);
+    }
+
+    public boolean isTranslated(Locale locale) {
+        return !locales.parallelStream().filter(locale1 -> locale1.getLocale().equals(locale)).collect(Collectors.toList()).isEmpty();
     }
 
     public TranslationLocale getLocaleByUser(String userId) {

@@ -1,9 +1,10 @@
 package io.groovybot.bot;
 
-import io.groovybot.bot.commands.PingCommand;
+import io.groovybot.bot.commands.general.PingCommand;
 import io.groovybot.bot.commands.settings.LanguageCommand;
 import io.groovybot.bot.commands.settings.PrefixCommand;
 import io.groovybot.bot.core.GameAnimator;
+import io.groovybot.bot.core.audio.LavalinkManager;
 import io.groovybot.bot.core.cache.Cache;
 import io.groovybot.bot.core.command.CommandManager;
 import io.groovybot.bot.core.entity.Guild;
@@ -61,6 +62,8 @@ public class GroovyBot {
     private final boolean betaMode;
     @Getter
     private final TranslationManager translationManager;
+    @Getter
+    private final LavalinkManager lavalinkManager;
 
     public static void main(String[] args) {
         if (instance != null)
@@ -78,6 +81,7 @@ public class GroovyBot {
         initConfig();
         httpClient = new OkHttpClient();
         postgreSQL = new PostgreSQL();
+        lavalinkManager = new LavalinkManager(this);
         createDefaultDatabase();
         commandManager = new CommandManager(betaMode ? config.getJSONObject("settings").getString("test_prefix") :config.getJSONObject("settings").getString("prefix"));
         initShardManager();
@@ -122,6 +126,7 @@ public class GroovyBot {
             log.error("[JDA] Could not initialize bot!", e);
             System.exit(1);
         }
+        lavalinkManager.initialize();
     }
 
 
@@ -193,6 +198,9 @@ public class GroovyBot {
         final JSONObject webhookObject = new JSONObject();
         webhookObject.put("error_hook", "http://hook.com");
         configuration.addDefault("webhooks", webhookObject);
+        final JSONArray lavalinkArray = new JSONArray();
+        lavalinkArray.put(new JSONObject().put("uri", "ws://lol").put("password", "lele"));
+        configuration.addDefault("lavalink", lavalinkArray);
         this.config = configuration.init();
     }
 

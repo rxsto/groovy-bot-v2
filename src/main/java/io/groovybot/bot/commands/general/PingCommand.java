@@ -1,4 +1,4 @@
-package io.groovybot.bot.commands;
+package io.groovybot.bot.commands.general;
 
 import io.groovybot.bot.core.command.Command;
 import io.groovybot.bot.core.command.CommandCategory;
