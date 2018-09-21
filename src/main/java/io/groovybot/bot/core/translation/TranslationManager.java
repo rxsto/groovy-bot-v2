@@ -32,7 +32,7 @@ public class TranslationManager {
         locales.add(defaultLocale);
     }
 
-    private TranslationLocale getLocaleByLocale(java.util.Locale locale) {
+    public TranslationLocale getLocaleByLocale(java.util.Locale locale) {
         return locales.parallelStream().filter(locale1 -> locale1.getLocale().equals(locale)).collect(Collectors.toList()).get(0);
     }
 

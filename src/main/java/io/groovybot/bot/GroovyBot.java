@@ -1,6 +1,7 @@
 package io.groovybot.bot;
 
 import io.groovybot.bot.commands.PingCommand;
+import io.groovybot.bot.commands.settings.LanguageCommand;
 import io.groovybot.bot.commands.settings.PrefixCommand;
 import io.groovybot.bot.core.GameAnimator;
 import io.groovybot.bot.core.cache.Cache;
@@ -229,7 +230,8 @@ public class GroovyBot {
     private void registerCommands() {
         commandManager.registerCommands(
                 new PingCommand(),
-                new PrefixCommand()
+                new PrefixCommand(),
+                new LanguageCommand()
         );
     }
 
