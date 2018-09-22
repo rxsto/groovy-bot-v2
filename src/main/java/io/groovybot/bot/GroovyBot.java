@@ -9,7 +9,10 @@ import io.groovybot.bot.core.cache.Cache;
 import io.groovybot.bot.core.command.CommandManager;
 import io.groovybot.bot.core.entity.Guild;
 import io.groovybot.bot.core.entity.User;
+import io.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
 import io.groovybot.bot.core.events.command.CommandLogger;
+import io.groovybot.bot.core.statistics.ServerCountStatistics;
+import io.groovybot.bot.core.statistics.StatusPage;
 import io.groovybot.bot.core.translation.TranslationManager;
 import io.groovybot.bot.io.ErrorReporter;
 import io.groovybot.bot.io.FileManager;
@@ -22,7 +25,6 @@ import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 import net.dv8tion.jda.core.hooks.IEventManager;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
@@ -59,11 +61,13 @@ public class GroovyBot {
     private Cache<User> userCache;
     private final CommandManager commandManager;
     @Getter
-    private final boolean betaMode;
+    private final boolean debugMode;
     @Getter
     private final TranslationManager translationManager;
     @Getter
     private final LavalinkManager lavalinkManager;
+    private final StatusPage statusPage;
+    private final ServerCountStatistics serverCountStatistics;
 
     public static void main(String[] args) {
         if (instance != null)
@@ -73,7 +77,7 @@ public class GroovyBot {
 
     private GroovyBot(String[] args) {
         instance = this;
-        betaMode = String.join(" ", args).contains("debug");
+        debugMode = String.join(" ", args).contains("debug");
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
         initLogger(args);
         log.info("Starting Groovy ...");
@@ -82,8 +86,10 @@ public class GroovyBot {
         httpClient = new OkHttpClient();
         postgreSQL = new PostgreSQL();
         lavalinkManager = new LavalinkManager(this);
+        statusPage = new StatusPage(httpClient, config.getJSONObject("statuspage"));
         createDefaultDatabase();
-        commandManager = new CommandManager(betaMode ? config.getJSONObject("settings").getString("test_prefix") :config.getJSONObject("settings").getString("prefix"));
+        commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") :config.getJSONObject("settings").getString("prefix"));
+        serverCountStatistics = new ServerCountStatistics(httpClient, config.getJSONObject("botlists"));
         initShardManager();
         translationManager = new TranslationManager();
         registerCommands();
@@ -198,9 +204,6 @@ public class GroovyBot {
         final JSONObject webhookObject = new JSONObject();
         webhookObject.put("error_hook", "http://hook.com");
         configuration.addDefault("webhooks", webhookObject);
-        final JSONArray lavalinkArray = new JSONArray();
-        lavalinkArray.put(new JSONObject().put("uri", "ws://lol").put("password", "lele"));
-        configuration.addDefault("lavalink", lavalinkArray);
         this.config = configuration.init();
     }
 
@@ -228,11 +231,15 @@ public class GroovyBot {
 
     @SubscribeEvent
     @SuppressWarnings("unused")
-    private void onReady(ReadyEvent event) {
+    private void onReady(AllShardsLoadedEvent event) {
         Logger.getRootLogger().addAppender(new ErrorReporter());
         new GameAnimator(this);
         guildCache = new Cache<>(Guild.class);
         userCache = new Cache<>(User.class);
+        if (!debugMode) {
+            statusPage.start();
+            serverCountStatistics.start();
+        }
     }
 
     private void registerCommands() {

@@ -13,6 +13,9 @@ import net.dv8tion.jda.core.hooks.SubscribeEvent;
 import org.json.JSONObject;
 
 import java.net.URI;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @Log4j
 public class LavalinkManager {
@@ -36,10 +39,14 @@ public class LavalinkManager {
                 groovyBot.getShardManager().getShardsTotal(),
                 groovyBot.getShardManager()::getShardById
         );
-        groovyBot.getConfig().getJSONArray("lavalink").forEach(link -> {
-            JSONObject object = ((JSONObject) link);
-            lavalink.addNode(URI.create(object.getString("uri")), object.getString("password"));
-        });
+        try {
+            PreparedStatement ps = groovyBot.getPostgreSQL().getConnection().prepareStatement("SELECT * FROM lavalink_nodes");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                lavalink.addNode(URI.create(rs.getString("uri")), rs.getString("password"));
+        } catch (SQLException e) {
+            log.error("[Lavalink] Error while loading lavalink");
+        }
     }
 
     @SubscribeEvent

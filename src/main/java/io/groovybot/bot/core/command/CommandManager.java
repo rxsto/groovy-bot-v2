@@ -43,8 +43,8 @@ public class CommandManager {
         if (command == null)
             return;
         if (commandEvent.getArgs().length > 0)
-            if (command.getSubCommandAssociations().containsKey(commandEvent.getInvocation()))
-                command = command.getSubCommandAssociations().get(commandEvent.getInvocation());
+            if (command.getSubCommandAssociations().containsKey(commandEvent.getArgs()[0]))
+                command = command.getSubCommandAssociations().get(commandEvent.getArgs()[0]);
             call(command, commandEvent);
     }
 

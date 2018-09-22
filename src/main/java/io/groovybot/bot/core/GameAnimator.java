@@ -1,6 +1,7 @@
 package io.groovybot.bot.core;
 
 import io.groovybot.bot.GroovyBot;
+import io.groovybot.bot.util.NameThreadFactory;
 import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
@@ -18,7 +19,7 @@ public class GameAnimator implements Runnable {
     private final ShardManager shardManager;
 
     public GameAnimator(GroovyBot groovyBot) {
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("GameAnimator"));
         List<Game> gameList = new ArrayList<>();
         this.shardManager = groovyBot.getShardManager();
         groovyBot.getConfig().getJSONArray("games").forEach(game -> gameList.add(parseGame(String.valueOf(game))));
