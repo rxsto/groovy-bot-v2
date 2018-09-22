@@ -22,7 +22,7 @@ public class LavalinkManager {
     private GroovyBot groovyBot;
 
     public LavalinkManager(GroovyBot groovyBot) {
-        log.info("[LAVALINK] Connecting to lavalink nodes");
+        log.info("[Lavalink] Connecting to lavalink nodes");
         this.groovyBot = groovyBot;
         this.audioPlayerManager = new DefaultAudioPlayerManager();
         audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());

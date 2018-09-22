@@ -26,7 +26,7 @@ public class TranslationLocale {
         if (resourceBundle.containsKey(key))
             return resourceBundle.getString(key);
         else {
-            log.warn(String.format("[LOCALE] Key %s was not found for language %s", key, locale.getLanguage()));
+            log.warn(String.format("[Locale] Key %s was not found for language %s", key, locale.getLanguage()));
             return translationManager.getDefaultLocale().translate(key);
         }
     }

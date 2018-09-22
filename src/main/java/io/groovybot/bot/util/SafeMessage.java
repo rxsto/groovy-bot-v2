@@ -58,7 +58,6 @@ public class SafeMessage {
                 out = "This message is longer than 1024 chars, please give me `MESSAGE_EMBED_LINKS` permission and try again";
             return new MessageBuilder().setContent(out).build();
         }
-
     }
 
 

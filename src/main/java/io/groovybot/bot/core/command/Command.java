@@ -38,6 +38,4 @@ public abstract class Command extends EmbedUtil {
     protected Result send(EmbedBuilder builder) {
         return new Result(builder);
     }
-
-
 }

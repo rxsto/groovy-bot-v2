@@ -26,7 +26,7 @@ public class Cache<T extends DatabaseEntitiy> {
                 cacheMap.put(entityId, out);
                 return out;
             } catch (Exception e) {
-                log.error("[CACHE] An error occurred while updating entity in cache", e);
+                log.error("[Cache] An error occurred while updating entity in cache", e);
                 return null;
             }
         }
@@ -37,7 +37,7 @@ public class Cache<T extends DatabaseEntitiy> {
         try {
             instance.updateInDatabase();
         } catch (Exception e) {
-            log.error("[CACHE] An error occurred while updating entity in cache", e);
+            log.error("[Cache] An error occurred while updating entity in cache", e);
         }
     }
 }

@@ -249,7 +249,7 @@ public class GroovyBot {
             if (shardManager != null)
                 shardManager.shutdown();
         } catch (Exception e) {
-            log.error("Error while closing bot", e);
+            log.error("Error while closing bot!", e);
         }
 
     }
