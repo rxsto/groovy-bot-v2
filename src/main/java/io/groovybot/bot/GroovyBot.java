@@ -2,9 +2,12 @@ package io.groovybot.bot;
 
 import io.groovybot.bot.commands.general.HelpCommand;
 import io.groovybot.bot.commands.general.PingCommand;
+import io.groovybot.bot.commands.music.JoinCommand;
+import io.groovybot.bot.commands.music.LeaveCommand;
 import io.groovybot.bot.commands.settings.LanguageCommand;
 import io.groovybot.bot.commands.settings.PrefixCommand;
 import io.groovybot.bot.core.GameAnimator;
+import io.groovybot.bot.core.audio.MusicPlayerManager;
 import io.groovybot.bot.core.audio.LavalinkManager;
 import io.groovybot.bot.core.cache.Cache;
 import io.groovybot.bot.core.command.CommandManager;
@@ -70,6 +73,8 @@ public class GroovyBot {
     private final LavalinkManager lavalinkManager;
     private final StatusPage statusPage;
     private final ServerCountStatistics serverCountStatistics;
+    @Getter
+    private final MusicPlayerManager musicPlayerManager;
 
     public static void main(String[] args) {
         if (instance != null)
@@ -94,6 +99,7 @@ public class GroovyBot {
         serverCountStatistics = new ServerCountStatistics(httpClient, config.getJSONObject("botlists"));
         initShardManager();
         translationManager = new TranslationManager();
+        musicPlayerManager = new MusicPlayerManager();
         registerCommands();
     }
 
@@ -249,7 +255,9 @@ public class GroovyBot {
                 new PingCommand(),
                 new PrefixCommand(),
                 new LanguageCommand(),
-                new HelpCommand()
+                new HelpCommand(),
+                new JoinCommand(),
+                new LeaveCommand()
         );
     }
 

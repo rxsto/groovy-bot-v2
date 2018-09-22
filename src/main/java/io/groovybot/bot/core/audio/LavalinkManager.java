@@ -7,6 +7,7 @@ import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceM
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import io.groovybot.bot.GroovyBot;
 import lavalink.client.io.jda.JdaLavalink;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
@@ -20,6 +21,7 @@ import java.sql.SQLException;
 @Log4j
 public class LavalinkManager {
 
+    @Getter
     private JdaLavalink lavalink;
     private AudioPlayerManager audioPlayerManager;
     private GroovyBot groovyBot;

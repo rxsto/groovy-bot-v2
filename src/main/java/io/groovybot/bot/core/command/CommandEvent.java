@@ -3,10 +3,7 @@ package io.groovybot.bot.core.command;
 import io.groovybot.bot.GroovyBot;
 import lombok.Getter;
 import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.Event;
 
 @Getter
@@ -33,6 +30,10 @@ public class CommandEvent extends Event {
 
     public String translate(String key) {
         return groovyBot.getTranslationManager().getLocaleByUser(author.getId()).translate(key);
+    }
+
+    public Member getMember() {
+        return message.getMember();
     }
 
 }
