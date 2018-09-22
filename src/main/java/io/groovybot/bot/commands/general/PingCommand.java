@@ -14,6 +14,6 @@ public class PingCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return send(info("My ping", String.format("My ping is `%s`", event.getGroovyBot().getShardManager().getAveragePing())));
+        return send(info(event.translate("command.ping.title"), String.format(event.translate("command.ping.description"), event.getGroovyBot().getShardManager().getAveragePing())));
     }
 }
