@@ -1,5 +1,6 @@
 package io.groovybot.bot;
 
+import io.groovybot.bot.commands.general.HelpCommand;
 import io.groovybot.bot.commands.general.PingCommand;
 import io.groovybot.bot.commands.settings.LanguageCommand;
 import io.groovybot.bot.commands.settings.PrefixCommand;
@@ -10,7 +11,7 @@ import io.groovybot.bot.core.command.CommandManager;
 import io.groovybot.bot.core.entity.Guild;
 import io.groovybot.bot.core.entity.User;
 import io.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
-import io.groovybot.bot.core.events.command.CommandLogger;
+import io.groovybot.bot.listeners.CommandLogger;
 import io.groovybot.bot.core.statistics.ServerCountStatistics;
 import io.groovybot.bot.core.statistics.StatusPage;
 import io.groovybot.bot.core.translation.TranslationManager;
@@ -59,6 +60,7 @@ public class GroovyBot {
     private Cache<Guild> guildCache;
     @Getter
     private Cache<User> userCache;
+    @Getter
     private final CommandManager commandManager;
     @Getter
     private final boolean debugMode;
@@ -246,7 +248,8 @@ public class GroovyBot {
         commandManager.registerCommands(
                 new PingCommand(),
                 new PrefixCommand(),
-                new LanguageCommand()
+                new LanguageCommand(),
+                new HelpCommand()
         );
     }
 

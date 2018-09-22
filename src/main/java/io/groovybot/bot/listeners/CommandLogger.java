@@ -1,5 +1,8 @@
-package io.groovybot.bot.core.events.command;
+package io.groovybot.bot.listeners;
 
+import io.groovybot.bot.core.events.command.CommandExecutedEvent;
+import io.groovybot.bot.core.events.command.CommandFailEvent;
+import io.groovybot.bot.core.events.command.NoPermissionEvent;
 import io.groovybot.bot.util.SafeMessage;
 import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.core.EmbedBuilder;

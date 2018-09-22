@@ -4,6 +4,7 @@ import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.events.command.CommandExecutedEvent;
 import io.groovybot.bot.core.events.command.CommandFailEvent;
 import io.groovybot.bot.core.events.command.NoPermissionEvent;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -16,6 +17,7 @@ import java.util.Map;
 @Log4j
 public class CommandManager {
 
+    @Getter
     private final Map<String, Command> commandAssociations;
     private final String defaultPrefix;
 

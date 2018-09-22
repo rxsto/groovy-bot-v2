@@ -16,14 +16,14 @@ import java.util.concurrent.TimeUnit;
 public class ServerCountStatistics extends StatsPoster {
 
     private GroovyBot groovyBot = GroovyBot.getInstance();
-    private final String botId;
+    private String botId;
 
     public ServerCountStatistics(OkHttpClient okHttpClient, JSONObject configuration) {
         super(Executors.newScheduledThreadPool(1, new NameThreadFactory("ServerCount")), okHttpClient, configuration);
-        this.botId = groovyBot.getShardManager().getApplicationInfo().complete().getId();
     }
 
     public synchronized void start() {
+        this.botId = groovyBot.getShardManager().getApplicationInfo().complete().getId();
         scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.MINUTES);
     }
 
