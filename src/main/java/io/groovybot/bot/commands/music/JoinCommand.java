@@ -15,7 +15,7 @@ public class JoinCommand extends InChannelCommand {
 
     @Override
     public Result execute(String[] args, CommandEvent event) {
-        MusicPlayer player = getPlayer(event.getGuild());
+        MusicPlayer player = getPlayer(event.getGuild(), event.getChannel());
         if (player.checkConnect(event)) {
             player.connect(event.getMember().getVoiceState().getChannel());
             return send(success(event.translate("command.join.joined.title"), event.translate("command.join.joined.description")));
