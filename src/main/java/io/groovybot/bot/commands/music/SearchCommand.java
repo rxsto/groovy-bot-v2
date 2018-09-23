@@ -9,7 +9,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 
 public class SearchCommand extends SameChannelCommand {
     public SearchCommand() {
-        super(new String[] {"find"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you search songs", "<song>");
+        super(new String[] {"search", "find"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you search songs", "<song>");
     }
 
     @Override
