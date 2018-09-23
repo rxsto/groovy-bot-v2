@@ -11,9 +11,11 @@ import java.util.*;
 
 public abstract class Player {
 
+    @Getter
     public Queue<AudioTrack> trackQueue;
     @Getter
     protected IPlayer player;
+    @Getter
     public JdaLink link;
 
     public Player() {
@@ -29,7 +31,7 @@ public abstract class Player {
 
     public void play(AudioTrack track) {
         if (track == null) {
-            disconnect();
+            onEnd(false);
             return;
         }
         if (player.isPaused())
@@ -87,8 +89,17 @@ public abstract class Player {
             play(pollTrack());
     }
 
+    public void skipTo(int delimiter) {
+        if (delimiter == 1) {
+            play(pollTrack());
+            return;
+        }
+        for (int i = 1; i < delimiter; i++) {
+            pollTrack();
+        }
+        play(pollTrack());
+    }
 
-    public abstract void disconnect();
 
     protected abstract void save();
 
@@ -97,4 +108,6 @@ public abstract class Player {
     }
 
     public abstract void announceSong(AudioPlayer audioPlayer, AudioTrack track);
+
+    public abstract void onEnd(boolean announce);
 }
