@@ -2,8 +2,7 @@ package io.groovybot.bot;
 
 import io.groovybot.bot.commands.general.HelpCommand;
 import io.groovybot.bot.commands.general.PingCommand;
-import io.groovybot.bot.commands.music.JoinCommand;
-import io.groovybot.bot.commands.music.LeaveCommand;
+import io.groovybot.bot.commands.music.*;
 import io.groovybot.bot.commands.settings.LanguageCommand;
 import io.groovybot.bot.commands.settings.PrefixCommand;
 import io.groovybot.bot.core.GameAnimator;
@@ -130,17 +129,18 @@ public class GroovyBot {
                         new ShardsListener(),
                         new CommandLogger(),
                         commandManager,
-                        this
+                        this,
+                        lavalinkManager
                 )
                 .setGame(Game.playing("Starting ..."))
                 .setStatus(OnlineStatus.DO_NOT_DISTURB);
         try {
             shardManager = shardManagerBuilder.build();
+            lavalinkManager.initialize();
         } catch (LoginException e) {
             log.error("[JDA] Could not initialize bot!", e);
             System.exit(1);
         }
-        lavalinkManager.initialize();
     }
 
 
@@ -257,7 +257,10 @@ public class GroovyBot {
                 new LanguageCommand(),
                 new HelpCommand(),
                 new JoinCommand(),
-                new LeaveCommand()
+                new LeaveCommand(),
+                new PlayCommand(),
+                new VolumeCommand(),
+                new SkipCommand()
         );
     }
 
