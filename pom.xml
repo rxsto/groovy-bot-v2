@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.github.FredBoat</groupId>
             <artifactId>Lavalink-Client</artifactId>
-            <version>3.0</version>
+            <version>125b074065</version>
         </dependency>
     </dependencies>
 
