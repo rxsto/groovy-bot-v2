@@ -19,7 +19,7 @@ public class SafeMessage {
                 return channel.sendMessage(message);
             else
                 return channel.sendMessage(formatEmbed(message));
-        return null;
+        return channel.sendMessage(message);
     }
 
     public static void sendMessage(TextChannel channel, Message message) {
@@ -27,7 +27,7 @@ public class SafeMessage {
     }
 
     public static void sendMessage(TextChannel channel, EmbedBuilder builder) {
-        Objects.requireNonNull(getAction(channel, new MessageBuilder().setEmbed(builder.build()).build()));
+        getAction(channel, new MessageBuilder().setEmbed(builder.build()).build()).queue();
     }
 
     public static void sendMessage(TextChannel channel, Message message, Integer delTime) {
@@ -36,6 +36,10 @@ public class SafeMessage {
 
     public static Message sendMessageBlocking(TextChannel channel, Message message) {
         return Objects.requireNonNull(getAction(channel, message)).complete();
+    }
+
+    public static Message sendMessageBlocking(TextChannel channel, EmbedBuilder embedBuilder) {
+        return Objects.requireNonNull(getAction(channel, new MessageBuilder().setEmbed(embedBuilder.build()).build())).complete();
     }
 
     private static Message formatEmbed(Message message) {
