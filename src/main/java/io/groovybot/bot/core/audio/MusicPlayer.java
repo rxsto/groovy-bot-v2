@@ -21,14 +21,11 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 @Log4j
 public class MusicPlayer extends Player {
 
-    private LavalinkManager lavalinkManager;
     private final Guild guild;
     private final TextChannel channel;
     @Getter
@@ -36,7 +33,7 @@ public class MusicPlayer extends Player {
 
     protected MusicPlayer(Guild guild, TextChannel channel) {
         super();
-        this.lavalinkManager = GroovyBot.getInstance().getLavalinkManager();
+        LavalinkManager lavalinkManager = GroovyBot.getInstance().getLavalinkManager();
         this.guild = guild;
         this.channel = channel;
         instanciatePlayer(lavalinkManager.getLavalink().getLink(guild));
@@ -58,22 +55,15 @@ public class MusicPlayer extends Player {
 
     public void leave() {
         trackQueue.clear();
-        player.stopTrack();
         link.disconnect();
     }
 
     @Override
-    public void disconnect() {
-        new Timer().schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        if (guild.getSelfMember().getVoiceState().inVoiceChannel())
-                            if (guild.getSelfMember().getVoiceState().getChannel().getMembers().isEmpty())
-                                leave();
-                    }
-                }
-        ,60*5*100);
+    public void onEnd(boolean announce) {
+        if (announce)
+            SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not queue more songs?"));
+        link.disconnect();
+        stop();
     }
 
     @Override
@@ -85,6 +75,7 @@ public class MusicPlayer extends Player {
     public void announceSong(AudioPlayer audioPlayer, AudioTrack track) {
         channel.sendMessage(EmbedUtil.play("Now Playing", String.format("%s (%s)", track.getInfo().title, track.getInfo().author)).build()).queue();
     }
+
 
     @Override
     public IPlayer getPlayer() {
