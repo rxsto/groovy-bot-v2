@@ -43,7 +43,7 @@ public class HelpCommand extends Command {
     }
 
     private String buildUsage(Command command) {
-        return "g!" + command.getAliases()[0] + command.getUsage();
+        return "g!" + command.getAliases()[0] + " " + command.getUsage();
     }
 
     private EmbedBuilder formatCommandList(CommandEvent event) {
