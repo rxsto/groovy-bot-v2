@@ -42,9 +42,9 @@ public class ErrorReporter extends AppenderSkeleton {
         out.addEmbeds(
                 EmbedUtil.error("An unknown error occurred", String.format("An unkown error occurred in class %s", event.getLoggerName())
                 )
-                        .addField("Class", event.getLoggerName(), false)
-                        .addField("Message", formatException(event.getThrowableInformation().getThrowable()), false)
-                        .addField("Stacktrace", formatStacktrace(event.getThrowableInformation().getThrowable()), false)
+                        .addField("Class", "`" + event.getLoggerName() + "`", false)
+                        .addField("Message", "`" + formatException(event.getThrowableInformation().getThrowable()) + "`", false)
+                        .addField("Stacktrace", "```" + formatStacktrace(event.getThrowableInformation().getThrowable()) + "```", false)
                         .setTimestamp(Instant.now())
                         .build()
         );
