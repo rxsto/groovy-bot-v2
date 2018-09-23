@@ -23,6 +23,7 @@ public class LavalinkManager {
 
     @Getter
     private JdaLavalink lavalink;
+    @Getter
     private AudioPlayerManager audioPlayerManager;
     private GroovyBot groovyBot;
 
@@ -54,6 +55,7 @@ public class LavalinkManager {
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onEvent(Event event) {
-        lavalink.onEvent(event);
+        if (lavalink != null)
+            lavalink.onEvent(event);
     }
 }
