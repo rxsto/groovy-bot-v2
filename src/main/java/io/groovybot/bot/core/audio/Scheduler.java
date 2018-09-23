@@ -4,12 +4,10 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import io.groovybot.bot.util.EmbedUtil;
 import lavalink.client.player.event.AudioEventAdapterWrapped;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.dv8tion.jda.core.entities.TextChannel;
 
 @RequiredArgsConstructor
 public class Scheduler extends AudioEventAdapterWrapped {
@@ -17,10 +15,10 @@ public class Scheduler extends AudioEventAdapterWrapped {
     private final Player player;
     @Getter
     @Setter
-    private boolean queueRepeating;
+    private boolean queueRepeating = false;
     @Getter
     @Setter
-    private boolean repeating;
+    private boolean repeating = false;
 
     @Override
     public void onTrackStart(AudioPlayer audioPlayer, AudioTrack track) {
@@ -40,18 +38,17 @@ public class Scheduler extends AudioEventAdapterWrapped {
     private void handleTrackEnd(AudioTrack track, AudioTrackEndReason reason) {
         switch (reason) {
             case FINISHED:
-                AudioTrack nextTrack = player.pollTrack();
-                if (nextTrack == null)
-                    player.disconnect();
-                if (queueRepeating)
-                    player.trackQueue.add(track);
                 if (repeating) {
                     player.play(track);
                     return;
                 }
+                if (queueRepeating && !reason.equals(AudioTrackEndReason.REPLACED))
+                    player.trackQueue.add(track);
+                AudioTrack nextTrack = player.pollTrack();
+                if (nextTrack == null)
+                    player.onEnd(true);
                 player.play(nextTrack);
                 break;
-            case STOPPED:
             case LOAD_FAILED:
                 player.play(player.pollTrack());
                 break;
