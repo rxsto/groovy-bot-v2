@@ -36,4 +36,8 @@ public class CommandEvent extends Event {
         return message.getMember();
     }
 
+    public String getArguments() {
+        return String.join(" ", args);
+    }
+
 }
