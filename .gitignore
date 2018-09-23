@@ -96,3 +96,5 @@ buildNumber.properties
 /.idea/
 /config/config.json
 /logs/
+/.flooignore
+/.floo
