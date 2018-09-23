@@ -1,37 +1,31 @@
 package io.groovybot.bot.core.audio;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import lavalink.client.io.jda.JdaLink;
 import lavalink.client.player.IPlayer;
-import lavalink.client.player.event.AudioEventAdapterWrapped;
+import lombok.Getter;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
-public abstract class Player extends AudioEventAdapterWrapped {
+public abstract class Player {
 
-    protected Queue<AudioTrack> trackQueue;
+    public Queue<AudioTrack> trackQueue;
+    @Getter
     protected IPlayer player;
     public JdaLink link;
-    private boolean repeating;
-    private boolean queueRepeating;
 
     public Player() {
         this.trackQueue = new LinkedList<>();
-        this.repeating = false;
-        this.queueRepeating = false;
     }
 
     protected void instanciatePlayer(JdaLink link) {
         this.link = link;
         this.player = link.getPlayer();
-        player.addListener(this);
     }
+
+    protected abstract AudioPlayerManager getAudioPlayerManager();
 
     public void play(AudioTrack track) {
         if (track == null) {
@@ -78,44 +72,29 @@ public abstract class Player extends AudioEventAdapterWrapped {
         save();
         return track;
     }
-    public void queueTrack(AudioTrack track) {
+
+    public void queueTrack(AudioTrack track, boolean force) {
+        if (force)
+            ((LinkedList<AudioTrack>) trackQueue).addFirst(track);
         trackQueue.add(track);
         if (!isPlaying())
             play(pollTrack());
     }
 
-    @Override
-    public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        handleTrackEnd(player, track, endReason);
+    public void queueTracks(AudioTrack... tracks) {
+        trackQueue.addAll(Arrays.asList(tracks));
+        if (!isPlaying())
+            play(pollTrack());
     }
 
-    @Override
-    public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
-        handleTrackEnd(player, track, AudioTrackEndReason.LOAD_FAILED);
-    }
-
-    private void handleTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason reason) {
-        switch (reason) {
-            case FINISHED:
-                AudioTrack nextTrack = pollTrack();
-                if (nextTrack == null)
-                    disconnect();
-                if (queueRepeating)
-                    trackQueue.add(track);
-                if (repeating) {
-                    play(track);
-                    return;
-                }
-                play(nextTrack);
-                break;
-            case STOPPED:
-            case LOAD_FAILED:
-                pollTrack();
-                play(pollTrack());
-                break;
-        }
-    }
 
     public abstract void disconnect();
+
     protected abstract void save();
+
+    public int getQueueSize() {
+        return trackQueue.size();
+    }
+
+    public abstract void announceSong(AudioPlayer audioPlayer, AudioTrack track);
 }
