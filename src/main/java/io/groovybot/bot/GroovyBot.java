@@ -1,7 +1,6 @@
 package io.groovybot.bot;
 
-import io.groovybot.bot.commands.general.HelpCommand;
-import io.groovybot.bot.commands.general.PingCommand;
+import io.groovybot.bot.commands.general.*;
 import io.groovybot.bot.commands.music.*;
 import io.groovybot.bot.commands.settings.LanguageCommand;
 import io.groovybot.bot.commands.settings.PrefixCommand;
@@ -10,6 +9,7 @@ import io.groovybot.bot.core.audio.MusicPlayerManager;
 import io.groovybot.bot.core.audio.LavalinkManager;
 import io.groovybot.bot.core.cache.Cache;
 import io.groovybot.bot.core.command.CommandManager;
+import io.groovybot.bot.core.command.interaction.InteractionManager;
 import io.groovybot.bot.core.entity.Guild;
 import io.groovybot.bot.core.entity.User;
 import io.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
@@ -74,6 +74,8 @@ public class GroovyBot {
     private final ServerCountStatistics serverCountStatistics;
     @Getter
     private final MusicPlayerManager musicPlayerManager;
+    @Getter
+    private final InteractionManager interactionManager;
 
     public static void main(String[] args) {
         if (instance != null)
@@ -94,12 +96,13 @@ public class GroovyBot {
         lavalinkManager = new LavalinkManager(this);
         statusPage = new StatusPage(httpClient, config.getJSONObject("statuspage"));
         createDefaultDatabase();
-        commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") :config.getJSONObject("settings").getString("prefix"));
+        commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") : config.getJSONObject("settings").getString("prefix"));
         serverCountStatistics = new ServerCountStatistics(httpClient, config.getJSONObject("botlists"));
         initShardManager();
         translationManager = new TranslationManager();
         musicPlayerManager = new MusicPlayerManager();
         registerCommands();
+        interactionManager = new InteractionManager();
     }
 
 
@@ -109,7 +112,7 @@ public class GroovyBot {
                 .addHeader("Authorization", config.getJSONObject("bot").getString("token"))
                 .get()
                 .build();
-        try (Response response = httpClient.newCall(request).execute()){
+        try (Response response = httpClient.newCall(request).execute()) {
             assert response.body() != null;
             return new JSONObject(response.body().string()).getInt("shards");
         } catch (IOException e) {
@@ -252,15 +255,23 @@ public class GroovyBot {
 
     private void registerCommands() {
         commandManager.registerCommands(
+                new HelpCommand(),
                 new PingCommand(),
+                new InfoCommand(),
+                new InviteCommand(),
+                new SupportCommand(),
+                new SponsorCommand(),
+                new DonateCommand(),
+                new VoteCommand(),
+                new StatsCommand(),
                 new PrefixCommand(),
                 new LanguageCommand(),
-                new HelpCommand(),
                 new JoinCommand(),
                 new LeaveCommand(),
                 new PlayCommand(),
                 new VolumeCommand(),
-                new SkipCommand()
+                new SkipCommand(),
+                new QueueCommand()
         );
     }
 
