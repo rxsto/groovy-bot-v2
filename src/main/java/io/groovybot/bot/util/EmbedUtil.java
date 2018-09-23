@@ -8,11 +8,11 @@ import java.awt.*;
 public class EmbedUtil extends SafeMessage {
 
     public static EmbedBuilder success(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle(":white_check_mark: " + title).setColor(Color.GREEN);
+        return new EmbedBuilder().setDescription(description).setTitle(":white_check_mark: " + title).setColor(0x2C2F33);
     }
 
     public static EmbedBuilder error(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle(":x: " + title).setColor(Color.RED);
+        return new EmbedBuilder().setDescription(description).setTitle(":x: " + title).setColor(0x2C2F33);
     }
 
     public static EmbedBuilder error(CommandEvent event) {
@@ -20,10 +20,10 @@ public class EmbedUtil extends SafeMessage {
     }
 
     public static EmbedBuilder info(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle(":information_source: " + title).setColor(Color.BLUE);
+        return new EmbedBuilder().setDescription(description).setTitle(":information_source: " + title).setColor(0x2C2F33);
     }
 
     public static EmbedBuilder play(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle(":notes: " + title).setColor(Color.BLUE);
+        return new EmbedBuilder().setDescription(description).setTitle(":notes: " + title).setColor(0x2C2F33);
     }
 }
