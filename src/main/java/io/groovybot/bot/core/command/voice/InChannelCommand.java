@@ -8,6 +8,7 @@ import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 public abstract class InChannelCommand extends Command {
 
@@ -24,7 +25,7 @@ public abstract class InChannelCommand extends Command {
 
     public abstract Result execute(String[] args, CommandEvent event);
 
-    protected MusicPlayer getPlayer(Guild guild) {
-        return GroovyBot.getInstance().getMusicPlayerManager().getPlayer(guild);
+    protected MusicPlayer getPlayer(Guild guild, TextChannel channel) {
+        return GroovyBot.getInstance().getMusicPlayerManager().getPlayer(guild, channel);
     }
 }
