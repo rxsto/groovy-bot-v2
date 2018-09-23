@@ -13,7 +13,7 @@ public abstract class SameChannelCommand extends InChannelCommand {
 
     @Override
     public Result execute(String[] args, CommandEvent event) {
-        if (getPlayer(event.getGuild()).link.getChannel() != null)
+        if (!event.getGuild().getSelfMember().getVoiceState().inVoiceChannel())
             return send(error(event.translate("phrases.notinchannel.title"), event.translate("phrases.notinchannel.description")));
         if (!event.getGuild().getSelfMember().getVoiceState().getChannel().equals(event.getMember().getVoiceState().getChannel()))
             return send(error(event.translate("phrases.notsamechannel.title"), event.translate("phrases.notsamechannel.description")));
