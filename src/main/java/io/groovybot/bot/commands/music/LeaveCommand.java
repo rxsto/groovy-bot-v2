@@ -15,7 +15,7 @@ public class LeaveCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event) {
-        MusicPlayer player = getPlayer(event.getGuild());
+        MusicPlayer player = getPlayer(event.getGuild(), event.getChannel());
         player.leave();
         return send(success(event.translate("command.leave.left.title"), event.translate("command.leave.left.description")));
     }
