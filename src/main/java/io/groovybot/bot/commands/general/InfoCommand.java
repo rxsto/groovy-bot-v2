@@ -5,6 +5,7 @@ import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
+import io.groovybot.bot.core.entity.EntityProvider;
 
 public class InfoCommand extends Command {
     public InfoCommand() {
@@ -13,6 +14,7 @@ public class InfoCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return null;
+        String prefix = EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix();
+        return send(info(event.translate("command.info.title"), String.format(event.translate("command.info.description"), prefix, prefix, prefix)));
     }
 }
