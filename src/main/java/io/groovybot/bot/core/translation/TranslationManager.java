@@ -1,6 +1,7 @@
 package io.groovybot.bot.core.translation;
 
 import io.groovybot.bot.GroovyBot;
+import io.groovybot.bot.core.entity.EntityProvider;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
@@ -43,7 +44,7 @@ public class TranslationManager {
     }
 
     public TranslationLocale getLocaleByUser(String userId) {
-        return getLocaleByLocale(GroovyBot.getInstance().getUserCache().get(Long.valueOf(userId)).getLocale());
+        return getLocaleByLocale(EntityProvider.getUser(Long.parseLong(userId)).getLocale());
     }
 
 }
