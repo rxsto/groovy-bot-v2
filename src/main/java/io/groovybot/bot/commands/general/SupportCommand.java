@@ -13,6 +13,6 @@ public class SupportCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return null;
+        return send(info(event.translate("command.support.title"), event.translate("command.support.description")));
     }
 }
