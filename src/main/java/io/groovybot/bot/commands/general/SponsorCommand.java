@@ -8,7 +8,7 @@ import io.groovybot.bot.core.command.permission.Permissions;
 
 public class SponsorCommand extends Command {
     public SponsorCommand() {
-        super(new String[] {"sponsore"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you some information about our sponsor", "");
+        super(new String[] {"sponsor"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you some information about our sponsor", "");
     }
 
     @Override
