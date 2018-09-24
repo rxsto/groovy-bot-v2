@@ -5,7 +5,6 @@ import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
-import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
 

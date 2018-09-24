@@ -22,7 +22,7 @@ import io.groovybot.bot.io.FileManager;
 import io.groovybot.bot.io.config.Configuration;
 import io.groovybot.bot.io.database.PostgreSQL;
 import io.groovybot.bot.listeners.ShardsListener;
-import io.groovybot.bot.util.JDASUCKSFILER;
+import io.groovybot.bot.util.JDASUCKSFILTER;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
@@ -221,7 +221,7 @@ public class GroovyBot {
     }
 
     private void initLogger(String[] args) {
-        final JDASUCKSFILER errorResponseFilter = new JDASUCKSFILER();
+        final JDASUCKSFILTER errorResponseFilter = new JDASUCKSFILTER();
         final ConsoleAppender consoleAppender = new ConsoleAppender();
         final PatternLayout consolePatternLayout = new PatternLayout("[%d{HH:mm:ss}] [%c] [%p] | %m%n");
         final FileAppender latestLogAppender = new FileAppender();

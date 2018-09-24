@@ -44,17 +44,6 @@ public class InteractionManager {
 
     @SubscribeEvent
     @SuppressWarnings("unused")
-    private void onMessage(GuildMessageReceivedEvent event) {
-        if (event.getAuthor().isBot())
-            return;
-        if (!isInteractable(event)) return;
-        InteractableMessage interactableMessage = interactionStorage.get(event.getMessageIdLong());
-        if (!checkAuthor(interactableMessage, event.getAuthor())) return;
-        interactableMessage.handleMessage(event);
-    }
-
-    @SubscribeEvent
-    @SuppressWarnings("unused")
     private void onMessageDeletion(GuildMessageDeleteEvent event) {
         interactionStorage.remove(event.getMessageIdLong());
     }

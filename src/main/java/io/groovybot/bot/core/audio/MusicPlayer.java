@@ -37,7 +37,7 @@ public class MusicPlayer extends Player {
         this.guild = guild;
         this.channel = channel;
         instanciatePlayer(lavalinkManager.getLavalink().getLink(guild));
-        getPlayer().addListener(new Scheduler(this));
+        getPlayer().addListener(getScheduler());
         audioPlayerManager = lavalinkManager.getAudioPlayerManager();
     }
 
