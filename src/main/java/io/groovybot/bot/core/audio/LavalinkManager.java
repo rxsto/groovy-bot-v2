@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
-import org.json.JSONObject;
 
 import java.net.URI;
 import java.sql.PreparedStatement;
