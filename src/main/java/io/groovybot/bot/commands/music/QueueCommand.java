@@ -84,7 +84,7 @@ public class QueueCommand extends Command {
 
         private void updateEmotes(boolean first) {
             if (!first && currentPage == 1)
-                    getChannel().removeReactionById(getInfoMessage().getIdLong(), "⬅").queue();
+                getChannel().removeReactionById(getInfoMessage().getIdLong(), "⬅").queue();
             if (currentPage > pages)
                 getChannel().removeReactionById(getInfoMessage().getIdLong(), "➡").queue();
             if (currentPage > 1)
@@ -111,6 +111,4 @@ public class QueueCommand extends Command {
 
         return queueMessage.toString();
     }
-
-
 }
