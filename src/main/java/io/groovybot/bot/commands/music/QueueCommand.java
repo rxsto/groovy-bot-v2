@@ -82,15 +82,8 @@ public class QueueCommand extends Command {
             getInfoMessage().editMessage(formatQueue(subQueue, commandEvent, (currentPage * PAGE_SIZE - 10), currentPage == 1 ? currentTrack : null).build()).queue();
         }
 
-        @Override
-        @SuppressWarnings("unused")
-        protected void handleMessage(GuildMessageReceivedEvent event) {
-
-        }
-
         private void updateEmotes(boolean first) {
-            if (!first)
-                if (currentPage == 1)
+            if (!first && currentPage == 1)
                     getChannel().removeReactionById(getInfoMessage().getIdLong(), "⬅").queue();
             if (currentPage > pages)
                 getChannel().removeReactionById(getInfoMessage().getIdLong(), "➡").queue();

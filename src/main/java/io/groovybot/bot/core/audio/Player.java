@@ -17,9 +17,12 @@ public abstract class Player {
     protected IPlayer player;
     @Getter
     public JdaLink link;
+    @Getter
+    private final Scheduler scheduler;
 
     public Player() {
         this.trackQueue = new LinkedList<>();
+        this.scheduler = new Scheduler(this);
     }
 
     protected void instanciatePlayer(JdaLink link) {
@@ -113,5 +116,21 @@ public abstract class Player {
 
     public void clearQueue() {
         trackQueue.clear();
+    }
+
+    public boolean isPaused() {
+        return player.isPaused();
+    }
+
+    public boolean loopEnabled() {
+        return scheduler.isRepeating();
+    }
+
+    public boolean queueLoopEnabled() {
+        return scheduler.isQueueRepeating();
+    }
+
+    public void skip() {
+        skipTo(1);
     }
 }

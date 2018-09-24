@@ -4,7 +4,7 @@ import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 
-public class JDASUCKSFILER extends Filter {
+public class JDASUCKSFILTER extends Filter {
 
     @Override
     public int decide(LoggingEvent event) {

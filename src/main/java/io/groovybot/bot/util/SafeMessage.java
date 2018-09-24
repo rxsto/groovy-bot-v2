@@ -34,6 +34,10 @@ public class SafeMessage {
         Objects.requireNonNull(getAction(channel, message)).queue(msg -> msg.delete().queueAfter(delTime, TimeUnit.SECONDS));
     }
 
+    public static void sendMessage(TextChannel channel, EmbedBuilder message, Integer delTime) {
+        Objects.requireNonNull(getAction(channel, new MessageBuilder().setEmbed(message.build()).build())).queue(msg -> msg.delete().queueAfter(delTime, TimeUnit.SECONDS));
+    }
+
     public static Message sendMessageBlocking(TextChannel channel, Message message) {
         return Objects.requireNonNull(getAction(channel, message)).complete();
     }

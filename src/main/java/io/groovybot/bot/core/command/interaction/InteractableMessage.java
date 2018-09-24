@@ -5,7 +5,6 @@ import lombok.Getter;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 
 public abstract class InteractableMessage {
@@ -28,8 +27,20 @@ public abstract class InteractableMessage {
         GroovyBot.getInstance().getInteractionManager().update(this);
     }
 
+    protected void unregister() {
+        onDelete();
+        GroovyBot.getInstance().getInteractionManager().unregister(this);
+    }
+
     protected abstract void handleReaction(GuildMessageReactionAddEvent event);
 
-    protected abstract void handleMessage(GuildMessageReceivedEvent event);
+    protected String translate(GuildMessageReactionAddEvent event, String key) {
+        return GroovyBot.getInstance().getTranslationManager().getLocaleByUser(event.getMessageId()).translate(key);
+    }
+
+    public void onDelete() {
+        //Empty method
+    }
+
 
 }
