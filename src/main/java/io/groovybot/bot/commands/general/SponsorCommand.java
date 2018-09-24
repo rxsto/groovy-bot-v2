@@ -13,6 +13,6 @@ public class SponsorCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return null;
+        return send(info(event.translate("command.sponsor.title"), event.translate("command.sponsor.description")));
     }
 }
