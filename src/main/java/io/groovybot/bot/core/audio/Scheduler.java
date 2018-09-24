@@ -52,6 +52,9 @@ public class Scheduler extends AudioEventAdapterWrapped {
             case LOAD_FAILED:
                 player.play(player.pollTrack());
                 break;
+            default:
+                // Do nothing
+                break;
         }
     }
 }

@@ -1,6 +1,7 @@
 package io.groovybot.bot.core.command;
 
 import io.groovybot.bot.GroovyBot;
+import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.core.events.command.CommandExecutedEvent;
 import io.groovybot.bot.core.events.command.CommandFailEvent;
 import io.groovybot.bot.core.events.command.NoPermissionEvent;
@@ -34,7 +35,10 @@ public class CommandManager {
 
     @SubscribeEvent
     @SuppressWarnings("unused")
-    public void onMessageRecived(GuildMessageReceivedEvent event) {
+    public void onMessageReceived(GuildMessageReceivedEvent event) {
+        if (event instanceof CommandEvent)
+            // Return if the event is a commandManager event
+            return;
         if (event.getAuthor().isBot() || event.getAuthor().isFake() || event.isWebhookMessage())
             return;
 
@@ -44,14 +48,13 @@ public class CommandManager {
         Command command = commandAssociations.get(commandEvent.getInvocation());
         if (command == null)
             return;
-        if (commandEvent.getArgs().length > 0)
-            if (command.getSubCommandAssociations().containsKey(commandEvent.getArgs()[0]))
+        if (commandEvent.getArgs().length > 0 && command.getSubCommandAssociations().containsKey(commandEvent.getArgs()[0]))
                 command = command.getSubCommandAssociations().get(commandEvent.getArgs()[0]);
             call(command, commandEvent);
     }
 
     private void call(Command command, CommandEvent commandEvent) {
-        if (!command.getPermissions().isCovered(GroovyBot.getInstance().getUserCache().get(commandEvent.getAuthor().getIdLong()).getPermissions(), commandEvent)) {
+        if (!command.getPermissions().isCovered(EntityProvider.getUser(commandEvent.getAuthor().getIdLong()).getPermissions(), commandEvent)) {
             GroovyBot.getInstance().getEventManager().handle(new NoPermissionEvent(commandEvent, command));
             return;
         }
@@ -72,7 +75,7 @@ public class CommandManager {
 
     private CommandEvent parseEvent(GuildMessageReceivedEvent event) {
         String prefix = null;
-        String customPrefix = GroovyBot.getInstance().getGuildCache().get(event.getGuild().getIdLong()).getPrefix();
+        String customPrefix = EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix();
         String content = event.getMessage().getContentRaw();
         if (content.startsWith(event.getGuild().getSelfMember().getAsMention()))
             prefix = event.getGuild().getSelfMember().getAsMention();
@@ -87,7 +90,7 @@ public class CommandManager {
             String invocation = allArgs[0];
             String[] args = new String[allArgs.length -1];
             System.arraycopy(allArgs, 1, args, 0, args.length);
-            return new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage(), GroovyBot.getInstance(), args, invocation);
+            return new CommandEvent(event, GroovyBot.getInstance(), args, invocation);
         }
         return null;
     }

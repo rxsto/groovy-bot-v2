@@ -2,9 +2,7 @@ package io.groovybot.bot.core.entity;
 
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.permission.UserPermissions;
-import io.groovybot.bot.io.ErrorReporter;
 import lombok.Getter;
-import org.apache.log4j.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

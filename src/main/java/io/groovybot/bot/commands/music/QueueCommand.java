@@ -6,10 +6,18 @@ import io.groovybot.bot.core.command.Command;
 import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
+import io.groovybot.bot.core.command.interaction.InteractableMessage;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,7 +26,7 @@ public class QueueCommand extends Command {
     private final int PAGE_SIZE = 10;
 
     public QueueCommand() {
-        super(new String[] {"queue", "q"}, CommandCategory.MUSIC, Permissions.everyone(), "Shows you each song inside the queue", "");
+        super(new String[]{"queue", "q"}, CommandCategory.MUSIC, Permissions.everyone(), "Shows you each song inside the queue", "");
     }
 
     @Override
@@ -26,24 +34,84 @@ public class QueueCommand extends Command {
         MusicPlayer player = event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
-        if (player.getQueueSize() <= PAGE_SIZE)  
-            return send(formatQueue(player.getTrackQueue(), event, 0, player.getPlayer().getPlayingTrack()));
+        if (player.getQueueSize() <= PAGE_SIZE)
+            return send(formatQueue((LinkedList<AudioTrack>) player.getTrackQueue(), event, 0, player.getPlayer().getPlayingTrack()));
+        Message infoMessage = sendMessageBlocking(event.getChannel(), info("Loading queue", "Loading queue"));
+        new QueueMessage(infoMessage, event.getChannel(), event.getMember(), player.getTrackQueue(), event, player.getPlayer().getPlayingTrack());
         return null;
     }
 
-    private EmbedBuilder formatQueue(Queue<AudioTrack> tracks, CommandEvent event, int startNumber, AudioTrack currentTrack) {
-        return new EmbedBuilder().setTitle(event.translate("command.queue.title"))
-            .setDescription(generateQueueDescription(tracks, startNumber, currentTrack)).setColor(Colors.DARK_BUT_NOT_BLACK);
+    private class QueueMessage extends InteractableMessage {
+
+        private int currentPage = 1;
+        private final Queue<AudioTrack> queue;
+        private final int pages;
+        private final CommandEvent commandEvent;
+        private final AudioTrack currentTrack;
+
+        private QueueMessage(Message infoMessage, TextChannel channel, Member author, Queue<AudioTrack> queue, CommandEvent event, AudioTrack currentTrack) {
+            super(infoMessage, channel, author);
+            this.queue = queue;
+            this.pages = queue.size() >= PAGE_SIZE ? queue.size() / PAGE_SIZE : 1;
+            this.commandEvent = event;
+            this.currentTrack = currentTrack;
+            addEmotes();
+            updateMessage();
+        }
+
+        @Override
+        protected void handleReaction(GuildMessageReactionAddEvent event) {
+            switch (event.getReaction().getReactionEmote().getName()) {
+                case "➡":
+                    currentPage++;
+                    break;
+                case "⬅":
+                    currentPage--;
+                    break;
+                default:
+                    // Nothing happens
+                    break;
+            }
+            addEmotes();
+            updateMessage();
+            update();
+        }
+
+        private void updateMessage() {
+            List<AudioTrack> subQueue = ((LinkedList<AudioTrack>) queue).subList((currentPage - 1) * PAGE_SIZE, (currentPage - 1) * PAGE_SIZE + PAGE_SIZE);
+            getInfoMessage().editMessage(formatQueue(subQueue, commandEvent, (currentPage * PAGE_SIZE - 10), currentPage == 1 ? currentTrack : null).build()).queue();
+        }
+
+        @Override
+        @SuppressWarnings("unused")
+        protected void handleMessage(GuildMessageReceivedEvent event) {
+
+        }
+
+        private void addEmotes() {
+            getInfoMessage().getReactions().forEach(messageReaction -> messageReaction.removeReaction().queue());
+            if (currentPage > 1)
+                getInfoMessage().addReaction("⬅").queue();
+            if (currentPage < pages) {
+                getInfoMessage().addReaction("➡").queue();
+            }
+
+        }
     }
 
-    private String generateQueueDescription(Queue<AudioTrack> tracks, int startNumber, AudioTrack currentTrack) {
+    private EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, AudioTrack currentTrack) {
+        return new EmbedBuilder()
+                .setTitle(event.translate("command.queue.title"))
+                .setDescription(generateQueueDescription(tracks, startNumber, currentTrack)).setColor(Colors.DARK_BUT_NOT_BLACK);
+    }
+
+    private String generateQueueDescription(List<AudioTrack> tracks, int startNumber, AudioTrack currentTrack) {
         StringBuilder queueMessage = new StringBuilder();
         AtomicInteger trackCount = new AtomicInteger(startNumber);
-        queueMessage.append(String.format("**[Now]** [%s](%s)\n\n", currentTrack.getInfo().title, currentTrack.getInfo().uri));
-        tracks.forEach(track -> {
-            queueMessage.append(String.format(":white_small_square: `%s.` [%s](%s)\n", trackCount.addAndGet(1), track.getInfo().title, track.getInfo().uri));
-        });
-        
+        if (currentTrack != null)
+            queueMessage.append(String.format("**[Now]** [%s](%s)\n\n", currentTrack.getInfo().title, currentTrack.getInfo().uri));
+        tracks.forEach(track -> queueMessage.append(String.format(":white_small_square: `%s.` [%s](%s)\n", trackCount.addAndGet(1), track.getInfo().title, track.getInfo().uri)));
+
         return queueMessage.toString();
     }
 }
