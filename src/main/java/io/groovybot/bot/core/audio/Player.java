@@ -110,4 +110,8 @@ public abstract class Player {
     public abstract void announceSong(AudioPlayer audioPlayer, AudioTrack track);
 
     public abstract void onEnd(boolean announce);
+
+    public void clearQueue() {
+        trackQueue.clear();
+    }
 }

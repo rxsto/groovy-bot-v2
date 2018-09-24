@@ -36,7 +36,7 @@ public class QueueCommand extends Command {
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
         if (player.getQueueSize() <= PAGE_SIZE)
             return send(formatQueue((LinkedList<AudioTrack>) player.getTrackQueue(), event, 0, player.getPlayer().getPlayingTrack()));
-        Message infoMessage = sendMessageBlocking(event.getChannel(), info("Loading queue", "Loading queue"));
+        Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.queue.loading.title"), event.translate("command.queue.loading.description")));
         new QueueMessage(infoMessage, event.getChannel(), event.getMember(), player.getTrackQueue(), event, player.getPlayer().getPlayingTrack());
         return null;
     }
@@ -55,7 +55,7 @@ public class QueueCommand extends Command {
             this.pages = queue.size() >= PAGE_SIZE ? queue.size() / PAGE_SIZE : 1;
             this.commandEvent = event;
             this.currentTrack = currentTrack;
-            addEmotes();
+            updateEmotes(true);
             updateMessage();
         }
 
@@ -72,13 +72,13 @@ public class QueueCommand extends Command {
                     // Nothing happens
                     break;
             }
-            addEmotes();
+            updateEmotes(false);
             updateMessage();
             update();
         }
 
         private void updateMessage() {
-            List<AudioTrack> subQueue = ((LinkedList<AudioTrack>) queue).subList((currentPage - 1) * PAGE_SIZE, (currentPage - 1) * PAGE_SIZE + PAGE_SIZE);
+            List<AudioTrack> subQueue = ((LinkedList<AudioTrack>) queue).subList((currentPage - 1) * PAGE_SIZE, ((currentPage - 1) * PAGE_SIZE + PAGE_SIZE) > queue.size() ? queue.size() : (currentPage - 1) * PAGE_SIZE + PAGE_SIZE);
             getInfoMessage().editMessage(formatQueue(subQueue, commandEvent, (currentPage * PAGE_SIZE - 10), currentPage == 1 ? currentTrack : null).build()).queue();
         }
 
@@ -88,11 +88,15 @@ public class QueueCommand extends Command {
 
         }
 
-        private void addEmotes() {
-            getInfoMessage().getReactions().forEach(messageReaction -> messageReaction.removeReaction().queue());
+        private void updateEmotes(boolean first) {
+            if (!first)
+                if (currentPage == 1)
+                    getChannel().removeReactionById(getInfoMessage().getIdLong(), "⬅").queue();
+            if (currentPage > pages)
+                getChannel().removeReactionById(getInfoMessage().getIdLong(), "➡").queue();
             if (currentPage > 1)
                 getInfoMessage().addReaction("⬅").queue();
-            if (currentPage < pages) {
+            if (currentPage <= pages) {
                 getInfoMessage().addReaction("➡").queue();
             }
 
@@ -114,4 +118,6 @@ public class QueueCommand extends Command {
 
         return queueMessage.toString();
     }
+
+
 }
