@@ -1,6 +1,7 @@
 package io.groovybot.bot.core.audio;
 
 
+import lombok.Getter;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 
@@ -9,6 +10,7 @@ import java.util.Map;
 
 public class MusicPlayerManager {
 
+    @Getter
     private Map<Long, MusicPlayer> playerStorage = new HashMap<>();
 
     public MusicPlayer getPlayer(Guild guild, TextChannel channel) {
