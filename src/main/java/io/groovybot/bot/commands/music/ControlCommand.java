@@ -10,6 +10,7 @@ import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.interaction.InteractableMessage;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.command.voice.SameChannelCommand;
+import io.groovybot.bot.util.Colors;
 import io.groovybot.bot.util.EmbedUtil;
 import io.groovybot.bot.util.NameThreadFactory;
 import io.groovybot.bot.util.SafeMessage;
@@ -29,8 +30,10 @@ public class ControlCommand extends SameChannelCommand {
 
     private final String[] EMOTES = {"⏯", "⏭", "🔂", "🔁", "🔀", "🔄", "🔉", "🔊"};
 
+    /* TODO: ADD REMOVE OLD CP */
+
     public ControlCommand() {
-        super(new String[]{"controlpanel", "control", "panel", "cp"}, CommandCategory.MUSIC, Permissions.everyone(), "Opens a reaction-based control panel", "");
+        super(new String[]{"control", "panel", "cp"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you control the bot with reactions", "");
     }
 
     @Override
@@ -141,7 +144,8 @@ public class ControlCommand extends SameChannelCommand {
                 return;
             AudioTrackInfo currentSong = player.getPlayer().getPlayingTrack().getInfo();
             EmbedBuilder controlPanelEmbed = new EmbedBuilder()
-                    .setTitle(String.format("Now playing %s by %s -  Control panel", currentSong.title, currentSong.author))
+                    .setTitle(String.format(":notes: %s (%s)", currentSong.title, currentSong.author))
+                    .setColor(Colors.DARK_BUT_NOT_BLACK)
                     .setDescription(buildDescription(player));
             getInfoMessage().editMessage(controlPanelEmbed.build()).queue();
         }
@@ -149,7 +153,7 @@ public class ControlCommand extends SameChannelCommand {
         private CharSequence buildDescription(MusicPlayer player) {
             final AudioTrack playingTrack = player.getPlayer().getPlayingTrack();
             final long trackPosition = player.getPlayer().getTrackPosition();
-            return String.format("%s %s %s\n%s `[%s/%s]`", player.isPaused() ? "\u23F8" : "", player.loopEnabled() ? "\uD83D\uDD02" : "", player.queueLoopEnabled() ? "\uD83D\uDD01" : "", getProgressBar(trackPosition, playingTrack.getDuration()), formatTimestamp(trackPosition), formatTimestamp(playingTrack.getDuration()));
+            return String.format("%s%s%s %s **[%s/%s]**", player.isPaused() ? "\u23F8" : "\u25B6", player.loopEnabled() ? "\uD83D\uDD02" : "", player.queueLoopEnabled() ? "\uD83D\uDD01" : "", getProgressBar(trackPosition, playingTrack.getDuration()), formatTimestamp(trackPosition), formatTimestamp(playingTrack.getDuration()));
 
         }
 
@@ -161,7 +165,7 @@ public class ControlCommand extends SameChannelCommand {
         }
 
         private void sendMessage(String title, String message) {
-            SafeMessage.sendMessage(getChannel(), EmbedUtil.info(title, message), 4);
+            SafeMessage.sendMessage(getChannel(), EmbedUtil.success(title, message), 4);
         }
 
         private String formatTimestamp(long millis) {
