@@ -6,7 +6,6 @@ import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -55,7 +54,7 @@ public class HelpCommand extends Command {
                 .setDescription(String.format(event.translate("command.help.description"), EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix()));
         for (CommandCategory commandCategory : CommandCategory.class.getEnumConstants()) {
             String formattedCategory = fromatCategory(commandCategory, event.getGroovyBot().getCommandManager());
-            if (!formattedCategory.equals(""))
+            if (!"".equals(formattedCategory))
                 builder.addField(commandCategory.getDisplayName(), formattedCategory, false);
         }
         return builder;
