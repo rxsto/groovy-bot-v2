@@ -13,6 +13,6 @@ public class VoteCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return null;
+        return send(info(event.translate("command.vote.title"), event.translate("command.vote.description")));
     }
 }
