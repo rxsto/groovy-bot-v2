@@ -5,6 +5,7 @@ import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
+import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.core.entity.Guild;
 
 public class PrefixCommand extends Command {
@@ -15,7 +16,7 @@ public class PrefixCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        Guild guild = event.getGroovyBot().getGuildCache().get(event.getGuild().getIdLong());
+        Guild guild = EntityProvider.getGuild(event.getGuild().getIdLong());
         if (args.length == 0)
             return send(info(event.translate("command.prefix.current.title"), String.format(event.translate("command.prefix.current.description"), guild.getPrefix())));
         guild.setPrefix(args[0]);
