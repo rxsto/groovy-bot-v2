@@ -5,6 +5,8 @@ import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
+import io.groovybot.bot.core.entity.EntityProvider;
+import net.dv8tion.jda.core.EmbedBuilder;
 
 public class ShardCommand extends Command {
     public ShardCommand() {
@@ -13,6 +15,8 @@ public class ShardCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setDescription(":white_check_mark: " + String.format(event.translate("command.shard.description"), event.getJDA().getShardInfo().getShardId(), event.getJDA().getPing()));
         return null;
     }
 }
