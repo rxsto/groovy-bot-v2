@@ -22,6 +22,7 @@ import io.groovybot.bot.io.FileManager;
 import io.groovybot.bot.io.config.Configuration;
 import io.groovybot.bot.io.database.PostgreSQL;
 import io.groovybot.bot.listeners.ShardsListener;
+import io.groovybot.bot.util.JDASUCKSFILER;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
@@ -220,6 +221,7 @@ public class GroovyBot {
     }
 
     private void initLogger(String[] args) {
+        final JDASUCKSFILER errorResponseFilter = new JDASUCKSFILER();
         final ConsoleAppender consoleAppender = new ConsoleAppender();
         final PatternLayout consolePatternLayout = new PatternLayout("[%d{HH:mm:ss}] [%c] [%p] | %m%n");
         final FileAppender latestLogAppender = new FileAppender();
@@ -228,10 +230,13 @@ public class GroovyBot {
 
         consoleAppender.setLayout(consolePatternLayout);
         consoleAppender.activateOptions();
+        consoleAppender.addFilter(errorResponseFilter);
         latestLogAppender.setLayout(filePatternLayout);
         dateLogAppender.setLayout(filePatternLayout);
+        dateLogAppender.addFilter(errorResponseFilter);
         latestLogAppender.setFile("logs/latest.log");
         dateLogAppender.setFile(String.format("logs/%s.log", new SimpleDateFormat("dd_MM_yyyy-HH_mm").format(new Date())));
+        latestLogAppender.addFilter(errorResponseFilter);
         latestLogAppender.activateOptions();
         dateLogAppender.activateOptions();
 
@@ -252,7 +257,9 @@ public class GroovyBot {
             statusPage.start();
             serverCountStatistics.start();
         }
+
     }
+
 
     private void registerCommands() {
         commandManager.registerCommands(
@@ -273,7 +280,8 @@ public class GroovyBot {
                 new VolumeCommand(),
                 new SkipCommand(),
                 new QueueCommand(),
-                new ShardCommand()
+                new ShardCommand(),
+                new ControlCommand()
         );
     }
 
