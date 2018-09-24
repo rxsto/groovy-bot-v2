@@ -6,6 +6,7 @@ import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
+import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.core.entity.User;
 import io.groovybot.bot.core.translation.TranslationManager;
 
@@ -19,7 +20,7 @@ public class LanguageCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        User user = GroovyBot.getInstance().getUserCache().get(event.getAuthor().getIdLong());
+        User user = EntityProvider.getUser(event.getAuthor().getIdLong());
         if (args.length == 0)
             return send(info(event.translate("command.language.info.title"), String.format(event.translate("command.language.info.description"), user.getLocale().getLanguage(), formatAvalibleLanguages(event.getGroovyBot().getTranslationManager()))));
         Locale locale;
