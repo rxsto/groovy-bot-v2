@@ -6,9 +6,11 @@ import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.entity.EntityProvider;
+import io.groovybot.bot.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
 
 public class ShardCommand extends Command {
+
     public ShardCommand() {
         super(new String[] {"shard", "shards"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you some information about your current shard", "");
     }
@@ -16,7 +18,8 @@ public class ShardCommand extends Command {
     @Override
     public Result run(String[] args, CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setDescription(":white_check_mark: " + String.format(event.translate("command.shard.description"), event.getJDA().getShardInfo().getShardId(), event.getJDA().getPing()));
-        return null;
+        builder.setColor(Colors.DARK_BUT_NOT_BLACK);
+        builder.setDescription(":white_check_mark: " + String.format(event.translate("command.shard.description"), event.getJDA().getShardInfo().getShardId() + 1, event.getJDA().getPing()));
+        return send(builder);
     }
 }
