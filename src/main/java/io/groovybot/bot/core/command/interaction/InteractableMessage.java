@@ -24,6 +24,10 @@ public abstract class InteractableMessage {
         GroovyBot.getInstance().getInteractionManager().register(this);
     }
 
+    protected void update() {
+        GroovyBot.getInstance().getInteractionManager().update(this);
+    }
+
     protected abstract void handleReaction(GuildMessageReactionAddEvent event);
 
     protected abstract void handleMessage(GuildMessageReceivedEvent event);

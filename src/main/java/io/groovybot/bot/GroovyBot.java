@@ -98,11 +98,11 @@ public class GroovyBot {
         createDefaultDatabase();
         commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") : config.getJSONObject("settings").getString("prefix"));
         serverCountStatistics = new ServerCountStatistics(httpClient, config.getJSONObject("botlists"));
+        interactionManager = new InteractionManager();
         initShardManager();
         translationManager = new TranslationManager();
         musicPlayerManager = new MusicPlayerManager();
         registerCommands();
-        interactionManager = new InteractionManager();
     }
 
 
@@ -133,7 +133,8 @@ public class GroovyBot {
                         new CommandLogger(),
                         commandManager,
                         this,
-                        lavalinkManager
+                        lavalinkManager,
+                        interactionManager
                 )
                 .setGame(Game.playing("Starting ..."))
                 .setStatus(OnlineStatus.DO_NOT_DISTURB);
@@ -142,7 +143,7 @@ public class GroovyBot {
             lavalinkManager.initialize();
         } catch (LoginException e) {
             log.error("[JDA] Could not initialize bot!", e);
-            System.exit(1);
+            Runtime.getRuntime().exit(1);
         }
     }
 
@@ -271,7 +272,8 @@ public class GroovyBot {
                 new PlayCommand(),
                 new VolumeCommand(),
                 new SkipCommand(),
-                new QueueCommand()
+                new QueueCommand(),
+                new ShardCommand()
         );
     }
 
