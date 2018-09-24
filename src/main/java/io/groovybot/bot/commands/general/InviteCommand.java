@@ -13,6 +13,6 @@ public class InviteCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return null;
+        return send(info(event.translate("command.invite.title"), event.translate("command.invite.description")));
     }
 }
