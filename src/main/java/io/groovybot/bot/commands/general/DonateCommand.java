@@ -13,6 +13,6 @@ public class DonateCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return null;
+        return send(info(event.translate("command.donate.title"), event.translate("command.donate.description")));
     }
 }
