@@ -26,6 +26,7 @@ import io.groovybot.bot.listeners.CommandLogger;
 import io.groovybot.bot.listeners.GuildLogger;
 import io.groovybot.bot.listeners.SelfMentionListener;
 import io.groovybot.bot.listeners.ShardsListener;
+import io.groovybot.bot.util.EmbedUtil;
 import io.groovybot.bot.util.JDASUCKSFILTER;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -36,6 +37,7 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 import net.dv8tion.jda.core.hooks.IEventManager;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
+import net.dv8tion.jda.webhook.WebhookMessageBuilder;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -46,6 +48,7 @@ import org.json.JSONObject;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 
 @Log4j
