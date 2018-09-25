@@ -279,6 +279,7 @@ public class GroovyBot {
                 new LanguageCommand(),
                 new PlayCommand(),
                 new PauseCommand(),
+                new ResumeCommand(),
                 new SkipCommand(),
                 new JoinCommand(),
                 new LeaveCommand(),
