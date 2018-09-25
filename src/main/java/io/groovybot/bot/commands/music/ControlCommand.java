@@ -3,6 +3,7 @@ package io.groovybot.bot.commands.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
@@ -10,27 +11,25 @@ import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.interaction.InteractableMessage;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.command.voice.SameChannelCommand;
-import io.groovybot.bot.util.Colors;
-import io.groovybot.bot.util.EmbedUtil;
-import io.groovybot.bot.util.NameThreadFactory;
-import io.groovybot.bot.util.SafeMessage;
+import io.groovybot.bot.util.*;
 import lavalink.client.player.IPlayer;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class ControlCommand extends SameChannelCommand {
 
     private final String[] EMOTES = {"⏯", "⏭", "🔂", "🔁", "🔀", "🔄", "🔉", "🔊"};
-
-    /* TODO: ADD REMOVE OLD CP */
 
     public ControlCommand() {
         super(new String[]{"control", "panel", "cp"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you control the bot with reactions", "");
@@ -38,9 +37,45 @@ public class ControlCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event) {
-        Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.control.loading.title"), event.translate("command.control.loading.description")));
-        new Thread(() -> new ControlPanel(infoMessage, event.getChannel(), event.getMember(), getPlayer(event.getGuild(), event.getChannel())), "ControlPanel").start();
+        if (!event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
+            return send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
+        if (controlPanelExists(event.getGuild().getIdLong())) {
+            Message confirmMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.control.alreadyinuse.title"), event.translate("command.control.alreadyinuse.description")));
+            confirmMessage.addReaction("✅").queue();
+            confirmMessage.addReaction("❌").queue();
+            event.getGroovyBot().getEventWaiter().waitForEvent(GuildMessageReactionAddEvent.class, e -> confirmMessage.getIdLong() == e.getMessageIdLong() && e.getGuild().equals(event.getGuild()) && !e.getUser().isBot(),
+                    e -> {
+                        if (e.getReactionEmote().getName().equals("✅")) {
+                            ControlPanel panel = getControlPanel(event.getGuild().getIdLong());
+                            if (!panel.isWhitelisted(e.getMember())) {
+                                sendMessage(e.getChannel(), error(event.translate("command.control.alreadyinuse.nopermission.title"), event.translate("command.control.alreadyinuse.nopermission.description")), 5);
+                                return;
+                            } else {
+                                new Thread(() -> new ControlPanel(sendInfoMessage(event), event.getChannel(), event.getMember(), getPlayer(event.getGuild(), event.getChannel())), "ControlPanel").start();
+                                panel.delete();
+                            }
+                        }
+                        confirmMessage.delete().queue();
+                    });
+        } else
+            new Thread(() -> new ControlPanel(sendInfoMessage(event), event.getChannel(), event.getMember(), getPlayer(event.getGuild(), event.getChannel())), "ControlPanel").start();
         return null;
+    }
+    
+    private Message sendInfoMessage(CommandEvent event) {
+        return sendMessageBlocking(event.getChannel(), info(event.translate("command.control.loading.title"), event.translate("command.control.loading.description")));
+    }
+
+    private List<InteractableMessage> getControlPanels() {
+        return GroovyBot.getInstance().getInteractionManager().getInteractionStorage().values().stream().filter(entry -> entry instanceof ControlPanel).collect(Collectors.toList());
+    }
+
+    private boolean controlPanelExists(Long guildId) {
+        return !getControlPanels().stream().filter(entry -> entry.getChannel().getGuild().getIdLong() ==guildId).collect(Collectors.toList()).isEmpty();
+    }
+
+    private ControlPanel getControlPanel(Long guildId) {
+        return (ControlPanel) getControlPanels().stream().filter(entry -> entry.getChannel().getGuild().getIdLong() ==guildId).collect(Collectors.toList()).get(0);
     }
 
     private class ControlPanel extends InteractableMessage implements Runnable {
@@ -140,7 +175,7 @@ public class ControlCommand extends SameChannelCommand {
         public void run() {
             if (!player.isPlaying())
                 delete();
-            if (player == null || player.getPlayer() == null || player.getPlayer().getPlayingTrack() == null)
+            if (player.getPlayer() == null || player.getPlayer().getPlayingTrack() == null)
                 return;
             AudioTrackInfo currentSong = player.getPlayer().getPlayingTrack().getInfo();
             EmbedBuilder controlPanelEmbed = new EmbedBuilder()
@@ -153,8 +188,7 @@ public class ControlCommand extends SameChannelCommand {
         private CharSequence buildDescription(MusicPlayer player) {
             final AudioTrack playingTrack = player.getPlayer().getPlayingTrack();
             final long trackPosition = player.getPlayer().getTrackPosition();
-            return String.format("%s%s%s %s **[%s/%s]**", player.isPaused() ? "\u23F8" : "\u25B6", player.loopEnabled() ? "\uD83D\uDD02" : "", player.queueLoopEnabled() ? "\uD83D\uDD01" : "", getProgressBar(trackPosition, playingTrack.getDuration()), formatTimestamp(trackPosition), formatTimestamp(playingTrack.getDuration()));
-
+            return String.format("%s%s%s %s **[%s/%s]**", player.isPaused() ? "\u23F8" : "\u25B6", player.loopEnabled() ? "\uD83D\uDD02" : "", player.queueLoopEnabled() ? "\uD83D\uDD01" : "", getProgressBar(trackPosition, playingTrack.getDuration()), FormatUtil.formatTimestamp(trackPosition), FormatUtil.formatTimestamp(playingTrack.getDuration()));
         }
 
         private void delete() {
@@ -166,15 +200,6 @@ public class ControlCommand extends SameChannelCommand {
 
         private void sendMessage(String title, String message) {
             SafeMessage.sendMessage(getChannel(), EmbedUtil.success(title, message), 4);
-        }
-
-        private String formatTimestamp(long millis) {
-            long seconds = millis / 1000;
-            long hours = Math.floorDiv(seconds, 3600);
-            seconds = seconds - (hours * 3600);
-            long mins = Math.floorDiv(seconds, 60);
-            seconds = seconds - (mins * 60);
-            return (hours == 0 ? "" : hours + ":") + String.format("%02d", mins) + ":" + String.format("%02d", seconds);
         }
 
         private String getProgressBar(long progress, long full) {
@@ -196,5 +221,6 @@ public class ControlCommand extends SameChannelCommand {
             if (!scheduler.isShutdown())
                 scheduler.shutdownNow();
         }
+
     }
 }
