@@ -1,6 +1,7 @@
 package io.groovybot.bot.commands.music;
 
 
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import io.groovybot.bot.GroovyBot;
