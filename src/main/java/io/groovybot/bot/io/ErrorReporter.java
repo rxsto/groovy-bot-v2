@@ -62,5 +62,4 @@ public class ErrorReporter extends AppenderSkeleton {
     private String formatException(Throwable throwable) {
         return String.format("%s:%s", throwable.getClass().getCanonicalName(), throwable.getMessage());
     }
-
 }

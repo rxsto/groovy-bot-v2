@@ -1,20 +1,21 @@
 package io.groovybot.bot;
 
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.commands.general.*;
 import io.groovybot.bot.commands.music.*;
 import io.groovybot.bot.commands.settings.LanguageCommand;
 import io.groovybot.bot.commands.settings.PrefixCommand;
 import io.groovybot.bot.core.GameAnimator;
+import io.groovybot.bot.core.audio.LavalinkManager;
 import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.audio.MusicPlayerManager;
-import io.groovybot.bot.core.audio.LavalinkManager;
 import io.groovybot.bot.core.cache.Cache;
 import io.groovybot.bot.core.command.CommandManager;
 import io.groovybot.bot.core.command.interaction.InteractionManager;
 import io.groovybot.bot.core.entity.Guild;
 import io.groovybot.bot.core.entity.User;
 import io.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
-import io.groovybot.bot.listeners.CommandLogger;
+import io.groovybot.bot.core.events.guilds.GuildJoinEvent;
 import io.groovybot.bot.core.statistics.ServerCountStatistics;
 import io.groovybot.bot.core.statistics.StatusPage;
 import io.groovybot.bot.core.translation.TranslationManager;
@@ -22,7 +23,9 @@ import io.groovybot.bot.io.ErrorReporter;
 import io.groovybot.bot.io.FileManager;
 import io.groovybot.bot.io.config.Configuration;
 import io.groovybot.bot.io.database.PostgreSQL;
+import io.groovybot.bot.listeners.CommandLogger;
 import io.groovybot.bot.listeners.ShardsListener;
+import io.groovybot.bot.util.EmbedUtil;
 import io.groovybot.bot.util.JDASUCKSFILTER;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -33,6 +36,7 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 import net.dv8tion.jda.core.hooks.IEventManager;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
+import net.dv8tion.jda.webhook.WebhookMessageBuilder;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -43,6 +47,7 @@ import org.json.JSONObject;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 
 @Log4j
@@ -78,6 +83,10 @@ public class GroovyBot {
     private final MusicPlayerManager musicPlayerManager;
     @Getter
     private final InteractionManager interactionManager;
+    final JDASUCKSFILTER errorResponseFilter = new JDASUCKSFILTER();
+    @Getter
+    private final EventWaiter eventWaiter;
+
 
     public static void main(String[] args) {
         if (instance != null)
@@ -101,6 +110,7 @@ public class GroovyBot {
         commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") : config.getJSONObject("settings").getString("prefix"));
         serverCountStatistics = new ServerCountStatistics(httpClient, config.getJSONObject("botlists"));
         interactionManager = new InteractionManager();
+        eventWaiter = new EventWaiter();
         initShardManager();
         translationManager = new TranslationManager();
         musicPlayerManager = new MusicPlayerManager();
@@ -136,7 +146,8 @@ public class GroovyBot {
                         commandManager,
                         this,
                         lavalinkManager,
-                        interactionManager
+                        interactionManager,
+                        eventWaiter
                 )
                 .setGame(Game.playing("Starting ..."))
                 .setStatus(OnlineStatus.DO_NOT_DISTURB);
@@ -222,7 +233,6 @@ public class GroovyBot {
     }
 
     private void initLogger(String[] args) {
-        final JDASUCKSFILTER errorResponseFilter = new JDASUCKSFILTER();
         final ConsoleAppender consoleAppender = new ConsoleAppender();
         final PatternLayout consolePatternLayout = new PatternLayout("[%d{HH:mm:ss}] [%c] [%p] | %m%n");
         final FileAppender latestLogAppender = new FileAppender();
@@ -250,7 +260,9 @@ public class GroovyBot {
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onReady(AllShardsLoadedEvent event) {
-        Logger.getRootLogger().addAppender(new ErrorReporter());
+        final ErrorReporter errorReporter = new ErrorReporter();
+        errorReporter.addFilter(errorResponseFilter);
+        Logger.getRootLogger().addAppender(errorReporter);
         new GameAnimator(this);
         guildCache = new Cache<>(Guild.class);
         userCache = new Cache<>(User.class);
@@ -260,6 +272,19 @@ public class GroovyBot {
             MusicPlayer groovyPlayer = this.musicPlayerManager.getPlayer(event.getJDA().getGuildById(403882830225997825L), event.getJDA().getTextChannelById(486765014976561159L));
             groovyPlayer.connect(event.getJDA().getVoiceChannelById(486765249488224277L));
         }
+    }
+
+    @SubscribeEvent
+    @SuppressWarnings("unused")
+    private void onGuildJoin(GuildJoinEvent event) {
+        final net.dv8tion.jda.core.entities.Guild guild = event.getGuild();
+        WebhookMessageBuilder out = new WebhookMessageBuilder();
+        out.addEmbeds(
+                EmbedUtil.success(String.format("Joined guild %s (%s)", guild.getName(), guild.getId()), "**Owner:** %s\n**Members:** %s\n")
+                        .setTimestamp(Instant.now())
+                        .build()
+        );
+        out.build();
     }
 
 
@@ -284,6 +309,7 @@ public class GroovyBot {
                 new JoinCommand(),
                 new LeaveCommand(),
                 new VolumeCommand(),
+                //new NowPlayingCommand(),
                 new QueueCommand(),
                 new ControlCommand()
         );
@@ -297,6 +323,5 @@ public class GroovyBot {
         } catch (Exception e) {
             log.error("Error while closing bot!", e);
         }
-
     }
 }
