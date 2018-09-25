@@ -5,6 +5,7 @@ import io.groovybot.bot.commands.music.*;
 import io.groovybot.bot.commands.settings.LanguageCommand;
 import io.groovybot.bot.commands.settings.PrefixCommand;
 import io.groovybot.bot.core.GameAnimator;
+import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.audio.MusicPlayerManager;
 import io.groovybot.bot.core.audio.LavalinkManager;
 import io.groovybot.bot.core.cache.Cache;
@@ -256,8 +257,9 @@ public class GroovyBot {
         if (!debugMode) {
             statusPage.start();
             serverCountStatistics.start();
+            MusicPlayer groovyPlayer = this.musicPlayerManager.getPlayer(event.getJDA().getGuildById(403882830225997825L), event.getJDA().getTextChannelById(486765014976561159L));
+            groovyPlayer.connect(event.getJDA().getVoiceChannelById(486765249488224277L));
         }
-
     }
 
 
@@ -272,15 +274,16 @@ public class GroovyBot {
                 new DonateCommand(),
                 new VoteCommand(),
                 new StatsCommand(),
+                new ShardCommand(),
                 new PrefixCommand(),
                 new LanguageCommand(),
+                new PlayCommand(),
+                new PauseCommand(),
+                new SkipCommand(),
                 new JoinCommand(),
                 new LeaveCommand(),
-                new PlayCommand(),
                 new VolumeCommand(),
-                new SkipCommand(),
                 new QueueCommand(),
-                new ShardCommand(),
                 new ControlCommand()
         );
     }
