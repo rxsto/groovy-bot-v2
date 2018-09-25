@@ -38,7 +38,7 @@ public class CommandManager {
     @SuppressWarnings("unused")
     public void onMessageReceived(GuildMessageReceivedEvent event) {
         if (event.getMessage().getContentRaw().equals(event.getGuild().getSelfMember().getAsMention())) {
-            EmbedUtil.sendMessage(event.getChannel(), EmbedUtil.info("Hey, I'm Groovy", String.format("My prefix in this guild is **`%s`**", EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix())));
+            event.getChannel().sendMessage(String.format(":vulcan: Wazzup mate, my name is Groovy and my prefix on this guild is **`%s`**", EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix())).queue();
             return;
         }
 
