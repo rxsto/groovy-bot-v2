@@ -47,7 +47,7 @@ public class MusicPlayer extends Player {
 
     public boolean checkConnect(CommandEvent event) {
         if (!event.getGuild().getSelfMember().hasPermission(event.getMember().getVoiceState().getChannel(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
-            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.join.nopermission.title"), event.translate("phrases.join.nopermission.description")));
+            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.join.nopermission.description")));
             return false;
         }
         return true;
@@ -96,6 +96,7 @@ public class MusicPlayer extends Player {
 
 
         final boolean isURL = isUrl;
+        System.out.println(keyword);
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
