@@ -10,7 +10,7 @@ public abstract class DatabaseEntitiy {
     @Getter
     public final Long entityId;
 
-    protected DatabaseEntitiy(Long entityId) throws Exception{
+    protected DatabaseEntitiy(Long entityId) {
         this.entityId = entityId;
     }
 
