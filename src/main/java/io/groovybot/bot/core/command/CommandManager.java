@@ -5,7 +5,6 @@ import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.core.events.command.CommandExecutedEvent;
 import io.groovybot.bot.core.events.command.CommandFailEvent;
 import io.groovybot.bot.core.events.command.NoPermissionEvent;
-import io.groovybot.bot.util.EmbedUtil;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.core.Permission;
@@ -37,11 +36,6 @@ public class CommandManager {
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onMessageReceived(GuildMessageReceivedEvent event) {
-        if (event.getMessage().getContentRaw().equals(event.getGuild().getSelfMember().getAsMention())) {
-            event.getChannel().sendMessage(String.format(":vulcan: Wazzup mate, my name is Groovy and my prefix on this guild is **`%s`**", EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix())).queue();
-            return;
-        }
-
         if (event instanceof CommandEvent)
             // Return if the event is a commandManager event
             return;
@@ -93,7 +87,7 @@ public class CommandManager {
         if (prefix != null) {
             String beheaded = content.substring(prefix.length()).trim();
             String[] allArgs = beheaded.split("\\s+");
-            String invocation = allArgs[0];
+            String invocation = allArgs[0].toLowerCase();
             String[] args = new String[allArgs.length -1];
             System.arraycopy(allArgs, 1, args, 0, args.length);
             return new CommandEvent(event, GroovyBot.getInstance(), args, invocation);
