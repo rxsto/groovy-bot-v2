@@ -1,13 +1,11 @@
 package io.groovybot.bot.commands.music;
 
 import io.groovybot.bot.core.audio.MusicPlayer;
-import io.groovybot.bot.core.audio.MusicPlayerManager;
 import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.command.voice.SameChannelCommand;
-import io.groovybot.bot.core.entity.EntityProvider;
 import lombok.extern.log4j.Log4j;
 
 

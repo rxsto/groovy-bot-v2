@@ -3,8 +3,6 @@ package io.groovybot.bot.util;
 import io.groovybot.bot.core.command.CommandEvent;
 import net.dv8tion.jda.core.EmbedBuilder;
 
-import java.awt.*;
-
 public class EmbedUtil extends SafeMessage {
 
     public static EmbedBuilder success(String title, String description) {

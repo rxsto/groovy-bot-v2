@@ -5,7 +5,6 @@ import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.core.events.command.CommandExecutedEvent;
 import io.groovybot.bot.core.events.command.CommandFailEvent;
 import io.groovybot.bot.core.events.command.NoPermissionEvent;
-import io.groovybot.bot.util.EmbedUtil;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.core.Permission;

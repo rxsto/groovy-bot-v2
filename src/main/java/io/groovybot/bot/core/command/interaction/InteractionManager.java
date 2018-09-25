@@ -1,9 +1,9 @@
 package io.groovybot.bot.core.command.interaction;
 
+import lombok.Getter;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.GenericGuildMessageEvent;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageDeleteEvent;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class InteractionManager {
 
+    @Getter
     private final Map<Long, InteractableMessage> interactionStorage;
 
     public InteractionManager() {
