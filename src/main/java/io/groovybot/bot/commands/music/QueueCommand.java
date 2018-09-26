@@ -52,7 +52,7 @@ public class QueueCommand extends Command {
         private final AudioTrack currentTrack;
 
         private QueueMessage(Message infoMessage, TextChannel channel, Member author, Queue<AudioTrack> queue, CommandEvent event, AudioTrack currentTrack) {
-            super(infoMessage, channel, author);
+            super(infoMessage, channel, author, infoMessage.getIdLong());
             this.queue = queue;
             this.pages = queue.size() >= PAGE_SIZE ? queue.size() / PAGE_SIZE : 1;
             this.commandEvent = event;
