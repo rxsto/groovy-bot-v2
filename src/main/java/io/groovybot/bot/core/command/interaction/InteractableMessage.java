@@ -5,6 +5,8 @@ import lombok.Getter;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 
 public abstract class InteractableMessage {
@@ -15,11 +17,14 @@ public abstract class InteractableMessage {
     private final TextChannel channel;
     @Getter
     private final Member author;
+    @Getter
+    private final long identifier;
 
-    public InteractableMessage(Message infoMessage, TextChannel channel, Member author) {
+    public InteractableMessage(Message infoMessage, TextChannel channel, Member author, long identifier) {
         this.infoMessage = infoMessage;
         this.channel = channel;
         this.author = author;
+        this.identifier = identifier;
         GroovyBot.getInstance().getInteractionManager().register(this);
     }
 
@@ -32,10 +37,16 @@ public abstract class InteractableMessage {
         GroovyBot.getInstance().getInteractionManager().unregister(this);
     }
 
-    protected abstract void handleReaction(GuildMessageReactionAddEvent event);
+    protected void handleReaction(GuildMessageReactionAddEvent event) {
 
-    protected String translate(GuildMessageReactionAddEvent event, String key) {
-        return GroovyBot.getInstance().getTranslationManager().getLocaleByUser(event.getMessageId()).translate(key);
+    }
+
+    protected void handleMessage(GuildMessageReceivedEvent event) {
+
+    }
+
+    protected String translate(User user, String key) {
+        return GroovyBot.getInstance().getTranslationManager().getLocaleByUser(user.getId()).translate(key);
     }
 
     public void onDelete() {

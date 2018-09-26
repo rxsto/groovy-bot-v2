@@ -10,6 +10,7 @@ import io.groovybot.bot.core.command.interaction.InteractableMessage;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -30,6 +31,8 @@ public class QueueCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
+        if (!event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
+            return send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
         MusicPlayer player = event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
@@ -49,7 +52,7 @@ public class QueueCommand extends Command {
         private final AudioTrack currentTrack;
 
         private QueueMessage(Message infoMessage, TextChannel channel, Member author, Queue<AudioTrack> queue, CommandEvent event, AudioTrack currentTrack) {
-            super(infoMessage, channel, author);
+            super(infoMessage, channel, author, infoMessage.getIdLong());
             this.queue = queue;
             this.pages = queue.size() >= PAGE_SIZE ? queue.size() / PAGE_SIZE : 1;
             this.commandEvent = event;

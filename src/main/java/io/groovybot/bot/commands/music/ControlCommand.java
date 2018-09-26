@@ -1,7 +1,6 @@
 package io.groovybot.bot.commands.music;
 
 
-import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import io.groovybot.bot.GroovyBot;
@@ -15,10 +14,8 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 import io.groovybot.bot.util.*;
 import lavalink.client.player.IPlayer;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.util.List;
@@ -37,6 +34,8 @@ public class ControlCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event) {
+        if (!event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
+            return send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
         if (controlPanelExists(event.getGuild().getIdLong())) {
             Message confirmMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.control.alreadyinuse.title"), event.translate("command.control.alreadyinuse.description")));
             confirmMessage.addReaction("✅").queue();
@@ -83,7 +82,7 @@ public class ControlCommand extends SameChannelCommand {
         private final MusicPlayer player;
 
         public ControlPanel(Message infoMessage, TextChannel channel, Member author, MusicPlayer player) {
-            super(infoMessage, channel, author);
+            super(infoMessage, channel, author, infoMessage.getIdLong());
             this.channel = author.getGuild().getSelfMember().getVoiceState().getChannel();
             this.player = player;
             this.scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("ControlPanel"));
@@ -96,6 +95,7 @@ public class ControlCommand extends SameChannelCommand {
 
         @Override
         protected void handleReaction(GuildMessageReactionAddEvent event) {
+            final User author = event.getUser();
             if (!isWhitelisted(event.getMember()))
                 return;
             final IPlayer musicPlayer = this.player.getPlayer();
@@ -103,61 +103,61 @@ public class ControlCommand extends SameChannelCommand {
                 case "⏯":
                     if (!player.isPaused()) {
                         musicPlayer.setPaused(true);
-                        sendMessage(translate(event, "controlpanel.paused.title"), translate(event, "controlpanel.paused.description"));
+                        sendMessage(translate(author, "controlpanel.paused.title"), translate(author, "controlpanel.paused.description"));
                     } else {
                         musicPlayer.setPaused(false);
-                        sendMessage(translate(event, "controlpanel.resumed.title"), translate(event, "controlpanel.resumed.description"));
+                        sendMessage(translate(author, "controlpanel.resumed.title"), translate(author, "controlpanel.resumed.description"));
                     }
                     break;
                 case "⏭":
                     this.player.skip();
-                    sendMessage(translate(event, "controlpanel.skipped.title"), translate(event, "controlpanel.skipped.description"));
+                    sendMessage(translate(author, "controlpanel.skipped.title"), translate(author, "controlpanel.skipped.description"));
                     break;
                 case "\uD83D\uDD02":
                     //TODO: Implement loop
                     if (this.player.getScheduler().isRepeating()) {
                         this.player.getScheduler().setRepeating(true);
-                        sendMessage(translate(event, "controlpanel.repeating.enabled.title"), translate(event, "controlpanel.repeating.enabled.description"));
+                        sendMessage(translate(author, "controlpanel.repeating.enabled.title"), translate(author, "controlpanel.repeating.enabled.description"));
                     } else {
                         this.player.getScheduler().setRepeating(false);
-                        sendMessage(translate(event, "controlpanel.repeating.disabled.title"), translate(event, "controlpanel.repeating.disabled.description"));
+                        sendMessage(translate(author, "controlpanel.repeating.disabled.title"), translate(author, "controlpanel.repeating.disabled.description"));
                     }
                     break;
                 case "\uD83D\uDD01":
                     //TODO: Implement queue loop
                     if (this.player.getScheduler().isQueueRepeating()) {
                         this.player.getScheduler().setQueueRepeating(true);
-                        sendMessage(translate(event, "controlpanel.queuerepeating.enabled.title"), translate(event, "controlpanel.queuerepeating.enabled.description"));
+                        sendMessage(translate(author, "controlpanel.queuerepeating.enabled.title"), translate(author, "controlpanel.queuerepeating.enabled.description"));
                     } else {
                         this.player.getScheduler().setRepeating(false);
-                        sendMessage(translate(event, "controlpanel.queuerepeating.disabled.title"), translate(event, "controlpanel.queuerepeating.disabled.description"));
+                        sendMessage(translate(author, "controlpanel.queuerepeating.disabled.title"), translate(author, "controlpanel.queuerepeating.disabled.description"));
                     }
                     break;
                 case "\uD83D\uDD0A":
                     if (musicPlayer.getVolume() == 200) {
-                        sendMessage(translate(event, "controlpanel.volume.tohigh.title"), translate(event, "controlpanel.volume.tohigh.description"));
+                        sendMessage(translate(author, "controlpanel.volume.tohigh.title"), translate(author, "controlpanel.volume.tohigh.description"));
                         return;
                     }
                     if (musicPlayer.getVolume() >= 190)
                         this.player.setVolume(200);
                     else
                         this.player.setVolume(musicPlayer.getVolume() + 10);
-                    sendMessage(translate(event, "controlpanel.volume.increased.title"), String.format(translate(event, "controlpanel.volume.increased.description"), musicPlayer.getVolume()));
+                    sendMessage(translate(author, "controlpanel.volume.increased.title"), String.format(translate(author, "controlpanel.volume.increased.description"), musicPlayer.getVolume()));
                     break;
                 case "\uD83D\uDD09":
                     if (musicPlayer.getVolume() == 0) {
-                        sendMessage(translate(event, "controlpanel.volume.tolow.title"), translate(event, "controlpanel.volume.tolow.description"));
+                        sendMessage(translate(author, "controlpanel.volume.tolow.title"), translate(author, "controlpanel.volume.tolow.description"));
                         return;
                     }
                     if (musicPlayer.getVolume() <= 10)
                         this.player.setVolume(0);
                     else
                         this.player.setVolume(musicPlayer.getVolume() - 10);
-                    sendMessage(translate(event, "controlpanel.volume.decreased.title"), String.format(translate(event, "controlpanel.volume.decreased.description"), musicPlayer.getVolume()));
+                    sendMessage(translate(author, "controlpanel.volume.decreased.title"), String.format(translate(author, "controlpanel.volume.decreased.description"), musicPlayer.getVolume()));
                     break;
                 case "\uD83D\uDD04":
                     player.seekTo(0);
-                    sendMessage(translate(event, "controlpanel.reset.title"), String.format(translate(event, "controlpanel.reset.description"), musicPlayer.getVolume()));
+                    sendMessage(translate(author, "controlpanel.reset.title"), String.format(translate(author, "controlpanel.reset.description"), musicPlayer.getVolume()));
                     break;
                 default:
                     break;
