@@ -17,6 +17,7 @@ import io.groovybot.bot.core.entity.User;
 import io.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
 import io.groovybot.bot.core.statistics.ServerCountStatistics;
 import io.groovybot.bot.core.statistics.StatusPage;
+import io.groovybot.bot.core.statistics.WebsiteStats;
 import io.groovybot.bot.core.translation.TranslationManager;
 import io.groovybot.bot.io.ErrorReporter;
 import io.groovybot.bot.io.FileManager;
@@ -28,6 +29,9 @@ import io.groovybot.bot.listeners.SelfMentionListener;
 import io.groovybot.bot.listeners.ShardsListener;
 import io.groovybot.bot.util.EmbedUtil;
 import io.groovybot.bot.util.JDASUCKSFILTER;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
@@ -47,6 +51,7 @@ import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
@@ -272,6 +277,7 @@ public class GroovyBot {
         if (!debugMode) {
             statusPage.start();
             serverCountStatistics.start();
+            new WebsiteStats(this);
             MusicPlayer groovyPlayer = this.musicPlayerManager.getPlayer(event.getJDA().getGuildById(403882830225997825L), event.getJDA().getTextChannelById(486765014976561159L));
             groovyPlayer.connect(event.getJDA().getVoiceChannelById(486765249488224277L));
         }
@@ -301,7 +307,8 @@ public class GroovyBot {
                 //new NowPlayingCommand(),
                 new QueueCommand(),
                 new ControlCommand(),
-                new LoopQueueCommand()
+                new LoopQueueCommand(),
+                new SearchCommand()
         );
     }
 
