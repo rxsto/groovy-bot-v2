@@ -24,4 +24,8 @@ public class EmbedUtil extends SafeMessage {
     public static EmbedBuilder play(String title, String description) {
         return new EmbedBuilder().setDescription(description).setTitle(":notes: " + title).setColor(Colors.DARK_BUT_NOT_BLACK);
     }
+
+    public static EmbedBuilder join(String title, String description, boolean joined) {
+        return new EmbedBuilder().setDescription(description).setTitle(String.format("%s ", joined ? ":white_check_mark:" : ":x:") + title).setColor(Colors.DARK_BUT_NOT_BLACK);
+    }
 }

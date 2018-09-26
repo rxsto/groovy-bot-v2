@@ -15,7 +15,6 @@ import io.groovybot.bot.core.command.interaction.InteractionManager;
 import io.groovybot.bot.core.entity.Guild;
 import io.groovybot.bot.core.entity.User;
 import io.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
-import io.groovybot.bot.core.events.guilds.GuildJoinEvent;
 import io.groovybot.bot.core.statistics.ServerCountStatistics;
 import io.groovybot.bot.core.statistics.StatusPage;
 import io.groovybot.bot.core.translation.TranslationManager;
@@ -24,9 +23,14 @@ import io.groovybot.bot.io.FileManager;
 import io.groovybot.bot.io.config.Configuration;
 import io.groovybot.bot.io.database.PostgreSQL;
 import io.groovybot.bot.listeners.CommandLogger;
+import io.groovybot.bot.listeners.GuildLogger;
+import io.groovybot.bot.listeners.SelfMentionListener;
 import io.groovybot.bot.listeners.ShardsListener;
 import io.groovybot.bot.util.EmbedUtil;
 import io.groovybot.bot.util.JDASUCKSFILTER;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
@@ -46,6 +50,7 @@ import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
@@ -143,6 +148,8 @@ public class GroovyBot {
                 .addEventListeners(
                         new ShardsListener(),
                         new CommandLogger(),
+                        new GuildLogger(),
+                        new SelfMentionListener(),
                         commandManager,
                         this,
                         lavalinkManager,
@@ -274,20 +281,6 @@ public class GroovyBot {
         }
     }
 
-    @SubscribeEvent
-    @SuppressWarnings("unused")
-    private void onGuildJoin(GuildJoinEvent event) {
-        final net.dv8tion.jda.core.entities.Guild guild = event.getGuild();
-        WebhookMessageBuilder out = new WebhookMessageBuilder();
-        out.addEmbeds(
-                EmbedUtil.success(String.format("Joined guild %s (%s)", guild.getName(), guild.getId()), "**Owner:** %s\n**Members:** %s\n")
-                        .setTimestamp(Instant.now())
-                        .build()
-        );
-        out.build();
-    }
-
-
     private void registerCommands() {
         commandManager.registerCommands(
                 new HelpCommand(),
@@ -311,7 +304,9 @@ public class GroovyBot {
                 new VolumeCommand(),
                 //new NowPlayingCommand(),
                 new QueueCommand(),
-                new ControlCommand()
+                new ControlCommand(),
+                new LoopQueueCommand(),
+                new SearchCommand()
         );
     }
 

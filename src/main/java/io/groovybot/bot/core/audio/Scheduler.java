@@ -42,8 +42,9 @@ public class Scheduler extends AudioEventAdapterWrapped {
                     player.play(track);
                     return;
                 }
-                if (queueRepeating && !reason.equals(AudioTrackEndReason.REPLACED))
+                if (queueRepeating) {
                     player.trackQueue.add(track);
+                }
                 AudioTrack nextTrack = player.pollTrack();
                 if (nextTrack == null)
                     player.onEnd(true);
