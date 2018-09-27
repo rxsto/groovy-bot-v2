@@ -82,9 +82,15 @@ public abstract class Player {
         return track;
     }
 
-    public void queueTrack(AudioTrack track, boolean force) {
-        if (force)
+    public void queueTrack(AudioTrack track, boolean force, boolean playtop) {
+        if (force) {
+            play(track, false);
+            return;
+        }
+        if (playtop) {
             ((LinkedList<AudioTrack>) trackQueue).addFirst(track);
+        }
+
         trackQueue.add(track);
         if (!isPlaying())
             play(pollTrack(), false);

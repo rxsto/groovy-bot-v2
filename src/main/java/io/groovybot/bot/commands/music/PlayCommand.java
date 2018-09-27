@@ -24,7 +24,7 @@ public class PlayCommand extends SemiInChannelCommand {
             }
             return sendHelp();
         }
-        player.queueSongs(event, false);
+        player.queueSongs(event, false, false);
         return null;
     }
 

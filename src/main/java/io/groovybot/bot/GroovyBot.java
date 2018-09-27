@@ -311,7 +311,8 @@ public class GroovyBot {
                 new StopCommand(),
                 new ShuffleCommand(),
                 new RemoveCommand(),
-                new ForcePlayCommand()
+                new ForcePlayCommand(),
+                new PlayTopCommand()
         );
     }
 
