@@ -2,6 +2,7 @@ package io.groovybot.bot.core.command;
 
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.util.EmbedUtil;
+import io.groovybot.bot.util.FormatUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -28,7 +29,7 @@ public abstract class Command extends EmbedUtil {
     }
 
     public Result sendHelp() {
-        return null;
+        return send(FormatUtil.formatCommand(this));
     }
 
     protected Result send(String message) {

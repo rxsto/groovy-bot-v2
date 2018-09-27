@@ -9,6 +9,8 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import static io.groovybot.bot.util.FormatUtil.formatCommand;
+
 public class HelpCommand extends Command {
 
     public HelpCommand() {
@@ -24,27 +26,6 @@ public class HelpCommand extends Command {
         }
         Command command = event.getGroovyBot().getCommandManager().getCommandAssociations().get(args[0]);
         return send(formatCommand(command));
-    }
-
-    private EmbedBuilder formatCommand(Command command) {
-        return info(command.getAliases()[0] + " - Help", formatUsage(command));
-    }
-
-    private String formatUsage(Command command) {
-        StringBuilder stringBuilder = new StringBuilder();
-        return addUsages(stringBuilder, command).toString();
-    }
-
-    private StringBuilder addUsages(StringBuilder stringBuilder, Command command) {
-        stringBuilder.append("Command aliases: `").append(Arrays.toString(command.getAliases()).replace("[", "").replace("]", "")).append("`\n");
-        stringBuilder.append("Description: `").append(command.getDescription()).append("`").append("\n");
-        stringBuilder.append("Usage: `").append(buildUsage(command)).append("`");
-        command.getSubCommandAssociations().values().parallelStream().distinct().collect(Collectors.toList()).forEach(subCommand -> stringBuilder.append(buildUsage(subCommand)).append(" - ").append(subCommand.getDescription()).append("\n"));
-        return stringBuilder;
-    }
-
-    private String buildUsage(Command command) {
-        return "g!" + command.getAliases()[0] + " " + command.getUsage();
     }
 
     private EmbedBuilder formatCommandList(CommandEvent event) {
