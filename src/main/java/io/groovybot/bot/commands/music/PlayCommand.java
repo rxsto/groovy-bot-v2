@@ -8,7 +8,6 @@ import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.command.voice.SemiInChannelCommand;
 import lombok.extern.log4j.Log4j;
 
-
 @Log4j
 public class PlayCommand extends SemiInChannelCommand {
 
@@ -23,7 +22,7 @@ public class PlayCommand extends SemiInChannelCommand {
                 player.resume();
                 return send(success(event.translate("command.resume.title"), event.translate("command.resume.description")));
             }
-            return send(error(event.translate("phrases.invalidargument.title"), event.translate("phrases.invalidargument.description")));
+            return sendHelp();
         }
         player.queueSongs(event, false);
         return null;
