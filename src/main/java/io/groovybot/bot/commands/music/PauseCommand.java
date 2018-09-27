@@ -9,7 +9,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 
 public class PauseCommand extends SameChannelCommand {
     public PauseCommand() {
-        super(new String[] {"pause"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you pause the bot", "");
+        super(new String[] {"pause"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you pause the bot", "");
     }
 
     @Override

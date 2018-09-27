@@ -3,6 +3,7 @@ package io.groovybot.bot;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.commands.general.*;
 import io.groovybot.bot.commands.music.*;
+import io.groovybot.bot.commands.settings.DjModeCommand;
 import io.groovybot.bot.commands.settings.LanguageCommand;
 import io.groovybot.bot.commands.settings.PrefixCommand;
 import io.groovybot.bot.core.GameAnimator;
@@ -304,7 +305,8 @@ public class GroovyBot {
                 new SearchCommand(),
                 new ResetCommand(),
                 new ClearCommand(),
-                new SeekCommand()
+                new SeekCommand(),
+                new DjModeCommand()
         );
     }
 

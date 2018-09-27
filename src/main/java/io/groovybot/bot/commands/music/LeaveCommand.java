@@ -10,7 +10,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 public class LeaveCommand extends SameChannelCommand {
 
     public LeaveCommand() {
-        super(new String[] {"leave", "l"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets the bot leave the channel", "");
+        super(new String[] {"leave", "l"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets the bot leave the channel", "");
     }
 
     @Override
