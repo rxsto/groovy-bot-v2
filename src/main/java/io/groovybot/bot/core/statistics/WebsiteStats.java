@@ -14,14 +14,13 @@ import java.util.concurrent.TimeUnit;
 @Log4j
 public class WebsiteStats implements Runnable {
 
-    private final ScheduledExecutorService scheduler;
     private final Connection connection;
     private final GroovyBot groovyBot;
 
     public WebsiteStats(GroovyBot groovyBot) {
         this.groovyBot = groovyBot;
         this.connection = groovyBot.getPostgreSQL().getConnection();
-        this.scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("WebsiteStats"));
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("WebsiteStats"));
         scheduler.scheduleAtFixedRate(this, 0, 20, TimeUnit.SECONDS);
     }
 
