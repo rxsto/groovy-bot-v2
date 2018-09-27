@@ -4,10 +4,15 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import io.groovybot.bot.util.NameThreadFactory;
 import lavalink.client.player.event.AudioEventAdapterWrapped;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.util.LinkedList;
+import java.util.concurrent.ThreadLocalRandom;
+
 
 @RequiredArgsConstructor
 public class Scheduler extends AudioEventAdapterWrapped {
@@ -19,6 +24,11 @@ public class Scheduler extends AudioEventAdapterWrapped {
     @Getter
     @Setter
     private boolean repeating = false;
+    @Getter
+    @Setter
+    private boolean shuffle = false;
+
+
 
     @Override
     public void onTrackStart(AudioPlayer audioPlayer, AudioTrack track) {
@@ -39,19 +49,24 @@ public class Scheduler extends AudioEventAdapterWrapped {
         switch (reason) {
             case FINISHED:
                 if (repeating) {
-                    player.play(track);
-                    return;
+                    System.out.println("Queueing song " + track.getIdentifier());
+                    player.play(track, false);
+                    break;
                 }
                 if (queueRepeating) {
                     player.trackQueue.add(track);
                 }
+                if (shuffle) {
+                    player.play(((LinkedList<AudioTrack>) player.trackQueue).get(ThreadLocalRandom.current().nextInt(player.trackQueue.size())), false);
+                    return;
+                }
                 AudioTrack nextTrack = player.pollTrack();
                 if (nextTrack == null)
                     player.onEnd(true);
-                player.play(nextTrack);
+                player.play(nextTrack, false);
                 break;
             case LOAD_FAILED:
-                player.play(player.pollTrack());
+                player.play(player.pollTrack(), true);
                 break;
             default:
                 // Do nothing
