@@ -90,7 +90,7 @@ public class MusicPlayer extends Player {
         return this.player;
     }
 
-    public void queueSongs(CommandEvent event, boolean force) {
+    public void queueSongs(CommandEvent event, boolean force, boolean playtop) {
         String keyword = event.getArguments();
         boolean isUrl = true;
 
@@ -107,7 +107,7 @@ public class MusicPlayer extends Player {
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
-                queueTrack(audioTrack, force);
+                queueTrack(audioTrack, force, playtop);
                 infoMessage.editMessage(EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), audioTrack.getInfo().title)).build()).queue();
             }
 
@@ -123,7 +123,7 @@ public class MusicPlayer extends Player {
                 }
 
                 final AudioTrack track = tracks.get(0);
-                queueTrack(track, force);
+                queueTrack(track, force, playtop);
                 infoMessage.editMessage(EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)).build()).queue();
             }
 
