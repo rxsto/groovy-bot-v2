@@ -47,7 +47,7 @@ public class SearchCommand extends SemiInChannelCommand {
             @Override
             public void trackLoaded(AudioTrack track) {
                 sendMessage(event.getChannel(), EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("commands.search.oneresult.description"), track.getInfo().title)));
-                player.play(track);
+                player.play(track, false);
             }
 
             @Override

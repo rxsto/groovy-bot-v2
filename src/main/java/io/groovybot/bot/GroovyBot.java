@@ -307,7 +307,8 @@ public class GroovyBot {
                 new ClearCommand(),
                 new SeekCommand(),
                 new DjModeCommand(),
-                new LoopCommand()
+                new LoopCommand(),
+                new StopCommand()
         );
     }
 
