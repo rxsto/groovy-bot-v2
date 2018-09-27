@@ -309,7 +309,8 @@ public class GroovyBot {
                 new DjModeCommand(),
                 new LoopCommand(),
                 new StopCommand(),
-                new ShuffleCommand()
+                new ShuffleCommand(),
+                new RemoveCommand()
         );
     }
 
