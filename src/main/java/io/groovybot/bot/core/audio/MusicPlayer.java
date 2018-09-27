@@ -21,6 +21,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Log4j
@@ -43,6 +44,7 @@ public class MusicPlayer extends Player {
 
     public void connect(VoiceChannel channel) {
         link.connect(channel);
+        Objects.requireNonNull(link.getGuild()).getAudioManager().setSelfDeafened(true);
     }
 
     public boolean checkConnect(CommandEvent event) {

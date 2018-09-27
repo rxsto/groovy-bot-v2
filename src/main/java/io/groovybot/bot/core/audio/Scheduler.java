@@ -49,7 +49,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
         switch (reason) {
             case FINISHED:
                 if (repeating) {
-                    System.out.println("Queueing song " + track.getIdentifier());
+                    track.setPosition(0);
                     player.play(track, false);
                     break;
                 }

@@ -17,8 +17,8 @@ public class Permissions {
     public Boolean isCovered(UserPermissions permissions, CommandEvent event) {
         if (publicCommand)
             return true;
-        /*if (permissions.getIsOwner())
-            return true;*/
+        if (permissions.getIsOwner())
+            return true;
         if (ownerOnly)
             return permissions.getIsOwner();
         if (adminOnly)
