@@ -82,7 +82,7 @@ public class GroovyBot {
     private final MusicPlayerManager musicPlayerManager;
     @Getter
     private final InteractionManager interactionManager;
-    final JDASUCKSFILTER errorResponseFilter = new JDASUCKSFILTER();
+    private final JDASUCKSFILTER errorResponseFilter = new JDASUCKSFILTER();
     @Getter
     private final EventWaiter eventWaiter;
 
