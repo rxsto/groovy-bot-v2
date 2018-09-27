@@ -32,7 +32,9 @@ public abstract class Player {
 
     protected abstract AudioPlayerManager getAudioPlayerManager();
 
-    public void play(AudioTrack track) {
+    public void play(AudioTrack track, boolean fail) {
+        if (fail)
+            announceRequeue(track);
         if (track == null) {
             onEnd(false);
             return;
@@ -41,6 +43,8 @@ public abstract class Player {
             resume();
         player.playTrack(track);
     }
+
+    public abstract void announceRequeue(AudioTrack track);
 
     public void stop() {
         player.stopTrack();
@@ -83,24 +87,24 @@ public abstract class Player {
             ((LinkedList<AudioTrack>) trackQueue).addFirst(track);
         trackQueue.add(track);
         if (!isPlaying())
-            play(pollTrack());
+            play(pollTrack(), false);
     }
 
     public void queueTracks(AudioTrack... tracks) {
         trackQueue.addAll(Arrays.asList(tracks));
         if (!isPlaying())
-            play(pollTrack());
+            play(pollTrack(), false);
     }
 
     public void skipTo(int delimiter) {
         if (delimiter == 1) {
-            play(pollTrack());
+            play(pollTrack(), false);
             return;
         }
         for (int i = 1; i < delimiter; i++) {
             pollTrack();
         }
-        play(pollTrack());
+        play(pollTrack(), false);
     }
 
 

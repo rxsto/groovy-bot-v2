@@ -67,6 +67,11 @@ public class MusicPlayer extends Player {
     }
 
     @Override
+    public void announceRequeue(AudioTrack track) {
+        SafeMessage.sendMessage(channel, EmbedUtil.success("An error occurred while queueing song", "An unexpected error occurred while queueing song, trying to requeue now!"));
+    }
+
+    @Override
     protected void save() {
         GroovyBot.getInstance().getMusicPlayerManager().update(guild, this);
     }
