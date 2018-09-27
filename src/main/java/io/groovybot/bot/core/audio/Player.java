@@ -133,4 +133,9 @@ public abstract class Player {
     public void skip() {
         skipTo(1);
     }
+
+    public void purgeQueue() {
+        trackQueue.clear();
+    }
+
 }

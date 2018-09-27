@@ -1,0 +1,14 @@
+version: '3'
+services:
+    lavalink:
+      image: fredboat/lavalink:master-
+      ports:
+        - "2333:2333"
+      volumes:
+        - /opt/Lavalink:/opt/Lavalink
+      restart: always
+    discord-bot:
+      build: .
+      volumes:
+        - /opt/groovy/:/opt/groovy/
+      restart: always

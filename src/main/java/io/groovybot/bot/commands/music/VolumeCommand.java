@@ -13,8 +13,7 @@ public class VolumeCommand extends SameChannelCommand {
     }
 
     @Override
-    public Result runCommand(String[] args, CommandEvent event) {
-        MusicPlayer player = getPlayer(event.getGuild(), event.getChannel());
+    public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         int volume;
         if (args.length == 0)
             return send(info(event.translate("command.volume.current.title"), String.format(event.translate("command.volume.current.description"), player.getPlayer().getVolume())));

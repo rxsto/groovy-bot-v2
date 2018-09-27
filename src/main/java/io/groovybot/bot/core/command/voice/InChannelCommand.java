@@ -20,12 +20,12 @@ public abstract class InChannelCommand extends Command {
     public Result run(String[] args, CommandEvent event) {
         if (!event.getGuild().getMember(event.getAuthor()).getVoiceState().inVoiceChannel())
             return send(error(event.translate("phrases.notconnected.title"), event.translate("phrases.notconnected.description")));
-        return execute(args, event);
+        return execute(args, event, getPlayer(event.getGuild(), event.getChannel()));
     }
 
-    public abstract Result execute(String[] args, CommandEvent event);
+    public abstract Result execute(String[] args, CommandEvent event, MusicPlayer player);
 
-    protected MusicPlayer getPlayer(Guild guild, TextChannel channel) {
+    private MusicPlayer getPlayer(Guild guild, TextChannel channel) {
         return GroovyBot.getInstance().getMusicPlayerManager().getPlayer(guild, channel);
     }
 }

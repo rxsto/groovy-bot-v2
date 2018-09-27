@@ -18,7 +18,7 @@ public class InfoCommand extends Command {
         String prefix = EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix();
         return send(
                 info(event.translate("command.info.title"), String.format(event.translate("command.info.description"), prefix, prefix, prefix))
-                .addField(event.translate("command.info.developers"), "**Rxsto#4224\n Schlaubi#0001\n Wumpus#0117**", false)
+                .addField(event.translate("command.info.developers"), "**Rxsto#4224\nSchlaubi#0001\nWumpus#0117**", false)
                 .addField(event.translate("command.info.version"), "`" + Info.VERSION + "`", false)
                 .addField(event.translate("command.info.defaultprefix"), "`" + event.getGroovyBot().getConfig().getJSONObject("settings").getString("prefix") + " `", false)
                 .addField(event.translate("command.info.customprefix"), "`" + prefix + "`", true)

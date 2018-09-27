@@ -33,7 +33,7 @@ public class ControlCommand extends SameChannelCommand {
     }
 
     @Override
-    public Result runCommand(String[] args, CommandEvent event) {
+    public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (!event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
             return send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
         if (controlPanelExists(event.getGuild().getIdLong())) {
@@ -48,14 +48,14 @@ public class ControlCommand extends SameChannelCommand {
                                 sendMessage(e.getChannel(), error(event.translate("command.control.alreadyinuse.nopermission.title"), event.translate("command.control.alreadyinuse.nopermission.description")), 5);
                                 return;
                             } else {
-                                new Thread(() -> new ControlPanel(sendInfoMessage(event), event.getChannel(), event.getMember(), getPlayer(event.getGuild(), event.getChannel())), "ControlPanel").start();
+                                new Thread(() -> new ControlPanel(sendInfoMessage(event), event.getChannel(), event.getMember(), player), "ControlPanel").start();
                                 panel.delete();
                             }
                         }
                         confirmMessage.delete().queue();
                     });
         } else
-            new Thread(() -> new ControlPanel(sendInfoMessage(event), event.getChannel(), event.getMember(), getPlayer(event.getGuild(), event.getChannel())), "ControlPanel").start();
+            new Thread(() -> new ControlPanel(sendInfoMessage(event), event.getChannel(), event.getMember(), player), "ControlPanel").start();
         return null;
     }
     

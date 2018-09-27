@@ -13,23 +13,21 @@ public abstract class SemiInChannelCommand extends SameChannelCommand {
     }
 
     @Override
-    public Result execute(String[] args, CommandEvent event) {
-        MusicPlayer player = getPlayer(event.getGuild(), event.getChannel());
-        System.out.println(event.getGuild().getSelfMember().getVoiceState().inVoiceChannel());
+    public Result execute(String[] args, CommandEvent event, MusicPlayer player) {
         if (event.getGuild().getSelfMember().getVoiceState().inVoiceChannel())
-            return super.execute(args, event);
+            return super.execute(args, event, player);
 
         if (player.checkConnect(event)) {
             player.connect(event.getMember().getVoiceState().getChannel());
-            return execute(args, event, player);
+            return executeCommand(args, event, player);
         }
         return send(error(event));
     }
 
-    protected abstract Result execute(String[] args, CommandEvent event, MusicPlayer player);
+    protected abstract Result executeCommand(String[] args, CommandEvent event, MusicPlayer player);
 
     @Override
-    public Result runCommand(String[] args, CommandEvent event) {
-        return execute(args, event, getPlayer(event.getGuild(), event.getChannel()));
+    public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
+        return executeCommand(args, event, player);
     }
 }

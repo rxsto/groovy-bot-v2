@@ -39,7 +39,7 @@ public class SearchCommand extends SemiInChannelCommand {
 
 
     @Override
-    public Result execute(String[] args, CommandEvent event, MusicPlayer player) {
+    public Result executeCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (args.length == 0)
             return send(info(event.translate("phrases.noquery.title"), event.translate("phrases.noquery.description")));
         String keyword = "ytsearch: " + event.getArguments();
