@@ -17,7 +17,7 @@ public class PlayCommand extends SemiInChannelCommand {
     }
 
     @Override
-    public Result execute(String[] args, CommandEvent event, MusicPlayer player) {
+    public Result executeCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (args.length == 0) {
             if (player.isPaused()) {
                 player.resume();

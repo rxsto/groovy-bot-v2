@@ -12,24 +12,9 @@ public class SkipCommand extends SameChannelCommand {
         super(new String[]{"skip", "s"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you skip the current track", "[position]");
     }
 
-    @Override
-    public Result execute(String[] args, CommandEvent event) {
-        if (event.getGuild().getSelfMember().getVoiceState().inVoiceChannel())
-            return super.execute(args, event);
-
-        final MusicPlayer player = getPlayer(event.getGuild(), event.getChannel());
-        if (player.checkConnect(event)) {
-            player.connect(event.getMember().getVoiceState().getChannel());
-            return runCommand(args, event);
-        }
-
-        return send(error(event));
-    }
 
     @Override
-    public Result runCommand(String[] args, CommandEvent event) {
-        MusicPlayer player = getPlayer(event.getGuild(), event.getChannel());
-
+    public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
 

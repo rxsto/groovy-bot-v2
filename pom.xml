@@ -128,7 +128,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>io.groovybot.bot.Groovybot</mainClass>
+                            <mainClass>io.groovybot.bot.GroovyBot</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -1,6 +1,5 @@
 package io.groovybot.bot.commands.music;
 
-import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
@@ -14,8 +13,7 @@ public class PauseCommand extends SameChannelCommand {
     }
 
     @Override
-    public Result runCommand(String[] args, CommandEvent event) {
-        MusicPlayer player = GroovyBot.getInstance().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
+    public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
         if (player.isPaused())

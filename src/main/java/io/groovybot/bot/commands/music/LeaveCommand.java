@@ -14,8 +14,7 @@ public class LeaveCommand extends SameChannelCommand {
     }
 
     @Override
-    public Result runCommand(String[] args, CommandEvent event) {
-        MusicPlayer player = getPlayer(event.getGuild(), event.getChannel());
+    public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         player.stop();
         player.clearQueue();
         player.getLink().disconnect();

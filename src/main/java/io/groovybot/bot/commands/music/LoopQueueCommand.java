@@ -14,8 +14,7 @@ public class LoopQueueCommand extends SameChannelCommand {
     }
 
     @Override
-    public Result runCommand(String[] args, CommandEvent event) {
-        MusicPlayer player = getPlayer(event.getGuild(), event.getChannel());
+    public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (!player.getScheduler().isQueueRepeating()) {
             player.getScheduler().setQueueRepeating(true);
             return send(success(event.translate("command.queueloop.enabled.title"), event.translate("command.queueloop.enabled.description")));
