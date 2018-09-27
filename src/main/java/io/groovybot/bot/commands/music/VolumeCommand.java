@@ -9,7 +9,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 
 public class VolumeCommand extends SameChannelCommand {
     public VolumeCommand() {
-        super(new String[] {"volume", "vol"}, CommandCategory.MUSIC, Permissions.everyone(), "Sets the volume of the bot", "");
+        super(new String[] {"volume", "vol"}, CommandCategory.MUSIC, Permissions.djMode(), "Sets the volume of the bot", "");
     }
 
     @Override

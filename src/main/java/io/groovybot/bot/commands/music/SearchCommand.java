@@ -33,7 +33,7 @@ public class SearchCommand extends SemiInChannelCommand {
     private final SearchCommand instance;
 
     public SearchCommand() {
-        super(new String[] {"search", "find"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you search songs", "<song>");
+        super(new String[] {"search", "find"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you search songs", "<song>");
         instance = this;
     }
 

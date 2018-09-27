@@ -9,7 +9,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 
 public class ResumeCommand extends SameChannelCommand {
     public ResumeCommand() {
-        super(new String[] {"resume"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you resume the bot", "");
+        super(new String[] {"resume"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you resume the bot", "");
     }
 
     @Override

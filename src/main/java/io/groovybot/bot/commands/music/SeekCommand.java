@@ -12,7 +12,7 @@ import net.dv8tion.jda.core.utils.Helpers;
 public class SeekCommand extends SameChannelCommand {
 
     public SeekCommand() {
-        super(new String[] {"seek"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you seek to specific positions", "[-]<seconds>");
+        super(new String[] {"seek"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you seek to specific positions", "[-]<seconds>");
     }
 
     @Override
