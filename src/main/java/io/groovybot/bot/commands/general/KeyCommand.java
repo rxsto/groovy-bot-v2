@@ -30,7 +30,7 @@ public class KeyCommand extends Command {
             log.error("[Key] Error occurred while redeeming key", e);
             return send(error(event));
         }
-        return send(success(event.translate("command.key.redeemed.title"), String.format(event.translate("command.key.redeemed.description"), key.getType().getDisplayname())));
+        return send(success(event.translate("command.key.redeemed.title"), String.format(event.translate("command.key.redeemed.description"), key.getType().getDisplayName())));
     }
 
     private class CreateCommand extends SubCommand {
