@@ -34,7 +34,7 @@ public class CommandLogger {
     @SuppressWarnings("unused")
     private void onPermissionViolations(NoPermissionEvent noPermissionEvent) {
         String permission = noPermissionEvent.getCommand().getPermissions().getIdentifier();
-        EmbedBuilder builder = EmbedUtil.error(noPermissionEvent.translate("phrases.nopermission.title"), String.format(noPermissionEvent.translate("phrases.nopermission.%s.description"), permission));
+        EmbedBuilder builder = EmbedUtil.error(noPermissionEvent.translate("phrases.nopermission.title"), noPermissionEvent.translate("phrases.nopermission.%s.descripü"));
         SafeMessage.sendMessage(noPermissionEvent.getChannel(), builder);
     }
 }
