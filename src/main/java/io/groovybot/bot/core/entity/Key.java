@@ -47,12 +47,8 @@ public class Key {
         deleteStatement.execute();
     }
 
-    private void setPremium(User user, int type) throws Exception {
-        PreparedStatement ps = connection.prepareStatement("INSERT INTO premium (user_id, type, `check`) VALUES (?, ?, ?)");
-        ps.setLong(1, user.getIdLong());
-        ps.setInt(2, type);
-        ps.setBoolean(3, false);
-        ps.execute();
+    private void setPremium(User user, int type) {
+        EntityProvider.getUser(user.getIdLong()).setPremium(type);
     }
 
     @RequiredArgsConstructor
@@ -63,6 +59,6 @@ public class Key {
         TIER_TWO("Premium tier two");
 
         @Getter
-        private final String displayname;
+        private final String displayName;
     }
 }
