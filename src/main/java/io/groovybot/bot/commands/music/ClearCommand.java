@@ -1,4 +1,4 @@
-package io.groovybot.bot.commands.general;
+package io.groovybot.bot.commands.music;
 
 import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.command.CommandCategory;
