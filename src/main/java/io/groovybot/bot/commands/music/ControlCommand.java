@@ -90,7 +90,7 @@ public class ControlCommand extends SameChannelCommand {
                 getInfoMessage().addReaction(emote).complete();
             }
             run();
-            scheduler.scheduleAtFixedRate(this, 0, 10, TimeUnit.SECONDS);
+            scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS);
         }
 
         @Override
@@ -114,8 +114,7 @@ public class ControlCommand extends SameChannelCommand {
                     sendMessage(translate(author, "controlpanel.skipped.title"), translate(author, "controlpanel.skipped.description"));
                     break;
                 case "\uD83D\uDD02":
-                    //TODO: Implement loop
-                    if (this.player.getScheduler().isRepeating()) {
+                    if (!this.player.getScheduler().isRepeating()) {
                         this.player.getScheduler().setRepeating(true);
                         sendMessage(translate(author, "controlpanel.repeating.enabled.title"), translate(author, "controlpanel.repeating.enabled.description"));
                     } else {
@@ -124,13 +123,21 @@ public class ControlCommand extends SameChannelCommand {
                     }
                     break;
                 case "\uD83D\uDD01":
-                    //TODO: Implement queue loop
-                    if (this.player.getScheduler().isQueueRepeating()) {
+                    if (!this.player.getScheduler().isQueueRepeating()) {
                         this.player.getScheduler().setQueueRepeating(true);
                         sendMessage(translate(author, "controlpanel.queuerepeating.enabled.title"), translate(author, "controlpanel.queuerepeating.enabled.description"));
                     } else {
-                        this.player.getScheduler().setRepeating(false);
+                        this.player.getScheduler().setQueueRepeating(false);
                         sendMessage(translate(author, "controlpanel.queuerepeating.disabled.title"), translate(author, "controlpanel.queuerepeating.disabled.description"));
+                    }
+                    break;
+                case "\uD83D\uDD00":
+                    if (!this.player.getScheduler().isShuffle()) {
+                        this.player.getScheduler().setShuffle(true);
+                        sendMessage(translate(author, "controlpanel.shuffle.enabled.title"), translate(author, "controlpanel.shuffle.enabled.description"));
+                    } else {
+                        this.player.getScheduler().setShuffle(false);
+                        sendMessage(translate(author, "controlpanel.shuffle.disabled.title"), translate(author, "controlpanel.shuffle.disabled.description"));
                     }
                     break;
                 case "\uD83D\uDD0A":
@@ -186,7 +193,7 @@ public class ControlCommand extends SameChannelCommand {
         private CharSequence buildDescription(MusicPlayer player) {
             final AudioTrack playingTrack = player.getPlayer().getPlayingTrack();
             final long trackPosition = player.getPlayer().getTrackPosition();
-            return String.format("%s%s%s %s **[%s/%s]**", player.isPaused() ? "\u23F8" : "\u25B6", player.loopEnabled() ? "\uD83D\uDD02" : "", player.queueLoopEnabled() ? "\uD83D\uDD01" : "", getProgressBar(trackPosition, playingTrack.getDuration()), FormatUtil.formatTimestamp(trackPosition), FormatUtil.formatTimestamp(playingTrack.getDuration()));
+            return String.format("%s %s %s %s %s **[%s/%s]**", player.isPaused() ? "\u23F8" : "\u25B6", player.loopEnabled() ? "\uD83D\uDD02" : "", player.queueLoopEnabled() ? "\uD83D\uDD01" : "", player.shuffleEnabled() ? "\uD83D\uDD00" : "", getProgressBar(trackPosition, playingTrack.getDuration()), FormatUtil.formatTimestamp(trackPosition), FormatUtil.formatTimestamp(playingTrack.getDuration()));
         }
 
         private void delete() {
@@ -197,7 +204,7 @@ public class ControlCommand extends SameChannelCommand {
         }
 
         private void sendMessage(String title, String message) {
-            SafeMessage.sendMessage(getChannel(), EmbedUtil.success(title, message), 4);
+            SafeMessage.sendMessage(getChannel(), EmbedUtil.success(title, message), 3);
         }
 
         private String getProgressBar(long progress, long full) {

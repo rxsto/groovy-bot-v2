@@ -87,11 +87,13 @@ public abstract class Player {
             play(track, false);
             return;
         }
+
         if (playtop) {
             ((LinkedList<AudioTrack>) trackQueue).addFirst(track);
+        } else {
+            trackQueue.add(track);
         }
 
-        trackQueue.add(track);
         if (!isPlaying())
             play(pollTrack(), false);
     }
@@ -138,6 +140,10 @@ public abstract class Player {
 
     public boolean queueLoopEnabled() {
         return scheduler.isQueueRepeating();
+    }
+
+    public boolean shuffleEnabled() {
+        return scheduler.isShuffle();
     }
 
     public void skip() {

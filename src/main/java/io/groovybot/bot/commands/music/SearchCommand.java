@@ -81,12 +81,12 @@ public class SearchCommand extends SemiInChannelCommand {
     }
 
     private String buildTrackDescription(List<AudioTrack> results) {
-        final String[] NUMBERS = {":one:", ":two:", ":three:", ":four:", ":five:", ":six:"};
+        final String[] NUMBERS = {"**1:**", "**2:**", "**3:**", "**4:**", "**5:**", "**6:**"};
         StringBuilder resultBuilder = new StringBuilder();
         AtomicInteger count = new AtomicInteger(0);
         results.forEach(track -> {
             final AudioTrackInfo info = track.getInfo();
-            resultBuilder.append(NUMBERS[count.getAndAdd(1)]).append(" - [").append(info.title).append(" - ").append(info.author).append("](").append(info.uri).append(")").append("\n");
+            resultBuilder.append(NUMBERS[count.getAndAdd(1)]).append(" [").append(info.title).append(" - ").append(info.author).append("](").append(info.uri).append(")").append("\n");
         });
         return resultBuilder.toString();
     }
