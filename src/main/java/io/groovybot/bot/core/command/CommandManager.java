@@ -37,7 +37,6 @@ public class CommandManager {
     @SuppressWarnings("unused")
     public void onMessageReceived(GuildMessageReceivedEvent event) {
         if (event instanceof CommandEvent)
-            // Return if the event is a commandManager event
             return;
         if (event.getAuthor().isBot() || event.getAuthor().isFake() || event.isWebhookMessage())
             return;
