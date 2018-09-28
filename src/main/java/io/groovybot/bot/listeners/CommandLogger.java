@@ -3,12 +3,12 @@ package io.groovybot.bot.listeners;
 import io.groovybot.bot.core.events.command.CommandExecutedEvent;
 import io.groovybot.bot.core.events.command.CommandFailEvent;
 import io.groovybot.bot.core.events.command.NoPermissionEvent;
+import io.groovybot.bot.util.Colors;
+import io.groovybot.bot.util.EmbedUtil;
 import io.groovybot.bot.util.SafeMessage;
 import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
-
-import java.awt.*;
 
 @Log4j
 public class CommandLogger {
@@ -24,19 +24,17 @@ public class CommandLogger {
     private void onCommandFail(CommandFailEvent failEvent) {
         log.error(String.format("[Command] Command %s threw an error %s on guild %s(%d)", failEvent.getCommand().getClass().getCanonicalName(), failEvent.getAuthor().getName(), failEvent.getGuild().getName(), failEvent.getGuild().getIdLong()), failEvent.getThrowable());
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle("Error! An internal error occured!")
-                .setDescription(String.format(":no_entry_sign: We're sorry, but an internal error occured\n```%s```", failEvent.getThrowable().getClass().getCanonicalName() + ": " + failEvent.getThrowable().getMessage()))
-                .setColor(new Color(219, 18, 0));
+                .setTitle(":no_entry_sign: " + failEvent.translate("phrases.error.internal"))
+                .setDescription(String.format("We're sorry, but an internal error occured\n```%s```", failEvent.getThrowable().getClass().getCanonicalName() + ": " + failEvent.getThrowable().getMessage()))
+                .setColor(Colors.DARK_BUT_NOT_BLACK);
         SafeMessage.sendMessage(failEvent.getChannel(), builder);
     }
 
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onPermissionViolations(NoPermissionEvent noPermissionEvent) {
-        EmbedBuilder builder = new EmbedBuilder()
-                .setTitle("Error! No Permisssions!")
-                .setDescription(":no_entry_sign: You are not allowed to execute this command!")
-                .setColor(new Color(219, 18, 0));
+        String permission = noPermissionEvent.getCommand().getPermissions().getIdentifier();
+        EmbedBuilder builder = EmbedUtil.error(noPermissionEvent.translate("phrases.nopermission.title"), noPermissionEvent.translate("phrases.nopermission.%s.descripü"));
         SafeMessage.sendMessage(noPermissionEvent.getChannel(), builder);
     }
 }

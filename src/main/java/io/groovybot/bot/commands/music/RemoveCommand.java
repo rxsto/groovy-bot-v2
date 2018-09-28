@@ -24,9 +24,9 @@ public class RemoveCommand extends SameChannelCommand  {
         if (!Helpers.isNumeric(args[0]))
             return send(error(event.translate("phrases.invalidnumber.title"), event.translate("phrases.invalidnumber.description")));
         int query = Integer.parseInt(args[0]) - 1;
-        if (query > player.trackQueue.size())
+        if (query > player.trackQueue.size() || query < 1)
             return send(error(event.translate("command.remove.notinqueue.title"), event.translate("command.remove.notinqueue.description")));
         ((LinkedList<AudioTrack>) player.trackQueue).remove(query);
-        return send(success(event.translate("command.remove.removed.title"), String.format(event.translate("command.remove.removed.description"), query)));
+        return send(success(event.translate("command.remove.removed.title"), String.format(event.translate("command.remove.removed.description"), query + 1)));
     }
 }
