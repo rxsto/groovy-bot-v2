@@ -57,7 +57,9 @@ public class Scheduler extends AudioEventAdapterWrapped {
                     player.trackQueue.add(track);
                 }
                 if (shuffle) {
-                    player.play(((LinkedList<AudioTrack>) player.trackQueue).get(ThreadLocalRandom.current().nextInt(player.trackQueue.size())), false);
+                    final int index = ThreadLocalRandom.current().nextInt(player.trackQueue.size());
+                    player.play(((LinkedList<AudioTrack>) player.trackQueue).get(index), false);
+                    ((LinkedList<AudioTrack>) player.trackQueue).remove(index);
                     return;
                 }
                 AudioTrack nextTrack = player.pollTrack();

@@ -25,6 +25,10 @@ public class SeekCommand extends SameChannelCommand {
         if (!Helpers.isNumeric(input)) {
             return send(error(event.translate("phrases.invalidnumber.title"), event.translate("phrases.invalidnumber.description")));
         }
+        if (input.length() > ("" + player.getPlayer().getPlayingTrack().getDuration() / 1000).length()) {
+            player.seekTo(player.getPlayer().getPlayingTrack().getDuration());
+            return send(error(event.translate("command.seek.skipped.title"), event.translate("command.seek.skipped.description")));
+        }
         int seconds = Integer.parseInt(input) * 1000;
         if (args[0].startsWith("-"))
             seconds = ~seconds;
