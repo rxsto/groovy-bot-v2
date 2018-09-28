@@ -294,7 +294,6 @@ public class GroovyBot {
                 new PrefixCommand(),
                 new LanguageCommand(),
                 new PlayCommand(),
-                new PlaySkipCommand(),
                 new PlayTopCommand(),
                 new PauseCommand(),
                 new ResumeCommand(),
@@ -315,7 +314,8 @@ public class GroovyBot {
                 new StopCommand(),
                 new ShuffleCommand(),
                 new RemoveCommand(),
-                new KeyCommand()
+                new KeyCommand(),
+                new ForcePlayCommand()
         );
     }
 
