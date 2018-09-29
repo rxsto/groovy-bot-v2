@@ -1,14 +1,24 @@
 version: '3'
 services:
     lavalink:
-      image: fredboat/lavalink:master-
+      image: fredboat/lavalink:feature_close-events-
       ports:
-        - "2333:2333"
-      volumes:
-        - /opt/Lavalink:/opt/Lavalink
+        - "8099:2333"
       restart: always
+      env_file:
+        - lavalink.env
+      networks:
+        - backend
     discord-bot:
       build: .
+      depends_on:
+        - "lavalink"
+      networks:
+        - backend
       volumes:
-        - /opt/groovy/:/opt/groovy/
-      restart: always
+        - "$PWD:/opt/groovy/"
+      command: ["./wait-for-lavalink.sh", "java", "-jar", "groovybot.jar", "debug"]
+networks:
+    backend:
+
+

@@ -1,5 +1,5 @@
 FROM openjdk:8
 
-MAINTAINER Schlaubi / Michael Rittmeister
 
-ENTRYPOINT  ["java", "-jar", "/opt/groovy/groovybot.jar"]
+WORKDIR /opt/groovy
+#ENTRYPOINT  ["./wait-for-lavalink.sh", "java", "-jar", "/opt/groovy/groovybot.jar"]
