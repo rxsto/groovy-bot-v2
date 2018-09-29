@@ -45,10 +45,10 @@ public class User extends DatabaseEntitiy {
         ps.setString(1, locale.toLanguageTag().replace("-", "_"));
         ps.setLong(2, entityId);
         ps.execute();
-        PreparedStatement ps2 = getConnection().prepareStatement("INSERT INTO premium (user_id, type, `check`)" +
+        PreparedStatement ps2 = getConnection().prepareStatement("INSERT INTO premium (user_id, type, \"check\")" +
                 "VALUES (?, ?, FALSE)");
-        ps.setLong(1, entityId);
-        ps.setLong(2, tierTwo ? 2 : tierOne ? 1 : 0);
+        ps2.setLong(1, entityId);
+        ps2.setLong(2, tierTwo ? 2 : tierOne ? 1 : 0);
         if (tierTwo || tierOne)
             ps2.execute();
     }
