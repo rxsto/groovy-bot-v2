@@ -20,7 +20,7 @@ public class MoveCommand extends SameChannelCommand {
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (args.length != 2 || !Helpers.isNumeric(args[0]) || !Helpers.isNumeric(args[1]))
-            return send(error(event.translate("phrases.invalidarguments.title"), event.translate("phrases.invalidarguments.description")));
+            return sendHelp();
 
         int songPos = Integer.parseInt(args[0]);
         int wantPos = Integer.parseInt(args[1]);
