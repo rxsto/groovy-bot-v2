@@ -321,7 +321,7 @@ public class GroovyBot {
                 new RemoveCommand(),
                 new KeyCommand(),
                 new ForcePlayCommand(),
-                new AnnounceCommand()
+                new AnnounceCommand(),
                 new ForcePlayCommand(),
                 new UpdateCommand()
         );
