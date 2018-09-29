@@ -9,7 +9,7 @@ import io.groovybot.bot.core.command.permission.Permissions;
 public class PingCommand extends Command {
 
     public PingCommand() {
-        super(new String[] {"ping"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows the bot's current ping", "");
+        super(new String[]{"ping"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows the bot's current ping", "");
     }
 
     @Override

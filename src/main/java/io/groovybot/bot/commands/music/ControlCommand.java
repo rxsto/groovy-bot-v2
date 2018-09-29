@@ -58,7 +58,7 @@ public class ControlCommand extends SameChannelCommand {
             new Thread(() -> new ControlPanel(sendInfoMessage(event), event.getChannel(), event.getMember(), player), "ControlPanel").start();
         return null;
     }
-    
+
     private Message sendInfoMessage(CommandEvent event) {
         return sendMessageBlocking(event.getChannel(), info(event.translate("command.control.loading.title"), event.translate("command.control.loading.description")));
     }
@@ -68,11 +68,11 @@ public class ControlCommand extends SameChannelCommand {
     }
 
     private boolean controlPanelExists(Long guildId) {
-        return !getControlPanels().stream().filter(entry -> entry.getChannel().getGuild().getIdLong() ==guildId).collect(Collectors.toList()).isEmpty();
+        return !getControlPanels().stream().filter(entry -> entry.getChannel().getGuild().getIdLong() == guildId).collect(Collectors.toList()).isEmpty();
     }
 
     private ControlPanel getControlPanel(Long guildId) {
-        return (ControlPanel) getControlPanels().stream().filter(entry -> entry.getChannel().getGuild().getIdLong() ==guildId).collect(Collectors.toList()).get(0);
+        return (ControlPanel) getControlPanels().stream().filter(entry -> entry.getChannel().getGuild().getIdLong() == guildId).collect(Collectors.toList()).get(0);
     }
 
     private class ControlPanel extends InteractableMessage implements Runnable {

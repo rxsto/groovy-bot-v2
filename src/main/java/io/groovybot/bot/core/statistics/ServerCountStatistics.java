@@ -53,7 +53,7 @@ public class ServerCountStatistics extends StatsPoster {
                 .addHeader("Content-Type", "application/json")
                 .post(body)
                 .build();
-        try (Response response = okHttpClient.newCall(request).execute()){
+        try (Response response = okHttpClient.newCall(request).execute()) {
             if (response.code() != 200) {
                 assert response.body() != null;
                 log.warn(String.format("[ServerCount] Error while posting stats! Response: %s", response.body().string()));

@@ -10,7 +10,7 @@ import io.groovybot.bot.core.command.voice.InChannelCommand;
 public class JoinCommand extends InChannelCommand {
 
     public JoinCommand() {
-        super(new String[] {"join", "j"}, CommandCategory.MUSIC, Permissions.everyone(), "Let's the bot join a channel", "");
+        super(new String[]{"join", "j"}, CommandCategory.MUSIC, Permissions.everyone(), "Let's the bot join a channel", "");
     }
 
     @Override

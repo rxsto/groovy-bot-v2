@@ -14,7 +14,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 
 public class NowPlayingCommand extends Command {
     public NowPlayingCommand() {
-        super(new String[] {"now", "np", "nowplaying"}, CommandCategory.MUSIC, Permissions.everyone(), "Shows you all information about the current track", "");
+        super(new String[]{"now", "np", "nowplaying"}, CommandCategory.MUSIC, Permissions.everyone(), "Shows you all information about the current track", "");
     }
 
     @Override

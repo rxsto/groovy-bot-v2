@@ -14,7 +14,7 @@ import java.util.LinkedList;
 public class MoveCommand extends SameChannelCommand {
 
     public MoveCommand() {
-        super(new String[] {"move", "mv"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you move a song from one position to another", "<song> <position>");
+        super(new String[]{"move", "mv"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you move a song from one position to another", "<song> <position>");
     }
 
     @Override

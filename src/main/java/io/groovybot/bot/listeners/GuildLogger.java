@@ -41,7 +41,7 @@ public class GuildLogger {
                         .setTimestamp(Instant.now())
                         .setThumbnail(guild.getIconUrl())
                         .build()
-                );
+        );
         client.send(out.build());
     }
 }

@@ -8,7 +8,7 @@ import io.groovybot.bot.core.command.permission.Permissions;
 
 public class VoteCommand extends Command {
     public VoteCommand() {
-        super(new String[] {"vote", "upvote"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you some information about upvoting", "");
+        super(new String[]{"vote", "upvote"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you some information about upvoting", "");
     }
 
     @Override
