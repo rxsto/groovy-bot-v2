@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.audio.MusicPlayer;
+import io.groovybot.bot.core.audio.Scheduler;
 import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
@@ -99,6 +100,7 @@ public class ControlCommand extends SameChannelCommand {
             if (!isWhitelisted(event.getMember()))
                 return;
             final IPlayer musicPlayer = this.player.getPlayer();
+            final Scheduler playerScheduler = this.player.getScheduler();
             switch (event.getReaction().getReactionEmote().getName()) {
                 case "⏯":
                     if (!player.isPaused()) {
@@ -114,29 +116,41 @@ public class ControlCommand extends SameChannelCommand {
                     sendMessage(translate(author, "controlpanel.skipped.title"), translate(author, "controlpanel.skipped.description"));
                     break;
                 case "\uD83D\uDD02":
-                    if (!this.player.getScheduler().isRepeating()) {
-                        this.player.getScheduler().setRepeating(true);
+                    if (playerScheduler.isRepeating() || playerScheduler.isShuffle()) {
+                        sendMessage(translate(author, "controlpanel.loop.shuffle.title"), translate(author, "controlpanel.loop.shuffle.description"));
+                        break;
+                    }
+                    if (!playerScheduler.isRepeating()) {
+                        playerScheduler.setRepeating(true);
                         sendMessage(translate(author, "controlpanel.repeating.enabled.title"), translate(author, "controlpanel.repeating.enabled.description"));
                     } else {
-                        this.player.getScheduler().setRepeating(false);
+                        playerScheduler.setRepeating(false);
                         sendMessage(translate(author, "controlpanel.repeating.disabled.title"), translate(author, "controlpanel.repeating.disabled.description"));
                     }
                     break;
                 case "\uD83D\uDD01":
-                    if (!this.player.getScheduler().isQueueRepeating()) {
-                        this.player.getScheduler().setQueueRepeating(true);
+                    if (playerScheduler.isRepeating() || playerScheduler.isShuffle()) {
+                        sendMessage(translate(author, "controlpanel.loop.shuffle.title"), translate(author, "controlpanel.loop.shuffle.description"));
+                        break;
+                    }
+                    if (!playerScheduler.isQueueRepeating()) {
+                        playerScheduler.setQueueRepeating(true);
                         sendMessage(translate(author, "controlpanel.queuerepeating.enabled.title"), translate(author, "controlpanel.queuerepeating.enabled.description"));
                     } else {
-                        this.player.getScheduler().setQueueRepeating(false);
+                        playerScheduler.setQueueRepeating(false);
                         sendMessage(translate(author, "controlpanel.queuerepeating.disabled.title"), translate(author, "controlpanel.queuerepeating.disabled.description"));
                     }
                     break;
                 case "\uD83D\uDD00":
-                    if (!this.player.getScheduler().isShuffle()) {
-                        this.player.getScheduler().setShuffle(true);
+                    if (playerScheduler.isRepeating() || playerScheduler.isQueueRepeating()) {
+                        sendMessage(translate(author, "controlpanel.shuffle.loop.title"), translate(author, "controlpanel.shuffle.loop.description"));
+                        break;
+                    }
+                    if (!playerScheduler.isShuffle()) {
+                        playerScheduler.setShuffle(true);
                         sendMessage(translate(author, "controlpanel.shuffle.enabled.title"), translate(author, "controlpanel.shuffle.enabled.description"));
                     } else {
-                        this.player.getScheduler().setShuffle(false);
+                        playerScheduler.setShuffle(false);
                         sendMessage(translate(author, "controlpanel.shuffle.disabled.title"), translate(author, "controlpanel.shuffle.disabled.description"));
                     }
                     break;
