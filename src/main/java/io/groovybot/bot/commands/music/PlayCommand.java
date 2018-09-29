@@ -12,7 +12,7 @@ import lombok.extern.log4j.Log4j;
 public class PlayCommand extends SemiInChannelCommand {
 
     public PlayCommand() {
-        super(new String[] {"play", "p", "add"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you play any music you want", "<song/url>");
+        super(new String[] {"play", "p", "add"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you play any music you want", "<song/url>");
     }
 
     @Override
