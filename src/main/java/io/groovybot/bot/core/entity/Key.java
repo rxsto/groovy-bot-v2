@@ -48,7 +48,10 @@ public class Key {
     }
 
     private void setPremium(User user, int type) {
-        EntityProvider.getUser(user.getIdLong()).setPremium(type);
+        final io.groovybot.bot.core.entity.User user1 = EntityProvider.getUser(user.getIdLong());
+        if (user1.isTierOne() || user1.isTierTwo())
+            return;
+        user1.setPremium(type);
     }
 
     @RequiredArgsConstructor
