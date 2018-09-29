@@ -27,7 +27,6 @@ public class UserPermissions {
         if (guild.getMemberById(user.getEntityId()).getVoiceState().inVoiceChannel())
             if (guild.getMemberById(user.getEntityId()).getVoiceState().getChannel().getMembers().size() == 2)
                 return true;
-        System.out.println("dont work");
         for (Role role : guild.getMemberById(user.getEntityId()).getRoles()) {
             if (role.getName().toLowerCase().contains("dj"))
                 return true;
