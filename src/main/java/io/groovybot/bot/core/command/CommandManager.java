@@ -43,6 +43,9 @@ public class CommandManager {
 
         CommandEvent commandEvent = parseEvent(event);
 
+        if (commandEvent == null)
+            return;
+
         Command command = commandAssociations.get(commandEvent.getInvocation());
         if (command == null) {
             return;
