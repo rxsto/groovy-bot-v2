@@ -9,6 +9,8 @@ import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class StatsCommand extends Command {
     public StatsCommand() {
         super(new String[]{"stats"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you Groovy's current stats", "");
@@ -30,7 +32,7 @@ public class StatsCommand extends Command {
         builder.setThumbnail(event.getGuild().getSelfMember().getUser().getAvatarUrl());
 
         StringBuilder message = new StringBuilder();
-        message.append(String.format("\n\n" + event.translate("command.stats.text.playing") + "\n", GroovyBot.getInstance().getMusicPlayerManager().getPlayerStorage().size()));
+        message.append(String.format("\n\n" + event.translate("command.stats.text.playing") + "\n", event.getGroovyBot().getMusicPlayerManager().getPlayingServers()));
         message.append(String.format(event.translate("command.stats.text.servers") + "\n", event.getJDA().getGuilds().size()));
         message.append(String.format(event.translate("command.stats.text.members") + "\n", event.getJDA().getUsers().size()));
         message.append(String.format(event.translate("command.stats.text.latency") + "\n", event.getJDA().getPing()));
