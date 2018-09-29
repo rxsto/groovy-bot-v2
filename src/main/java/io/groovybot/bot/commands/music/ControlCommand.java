@@ -29,7 +29,7 @@ public class ControlCommand extends SameChannelCommand {
     private final String[] EMOTES = {"⏯", "⏭", "🔂", "🔁", "🔀", "🔄", "🔉", "🔊"};
 
     public ControlCommand() {
-        super(new String[]{"control", "panel", "cp"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you control the bot with reactions", "");
+        super(new String[]{"control", "panel", "cp"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you control the bot with reactions", "");
     }
 
     @Override
