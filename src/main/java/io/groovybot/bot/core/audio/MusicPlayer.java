@@ -3,9 +3,9 @@ package io.groovybot.bot.core.audio;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.*;
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.permission.Permissions;
@@ -96,8 +96,8 @@ public class MusicPlayer extends Player {
 
     public void queueSongs(CommandEvent event, boolean force, boolean playtop) {
         UserPermissions userPermissions = EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions();
-        Permissions tierOne = Permissions.tierOne();
-        if (trackQueue.size() >= 50 && !tierOne.isCovered(userPermissions, event)) {
+        Permissions tierTwo = Permissions.tierTwo();
+        if (trackQueue.size() >= 25 && !tierTwo.isCovered(userPermissions, event)) {
             SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.fullqueue.title"), event.translate("phrases.fullqueue.description")));
             return;
         }
@@ -125,10 +125,10 @@ public class MusicPlayer extends Player {
             @Override
             public void playlistLoaded(AudioPlaylist audioPlaylist) {
                 List<AudioTrack> tracks = audioPlaylist.getTracks();
-                if (!tierOne.isCovered(userPermissions, event))
+                if (!tierTwo.isCovered(userPermissions, event))
                     tracks = tracks.stream()
-                            .limit(50 - getQueueSize())
-                            .filter(track -> track.getDuration() < 7200000)
+                            .limit(25 - getQueueSize())
+                            .filter(track -> track.getDuration() < 3600000)
                             .collect(Collectors.toList());
 
                 if (tracks.isEmpty()) {
@@ -160,13 +160,35 @@ public class MusicPlayer extends Player {
             }
 
             private boolean checkSong(AudioTrack track) {
-                if (track.getDuration() > 7200000 && !Permissions.tierOne().isCovered(userPermissions, event)) {
+                if (track.getDuration() > 3600000 && !Permissions.tierTwo().isCovered(userPermissions, event)) {
                     SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.toolongsong.title"), event.translate("phrases.toolongsong.description")));
                     if (trackQueue.isEmpty())
                         link.disconnect();
                     return false;
                 }
                 return true;
+            }
+        });
+    }
+
+    public void update() {
+        this.clearQueue();
+        getAudioPlayerManager().loadItem("https://cdn.groovybot.gq/sounds/update.mp3", new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack track) {
+                queueTrack(track, true, false);
+            }
+
+            @Override
+            public void playlistLoaded(AudioPlaylist playlist) {
+            }
+
+            @Override
+            public void noMatches() {
+            }
+
+            @Override
+            public void loadFailed(FriendlyException exception) {
             }
         });
     }
