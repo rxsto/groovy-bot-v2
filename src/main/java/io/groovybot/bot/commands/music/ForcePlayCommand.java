@@ -10,7 +10,7 @@ import io.groovybot.bot.core.command.voice.SemiInChannelCommand;
 public class ForcePlayCommand extends SemiInChannelCommand {
 
     public ForcePlayCommand() {
-        super(new String[]{"forceplay", "playskip"}, CommandCategory.MUSIC, Permissions.tierTwo(), "", "<song/url>");
+        super(new String[]{"forceplay", "playskip"}, CommandCategory.MUSIC, Permissions.djMode(), "", "<song/url>");
     }
 
     @Override

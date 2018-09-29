@@ -10,7 +10,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 public class ResetCommand extends SameChannelCommand {
 
     public ResetCommand() {
-        super(new String[]{"reset", "restart"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you reset the current progress", "");
+        super(new String[]{"reset", "restart"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you reset the current progress", "");
     }
 
     @Override
