@@ -3,10 +3,12 @@ package io.groovybot.bot;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.commands.general.*;
 import io.groovybot.bot.commands.music.*;
+import io.groovybot.bot.commands.settings.AnnounceCommand;
 import io.groovybot.bot.commands.settings.DjModeCommand;
 import io.groovybot.bot.commands.settings.LanguageCommand;
 import io.groovybot.bot.commands.settings.PrefixCommand;
 import io.groovybot.bot.core.GameAnimator;
+import io.groovybot.bot.core.KeyManager;
 import io.groovybot.bot.core.audio.LavalinkManager;
 import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.audio.MusicPlayerManager;
@@ -24,10 +26,7 @@ import io.groovybot.bot.io.ErrorReporter;
 import io.groovybot.bot.io.FileManager;
 import io.groovybot.bot.io.config.Configuration;
 import io.groovybot.bot.io.database.PostgreSQL;
-import io.groovybot.bot.listeners.CommandLogger;
-import io.groovybot.bot.listeners.GuildLogger;
-import io.groovybot.bot.listeners.SelfMentionListener;
-import io.groovybot.bot.listeners.ShardsListener;
+import io.groovybot.bot.listeners.*;
 import io.groovybot.bot.util.JDASUCKSFILTER;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
@@ -86,6 +85,8 @@ public class GroovyBot {
     private final JDASUCKSFILTER errorResponseFilter = new JDASUCKSFILTER();
     @Getter
     private final EventWaiter eventWaiter;
+    @Getter
+    private final KeyManager keyManager;
 
 
     public static void main(String[] args) {
@@ -109,6 +110,7 @@ public class GroovyBot {
         createDefaultDatabase();
         commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") : config.getJSONObject("settings").getString("prefix"));
         serverCountStatistics = new ServerCountStatistics(httpClient, config.getJSONObject("botlists"));
+        keyManager = new KeyManager(postgreSQL.getConnection());
         interactionManager = new InteractionManager();
         eventWaiter = new EventWaiter();
         initShardManager();
@@ -145,6 +147,7 @@ public class GroovyBot {
                         new CommandLogger(),
                         new GuildLogger(),
                         new SelfMentionListener(),
+                        new BetaListener(),
                         commandManager,
                         this,
                         lavalinkManager,
@@ -313,7 +316,11 @@ public class GroovyBot {
                 new LoopCommand(),
                 new StopCommand(),
                 new ShuffleCommand(),
-                new RemoveCommand()
+                new MoveCommand(),
+                new RemoveCommand(),
+                new KeyCommand(),
+                new ForcePlayCommand(),
+                new AnnounceCommand()
         );
     }
 

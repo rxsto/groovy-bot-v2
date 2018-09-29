@@ -1,6 +1,7 @@
 package io.groovybot.bot.core.entity;
 
 import io.groovybot.bot.GroovyBot;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.core.entities.User;
 
@@ -11,7 +12,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class Key {
 
+    @Getter
     private final KeyType type;
+    @Getter
     private final UUID key;
     private final Connection connection;
 
@@ -25,7 +28,7 @@ public class Key {
     public void redeem(User user) throws Exception {
         switch (type) {
             case BETA:
-                PreparedStatement ps = connection.prepareStatement("INSERT INTO beta (user_id) VALUE ?");
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO beta (user_id) VALUES (?)");
                 ps.setLong(1, user.getIdLong());
                 ps.execute();
                 break;
@@ -39,17 +42,16 @@ public class Key {
                 //Do nothing
                 break;
         }
-        PreparedStatement deleteStatement = connection.prepareStatement("DELETE FROM keys WHERE `key` = ?");
+        PreparedStatement deleteStatement = connection.prepareStatement("DELETE FROM keys WHERE \"key\" = ?");
         deleteStatement.setString(1, key.toString());
         deleteStatement.execute();
     }
 
-    private void setPremium(User user, int type) throws Exception {
-        PreparedStatement ps = connection.prepareStatement("INSERT INTO premium (user_id, type, `check`) VALUES (?, ?, ?)");
-        ps.setLong(1, user.getIdLong());
-        ps.setInt(2, type);
-        ps.setBoolean(3, false);
-        ps.execute();
+    private void setPremium(User user, int type) {
+        final io.groovybot.bot.core.entity.User user1 = EntityProvider.getUser(user.getIdLong());
+        if (user1.isTierOne() || user1.isTierTwo())
+            return;
+        user1.setPremium(type);
     }
 
     @RequiredArgsConstructor
@@ -59,6 +61,7 @@ public class Key {
         TIER_ONE("Premium tier one"),
         TIER_TWO("Premium tier two");
 
-        private final String displayname;
+        @Getter
+        private final String displayName;
     }
 }

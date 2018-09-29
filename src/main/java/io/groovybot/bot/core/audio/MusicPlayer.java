@@ -8,6 +8,9 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.CommandEvent;
+import io.groovybot.bot.core.command.permission.Permissions;
+import io.groovybot.bot.core.command.permission.UserPermissions;
+import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.util.EmbedUtil;
 import io.groovybot.bot.util.SafeMessage;
 import lavalink.client.player.IPlayer;
@@ -80,7 +83,8 @@ public class MusicPlayer extends Player {
 
     @Override
     public void announceSong(AudioPlayer audioPlayer, AudioTrack track) {
-        channel.sendMessage(EmbedUtil.play("Now Playing", String.format("%s (%s)", track.getInfo().title, track.getInfo().author)).build()).queue();
+        if (EntityProvider.getGuild(guild.getIdLong()).isAnnounceSongs())
+            channel.sendMessage(EmbedUtil.play("Now Playing", String.format("%s (%s)", track.getInfo().title, track.getInfo().author)).build()).queue();
     }
 
 
@@ -91,6 +95,12 @@ public class MusicPlayer extends Player {
     }
 
     public void queueSongs(CommandEvent event, boolean force, boolean playtop) {
+        UserPermissions userPermissions = EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions();
+        Permissions tierOne = Permissions.tierOne();
+        if (trackQueue.size() >= 50 && !tierOne.isCovered(userPermissions, event)) {
+            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.fullqueue.title"), event.translate("phrases.fullqueue.description")));
+            return;
+        }
         String keyword = event.getArguments();
         boolean isUrl = true;
 
@@ -103,10 +113,11 @@ public class MusicPlayer extends Player {
 
 
         final boolean isURL = isUrl;
-        System.out.println(keyword);
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
+                if (!checkSong(audioTrack))
+                    return;
                 queueTrack(audioTrack, force, playtop);
                 infoMessage.editMessage(EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), audioTrack.getInfo().title)).build()).queue();
             }
@@ -114,15 +125,25 @@ public class MusicPlayer extends Player {
             @Override
             public void playlistLoaded(AudioPlaylist audioPlaylist) {
                 List<AudioTrack> tracks = audioPlaylist.getTracks();
-                tracks = tracks.stream().limit(50 - getQueueSize()).collect(Collectors.toList());
+                if (!tierOne.isCovered(userPermissions, event))
+                    tracks = tracks.stream()
+                            .limit(50 - getQueueSize())
+                            .filter(track -> track.getDuration() < 7200000)
+                            .collect(Collectors.toList());
+
+                if (tracks.isEmpty()) {
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event));
+                    return;
+                }
 
                 if (isURL) {
                     queueTracks(tracks.toArray(new AudioTrack[0]));
                     infoMessage.editMessage(EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), audioPlaylist.getName())).build()).queue();
                     return;
                 }
-
                 final AudioTrack track = tracks.get(0);
+                if (!checkSong(track))
+                    return;
                 queueTrack(track, force, playtop);
                 infoMessage.editMessage(EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)).build()).queue();
             }
@@ -136,6 +157,16 @@ public class MusicPlayer extends Player {
             public void loadFailed(FriendlyException e) {
                 infoMessage.editMessage(EmbedUtil.error(event).build()).queue();
                 log.error("[PlayCommand] Error while loading track!", e);
+            }
+
+            private boolean checkSong(AudioTrack track) {
+                if (track.getDuration() > 7200000 && !Permissions.tierOne().isCovered(userPermissions, event)) {
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.toolongsong.title"), event.translate("phrases.toolongsong.description")));
+                    if (trackQueue.isEmpty())
+                        link.disconnect();
+                    return false;
+                }
+                return true;
             }
         });
     }
