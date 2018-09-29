@@ -83,7 +83,8 @@ public class MusicPlayer extends Player {
 
     @Override
     public void announceSong(AudioPlayer audioPlayer, AudioTrack track) {
-        channel.sendMessage(EmbedUtil.play("Now Playing", String.format("%s (%s)", track.getInfo().title, track.getInfo().author)).build()).queue();
+        if (EntityProvider.getGuild(guild.getIdLong()).isAnnounceSongs())
+            channel.sendMessage(EmbedUtil.play("Now Playing", String.format("%s (%s)", track.getInfo().title, track.getInfo().author)).build()).queue();
     }
 
 

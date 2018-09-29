@@ -3,6 +3,7 @@ package io.groovybot.bot;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.commands.general.*;
 import io.groovybot.bot.commands.music.*;
+import io.groovybot.bot.commands.settings.AnnounceCommand;
 import io.groovybot.bot.commands.owner.UpdateCommand;
 import io.groovybot.bot.commands.settings.DjModeCommand;
 import io.groovybot.bot.commands.settings.LanguageCommand;
@@ -296,6 +297,8 @@ public class GroovyBot {
                 new LanguageCommand(),
                 new PlayCommand(),
                 new PlayTopCommand(),
+                new ForcePlayCommand(),
+                new ForcePlayCommand(),
                 new PauseCommand(),
                 new ResumeCommand(),
                 new SkipCommand(),
@@ -317,6 +320,8 @@ public class GroovyBot {
                 new MoveCommand(),
                 new RemoveCommand(),
                 new KeyCommand(),
+                new ForcePlayCommand(),
+                new AnnounceCommand()
                 new ForcePlayCommand(),
                 new UpdateCommand()
         );

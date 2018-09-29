@@ -14,6 +14,7 @@ public class Guild extends DatabaseEntitiy {
     private Integer volume = 100;
     private String prefix = "g!";
     private boolean djMode = false;
+    private boolean announceSongs = true;
 
     public Guild(Long entityId) throws Exception {
         super(entityId);
@@ -24,6 +25,7 @@ public class Guild extends DatabaseEntitiy {
             volume = rs.getInt("volume");
             prefix = rs.getString("prefix");
             djMode = rs.getBoolean("dj_mode");
+            announceSongs = rs.getBoolean("announce_songs");
         } else {
             PreparedStatement insertStatement = getConnection().prepareStatement("INSERT INTO guilds (id, prefix, volume, dj_mode) VALUES (?, ?, ?, ?)");
             insertStatement.setLong(1, entityId);
@@ -56,6 +58,11 @@ public class Guild extends DatabaseEntitiy {
 
     public void setDjMode(boolean djMode) {
         this.djMode = djMode;
+        update();
+    }
+
+    public void setAnnounceSongs(boolean announceSongs) {
+        this.announceSongs = announceSongs;
         update();
     }
 

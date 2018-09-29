@@ -2,6 +2,7 @@ package io.groovybot.bot.util;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.core.command.Command;
+import io.groovybot.bot.core.command.SubCommand;
 import net.dv8tion.jda.core.EmbedBuilder;
 
 import java.util.Arrays;
@@ -36,12 +37,16 @@ public class FormatUtil {
     private static StringBuilder addUsages(StringBuilder stringBuilder, Command command) {
         stringBuilder.append("Command aliases: `").append(Arrays.toString(command.getAliases()).replace("[", "").replace("]", "")).append("`\n");
         stringBuilder.append("Description: `").append(command.getDescription()).append("`").append("\n");
-        stringBuilder.append("Usage: `").append(buildUsage(command)).append("`");
-        command.getSubCommandAssociations().values().parallelStream().distinct().collect(Collectors.toList()).forEach(subCommand -> stringBuilder.append(buildUsage(subCommand)).append(" - ").append(subCommand.getDescription()).append("\n"));
+        stringBuilder.append("Usage: `").append(buildUsage(command)).append("`\n");
+        command.getSubCommandAssociations().values().parallelStream().distinct().collect(Collectors.toList()).forEach(subCommand -> stringBuilder.append(buildUsage(subCommand)).append("\n"));
         return stringBuilder;
     }
 
     private static String buildUsage(Command command) {
+        if (command instanceof SubCommand) {
+            SubCommand subCommand = ((SubCommand) command);
+            return "g!" + subCommand.getMainCommand().getAliases()[0] + " " + subCommand.getAliases()[0] + " " + subCommand.getUsage() + " - "+ subCommand.getDescription();
+        }
         return "g!" + command.getAliases()[0] + " " + command.getUsage();
     }
 
