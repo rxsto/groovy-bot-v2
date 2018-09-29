@@ -4,6 +4,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.commands.general.*;
 import io.groovybot.bot.commands.music.*;
 import io.groovybot.bot.commands.settings.AnnounceCommand;
+import io.groovybot.bot.commands.owner.UpdateCommand;
 import io.groovybot.bot.commands.settings.DjModeCommand;
 import io.groovybot.bot.commands.settings.LanguageCommand;
 import io.groovybot.bot.commands.settings.PrefixCommand;
@@ -321,6 +322,8 @@ public class GroovyBot {
                 new KeyCommand(),
                 new ForcePlayCommand(),
                 new AnnounceCommand()
+                new ForcePlayCommand(),
+                new UpdateCommand()
         );
     }
 
