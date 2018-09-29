@@ -42,11 +42,15 @@ public class CommandManager {
             return;
 
         CommandEvent commandEvent = parseEvent(event);
+
         if (commandEvent == null)
             return;
+
         Command command = commandAssociations.get(commandEvent.getInvocation());
-        if (command == null)
+        if (command == null) {
             return;
+        }
+
         if (commandEvent.getArgs().length > 0 && command.getSubCommandAssociations().containsKey(commandEvent.getArgs()[0]))
                 command = command.getSubCommandAssociations().get(commandEvent.getArgs()[0]);
             call(command, commandEvent);
