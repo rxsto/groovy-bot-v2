@@ -17,6 +17,7 @@ public class BetaListener {
         try {
             final GroovyBot instance = GroovyBot.getInstance();
             PreparedStatement ps = instance.getPostgreSQL().getConnection().prepareStatement("SELECT * FROM beta WHERE user_id = ?");
+            ps.setLong(1, event.getGuild().getOwnerIdLong());
             if (!ps.executeQuery().next() && instance.isDebugMode())
                 event.getGuild().leave().queue();
         } catch (SQLException e) {
