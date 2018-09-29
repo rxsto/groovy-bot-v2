@@ -37,7 +37,7 @@ public class QueueCommand extends Command {
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
         if (player.getQueueSize() <= PAGE_SIZE)
-            return send(formatQueue((LinkedList<AudioTrack>) player.getTrackQueue(), event, 0, player.getPlayer().getPlayingTrack()));
+            return send(formatQueue((LinkedList<AudioTrack>) player.getTrackQueue(), event, 0, player.getPlayer().getPlayingTrack(), 1, 1));
         Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.queue.loading.title"), event.translate("command.queue.loading.description")));
         new QueueMessage(infoMessage, event.getChannel(), event.getMember(), player.getTrackQueue(), event, player.getPlayer().getPlayingTrack());
         return null;
@@ -81,7 +81,7 @@ public class QueueCommand extends Command {
 
         private void updateMessage() {
             List<AudioTrack> subQueue = ((LinkedList<AudioTrack>) queue).subList((currentPage - 1) * PAGE_SIZE, ((currentPage - 1) * PAGE_SIZE + PAGE_SIZE) > queue.size() ? queue.size() : (currentPage - 1) * PAGE_SIZE + PAGE_SIZE);
-            getInfoMessage().editMessage(formatQueue(subQueue, commandEvent, (currentPage * PAGE_SIZE - 10), currentPage == 1 ? currentTrack : null).build()).queue();
+            getInfoMessage().editMessage(formatQueue(subQueue, commandEvent, (currentPage * PAGE_SIZE - 10), currentPage == 1 ? currentTrack : null, currentPage, pages + 1).build()).queue();
         }
 
         private void updateEmotes(boolean first) {
@@ -98,9 +98,10 @@ public class QueueCommand extends Command {
         }
     }
 
-    private EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, AudioTrack currentTrack) {
+    private EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, AudioTrack currentTrack, int currentPage, int totalPages) {
         return new EmbedBuilder()
-                .setTitle(event.translate("command.queue.title"))
+                .setTitle(":notes: " + String.format(event.translate("command.queue.title"), event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size()))
+                .setFooter(currentPage + "/" + totalPages, event.getJDA().getSelfUser().getAvatarUrl())
                 .setDescription(generateQueueDescription(tracks, startNumber, currentTrack)).setColor(Colors.DARK_BUT_NOT_BLACK);
     }
 
