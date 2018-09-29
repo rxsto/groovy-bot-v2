@@ -47,6 +47,6 @@ public class GameAnimator implements Runnable {
     }
 
     private String parsePlaceholders(String game) {
-        return game.replace("%channels%", "0").replace("%guilds%", String.valueOf(shardManager.getGuilds().size())).replace("%users%", String.valueOf(shardManager.getUsers().size())).replace("%shards%", String.valueOf(shardManager.getShardsTotal()));
+        return game.replace("%channels%", String.valueOf(GroovyBot.getInstance().getMusicPlayerManager().getPlayingServers())).replace("%guilds%", String.valueOf(shardManager.getGuilds().size())).replace("%users%", String.valueOf(shardManager.getUsers().size())).replace("%shards%", String.valueOf(shardManager.getShardsTotal()));
     }
 }
