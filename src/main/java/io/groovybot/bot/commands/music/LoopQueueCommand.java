@@ -10,7 +10,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 public class LoopQueueCommand extends SameChannelCommand {
 
     public LoopQueueCommand() {
-        super(new String[]{"loopqueue", "lq", "looprepeat", "lr"}, CommandCategory.MUSIC, Permissions.djMode(), "Loops the whole queue", "");
+        super(new String[]{"loopqueue", "lq", "looprepeat", "lr"}, CommandCategory.MUSIC, Permissions.tierOne(), "Loops the whole queue", "");
     }
 
     @Override

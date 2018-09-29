@@ -25,6 +25,7 @@ public abstract class Command extends EmbedUtil {
     public abstract Result run(String[] args, CommandEvent event);
 
     public void registerSubCommand(SubCommand subCommand) {
+        subCommand.setMainCommand(this);
         Arrays.asList(subCommand.getAliases()).forEach(alias -> subCommandAssociations.put(alias, subCommand));
     }
 
