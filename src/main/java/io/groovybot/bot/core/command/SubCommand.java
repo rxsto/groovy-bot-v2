@@ -11,7 +11,7 @@ public abstract class SubCommand extends Command {
     @Getter
     private Command mainCommand;
 
-    public SubCommand(String[] aliases,  Permissions permissions, String description, String usage) {
+    public SubCommand(String[] aliases, Permissions permissions, String description, String usage) {
         super(aliases, null, permissions, description, usage);
     }
 

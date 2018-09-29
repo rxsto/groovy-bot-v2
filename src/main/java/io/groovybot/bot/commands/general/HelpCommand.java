@@ -13,7 +13,7 @@ import static io.groovybot.bot.util.FormatUtil.formatCommand;
 public class HelpCommand extends Command {
 
     public HelpCommand() {
-        super(new String[] {"help", "h", "?"}, CommandCategory.GENERAL, Permissions.everyone(), "Displays a list of all commands", "[command]");
+        super(new String[]{"help", "h", "?"}, CommandCategory.GENERAL, Permissions.everyone(), "Displays a list of all commands", "[command]");
     }
 
     @Override

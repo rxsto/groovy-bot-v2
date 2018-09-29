@@ -14,6 +14,14 @@ public class StatsCommand extends Command {
         super(new String[]{"stats"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you Groovy's current stats", "");
     }
 
+    public static String humanReadableByteCount(long bytes) {
+        int unit = 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = ("KMGTPE").charAt(exp - 1) + ("");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
+
     @Override
     public Result run(String[] args, CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
@@ -32,13 +40,5 @@ public class StatsCommand extends Command {
         builder.setDescription(message);
 
         return send(builder);
-    }
-
-    public static String humanReadableByteCount(long bytes) {
-        int unit = 1024;
-        if (bytes < unit) return bytes + " B";
-        int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = ("KMGTPE").charAt(exp-1) + ("");
-        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 }

@@ -16,10 +16,9 @@ import java.util.List;
 @Log4j
 public class PostgreSQL {
 
+    private final List<PostgreSQLDatabase> defaults;
     @Getter
     private Connection connection;
-
-    private final List<PostgreSQLDatabase> defaults;
 
     public PostgreSQL() {
         log.info("[Database] Connecting ...");

@@ -4,7 +4,6 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import io.groovybot.bot.util.NameThreadFactory;
 import lavalink.client.player.event.AudioEventAdapterWrapped;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,6 @@ public class Scheduler extends AudioEventAdapterWrapped {
     @Getter
     @Setter
     private boolean shuffle = false;
-
 
 
     @Override

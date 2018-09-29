@@ -12,14 +12,14 @@ import java.util.Map;
 public class UpdateCommand extends Command {
 
     public UpdateCommand() {
-        super(new String[] {"update", "up"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Lets you announce an update for Groovy", "");
+        super(new String[]{"update", "up"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Lets you announce an update for Groovy", "");
     }
 
     @Override
     public Result run(String[] args, CommandEvent event) {
         Map<Long, MusicPlayer> players = event.getGroovyBot().getMusicPlayerManager().getPlayerStorage();
 
-        players.forEach( (id, player) -> {
+        players.forEach((id, player) -> {
             player.update();
         });
 

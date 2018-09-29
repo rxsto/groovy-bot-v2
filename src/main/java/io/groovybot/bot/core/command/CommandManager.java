@@ -52,8 +52,8 @@ public class CommandManager {
         }
 
         if (commandEvent.getArgs().length > 0 && command.getSubCommandAssociations().containsKey(commandEvent.getArgs()[0]))
-                command = command.getSubCommandAssociations().get(commandEvent.getArgs()[0]);
-            call(command, commandEvent);
+            command = command.getSubCommandAssociations().get(commandEvent.getArgs()[0]);
+        call(command, commandEvent);
     }
 
     private void call(Command command, CommandEvent commandEvent) {
@@ -91,7 +91,7 @@ public class CommandManager {
             String beheaded = content.substring(prefix.length()).trim();
             String[] allArgs = beheaded.split("\\s+");
             String invocation = allArgs[0].toLowerCase();
-            String[] args = new String[allArgs.length -1];
+            String[] args = new String[allArgs.length - 1];
             System.arraycopy(allArgs, 1, args, 0, args.length);
             return new CommandEvent(event, GroovyBot.getInstance(), args, invocation);
         }

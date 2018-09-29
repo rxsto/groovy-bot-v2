@@ -15,8 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 public class GameAnimator implements Runnable {
 
-    private Game[] games;
     private final ShardManager shardManager;
+    private Game[] games;
 
     public GameAnimator(GroovyBot groovyBot) {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("GameAnimator"));
