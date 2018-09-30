@@ -20,6 +20,8 @@ public class NowPlayingCommand extends Command {
     @Override
     public Result run(String[] args, CommandEvent event) {
         MusicPlayer player = GroovyBot.getInstance().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
+        if (!player.isPlaying())
+            return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Colors.DARK_BUT_NOT_BLACK);
         AudioTrack playingTrack = player.getPlayer().getPlayingTrack();
