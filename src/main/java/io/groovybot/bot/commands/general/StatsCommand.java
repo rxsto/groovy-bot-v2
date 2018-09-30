@@ -1,6 +1,5 @@
 package io.groovybot.bot.commands.general;
 
-import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.Command;
 import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
@@ -8,8 +7,6 @@ import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class StatsCommand extends Command {
     public StatsCommand() {
