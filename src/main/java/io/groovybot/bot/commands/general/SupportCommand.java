@@ -8,7 +8,7 @@ import io.groovybot.bot.core.command.permission.Permissions;
 
 public class SupportCommand extends Command {
     public SupportCommand() {
-        super(new String[] {"support"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you an invite to the official guild", "");
+        super(new String[]{"support"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you an invite to the official guild", "");
     }
 
     @Override

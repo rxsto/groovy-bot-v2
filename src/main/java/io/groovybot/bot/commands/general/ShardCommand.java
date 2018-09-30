@@ -11,7 +11,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 public class ShardCommand extends Command {
 
     public ShardCommand() {
-        super(new String[] {"shard", "shards"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you some information about your current shard", "");
+        super(new String[]{"shard", "shards"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you some information about your current shard", "");
     }
 
     @Override

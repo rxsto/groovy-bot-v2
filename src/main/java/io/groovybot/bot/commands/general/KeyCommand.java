@@ -12,7 +12,7 @@ import java.util.UUID;
 public class KeyCommand extends Command {
 
     public KeyCommand() {
-        super(new String[] {"key", "redeem"}, CommandCategory.GENERAL, Permissions.everyone(), "Allows you to redeem keys", "");
+        super(new String[]{"key", "redeem"}, CommandCategory.GENERAL, Permissions.everyone(), "Allows you to redeem keys", "");
         registerSubCommand(new CreateCommand());
     }
 
@@ -36,7 +36,7 @@ public class KeyCommand extends Command {
     private class CreateCommand extends SubCommand {
 
         public CreateCommand() {
-            super(new String[] {"create", "generate"}, Permissions.ownerOnly(), "Allows you to create keys", "<type>");
+            super(new String[]{"create", "generate"}, Permissions.ownerOnly(), "Allows you to create keys", "<type>");
         }
 
         @Override

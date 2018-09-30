@@ -19,7 +19,7 @@ public class SafeMessage {
                 return channel.sendMessage(message);
             else
                 return channel.sendMessage(formatEmbed(message));
-        return channel.sendMessage(message);
+        return channel.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage(String.format("I am unable to write on your server in channel %s", channel.getName()));
     }
 
     public static void sendMessage(TextChannel channel, Message message) {

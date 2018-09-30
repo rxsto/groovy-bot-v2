@@ -17,24 +17,6 @@ public class Permissions {
     @Getter
     private final String identifier;
 
-    public Boolean isCovered(UserPermissions permissions, CommandEvent event) {
-        if (permissions.getIsOwner())
-            return true;
-        if (publicCommand)
-            return true;
-        if (ownerOnly)
-            return permissions.getIsOwner();
-        if (adminOnly)
-            return permissions.getAdminOnly(event.getGuild());
-        if (tierOneOnly)
-            return permissions.getIsTierOne() || permissions.getIsTierTwo();
-        if (tierTwoOnly)
-            return permissions.getIsTierTwo();
-        if (djOnly)
-            return permissions.isDj(event.getGuild());
-        return false;
-    }
-
     public static Permissions everyone() {
         return new Permissions(true, false, false, false, false, false, "everyone");
     }
@@ -52,10 +34,28 @@ public class Permissions {
     }
 
     public static Permissions adminOnly() {
-        return new Permissions(false, false,false, false, true, false, "admin");
+        return new Permissions(false, false, false, false, true, false, "admin");
     }
 
     public static Permissions djMode() {
         return new Permissions(false, false, false, false, false, true, "djmode");
+    }
+
+    public Boolean isCovered(UserPermissions permissions, CommandEvent event) {
+        if (permissions.getIsOwner())
+            return true;
+        if (publicCommand)
+            return true;
+        if (ownerOnly)
+            return permissions.getIsOwner();
+        if (adminOnly)
+            return permissions.getAdminOnly(event.getGuild());
+        if (tierOneOnly)
+            return permissions.getIsTierOne() || permissions.getIsTierTwo();
+        if (tierTwoOnly)
+            return permissions.getIsTierTwo();
+        if (djOnly)
+            return permissions.isDj(event.getGuild());
+        return false;
     }
 }

@@ -12,13 +12,13 @@ import java.util.*;
 public abstract class Player {
 
     @Getter
-    public Queue<AudioTrack> trackQueue;
+    private final Scheduler scheduler;
     @Getter
-    protected IPlayer player;
+    public Queue<AudioTrack> trackQueue;
     @Getter
     public JdaLink link;
     @Getter
-    private final Scheduler scheduler;
+    protected IPlayer player;
 
     public Player() {
         this.trackQueue = new LinkedList<>();

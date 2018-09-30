@@ -6,7 +6,6 @@ import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static io.groovybot.bot.util.FormatUtil.formatCommand;
@@ -14,7 +13,7 @@ import static io.groovybot.bot.util.FormatUtil.formatCommand;
 public class HelpCommand extends Command {
 
     public HelpCommand() {
-        super(new String[] {"help", "h", "?"}, CommandCategory.GENERAL, Permissions.everyone(), "Displays a list of all commands", "[command]");
+        super(new String[]{"help", "h", "?"}, CommandCategory.GENERAL, Permissions.everyone(), "Displays a list of all commands", "[command]");
     }
 
     @Override

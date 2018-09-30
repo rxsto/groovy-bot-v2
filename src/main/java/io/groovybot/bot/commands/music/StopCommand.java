@@ -10,7 +10,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 public class StopCommand extends SameChannelCommand {
 
     public StopCommand() {
-        super(new String[] {"stop"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you stop the bot", "");
+        super(new String[]{"stop"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you stop the bot", "");
     }
 
     @Override

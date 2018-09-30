@@ -14,7 +14,7 @@ import java.util.Locale;
 public class LanguageCommand extends Command {
 
     public LanguageCommand() {
-        super(new String[] {"language", "lang"}, CommandCategory.SETTINGS, Permissions.everyone(), "Sets your own language", "[language-tag]");
+        super(new String[]{"language", "lang"}, CommandCategory.SETTINGS, Permissions.everyone(), "Sets your own language", "[language-tag]");
     }
 
     @Override
@@ -34,7 +34,7 @@ public class LanguageCommand extends Command {
         return send(success(event.translate("command.language.set.title"), String.format(event.translate("command.language.set.description"), locale.getLanguage())));
     }
 
-    private String formatAvalibleLanguages(TranslationManager translationManager){
+    private String formatAvalibleLanguages(TranslationManager translationManager) {
         StringBuilder builder = new StringBuilder();
         translationManager.getLocales().forEach(locale -> builder.append(locale.getLanguageName()).append("(`").append(locale.getLocale().toLanguageTag().replace("-", "_")).append("`)").append("\n"));
         return builder.toString();

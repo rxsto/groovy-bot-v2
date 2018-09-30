@@ -1,6 +1,7 @@
 package io.groovybot.bot.core.audio;
 
 
+import io.groovybot.bot.GroovyBot;
 import lombok.Getter;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -19,6 +20,10 @@ public class MusicPlayerManager {
         MusicPlayer player = new MusicPlayer(guild, channel);
         playerStorage.put(guild.getIdLong(), player);
         return player;
+    }
+
+    public int getPlayingServers() {
+        return GroovyBot.getInstance().getLavalinkManager().countPlayers();
     }
 
     public void update(Guild guild, MusicPlayer player) {

@@ -8,6 +8,8 @@ public class JDASUCKSFILTER extends Filter {
 
     @Override
     public int decide(LoggingEvent event) {
+        if (event.getRenderedMessage().contains("org.apache.http.wire"))
+            return DENY;
         if (event.getThrowableInformation() != null && event.getThrowableInformation().getThrowable() instanceof ErrorResponseException)
             return DENY;
         return ACCEPT;

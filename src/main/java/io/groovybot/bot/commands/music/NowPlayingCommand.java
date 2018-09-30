@@ -14,12 +14,14 @@ import net.dv8tion.jda.core.EmbedBuilder;
 
 public class NowPlayingCommand extends Command {
     public NowPlayingCommand() {
-        super(new String[] {"now", "np", "nowplaying"}, CommandCategory.MUSIC, Permissions.everyone(), "Shows you all information about the current track", "");
+        super(new String[]{"now", "np", "nowplaying"}, CommandCategory.MUSIC, Permissions.everyone(), "Shows you all information about the current track", "");
     }
 
     @Override
     public Result run(String[] args, CommandEvent event) {
         MusicPlayer player = GroovyBot.getInstance().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
+        if (!player.isPlaying())
+            return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Colors.DARK_BUT_NOT_BLACK);
         AudioTrack playingTrack = player.getPlayer().getPlayingTrack();
