@@ -13,6 +13,7 @@ import io.groovybot.bot.core.KeyManager;
 import io.groovybot.bot.core.audio.LavalinkManager;
 import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.audio.MusicPlayerManager;
+import io.groovybot.bot.core.audio.PlaylistManager;
 import io.groovybot.bot.core.cache.Cache;
 import io.groovybot.bot.core.command.CommandManager;
 import io.groovybot.bot.core.command.interaction.InteractionManager;
@@ -88,6 +89,8 @@ public class GroovyBot {
     private Cache<Guild> guildCache;
     @Getter
     private Cache<User> userCache;
+    @Getter
+    private PlaylistManager playlistManager;
 
 
     private GroovyBot(String[] args) {
@@ -111,6 +114,7 @@ public class GroovyBot {
         initShardManager();
         translationManager = new TranslationManager();
         musicPlayerManager = new MusicPlayerManager();
+        playlistManager = new PlaylistManager(postgreSQL.getConnection());
         registerCommands();
     }
 
@@ -322,7 +326,8 @@ public class GroovyBot {
                 new ForcePlayCommand(),
                 new AnnounceCommand(),
                 new ForcePlayCommand(),
-                new UpdateCommand()
+                new UpdateCommand(),
+                new PlaylistCommand()
         );
     }
 
