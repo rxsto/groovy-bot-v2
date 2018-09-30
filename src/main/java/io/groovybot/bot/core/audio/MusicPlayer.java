@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @Log4j
 public class MusicPlayer extends Player {
 
+    @Getter
     private final Guild guild;
     private final TextChannel channel;
     @Getter
@@ -62,14 +63,16 @@ public class MusicPlayer extends Player {
 
     public void leave() {
         trackQueue.clear();
-        link.disconnect();
+        if (!this.getGuild().getId().equals("403882830225997825"))
+            link.disconnect();
     }
 
     @Override
     public void onEnd(boolean announce) {
         if (announce)
             SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not queue more songs?"));
-        link.disconnect();
+        if (!this.getGuild().getId().equals("403882830225997825"))
+            link.disconnect();
         stop();
     }
 
@@ -172,8 +175,11 @@ public class MusicPlayer extends Player {
             private boolean checkSong(AudioTrack track) {
                 if (track.getDuration() > 3600000 && !Permissions.tierTwo().isCovered(userPermissions, event)) {
                     SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.toolongsong.title"), event.translate("phrases.toolongsong.description")));
-                    if (trackQueue.isEmpty())
-                        link.disconnect();
+                    if (trackQueue.isEmpty()) {
+                        if (getGuild().getId().equals("403882830225997825"))
+                            link.disconnect();
+                        System.out.println("Disconnect 3");
+                    }
                     return false;
                 }
                 return true;
