@@ -62,14 +62,14 @@ public class Scheduler extends AudioEventAdapterWrapped {
                 }
                 AudioTrack nextTrack = player.pollTrack();
                 if (nextTrack == null)
-                    player.onEnd(true);
+                    if (!((MusicPlayer) player).getGuild().getId().equals("403882830225997825"))
+                        player.onEnd(true);
                 player.play(nextTrack, false);
                 break;
             case LOAD_FAILED:
                 player.play(player.pollTrack(), true);
                 break;
             default:
-                // Do nothing
                 break;
         }
     }

@@ -15,6 +15,8 @@ public class LeaveCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
+        if (player.getGuild().getId().equals("403882830225997825") && !Permissions.ownerOnly().isCovered(event.getPermissions(), event))
+            return send(error("No Permission!", "You are not allowed to let Groovy disconnect this channel!"));
         player.stop();
         player.clearQueue();
         player.getLink().disconnect();

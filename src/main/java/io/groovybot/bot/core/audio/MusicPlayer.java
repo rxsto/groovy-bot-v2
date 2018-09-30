@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @Log4j
 public class MusicPlayer extends Player {
 
+    @Getter
     private final Guild guild;
     private final TextChannel channel;
     @Getter
