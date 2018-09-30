@@ -69,7 +69,6 @@ public class Scheduler extends AudioEventAdapterWrapped {
                 player.play(player.pollTrack(), true);
                 break;
             default:
-                // Do nothing
                 break;
         }
     }
