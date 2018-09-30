@@ -1,6 +1,7 @@
 package io.groovybot.bot.core.audio;
 
 
+import io.groovybot.bot.GroovyBot;
 import lombok.Getter;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -13,7 +14,6 @@ public class MusicPlayerManager {
 
     @Getter
     private Map<Long, MusicPlayer> playerStorage = new HashMap<>();
-    private int playingServers = 0;
 
     public MusicPlayer getPlayer(Guild guild, TextChannel channel) {
         if (playerStorage.containsKey(guild.getIdLong()))
@@ -24,15 +24,7 @@ public class MusicPlayerManager {
     }
 
     public int getPlayingServers() {
-        updatePlayingServers();
-        return playingServers;
-    }
-
-    private void updatePlayingServers() {
-        getPlayerStorage().forEach( (id, player) -> {
-            if (player.isPlaying())
-                playingServers++;
-        });
+        return GroovyBot.getInstance().getLavalinkManager().countPlayers();
     }
 
     public void update(Guild guild, MusicPlayer player) {
