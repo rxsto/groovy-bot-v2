@@ -8,6 +8,7 @@ import lombok.Getter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Locale;
+import java.util.Map;
 
 @Getter
 public class User extends DatabaseEntitiy {
@@ -60,6 +61,10 @@ public class User extends DatabaseEntitiy {
 
     public UserPermissions getPermissions() {
         return PermissionProvider.getUserPermissions(this);
+    }
+
+    public Map<String, Playlist> getPlaylists() {
+        return GroovyBot.getInstance().getPlaylistManager().getPlaylist(entityId);
     }
 
     private void update() {
