@@ -155,6 +155,14 @@ public class MusicPlayer extends Player {
 
             @Override
             public void loadFailed(FriendlyException e) {
+                if (e.getMessage().toLowerCase().contains("Unknown file format")) {
+                    infoMessage.editMessage(EmbedUtil.error(event.translate("phrases.searching.unknownformat.tile"), event.translate("phrases.searching.unknownformat.description")).build()).queue();
+                    return;
+                }
+                if (e.getMessage().toLowerCase().contains("The playlist is private")) {
+                    infoMessage.editMessage(EmbedUtil.error(event.translate("phrases.searching.private.tile"), event.translate("phrases.searching.private.description")).build()).queue();
+                    return;
+                }
                 infoMessage.editMessage(EmbedUtil.error(event).build()).queue();
                 log.error("[PlayCommand] Error while loading track!", e);
             }
