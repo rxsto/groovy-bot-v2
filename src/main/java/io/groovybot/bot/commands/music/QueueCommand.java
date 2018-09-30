@@ -43,14 +43,16 @@ public class QueueCommand extends Command {
         return null;
     }
 
-    private EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, AudioTrack currentTrack, int currentPage, int totalPages) {
-        return new EmbedBuilder()
+    public static EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, AudioTrack currentTrack, int currentPage, int totalPages) {
+        EmbedBuilder builder = new EmbedBuilder()
                 .setTitle(":notes: " + String.format(event.translate("command.queue.title"), event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size()))
-                .setFooter(currentPage + "/" + totalPages, event.getJDA().getSelfUser().getAvatarUrl())
                 .setDescription(generateQueueDescription(tracks, startNumber, currentTrack)).setColor(Colors.DARK_BUT_NOT_BLACK);
+        if (currentPage != 0 && totalPages != 0)
+            builder.setFooter(currentPage + "/" + totalPages, event.getJDA().getSelfUser().getAvatarUrl());
+        return builder;
     }
 
-    private String generateQueueDescription(List<AudioTrack> tracks, int startNumber, AudioTrack currentTrack) {
+    private static String generateQueueDescription(List<AudioTrack> tracks, int startNumber, AudioTrack currentTrack) {
         StringBuilder queueMessage = new StringBuilder();
         AtomicInteger trackCount = new AtomicInteger(startNumber);
         if (currentTrack != null)

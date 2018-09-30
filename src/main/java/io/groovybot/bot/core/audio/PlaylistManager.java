@@ -39,4 +39,15 @@ public class PlaylistManager {
         return out;
     }
 
+    public void deletePlaylist(String name, Long ownerId) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM playlists WHERE owner_id = ? AND name = ?");
+            ps.setLong(1, ownerId);
+            ps.setString(2, name);
+            ps.execute();
+        } catch (SQLException e) {
+            log.error("[Playlist] Error while deleting playlist", e);
+        }
+    }
+
 }
