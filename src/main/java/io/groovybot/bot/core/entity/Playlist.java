@@ -83,18 +83,9 @@ public class Playlist {
         update();
     }
 
-    public void removeTrack(AudioTrack track) {
-        songs.remove(track);
+    public void removeTrack(int index) {
+        songs.remove(index);
         update();
-    }
-
-    public void addAll(Collection<AudioTrack> tracks) {
-        songs.addAll(tracks);
-        update();
-    }
-
-    public AudioTrack findTrack(String identifier) {
-        return songs.stream().filter(track -> track.getIdentifier().equalsIgnoreCase(identifier)).findFirst().orElse(null);
     }
 
     private List<AudioTrack> decodeTracks(JSONArray identifiers) {
@@ -108,5 +99,4 @@ public class Playlist {
         }
         return out;
     }
-
 }
