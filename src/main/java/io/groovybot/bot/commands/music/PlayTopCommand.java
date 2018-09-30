@@ -10,7 +10,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 public class PlayTopCommand extends SameChannelCommand {
 
     public PlayTopCommand() {
-        super(new String[] {"playtop", "pt", "addtop", "at"}, CommandCategory.MUSIC, Permissions.djMode(), "", "<song/url>");
+        super(new String[]{"playtop", "pt", "addtop", "at"}, CommandCategory.MUSIC, Permissions.djMode(), "", "<song/url>");
     }
 
     @Override

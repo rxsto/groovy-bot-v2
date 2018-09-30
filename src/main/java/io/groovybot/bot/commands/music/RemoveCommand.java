@@ -11,10 +11,10 @@ import net.dv8tion.jda.core.utils.Helpers;
 
 import java.util.LinkedList;
 
-public class RemoveCommand extends SameChannelCommand  {
+public class RemoveCommand extends SameChannelCommand {
 
     public RemoveCommand() {
-        super(new String[] {"remove", "rm"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you remove a specific song", "<index>");
+        super(new String[]{"remove", "rm"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you remove a specific song", "<index>");
     }
 
     @Override

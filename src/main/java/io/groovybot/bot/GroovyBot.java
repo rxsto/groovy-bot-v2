@@ -3,6 +3,7 @@ package io.groovybot.bot;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.commands.general.*;
 import io.groovybot.bot.commands.music.*;
+import io.groovybot.bot.commands.owner.UpdateCommand;
 import io.groovybot.bot.commands.settings.AnnounceCommand;
 import io.groovybot.bot.commands.settings.DjModeCommand;
 import io.groovybot.bot.commands.settings.LanguageCommand;
@@ -55,19 +56,7 @@ public class GroovyBot {
     @Getter
     private static GroovyBot instance;
     @Getter
-    private Configuration config;
-    @Getter
-    private PostgreSQL postgreSQL;
-    @Getter
-    private ShardManager shardManager;
-    @Getter
     private final OkHttpClient httpClient;
-    @Getter
-    private IEventManager eventManager;
-    @Getter
-    private Cache<Guild> guildCache;
-    @Getter
-    private Cache<User> userCache;
     @Getter
     private final CommandManager commandManager;
     @Getter
@@ -87,13 +76,19 @@ public class GroovyBot {
     private final EventWaiter eventWaiter;
     @Getter
     private final KeyManager keyManager;
+    @Getter
+    private Configuration config;
+    @Getter
+    private PostgreSQL postgreSQL;
+    @Getter
+    private ShardManager shardManager;
+    @Getter
+    private IEventManager eventManager;
+    @Getter
+    private Cache<Guild> guildCache;
+    @Getter
+    private Cache<User> userCache;
 
-
-    public static void main(String[] args) {
-        if (instance != null)
-            throw new RuntimeException("Groovy was already initialized in this VM!");
-        new GroovyBot(args);
-    }
 
     private GroovyBot(String[] args) {
         instance = this;
@@ -119,6 +114,11 @@ public class GroovyBot {
         registerCommands();
     }
 
+    public static void main(String[] args) {
+        if (instance != null)
+            throw new RuntimeException("Groovy was already initialized in this VM!");
+        new GroovyBot(args);
+    }
 
     private Integer retrieveShards() {
         Request request = new Request.Builder()
@@ -320,7 +320,9 @@ public class GroovyBot {
                 new RemoveCommand(),
                 new KeyCommand(),
                 new ForcePlayCommand(),
-                new AnnounceCommand()
+                new AnnounceCommand(),
+                new ForcePlayCommand(),
+                new UpdateCommand()
         );
     }
 

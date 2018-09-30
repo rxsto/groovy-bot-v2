@@ -12,7 +12,7 @@ public class CommandEvent extends GuildMessageReceivedEvent {
     private final String invocation;
 
     public CommandEvent(GuildMessageReceivedEvent event, GroovyBot bot, String[] args, String invocation) {
-        super(event.getJDA(),event.getResponseNumber(), event.getMessage());
+        super(event.getJDA(), event.getResponseNumber(), event.getMessage());
         this.groovyBot = bot;
         this.args = args;
         this.invocation = invocation;

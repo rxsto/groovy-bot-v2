@@ -16,6 +16,7 @@ import java.net.URI;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Log4j
 public class LavalinkManager {
@@ -56,5 +57,13 @@ public class LavalinkManager {
     private void onEvent(Event event) {
         if (lavalink != null)
             lavalink.onEvent(event);
+    }
+
+    public int countPlayers() {
+        AtomicInteger playingPlayers = new AtomicInteger();
+        lavalink.getNodes().forEach(
+                node -> playingPlayers.addAndGet(node.getStats().getPlayingPlayers())
+        );
+        return playingPlayers.get();
     }
 }

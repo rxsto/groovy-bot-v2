@@ -14,13 +14,13 @@ import java.util.LinkedList;
 public class MoveCommand extends SameChannelCommand {
 
     public MoveCommand() {
-        super(new String[] {"move", "mv"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you move a song from one position to another", "<song> <position>");
+        super(new String[]{"move", "mv"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you move a song from one position to another", "<song> <position>");
     }
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (args.length != 2 || !Helpers.isNumeric(args[0]) || !Helpers.isNumeric(args[1]))
-            return send(error(event.translate("phrases.invalidarguments.title"), event.translate("phrases.invalidarguments.description")));
+            return sendHelp();
 
         int songPos = Integer.parseInt(args[0]);
         int wantPos = Integer.parseInt(args[1]);

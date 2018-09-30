@@ -1,6 +1,7 @@
 package io.groovybot.bot.core.entity;
 
 import io.groovybot.bot.GroovyBot;
+import io.groovybot.bot.core.command.permission.PermissionProvider;
 import io.groovybot.bot.core.command.permission.UserPermissions;
 import lombok.Getter;
 
@@ -11,7 +12,6 @@ import java.util.Locale;
 @Getter
 public class User extends DatabaseEntitiy {
 
-    private UserPermissions permissions;
     private boolean tierOne = false;
     private boolean tierTwo = false;
     private Locale locale = GroovyBot.getInstance().getTranslationManager().getDefaultLocale().getLocale();
@@ -19,16 +19,9 @@ public class User extends DatabaseEntitiy {
     public User(Long entityId) throws Exception {
         super(entityId);
         Boolean owner = GroovyBot.getInstance().getConfig().getJSONArray("owners").toString().contains(String.valueOf(entityId));
-        PreparedStatement ps = getConnection().prepareStatement("SELECT * FROM premium WHERE user_id = ?");
         PreparedStatement userStatement = getConnection().prepareStatement("SELECT * FROM users WHERE id = ?");
         userStatement.setLong(1, entityId);
         ResultSet userResult = userStatement.executeQuery();
-        ps.setLong(1, entityId);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            tierOne = rs.getString("type").equals("1");
-            tierTwo = rs.getString("type").equals("2");
-        }
         if (userResult.next())
             locale = Locale.forLanguageTag(userResult.getString("locale").replace("_", "-"));
         else {
@@ -36,7 +29,6 @@ public class User extends DatabaseEntitiy {
             insertStatement.setLong(1, entityId);
             insertStatement.setString(2, locale.toLanguageTag().replace("-", "_"));
         }
-        permissions = new UserPermissions(this, owner, tierOne, tierTwo);
     }
 
     @Override
@@ -64,6 +56,10 @@ public class User extends DatabaseEntitiy {
         else
             tierTwo = true;
         update();
+    }
+
+    public UserPermissions getPermissions() {
+        return PermissionProvider.getUserPermissions(this);
     }
 
     private void update() {

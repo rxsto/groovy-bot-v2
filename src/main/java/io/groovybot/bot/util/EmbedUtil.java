@@ -14,7 +14,7 @@ public class EmbedUtil extends SafeMessage {
     }
 
     public static EmbedBuilder error(CommandEvent event) {
-        return error(event.translate("phrases.unknownerror.title"), event.translate("phrases.unknownerror.description"));
+        return error(event.translate("phrases.error.unknown.title"), event.translate("phrases.error.unknown.description"));
     }
 
     public static EmbedBuilder info(String title, String description) {

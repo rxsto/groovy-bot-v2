@@ -11,7 +11,7 @@ import io.groovybot.bot.core.entity.Guild;
 public class PrefixCommand extends Command {
 
     public PrefixCommand() {
-        super(new String[] {"prefix"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Sets the server's prefix", "[prefix]");
+        super(new String[]{"prefix"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Sets the server's prefix", "[prefix]");
     }
 
     @Override

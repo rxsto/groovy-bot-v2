@@ -11,7 +11,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 public class LoopCommand extends SameChannelCommand {
 
     public LoopCommand() {
-        super(new String[] {"loop", "lp"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you activate the loop", "");
+        super(new String[]{"loop", "lp"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you activate the loop", "");
     }
 
     @Override

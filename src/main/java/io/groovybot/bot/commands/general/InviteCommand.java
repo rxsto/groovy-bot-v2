@@ -8,7 +8,7 @@ import io.groovybot.bot.core.command.permission.Permissions;
 
 public class InviteCommand extends Command {
     public InviteCommand() {
-        super(new String[] {"invite"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you an invite for Groovy", "");
+        super(new String[]{"invite"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you an invite for Groovy", "");
     }
 
     @Override

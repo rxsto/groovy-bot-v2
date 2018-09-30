@@ -45,7 +45,7 @@ public class FormatUtil {
     private static String buildUsage(Command command) {
         if (command instanceof SubCommand) {
             SubCommand subCommand = ((SubCommand) command);
-            return "g!" + subCommand.getMainCommand().getAliases()[0] + " " + subCommand.getAliases()[0] + " " + subCommand.getUsage() + " - "+ subCommand.getDescription();
+            return "g!" + subCommand.getMainCommand().getAliases()[0] + " " + subCommand.getAliases()[0] + " " + subCommand.getUsage() + " - " + subCommand.getDescription();
         }
         return "g!" + command.getAliases()[0] + " " + command.getUsage();
     }

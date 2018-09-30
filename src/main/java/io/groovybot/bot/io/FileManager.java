@@ -25,7 +25,7 @@ public class FileManager {
 
         for (String file : FILES) {
             File fil = new File(file);
-            if(!fil.exists()) {
+            if (!fil.exists()) {
                 try {
                     fil.createNewFile();
                 } catch (IOException e) {

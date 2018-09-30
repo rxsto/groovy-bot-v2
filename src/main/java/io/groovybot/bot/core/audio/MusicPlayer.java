@@ -96,8 +96,8 @@ public class MusicPlayer extends Player {
 
     public void queueSongs(CommandEvent event, boolean force, boolean playtop) {
         UserPermissions userPermissions = EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions();
-        Permissions tierOne = Permissions.tierOne();
-        if (trackQueue.size() >= 50 && !tierOne.isCovered(userPermissions, event)) {
+        Permissions tierTwo = Permissions.tierTwo();
+        if (trackQueue.size() >= 25 && !tierTwo.isCovered(userPermissions, event)) {
             SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.fullqueue.title"), event.translate("phrases.fullqueue.description")));
             return;
         }
@@ -125,10 +125,10 @@ public class MusicPlayer extends Player {
             @Override
             public void playlistLoaded(AudioPlaylist audioPlaylist) {
                 List<AudioTrack> tracks = audioPlaylist.getTracks();
-                if (!tierOne.isCovered(userPermissions, event))
+                if (!tierTwo.isCovered(userPermissions, event))
                     tracks = tracks.stream()
-                            .limit(50 - getQueueSize())
-                            .filter(track -> track.getDuration() < 7200000)
+                            .limit(25 - getQueueSize())
+                            .filter(track -> track.getDuration() < 3600000)
                             .collect(Collectors.toList());
 
                 if (tracks.isEmpty()) {
@@ -155,18 +155,48 @@ public class MusicPlayer extends Player {
 
             @Override
             public void loadFailed(FriendlyException e) {
+                if (e.getMessage().toLowerCase().contains("Unknown file format")) {
+                    infoMessage.editMessage(EmbedUtil.error(event.translate("phrases.searching.unknownformat.tile"), event.translate("phrases.searching.unknownformat.description")).build()).queue();
+                    return;
+                }
+                if (e.getMessage().toLowerCase().contains("The playlist is private")) {
+                    infoMessage.editMessage(EmbedUtil.error(event.translate("phrases.searching.private.tile"), event.translate("phrases.searching.private.description")).build()).queue();
+                    return;
+                }
                 infoMessage.editMessage(EmbedUtil.error(event).build()).queue();
                 log.error("[PlayCommand] Error while loading track!", e);
             }
 
             private boolean checkSong(AudioTrack track) {
-                if (track.getDuration() > 7200000 && !Permissions.tierOne().isCovered(userPermissions, event)) {
+                if (track.getDuration() > 3600000 && !Permissions.tierTwo().isCovered(userPermissions, event)) {
                     SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.toolongsong.title"), event.translate("phrases.toolongsong.description")));
                     if (trackQueue.isEmpty())
                         link.disconnect();
                     return false;
                 }
                 return true;
+            }
+        });
+    }
+
+    public void update() {
+        this.clearQueue();
+        getAudioPlayerManager().loadItem("https://cdn.groovybot.gq/sounds/update.mp3", new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack track) {
+                queueTrack(track, true, false);
+            }
+
+            @Override
+            public void playlistLoaded(AudioPlaylist playlist) {
+            }
+
+            @Override
+            public void noMatches() {
+            }
+
+            @Override
+            public void loadFailed(FriendlyException exception) {
             }
         });
     }
