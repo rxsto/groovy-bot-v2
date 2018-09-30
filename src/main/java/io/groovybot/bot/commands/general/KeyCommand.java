@@ -41,7 +41,6 @@ public class KeyCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            System.out.println(event.getArguments());
             if (args.length < 2)
                 return sendHelp();
             Key.KeyType type;
