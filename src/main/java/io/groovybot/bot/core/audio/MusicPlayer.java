@@ -53,7 +53,7 @@ public class MusicPlayer extends Player {
             return false;
         }
         final GuildVoiceState voiceState = event.getGuild().getSelfMember().getVoiceState();
-        if (voiceState.inVoiceChannel() && voiceState.getChannel().getMembers().size() != 2 && !Permissions.djMode().isCovered(event.getPermissions(), event)) {
+        if (voiceState.inVoiceChannel() && voiceState.getChannel().getMembers().size() != 1 && !Permissions.djMode().isCovered(event.getPermissions(), event)) {
             SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.djrequired.title"), event.translate("phrases.djrequired.description")));
             return false;
         }
