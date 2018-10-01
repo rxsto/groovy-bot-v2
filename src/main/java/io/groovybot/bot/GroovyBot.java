@@ -30,6 +30,7 @@ import io.groovybot.bot.io.config.Configuration;
 import io.groovybot.bot.io.database.PostgreSQL;
 import io.groovybot.bot.listeners.*;
 import io.groovybot.bot.util.JDASUCKSFILTER;
+import io.groovybot.bot.util.YoutubeUtil;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
@@ -91,6 +92,8 @@ public class GroovyBot {
     private Cache<User> userCache;
     @Getter
     private PlaylistManager playlistManager;
+    @Getter
+    private final YoutubeUtil youtubeClient;
 
 
     private GroovyBot(String[] args) {
@@ -115,6 +118,7 @@ public class GroovyBot {
         translationManager = new TranslationManager();
         musicPlayerManager = new MusicPlayerManager();
         playlistManager = new PlaylistManager(postgreSQL.getConnection());
+        youtubeClient = YoutubeUtil.create(this);
         registerCommands();
     }
 
@@ -263,6 +267,9 @@ public class GroovyBot {
         Logger.getRootLogger().addAppender(consoleAppender);
         Logger.getRootLogger().addAppender(latestLogAppender);
         Logger.getRootLogger().addAppender(dateLogAppender);
+        Logger.getLogger("org.apache.http").setLevel(Level.OFF);
+        Logger.getLogger("org.apache.http.headers").setLevel(Level.OFF);
+        Logger.getLogger("org.apache.http.wire").setLevel(Level.OFF);
         Logger.getRootLogger().setLevel(args.length == 0 ? Level.INFO : Level.toLevel(args[0]));
     }
 
@@ -327,7 +334,8 @@ public class GroovyBot {
                 new AnnounceCommand(),
                 new ForcePlayCommand(),
                 new UpdateCommand(),
-                new PlaylistCommand()
+                new PlaylistCommand(),
+                new AutoplayCommand()
         );
     }
 

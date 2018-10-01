@@ -17,7 +17,7 @@ public class MusicPlayerManager {
     public MusicPlayer getPlayer(Guild guild, TextChannel channel) {
         if (playerStorage.containsKey(guild.getIdLong()))
             return playerStorage.get(guild.getIdLong());
-        MusicPlayer player = new MusicPlayer(guild, channel);
+        MusicPlayer player = new MusicPlayer(guild, channel, GroovyBot.getInstance().getYoutubeClient());
         playerStorage.put(guild.getIdLong(), player);
         return player;
     }
