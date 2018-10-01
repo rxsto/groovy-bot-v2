@@ -3,9 +3,11 @@ package io.groovybot.bot.core.audio;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import io.groovybot.bot.util.YoutubeUtil;
 import lavalink.client.io.jda.JdaLink;
 import lavalink.client.player.IPlayer;
 import lombok.Getter;
+import net.dv8tion.jda.core.entities.Message;
 
 import java.util.*;
 
@@ -19,10 +21,12 @@ public abstract class Player {
     public JdaLink link;
     @Getter
     protected IPlayer player;
+    protected YoutubeUtil youtubeClient;
 
-    public Player() {
+    public Player(YoutubeUtil youtubeClient) {
         this.trackQueue = new LinkedList<>();
         this.scheduler = new Scheduler(this);
+        this.youtubeClient = youtubeClient;
     }
 
     protected void instanciatePlayer(JdaLink link) {
@@ -155,4 +159,5 @@ public abstract class Player {
         trackQueue.clear();
     }
 
+    public abstract Message announceAutoplay(Player player);
 }
