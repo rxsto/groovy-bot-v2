@@ -11,7 +11,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 public class AutoplayCommand extends SameChannelCommand {
 
     public AutoplayCommand() {
-        super(new String[] {"autoplay", "radio"}, CommandCategory.MUSIC, Permissions.tierTwo(), "Enables youtube autoplay feature", "");
+        super(new String[] {"autoplay", "radio"}, CommandCategory.MUSIC, Permissions.tierOne(), "Enables youtube autoplay feature", "");
     }
 
     @Override
