@@ -66,6 +66,7 @@ public abstract class Player {
         player.seekTo(time);
     }
 
+    // UNUSED
     public void shuffle() {
         Collections.shuffle((List<?>) trackQueue);
     }

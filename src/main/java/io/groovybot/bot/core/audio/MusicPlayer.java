@@ -122,7 +122,6 @@ public class MusicPlayer extends Player {
 
         Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), event.getArguments())));
 
-
         final boolean isURL = isUrl;
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override
@@ -195,6 +194,12 @@ public class MusicPlayer extends Player {
 
     public void update() {
         this.clearQueue();
+        getScheduler().setShuffle(false);
+        getScheduler().setQueueRepeating(false);
+        getScheduler().setRepeating(false);
+        setVolume(100);
+        if (isPaused())
+            resume();
         getAudioPlayerManager().loadItem("https://cdn.groovybot.gq/sounds/update.mp3", new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
@@ -203,14 +208,17 @@ public class MusicPlayer extends Player {
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
+
             }
 
             @Override
             public void noMatches() {
+
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
+
             }
         });
     }
