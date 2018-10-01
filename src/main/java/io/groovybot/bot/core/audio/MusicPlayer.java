@@ -13,6 +13,7 @@ import io.groovybot.bot.core.command.permission.UserPermissions;
 import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.util.EmbedUtil;
 import io.groovybot.bot.util.SafeMessage;
+import io.groovybot.bot.util.YoutubeUtil;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavaplayerPlayerWrapper;
 import lombok.Getter;
@@ -33,8 +34,8 @@ public class MusicPlayer extends Player {
     @Getter
     private final AudioPlayerManager audioPlayerManager;
 
-    protected MusicPlayer(Guild guild, TextChannel channel) {
-        super();
+    protected MusicPlayer(Guild guild, TextChannel channel, YoutubeUtil youtubeClient) {
+        super(youtubeClient);
         LavalinkManager lavalinkManager = GroovyBot.getInstance().getLavalinkManager();
         this.guild = guild;
         this.channel = channel;
@@ -74,6 +75,11 @@ public class MusicPlayer extends Player {
         if (!this.getGuild().getId().equals("403882830225997825"))
             link.disconnect();
         stop();
+    }
+
+    @Override
+    public Message announceAutoplay(Player player) {
+        return SafeMessage.sendMessageBlocking(channel, EmbedUtil.info("Searching video", "Searching new autoplay video"));
     }
 
     @Override
