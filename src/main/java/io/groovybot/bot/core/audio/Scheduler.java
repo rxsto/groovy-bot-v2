@@ -58,7 +58,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
         switch (reason) {
             case FINISHED:
                 if (autoPlay) {
-                    runAutoplay();
+                    runAutoplay(track);
                     return;
                 }
                 if (repeating) {
@@ -88,10 +88,10 @@ public class Scheduler extends AudioEventAdapterWrapped {
         }
     }
 
-    public void runAutoplay() {
+    public void runAutoplay(AudioTrack track) {
         Message infoMessaege = player.announceAutoplay();
         try {
-            SearchResult result = player.youtubeClient.retrieveRelatedVideos(player.getPlayer().getPlayingTrack().getIdentifier());
+            SearchResult result = player.youtubeClient.retrieveRelatedVideos(track.getIdentifier());
             infoMessaege.editMessage(EmbedUtil.success("Loaded video", String.format("Successfully loaded video `%s`", result.getSnippet().getTitle())).build()).queue();
             queueSearchResult(result, infoMessaege);
         } catch (IOException e) {
