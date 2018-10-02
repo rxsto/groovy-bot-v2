@@ -116,7 +116,7 @@ public class ControlCommand extends SameChannelCommand {
                     sendMessage(translate(author, "controlpanel.skipped.title"), translate(author, "controlpanel.skipped.description"));
                     break;
                 case "\uD83D\uDD02":
-                    if (playerScheduler.isRepeating() || playerScheduler.isShuffle()) {
+                    if (playerScheduler.isQueueRepeating() || playerScheduler.isShuffle()) {
                         sendMessage(translate(author, "controlpanel.loop.shuffle.title"), translate(author, "controlpanel.loop.shuffle.description"));
                         break;
                     }
