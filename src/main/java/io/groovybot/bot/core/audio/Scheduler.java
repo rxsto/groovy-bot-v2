@@ -64,8 +64,8 @@ public class Scheduler extends AudioEventAdapterWrapped {
                         infoMessaege.editMessage(EmbedUtil.success("Loaded video", String.format("Successfully loaded video `%s`", result.getSnippet().getTitle())).build()).queue();
                         queueSearchResult(result, infoMessaege);
                     } catch (IOException e) {
-                        infoMessaege.editMessage(EmbedUtil.error("Unkown error", "An unexpedted error occurred while retieving autplay video").build()).queue();
-                        log.error("[Scheduler] Error while retieving autplay video", e);
+                        infoMessaege.editMessage(EmbedUtil.error("Unknown error", "An unknown autoplay-error occurred while retrieving the next video!").build()).queue();
+                        log.error("[Scheduler] Error while retrieving autoplay video", e);
                     }
                     return;
                 }
@@ -115,7 +115,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                infoMessage.editMessage(EmbedUtil.error("Unkown error", "An unkown error occcurred while queueing song").build()).queue();
+                infoMessage.editMessage(EmbedUtil.error("Unknown error", "An unknown error occurred while queueing song").build()).queue();
                 log.error("[AutoPlay] Error while queueing song", exception);
             }
         });
