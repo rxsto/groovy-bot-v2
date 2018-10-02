@@ -275,6 +275,29 @@ public class GroovyBot {
         final JSONObject webhookObject = new JSONObject();
         webhookObject.put("error_hook", "http://hook.com");
         configuration.addDefault("webhooks", webhookObject);
+        final JSONObject youtubeObject = new JSONObject();
+        youtubeObject.put("apikey", "MINECRAFTISANICEGAME");
+        configuration.addDefault("youtube", youtubeObject);
+        final JSONObject botlistObjects = new JSONObject()
+                .put("botlist.space", "YourVeryniceKeyBRo")
+                .put("bots.ondiscord.xyz", "YourVeryniceKeyBRo")
+                .put("discordboats.xyz", "YourVeryniceKeyBRo")
+                .put("discordboats.club", "YourVeryniceKeyBRo")
+                .put("discordbotlist.com", "YourVeryniceKeyBRo")
+                .put("discordbot.world", "YourVeryniceKeyBRo")
+                .put("bots.discord.pw", "YourVeryniceKeyBRo")
+                .put("discordbotlist.xyz", "YourVeryniceKeyBRo")
+                .put("discordbots.group", "YourVeryniceKeyBRo")
+                .put("bots.discordlist.app", "YourVeryniceKeyBRo")
+                .put("discord.services", "YourVeryniceKeyBRo")
+                .put("discordsbestbots.xyz", "YourVeryniceKeyBRo")
+                .put("divinediscordbots.comdbots.com", "YourVeryniceKeyBRo");
+        configuration.addDefault("botlists", botlistObjects);
+        final JSONObject statusPageObject = new JSONObject();
+        statusPageObject.put("page_id", "1337");
+        statusPageObject.put("metric_id", "7331");
+        statusPageObject.put("api_key", "DaIndianKyMastartBro");
+        configuration.addDefault("statuspage", statusPageObject);
         this.config = configuration.init();
     }
 
