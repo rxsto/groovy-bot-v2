@@ -213,6 +213,22 @@ public class GroovyBot {
                 "    primary key,\n" +
                 "  locale varchar(50)\n" +
                 ");\n");
+        postgreSQL.addDefault(() -> "create table if not exists stats\n" +
+                "(\n" +
+                "  playing integer,\n" +
+                "  servers integer,\n" +
+                "  users   integer,\n" +
+                "  id      bigint not null\n" +
+                "    constraint stats_pk\n" +
+                "    primary key\n" +
+                ");");
+        postgreSQL.addDefault(() -> "create table if not exists lavalink_nodes\n" +
+                "(\n" +
+                "  uri      varchar not null\n" +
+                "    constraint lavalink_nodes_pkey\n" +
+                "    primary key,\n" +
+                "  password varchar\n" +
+                ");");
         postgreSQL.createDatabases();
     }
 

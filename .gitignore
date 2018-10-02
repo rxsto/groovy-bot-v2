@@ -98,3 +98,5 @@ buildNumber.properties
 /logs/
 /.flooignore
 /.floo
+
+*.iml
