@@ -60,9 +60,14 @@ public class LavalinkManager {
     }
 
     public int countPlayers() {
+        if (lavalink == null)
+            return 0;
         AtomicInteger playingPlayers = new AtomicInteger();
         lavalink.getNodes().forEach(
-                node -> playingPlayers.addAndGet(node.getStats().getPlayingPlayers())
+                node -> {
+                    if (node.getStats() != null)
+                        playingPlayers.addAndGet(node.getStats().getPlayingPlayers());
+                }
         );
         return playingPlayers.get();
     }
