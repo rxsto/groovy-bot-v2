@@ -229,6 +229,23 @@ public class GroovyBot {
                 "    primary key,\n" +
                 "  password varchar\n" +
                 ");");
+        postgreSQL.addDefault(() -> "create table if not exists keys\n" +
+                "(\n" +
+                "  id   serial not null\n" +
+                "    constraint keys_pkey\n" +
+                "    primary key,\n" +
+                "  type varchar,\n" +
+                "  key  varchar\n" +
+                ");");
+        postgreSQL.addDefault(() -> "create table if not exists playlists\n" +
+                "(\n" +
+                "  id       serial not null\n" +
+                "    constraint playlists_pkey\n" +
+                "    primary key,\n" +
+                "  owner_id bigint,\n" +
+                "  tracks   varchar,\n" +
+                "  name     varchar\n" +
+                ");\n");
         postgreSQL.createDatabases();
     }
 
