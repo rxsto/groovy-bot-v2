@@ -3,6 +3,7 @@ package io.groovybot.bot;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.commands.general.*;
 import io.groovybot.bot.commands.music.*;
+import io.groovybot.bot.commands.owner.EvalCommand;
 import io.groovybot.bot.commands.owner.UpdateCommand;
 import io.groovybot.bot.commands.settings.AnnounceCommand;
 import io.groovybot.bot.commands.settings.DjModeCommand;
@@ -335,8 +336,6 @@ public class GroovyBot {
     @SuppressWarnings("unused")
     private void onReady(AllShardsLoadedEvent event) {
         allShardsInitialized = true;
-        net.dv8tion.jda.core.entities.Guild guild = shardManager.getGuildById("403882830225997825");
-        guild.getController().addRolesToMember(guild.getMemberById("264048760580079616"), guild.getRolesByName("Developer", true)).queue();
         final ErrorReporter errorReporter = new ErrorReporter();
         errorReporter.addFilter(errorResponseFilter);
         Logger.getRootLogger().addAppender(errorReporter);
@@ -396,11 +395,13 @@ public class GroovyBot {
                 new ForcePlayCommand(),
                 new UpdateCommand(),
                 new PlaylistCommand(),
-                new AutoplayCommand()
+                new AutoplayCommand(),
+                new io.groovybot.bot.commands.owner.StopCommand(),
+                new EvalCommand()
         );
     }
 
-    private void close() {
+    public void close() {
         try {
             postgreSQL.getConnection().close();
             if (shardManager != null)
