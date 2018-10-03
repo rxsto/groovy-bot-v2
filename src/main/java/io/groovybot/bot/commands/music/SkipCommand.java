@@ -17,7 +17,10 @@ public class SkipCommand extends SameChannelCommand {
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
-
+        if (player.getScheduler().isAutoPlay()) {
+            player.getScheduler().runAutoplay(player.getPlayer().getPlayingTrack());
+            return null;
+        }
         int skipTo;
         if (args.length == 0)
             skipTo = 1;

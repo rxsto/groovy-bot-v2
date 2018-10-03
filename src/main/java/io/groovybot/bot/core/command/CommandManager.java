@@ -21,10 +21,12 @@ public class CommandManager {
     @Getter
     private final Map<String, Command> commandAssociations;
     private final String defaultPrefix;
+    private final GroovyBot bot;
 
-    public CommandManager(String defaultPrefix) {
+    public CommandManager(String defaultPrefix, GroovyBot bot) {
         commandAssociations = new HashMap<>();
         this.defaultPrefix = defaultPrefix;
+        this.bot = bot;
     }
 
     public void registerCommands(Command... commands) {
@@ -36,6 +38,9 @@ public class CommandManager {
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onMessageReceived(GuildMessageReceivedEvent event) {
+        // Stop if bot is not ready yet
+        if (!bot.isAllShardsInitialized())
+            return;
         if (event instanceof CommandEvent)
             return;
         if (event.getAuthor().isBot() || event.getAuthor().isFake() || event.isWebhookMessage())
@@ -58,7 +63,7 @@ public class CommandManager {
 
     private void call(Command command, CommandEvent commandEvent) {
         if (!command.getPermissions().isCovered(EntityProvider.getUser(commandEvent.getAuthor().getIdLong()).getPermissions(), commandEvent)) {
-            GroovyBot.getInstance().getEventManager().handle(new NoPermissionEvent(commandEvent, command));
+            bot.getEventManager().handle(new NoPermissionEvent(commandEvent, command));
             return;
         }
         try {
@@ -70,9 +75,9 @@ public class CommandManager {
             Result result = command.run(commandEvent.getArgs(), commandEvent);
             if (result != null)
                 result.sendMessage(channel, 60);
-            GroovyBot.getInstance().getEventManager().handle(new CommandExecutedEvent(commandEvent, command));
+            bot.getEventManager().handle(new CommandExecutedEvent(commandEvent, command));
         } catch (Exception e) {
-            GroovyBot.getInstance().getEventManager().handle(new CommandFailEvent(commandEvent, command, e));
+            bot.getEventManager().handle(new CommandFailEvent(commandEvent, command, e));
         }
     }
 
@@ -93,7 +98,7 @@ public class CommandManager {
             String invocation = allArgs[0].toLowerCase();
             String[] args = new String[allArgs.length - 1];
             System.arraycopy(allArgs, 1, args, 0, args.length);
-            return new CommandEvent(event, GroovyBot.getInstance(), args, invocation);
+            return new CommandEvent(event, bot, args, invocation);
         }
         return null;
     }

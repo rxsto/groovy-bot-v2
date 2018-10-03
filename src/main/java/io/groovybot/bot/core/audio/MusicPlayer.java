@@ -78,7 +78,7 @@ public class MusicPlayer extends Player {
     }
 
     @Override
-    public Message announceAutoplay(Player player) {
+    public Message announceAutoplay() {
         return SafeMessage.sendMessageBlocking(channel, EmbedUtil.info("Searching video", "Searching new autoplay video"));
     }
 

@@ -58,15 +58,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
         switch (reason) {
             case FINISHED:
                 if (autoPlay) {
-                    Message infoMessaege = player.announceAutoplay(player);
-                    try {
-                        SearchResult result = player.youtubeClient.retrieveRelatedVideos(track.getIdentifier());
-                        infoMessaege.editMessage(EmbedUtil.success("Loaded video", String.format("Successfully loaded video `%s`", result.getSnippet().getTitle())).build()).queue();
-                        queueSearchResult(result, infoMessaege);
-                    } catch (IOException e) {
-                        infoMessaege.editMessage(EmbedUtil.error("Unknown error", "An unknown autoplay-error occurred while retrieving the next video!").build()).queue();
-                        log.error("[Scheduler] Error while retrieving autoplay video", e);
-                    }
+                    runAutoplay(track);
                     return;
                 }
                 if (repeating) {
@@ -93,6 +85,18 @@ public class Scheduler extends AudioEventAdapterWrapped {
                 break;
             default:
                 break;
+        }
+    }
+
+    public void runAutoplay(AudioTrack track) {
+        Message infoMessaege = player.announceAutoplay();
+        try {
+            SearchResult result = player.youtubeClient.retrieveRelatedVideos(track.getIdentifier());
+            infoMessaege.editMessage(EmbedUtil.success("Loaded video", String.format("Successfully loaded video `%s`", result.getSnippet().getTitle())).build()).queue();
+            queueSearchResult(result, infoMessaege);
+        } catch (IOException e) {
+            infoMessaege.editMessage(EmbedUtil.error("Unknown error", "An unknown autoplay-error occurred while retrieving the next video!").build()).queue();
+            log.error("[Scheduler] Error while retrieving autoplay video", e);
         }
     }
 
