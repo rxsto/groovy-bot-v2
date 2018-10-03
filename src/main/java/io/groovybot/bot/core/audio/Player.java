@@ -159,5 +159,5 @@ public abstract class Player {
         trackQueue.clear();
     }
 
-    public abstract Message announceAutoplay(Player player);
+    public abstract Message announceAutoplay();
 }

