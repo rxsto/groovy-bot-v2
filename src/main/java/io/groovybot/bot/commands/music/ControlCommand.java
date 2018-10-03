@@ -49,7 +49,7 @@ public class ControlCommand extends SameChannelCommand {
                                 sendMessage(e.getChannel(), error(event.translate("command.control.alreadyinuse.nopermission.title"), event.translate("command.control.alreadyinuse.nopermission.description")), 5);
                                 return;
                             } else {
-                                new Thread(() -> new ControlPanel(sendInfoMessage(event), event.getChannel(), event.getMember(), player), "ControlPanel").start();
+                                new ControlPanel(sendInfoMessage(event), event.getChannel(), event.getMember(), player);
                                 panel.delete();
                             }
                         }
@@ -88,7 +88,7 @@ public class ControlCommand extends SameChannelCommand {
             this.player = player;
             this.scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("ControlPanel"));
             for (String emote : EMOTES) {
-                getInfoMessage().addReaction(emote).complete();
+                waitForEntity(getInfoMessage().addReaction(emote));
             }
             run();
             scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS);

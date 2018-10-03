@@ -1,19 +1,21 @@
 package io.groovybot.bot.util;
 
+import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.requests.RestAction;
+import net.dv8tion.jda.core.requests.restaction.MessageAction;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public class SafeMessage {
+@Log4j
+public class SafeMessage extends JDAUtil {
 
-    private static RestAction<Message> getAction(TextChannel channel, Message message) {
+    private static MessageAction getAction(TextChannel channel, Message message) {
         if (hasWritePermissions(channel))
             if (hasEmbedPermissions(channel) || message.getEmbeds().isEmpty())
                 return channel.sendMessage(message);
@@ -39,12 +41,13 @@ public class SafeMessage {
     }
 
     public static Message sendMessageBlocking(TextChannel channel, Message message) {
-        return Objects.requireNonNull(getAction(channel, message)).complete();
+        return waitForEntity(getAction(channel, message));
     }
 
     public static Message sendMessageBlocking(TextChannel channel, EmbedBuilder embedBuilder) {
-        return Objects.requireNonNull(getAction(channel, new MessageBuilder().setEmbed(embedBuilder.build()).build())).complete();
+        return waitForEntity(getAction(channel, new MessageBuilder().setEmbed(embedBuilder.build()).build()));
     }
+
 
     private static Message formatEmbed(Message message) {
         if (message.getEmbeds().isEmpty())

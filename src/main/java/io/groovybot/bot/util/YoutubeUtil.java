@@ -26,6 +26,11 @@ public class YoutubeUtil {
     private final YouTube client;
     private final GroovyBot bot;
 
+    /**
+     * Construcs a new Youtube util instance
+     * @param bot the current GroovyBot instance
+     * @return a new YoutubeUtil instance
+     */
     public static YoutubeUtil create(GroovyBot bot) {
         try {
             return new YoutubeUtil(bot);
@@ -55,6 +60,13 @@ public class YoutubeUtil {
         }
     }
 
+    /**
+     * Retrieves the next video for the autoplay function
+     * @param videoId the ID of the prevoius video
+     * @return The new videos SearchResult
+     * @throws IOException when an IO error occurred
+     * @throws NullPointerException When no video where found
+     */
     public SearchResult retrieveRelatedVideos(String videoId) throws IOException, NullPointerException {
         YouTube.Search.List search = client.search().list("id,snippet")
                 .setRelatedToVideoId(videoId)
