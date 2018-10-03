@@ -23,7 +23,7 @@ public class EvalCommand extends Command {
         if (args.length == 0) {
             return sendHelp();
         }
-        ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByExtension("Nashorn");
+        ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("Nashorn");
         //Import stuff
         try {
             scriptEngine.eval("var imports = new JavaImporter(" +
@@ -57,7 +57,7 @@ public class EvalCommand extends Command {
                             code +
                             "}" +
                             "};");
-            return send(info("Evaluated successfully", "```" + out.toString() + "```"));
+            return send(info("Evaluated successfully", "Input: ```" + code + "```\n Output:```" + out.toString() + "```"));
         } catch (ScriptException e) {
             return send(error("An error occurred", String.format("An exception was thrown: ```%s```", e.getMessage())));
         }
