@@ -12,10 +12,20 @@ import static io.groovybot.bot.util.EmbedUtil.info;
 
 public class FormatUtil {
 
+    /**
+     * Retrieves the thumbnail of a Youtube video
+     * @param track The AudioTrack {@link com.sedmelluq.discord.lavaplayer.track.AudioTrack} of the video
+     * @return The thumbnails URL
+     */
     public static String getThumbnail(AudioTrack track) {
         return String.format("https://img.youtube.com/vi/%s/default.jpg", track.getIdentifier());
     }
 
+    /**
+     * Formats the milliseconds of a song duration to a readable timestamp
+     * @param millis The milliseconds
+     * @return the timespamt as a string
+     */
     public static String formatTimestamp(long millis) {
         long seconds = millis / 1000;
         long hours = Math.floorDiv(seconds, 3600);
@@ -25,6 +35,11 @@ public class FormatUtil {
         return (hours == 0 ? "" : hours + ":") + String.format("%02d", mins) + ":" + String.format("%02d", seconds);
     }
 
+    /**
+     * Formats the helpmessage for a command
+     * @param command The command
+     * @return an EmbedBuilder
+     */
     public static EmbedBuilder formatCommand(Command command) {
         return info(command.getAliases()[0] + " - Help", formatUsage(command));
     }

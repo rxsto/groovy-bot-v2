@@ -22,6 +22,11 @@ public class CommandEvent extends GuildMessageReceivedEvent {
         this.permissions = EntityProvider.getUser(getAuthor().getIdLong()).getPermissions();
     }
 
+    /**
+     * Returns the transation of a key
+     * @param key the key of the translation
+     * @return the translation as a String
+     */
     public String translate(String key) {
         return groovyBot.getTranslationManager().getLocaleByUser(getAuthor().getId()).translate(key);
     }
