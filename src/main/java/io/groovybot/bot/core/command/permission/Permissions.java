@@ -17,26 +17,50 @@ public class Permissions {
     @Getter
     private final String identifier;
 
+    /**
+     * Everyone can execute the command
+     * @return a Permission object
+     */
     public static Permissions everyone() {
         return new Permissions(true, false, false, false, false, false, "everyone");
     }
 
+    /**
+     * Only bot owners can execute the command
+     * @return a Permission object
+     */
     public static Permissions ownerOnly() {
         return new Permissions(false, true, false, false, false, false, "owner");
     }
 
+    /**
+     * Only tierOne or tierTwo patreons can execute the command
+     * @return a Permission object
+     */
     public static Permissions tierOne() {
         return new Permissions(false, false, true, false, false, false, "tierone");
     }
 
+    /**
+     * Only tierTwo patreons can execute the command
+     * @return a Permission object
+     */
     public static Permissions tierTwo() {
         return new Permissions(false, false, false, true, false, false, "tiertwo");
     }
 
+    /**
+     * Only users with the ADMINISTRATOR permission can execute the command
+     * @return a Permission object
+     */
     public static Permissions adminOnly() {
         return new Permissions(false, false, false, false, true, false, "admin");
     }
 
+    /**
+     * Only DJs can execute the command
+     * @return a Permission object
+     */
     public static Permissions djMode() {
         return new Permissions(false, false, false, false, false, true, "djmode");
     }
