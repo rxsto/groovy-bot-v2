@@ -6,9 +6,13 @@ import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
+import lombok.extern.log4j.Log4j;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Map;
 
+@Log4j
 public class UpdateCommand extends Command {
 
     public UpdateCommand() {
@@ -20,9 +24,14 @@ public class UpdateCommand extends Command {
         Map<Long, MusicPlayer> players = event.getGroovyBot().getMusicPlayerManager().getPlayerStorage();
 
         players.forEach((id, player) -> {
-            player.update();
+            try {
+                if (player.isPlaying())
+                    player.update();
+            } catch (SQLException | IOException e) {
+                log.error("Error while updating the bot!", e);
+            }
         });
 
-        return send(success("Successfully announced update!", "Successfully announced update, the bot is ready to be restarted!"));
+        return send(success("Announcing update!", "The bot should be **ready** for being **updated** in a few seconds!"));
     }
 }
