@@ -16,13 +16,13 @@ public class CommandLogger {
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onCommandExecution(CommandExecutedEvent executedEvent) {
-        log.debug(String.format("[Command] Command %s got executed by %s on guild %s(%d)", executedEvent.getCommand().getClass().getCanonicalName(), executedEvent.getAuthor().getName(), executedEvent.getGuild().getName(), executedEvent.getGuild().getIdLong()));
+        log.debug(String.format("[Command] Command %s got executed by %s on guild %s(%d)", executedEvent.getCommand().getAliases()[0], executedEvent.getAuthor().getName(), executedEvent.getGuild().getName(), executedEvent.getGuild().getIdLong()));
     }
 
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onCommandFail(CommandFailEvent failEvent) {
-        log.error(String.format("[Command] Command %s threw an error %s on guild %s(%d)", failEvent.getCommand().getClass().getCanonicalName(), failEvent.getAuthor().getName(), failEvent.getGuild().getName(), failEvent.getGuild().getIdLong()), failEvent.getThrowable());
+        log.error(String.format("[Command] Command %s threw an error %s on guild %s(%d)", failEvent.getCommand().getAliases()[0], failEvent.getAuthor().getName(), failEvent.getGuild().getName(), failEvent.getGuild().getIdLong()), failEvent.getThrowable());
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle(":no_entry_sign: " + failEvent.translate("phrases.error.internal"))
                 .setDescription(String.format("We're sorry, but an internal error occured\n```%s```", failEvent.getThrowable().getClass().getCanonicalName() + ": " + failEvent.getThrowable().getMessage()))
