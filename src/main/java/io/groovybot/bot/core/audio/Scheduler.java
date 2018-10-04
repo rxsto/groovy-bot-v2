@@ -57,6 +57,10 @@ public class Scheduler extends AudioEventAdapterWrapped {
     private void handleTrackEnd(AudioTrack track, AudioTrackEndReason reason) {
         switch (reason) {
             case FINISHED:
+                if (((MusicPlayer) player).getGuild().getSelfMember().getVoiceState().getChannel().getMembers().size() == 1) {
+                    ((MusicPlayer) player).leave();
+                    return;
+                }
                 if (autoPlay) {
                     runAutoplay(track);
                     return;
