@@ -64,4 +64,8 @@ public abstract class Command extends EmbedUtil {
     protected Result send(EmbedBuilder builder) {
         return new Result(builder);
     }
+
+    public String getName() {
+        return aliases[0];
+    }
 }

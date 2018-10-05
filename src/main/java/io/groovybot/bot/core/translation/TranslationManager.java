@@ -32,6 +32,8 @@ public class TranslationManager {
 
         locales = new ArrayList<>();
         locales.add(defaultLocale);
+        locales.add(new TranslationLocale(this, new Locale("nl", "NL"), "Dutch (Netherlands)"));
+        locales.add(new TranslationLocale(this, new Locale("de", "DE"), "Deutsch (Deutschland)"));
     }
 
     public TranslationLocale getLocaleByLocale(Locale locale) {
