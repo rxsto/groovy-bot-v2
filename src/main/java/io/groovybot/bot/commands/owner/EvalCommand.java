@@ -57,7 +57,7 @@ public class EvalCommand extends Command {
                             code +
                             "}" +
                             "};");
-            return send(info("Evaluated successfully", "Input: ```" + code + "```\n Output:```" + out.toString() + "```"));
+            return send(info("Evaluated successfully", "Input: ```" + code + "```\n Output:```" + out == null ? "null" : out.toString() + "```"));
         } catch (ScriptException e) {
             return send(error("An error occurred", String.format("An exception was thrown: ```%s```", e.getMessage())));
         }
