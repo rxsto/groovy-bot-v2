@@ -135,7 +135,7 @@ public class MusicPlayer extends Player {
                 if (!checkSong(audioTrack))
                     return;
                 queueTrack(audioTrack, force, playtop);
-                infoMessage.editMessage(EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), audioTrack.getInfo().title)).build()).queue();
+                queuedTrack(audioTrack, infoMessage, event);
             }
 
             @Override
@@ -161,7 +161,7 @@ public class MusicPlayer extends Player {
                 if (!checkSong(track))
                     return;
                 queueTrack(track, force, playtop);
-                infoMessage.editMessage(EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)).build()).queue();
+                queuedTrack(track, infoMessage, event);
             }
 
             @Override
@@ -185,7 +185,7 @@ public class MusicPlayer extends Player {
 
             private boolean checkSong(AudioTrack track) {
                 if (track.getDuration() > 3600000 && !Permissions.tierTwo().isCovered(userPermissions, event)) {
-                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.toolongsong.title"), event.translate("phrases.toolongsong.description")));
+                    infoMessage.editMessage(EmbedUtil.error(event.translate("phrases.toolongsong.title"), event.translate("phrases.toolongsong.description")).build()).queue();
                     if (trackQueue.isEmpty()) {
                         if (getGuild().getId().equals("403882830225997825"))
                             link.disconnect();
@@ -196,6 +196,13 @@ public class MusicPlayer extends Player {
                 return true;
             }
         });
+    }
+
+    private void queuedTrack(AudioTrack track, Message infoMessage, CommandEvent event) {
+        if (track.getInfo().isStream)
+            infoMessage.editMessage(EmbedUtil.success(event.translate("phrases.searching.streamloaded.title"), String.format(event.translate("phrases.searching.streamloaded.description"), track.getInfo().title)).build()).queue();
+        else
+            infoMessage.editMessage(EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)).build()).queue();
     }
 
     public void update() throws SQLException, IOException {
