@@ -14,13 +14,19 @@ import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.util.EmbedUtil;
 import io.groovybot.bot.util.SafeMessage;
 import io.groovybot.bot.util.YoutubeUtil;
+import lavalink.client.LavalinkUtil;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavaplayerPlayerWrapper;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
+import org.json.JSONArray;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -71,7 +77,7 @@ public class MusicPlayer extends Player {
     @Override
     public void onEnd(boolean announce) {
         if (announce)
-            SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not queue more songs?"));
+            SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not **queue** more songs?"));
         if (!this.getGuild().getId().equals("403882830225997825"))
             link.disconnect();
         stop();
@@ -192,7 +198,19 @@ public class MusicPlayer extends Player {
         });
     }
 
-    public void update() {
+    public void update() throws SQLException, IOException {
+        Connection connection = GroovyBot.getInstance().getPostgreSQL().getConnection();
+
+        PreparedStatement ps = connection.prepareStatement("INSERT INTO queues (guild_id, current_track, current_position, queue, channel_id, text_channel_id, volume) VALUES (?,?,?,?,?,?,?)");
+        ps.setLong(1, guild.getIdLong());
+        ps.setString(2, LavalinkUtil.toMessage(player.getPlayingTrack()));
+        ps.setLong(3, player.getTrackPosition());
+        ps.setString(4, getBuildedQueue());
+        ps.setLong(5, guild.getSelfMember().getVoiceState().getChannel().getIdLong());
+        ps.setLong(6, channel.getIdLong());
+        ps.setInt(7, player.getVolume());
+        ps.execute();
+
         this.clearQueue();
         getScheduler().setShuffle(false);
         getScheduler().setQueueRepeating(false);
@@ -221,5 +239,13 @@ public class MusicPlayer extends Player {
 
             }
         });
+    }
+
+    private String getBuildedQueue() throws IOException {
+        JSONArray jsonArray = new JSONArray();
+        for (AudioTrack audioTrack : trackQueue) {
+            jsonArray.put(LavalinkUtil.toMessage(audioTrack));
+        }
+        return jsonArray.toString();
     }
 }
