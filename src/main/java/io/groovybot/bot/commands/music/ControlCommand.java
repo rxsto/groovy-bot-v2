@@ -81,6 +81,7 @@ public class ControlCommand extends SameChannelCommand {
         private final VoiceChannel channel;
         private final ScheduledExecutorService scheduler;
         private final MusicPlayer player;
+        private boolean ready = false;
 
         public ControlPanel(Message infoMessage, TextChannel channel, Member author, MusicPlayer player) {
             super(infoMessage, channel, author, infoMessage.getIdLong());
@@ -90,12 +91,15 @@ public class ControlCommand extends SameChannelCommand {
             for (String emote : EMOTES) {
                 waitForEntity(getInfoMessage().addReaction(emote));
             }
+            ready = true;
             run();
             scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS);
         }
 
         @Override
         protected void handleReaction(GuildMessageReactionAddEvent event) {
+            if (!ready)
+                return;
             final User author = event.getUser();
             if (!isWhitelisted(event.getMember()))
                 return;

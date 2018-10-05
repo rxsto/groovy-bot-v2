@@ -152,7 +152,7 @@ public abstract class Player {
     }
 
     public void skip() {
-        skipTo(1);
+        seekTo(player.getPlayingTrack().getDuration());
     }
 
     public void purgeQueue() {

@@ -18,7 +18,7 @@ public class TranslationLocale {
     public TranslationLocale(TranslationManager translationManager, Locale locale, String languageName) {
         this.translationManager = translationManager;
         this.locale = locale;
-        this.resourceBundle = ResourceBundle.getBundle(String.format("translation_%s_%s", locale.getLanguage(), locale.getCountry()), locale);
+        this.resourceBundle = ResourceBundle.getBundle(String.format("translation_%s_%s", locale.getLanguage(), locale.getCountry()));
         this.languageName = languageName;
     }
 

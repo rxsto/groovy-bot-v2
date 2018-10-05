@@ -18,7 +18,7 @@ public class TranslationManager {
     private final TranslationLocale defaultLocale;
 
     public TranslationManager() {
-        defaultLocale = new TranslationLocale(this, new Locale("en", "US"), "English (United States)") {
+        this.defaultLocale = new TranslationLocale(this, new Locale("en", "US"), "English (United States)") {
             @Override
             public String translate(String key) {
                 if (getResourceBundle().containsKey(key))
