@@ -160,4 +160,8 @@ public abstract class Player {
     }
 
     public abstract Message announceAutoplay();
+
+    public void play(AudioTrack track) {
+        play(track, false);
+    }
 }

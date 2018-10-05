@@ -50,6 +50,7 @@ import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -342,6 +343,11 @@ public class GroovyBot {
         new GameAnimator(this);
         guildCache = new Cache<>(Guild.class);
         userCache = new Cache<>(User.class);
+        try {
+            musicPlayerManager.initPlayers();
+        } catch (SQLException | IOException e) {
+            log.error("Error while initializing players!", e);
+        }
         if (!debugMode) {
             statusPage.start();
             serverCountStatistics.start();
