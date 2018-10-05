@@ -19,7 +19,6 @@ public class User extends DatabaseEntitiy {
 
     public User(Long entityId) throws Exception {
         super(entityId);
-        Boolean owner = GroovyBot.getInstance().getConfig().getJSONArray("owners").toString().contains(String.valueOf(entityId));
         PreparedStatement userStatement = getConnection().prepareStatement("SELECT * FROM users WHERE id = ?");
         userStatement.setLong(1, entityId);
         ResultSet userResult = userStatement.executeQuery();
@@ -29,6 +28,7 @@ public class User extends DatabaseEntitiy {
             PreparedStatement insertStatement = getConnection().prepareStatement("INSERT INTO users (id, locale) VALUES (?, ?)");
             insertStatement.setLong(1, entityId);
             insertStatement.setString(2, locale.toLanguageTag().replace("-", "_"));
+            insertStatement.execute();
         }
     }
 
