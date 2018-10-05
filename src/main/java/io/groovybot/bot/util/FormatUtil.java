@@ -41,7 +41,7 @@ public class FormatUtil {
      * @return an EmbedBuilder
      */
     public static EmbedBuilder formatCommand(Command command) {
-        return info(command.getAliases()[0] + " - Help", formatUsage(command));
+        return info(command.getName() + " - Help", formatUsage(command));
     }
 
     private static String formatUsage(Command command) {
@@ -60,9 +60,9 @@ public class FormatUtil {
     private static String buildUsage(Command command) {
         if (command instanceof SubCommand) {
             SubCommand subCommand = ((SubCommand) command);
-            return "g!" + subCommand.getMainCommand().getAliases()[0] + " " + subCommand.getAliases()[0] + " " + subCommand.getUsage() + " - " + subCommand.getDescription();
+            return "g!" + subCommand.getMainCommand().getName() + " " + subCommand.getName() + " " + subCommand.getUsage() + " - " + subCommand.getDescription();
         }
-        return "g!" + command.getAliases()[0] + " " + command.getUsage();
+        return "g!" + command.getName() + " " + command.getUsage();
     }
 
 }

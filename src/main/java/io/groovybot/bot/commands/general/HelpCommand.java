@@ -6,6 +6,7 @@ import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
 
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import static io.groovybot.bot.util.FormatUtil.formatCommand;
@@ -42,7 +43,7 @@ public class HelpCommand extends Command {
 
     private String fromatCategory(CommandCategory commandCategory, CommandManager manager) {
         StringBuilder stringBuilder = new StringBuilder();
-        manager.getCommandAssociations().values().parallelStream().distinct().filter(command -> command.getCommandCategory() == commandCategory).collect(Collectors.toList()).forEach(command -> stringBuilder.append("`").append(command.getAliases()[0]).append("`, "));
+        manager.getCommandAssociations().values().stream().distinct().sorted(Comparator.comparing(Command::getName)).filter(command -> command.getCommandCategory() == commandCategory).collect(Collectors.toList()).forEach(command -> stringBuilder.append("`").append(command.getName()).append("`, "));
         if (stringBuilder.toString().contains(","))
             stringBuilder.replace(stringBuilder.lastIndexOf(","), stringBuilder.lastIndexOf(",") + 1, "");
         return stringBuilder.toString();
