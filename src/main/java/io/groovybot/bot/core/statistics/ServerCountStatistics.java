@@ -23,7 +23,8 @@ public class ServerCountStatistics extends StatsPoster {
     }
 
     public synchronized void start() {
-        this.botId = groovyBot.getShardManager().getApplicationInfo().complete().getId();
+        //this.botId = groovyBot.getShardManager().getApplicationInfo().complete().getId();
+        this.botId = "402116404301660181";
         scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.MINUTES);
     }
 
@@ -48,11 +49,12 @@ public class ServerCountStatistics extends StatsPoster {
                 .put("divinediscordbots.com", configuration.getString("divinediscordbots.com"))
                 .put("discordbots.org", configuration.getString("discordbots.org"))
                 .put("shards", getGuildCounts());
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), object.toString());
+        RequestBody body = RequestBody.create(null, object.toString());
         Request request = new Request.Builder()
                 .url("https://botblock.org/api/count")
-                .addHeader("Content-Type", "application/json")
                 .post(body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("User-Agent", botId)
                 .build();
         try (Response response = okHttpClient.newCall(request).execute()) {
             if (response.code() != 200) {
