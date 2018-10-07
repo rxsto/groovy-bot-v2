@@ -119,8 +119,8 @@ public class GroovyBot {
         keyManager = new KeyManager(postgreSQL.getConnection());
         interactionManager = new InteractionManager();
         eventWaiter = new EventWaiter();
-        musicPlayerManager = new MusicPlayerManager();
         initShardManager();
+        musicPlayerManager = new MusicPlayerManager();
         translationManager = new TranslationManager();
         playlistManager = new PlaylistManager(postgreSQL.getConnection());
         youtubeClient = YoutubeUtil.create(this);
