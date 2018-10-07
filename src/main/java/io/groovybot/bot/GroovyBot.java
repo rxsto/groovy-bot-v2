@@ -353,8 +353,8 @@ public class GroovyBot {
             statusPage.start();
             serverCountStatistics.start();
             new WebsiteStats(this);
-            MusicPlayer groovyPlayer = this.musicPlayerManager.getPlayer(event.getJDA().getGuildById(403882830225997825L), event.getJDA().getTextChannelById(486765014976561159L));
-            groovyPlayer.connect(event.getJDA().getVoiceChannelById(486765249488224277L));
+            /*MusicPlayer groovyPlayer = this.musicPlayerManager.getPlayer(event.getJDA().getGuildById(403882830225997825L), event.getJDA().getTextChannelById(486765014976561159L));
+            groovyPlayer.connect(event.getJDA().getVoiceChannelById(486765249488224277L));*/
         }
     }
 
