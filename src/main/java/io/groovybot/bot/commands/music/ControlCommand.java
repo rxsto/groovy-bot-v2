@@ -81,7 +81,7 @@ public class ControlCommand extends SameChannelCommand {
         private final VoiceChannel channel;
         private final ScheduledExecutorService scheduler;
         private final MusicPlayer player;
-        private boolean ready = false;
+        private boolean ready;
 
         public ControlPanel(Message infoMessage, TextChannel channel, Member author, MusicPlayer player) {
             super(infoMessage, channel, author, infoMessage.getIdLong());
