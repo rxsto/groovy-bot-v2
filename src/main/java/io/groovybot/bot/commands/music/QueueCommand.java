@@ -113,7 +113,6 @@ public class QueueCommand extends Command {
             if (currentPage <= pages) {
                 getInfoMessage().addReaction("➡").queue();
             }
-
         }
     }
 }

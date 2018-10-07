@@ -91,13 +91,13 @@ public class Scheduler extends AudioEventAdapterWrapped {
     }
 
     public void runAutoplay(AudioTrack track) {
-        Message infoMessaege = player.announceAutoplay();
+        Message infoMessage = player.announceAutoplay();
         try {
             SearchResult result = player.youtubeClient.retrieveRelatedVideos(track.getIdentifier());
-            infoMessaege.editMessage(EmbedUtil.success("Loaded video", String.format("Successfully loaded video `%s`", result.getSnippet().getTitle())).build()).queue();
-            queueSearchResult(result, infoMessaege);
+            infoMessage.editMessage(EmbedUtil.success("Loaded video", String.format("Successfully loaded video `%s`", result.getSnippet().getTitle())).build()).queue();
+            queueSearchResult(result, infoMessage);
         } catch (IOException e) {
-            infoMessaege.editMessage(EmbedUtil.error("Unknown error", "An unknown autoplay-error occurred while retrieving the next video!").build()).queue();
+            infoMessage.editMessage(EmbedUtil.error("Unknown error", "An unknown autoplay-error occurred while retrieving the next video!").build()).queue();
             log.error("[Scheduler] Error while retrieving autoplay video", e);
         }
     }
