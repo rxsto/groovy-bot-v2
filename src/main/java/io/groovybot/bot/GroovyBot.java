@@ -3,6 +3,7 @@ package io.groovybot.bot;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.commands.general.*;
 import io.groovybot.bot.commands.music.*;
+import io.groovybot.bot.commands.owner.CloseCommand;
 import io.groovybot.bot.commands.owner.EvalCommand;
 import io.groovybot.bot.commands.owner.UpdateCommand;
 import io.groovybot.bot.commands.settings.AnnounceCommand;
@@ -402,7 +403,7 @@ public class GroovyBot {
                 new UpdateCommand(),
                 new PlaylistCommand(),
                 new AutoplayCommand(),
-                new io.groovybot.bot.commands.owner.StopCommand(),
+                new CloseCommand(),
                 new EvalCommand()
         );
     }

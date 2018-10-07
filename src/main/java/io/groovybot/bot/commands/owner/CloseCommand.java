@@ -7,9 +7,9 @@ import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.util.SafeMessage;
 
-public class StopCommand extends Command {
+public class CloseCommand extends Command {
 
-    public StopCommand() {
+    public CloseCommand() {
         super(new String[] {"stopbot", "botstop"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Stops the whole bot", "");
     }
 
