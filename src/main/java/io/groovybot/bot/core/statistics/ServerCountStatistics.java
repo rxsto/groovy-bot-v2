@@ -46,6 +46,7 @@ public class ServerCountStatistics extends StatsPoster {
                 .put("discord.services", configuration.getString("discord.services"))
                 .put("discordsbestbots.xyz", configuration.getString("discordsbestbots.xyz"))
                 .put("divinediscordbots.com", configuration.getString("divinediscordbots.com"))
+                .put("discordbots.org", configuration.getString("discordbots.org"))
                 .put("shards", getGuildCounts());
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), object.toString());
         Request request = new Request.Builder()
