@@ -34,14 +34,14 @@ public class HelpCommand extends Command {
                 .setColor(Colors.DARK_BUT_NOT_BLACK)
                 .setDescription(String.format(event.translate("command.help.description"), EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix()));
         for (CommandCategory commandCategory : CommandCategory.class.getEnumConstants()) {
-            String formattedCategory = fromatCategory(commandCategory, event.getGroovyBot().getCommandManager());
+            String formattedCategory = formatCategory(commandCategory, event.getGroovyBot().getCommandManager());
             if (!"".equals(formattedCategory))
                 builder.addField(commandCategory.getDisplayName(), formattedCategory, false);
         }
         return builder;
     }
 
-    private String fromatCategory(CommandCategory commandCategory, CommandManager manager) {
+    private String formatCategory(CommandCategory commandCategory, CommandManager manager) {
         StringBuilder stringBuilder = new StringBuilder();
         manager.getCommandAssociations().values().stream().distinct().sorted(Comparator.comparing(Command::getName)).filter(command -> command.getCommandCategory() == commandCategory).collect(Collectors.toList()).forEach(command -> stringBuilder.append("`").append(command.getName()).append("`, "));
         if (stringBuilder.toString().contains(","))

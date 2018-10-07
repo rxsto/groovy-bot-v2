@@ -21,7 +21,7 @@ public class LanguageCommand extends Command {
     public Result run(String[] args, CommandEvent event) {
         User user = EntityProvider.getUser(event.getAuthor().getIdLong());
         if (args.length == 0)
-            return send(info(event.translate("command.language.info.title"), String.format(event.translate("command.language.info.description"), user.getLocale().getLanguage(), formatAvalibleLanguages(event.getGroovyBot().getTranslationManager()))));
+            return send(info(event.translate("command.language.info.title"), String.format(event.translate("command.language.info.description"), user.getLocale().getLanguage(), formatAvailableLanguages(event.getGroovyBot().getTranslationManager()))));
         Locale locale;
         try {
             locale = Locale.forLanguageTag(args[0].replace("_", "-"));
@@ -34,7 +34,7 @@ public class LanguageCommand extends Command {
         return send(success(event.translate("command.language.set.title"), String.format(event.translate("command.language.set.description"), locale.getLanguage())));
     }
 
-    private String formatAvalibleLanguages(TranslationManager translationManager) {
+    private String formatAvailableLanguages(TranslationManager translationManager) {
         StringBuilder builder = new StringBuilder();
         translationManager.getLocales().forEach(locale -> builder.append(locale.getLanguageName()).append("(`").append(locale.getLocale().toLanguageTag().replace("-", "_")).append("`)").append("\n"));
         return builder.toString();
