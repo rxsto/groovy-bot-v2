@@ -22,7 +22,6 @@ public class KeyManager {
         try {
             return Objects.requireNonNull(getKeyStatement(key)).executeQuery().next();
         } catch (SQLException e) {
-            System.out.println("dsadsa");
             log.error("[KeyManager] Error occurred while retrieving key", e);
         }
         return false;
@@ -30,7 +29,7 @@ public class KeyManager {
 
     public Key getKey(String key) {
         try {
-            ResultSet rs = getKeyStatement(key).executeQuery();
+            ResultSet rs = Objects.requireNonNull(getKeyStatement(key)).executeQuery();
             if (rs.next())
                 return new Key(Key.KeyType.valueOf(rs.getString("type")), UUID.fromString(rs.getString("key")), connection);
         } catch (SQLException e) {

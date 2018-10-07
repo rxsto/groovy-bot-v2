@@ -3,6 +3,7 @@ package io.groovybot.bot;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.commands.general.*;
 import io.groovybot.bot.commands.music.*;
+import io.groovybot.bot.commands.owner.CloseCommand;
 import io.groovybot.bot.commands.owner.EvalCommand;
 import io.groovybot.bot.commands.owner.UpdateCommand;
 import io.groovybot.bot.commands.settings.AnnounceCommand;
@@ -118,9 +119,9 @@ public class GroovyBot {
         keyManager = new KeyManager(postgreSQL.getConnection());
         interactionManager = new InteractionManager();
         eventWaiter = new EventWaiter();
+        musicPlayerManager = new MusicPlayerManager();
         initShardManager();
         translationManager = new TranslationManager();
-        musicPlayerManager = new MusicPlayerManager();
         playlistManager = new PlaylistManager(postgreSQL.getConnection());
         youtubeClient = YoutubeUtil.create(this);
         registerCommands();
@@ -280,27 +281,27 @@ public class GroovyBot {
         webhookObject.put("error_hook", "http://hook.com");
         configuration.addDefault("webhooks", webhookObject);
         final JSONObject youtubeObject = new JSONObject();
-        youtubeObject.put("apikey", "MINECRAFTISANICEGAME");
+        youtubeObject.put("apikey", "defaultvalue");
         configuration.addDefault("youtube", youtubeObject);
         final JSONObject botlistObjects = new JSONObject()
-                .put("botlist.space", "YourVeryniceKeyBRo")
-                .put("bots.ondiscord.xyz", "YourVeryniceKeyBRo")
-                .put("discordboats.xyz", "YourVeryniceKeyBRo")
-                .put("discordboats.club", "YourVeryniceKeyBRo")
-                .put("discordbotlist.com", "YourVeryniceKeyBRo")
-                .put("discordbot.world", "YourVeryniceKeyBRo")
-                .put("bots.discord.pw", "YourVeryniceKeyBRo")
-                .put("discordbotlist.xyz", "YourVeryniceKeyBRo")
-                .put("discordbots.group", "YourVeryniceKeyBRo")
-                .put("bots.discordlist.app", "YourVeryniceKeyBRo")
-                .put("discord.services", "YourVeryniceKeyBRo")
-                .put("discordsbestbots.xyz", "YourVeryniceKeyBRo")
-                .put("divinediscordbots.comdbots.com", "YourVeryniceKeyBRo");
+                .put("botlist.space", "defaultvalue")
+                .put("bots.ondiscord.xyz", "defaultvalue")
+                .put("discordboats.xyz", "defaultvalue")
+                .put("discordboats.club", "defaultvalue")
+                .put("discordbotlist.com", "defaultvalue")
+                .put("discordbot.world", "defaultvalue")
+                .put("bots.discord.pw", "defaultvalue")
+                .put("discordbotlist.xyz", "defaultvalue")
+                .put("discordbots.group", "defaultvalue")
+                .put("bots.discordlist.app", "defaultvalue")
+                .put("discord.services", "defaultvalue")
+                .put("discordsbestbots.xyz", "defaultvalue")
+                .put("divinediscordbots.com", "defaultvalue");
         configuration.addDefault("botlists", botlistObjects);
         final JSONObject statusPageObject = new JSONObject();
         statusPageObject.put("page_id", "1337");
         statusPageObject.put("metric_id", "7331");
-        statusPageObject.put("api_key", "DaIndianKyMastartBro");
+        statusPageObject.put("api_key", "defaultvalue");
         configuration.addDefault("statuspage", statusPageObject);
         this.config = configuration.init();
     }
@@ -401,8 +402,8 @@ public class GroovyBot {
                 new ForcePlayCommand(),
                 new UpdateCommand(),
                 new PlaylistCommand(),
-                new AutoplayCommand(),
-                new io.groovybot.bot.commands.owner.StopCommand(),
+                new AutoPlayCommand(),
+                new CloseCommand(),
                 new EvalCommand()
         );
     }
