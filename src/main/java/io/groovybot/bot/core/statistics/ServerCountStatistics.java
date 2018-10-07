@@ -18,8 +18,12 @@ public class ServerCountStatistics extends StatsPoster {
     private GroovyBot groovyBot = GroovyBot.getInstance();
     private String botId;
 
-    public ServerCountStatistics(OkHttpClient okHttpClient, JSONObject configuration) {
-        super(Executors.newScheduledThreadPool(1, new NameThreadFactory("ServerCount")), okHttpClient, configuration);
+    public ServerCountStatistics( JSONObject configuration) {
+        super(Executors.newScheduledThreadPool(1, new NameThreadFactory("ServerCount")), new OkHttpClient.Builder()
+                .connectTimeout(3, TimeUnit.MINUTES)
+                .writeTimeout(3, TimeUnit.MINUTES)
+                .build()
+                , configuration);
     }
 
     public synchronized void start() {
