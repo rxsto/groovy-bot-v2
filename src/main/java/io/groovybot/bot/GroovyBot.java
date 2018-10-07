@@ -402,7 +402,7 @@ public class GroovyBot {
                 new ForcePlayCommand(),
                 new UpdateCommand(),
                 new PlaylistCommand(),
-                new AutoplayCommand(),
+                new AutoPlayCommand(),
                 new CloseCommand(),
                 new EvalCommand()
         );
