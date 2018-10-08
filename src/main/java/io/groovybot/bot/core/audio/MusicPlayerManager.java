@@ -2,6 +2,7 @@ package io.groovybot.bot.core.audio;
 
 
 import io.groovybot.bot.GroovyBot;
+import io.groovybot.bot.core.command.CommandEvent;
 import lavalink.client.LavalinkUtil;
 import lombok.Getter;
 import net.dv8tion.jda.core.entities.Guild;
@@ -28,6 +29,10 @@ public class MusicPlayerManager {
         MusicPlayer player = new MusicPlayer(guild, channel, GroovyBot.getInstance().getYoutubeClient());
         playerStorage.put(guild.getIdLong(), player);
         return player;
+    }
+
+    public MusicPlayer getPlayer(CommandEvent event) {
+        return getPlayer(event.getGuild(), event.getChannel());
     }
 
     public int getPlayingServers() {
