@@ -13,7 +13,6 @@ import io.groovybot.bot.commands.settings.PrefixCommand;
 import io.groovybot.bot.core.GameAnimator;
 import io.groovybot.bot.core.KeyManager;
 import io.groovybot.bot.core.audio.LavalinkManager;
-import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.audio.MusicPlayerManager;
 import io.groovybot.bot.core.audio.PlaylistManager;
 import io.groovybot.bot.core.cache.Cache;
@@ -22,6 +21,7 @@ import io.groovybot.bot.core.command.interaction.InteractionManager;
 import io.groovybot.bot.core.entity.Guild;
 import io.groovybot.bot.core.entity.User;
 import io.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
+import io.groovybot.bot.core.lyrics.GeniusClient;
 import io.groovybot.bot.core.statistics.ServerCountStatistics;
 import io.groovybot.bot.core.statistics.StatusPage;
 import io.groovybot.bot.core.statistics.WebsiteStats;
@@ -99,6 +99,8 @@ public class GroovyBot {
     private final YoutubeUtil youtubeClient;
     @Getter
     private boolean allShardsInitialized = false;
+    @Getter
+    private final GeniusClient geniusClient;
 
 
     private GroovyBot(String[] args) {
@@ -124,6 +126,7 @@ public class GroovyBot {
         translationManager = new TranslationManager();
         playlistManager = new PlaylistManager(postgreSQL.getConnection());
         youtubeClient = YoutubeUtil.create(this);
+        geniusClient = new GeniusClient(config.getJSONObject("genius").getString("token"));
         registerCommands();
     }
 
@@ -303,6 +306,9 @@ public class GroovyBot {
         statusPageObject.put("metric_id", "7331");
         statusPageObject.put("api_key", "defaultvalue");
         configuration.addDefault("statuspage", statusPageObject);
+        final JSONObject geniusObject = new JSONObject();
+        geniusObject.put("token", "PRETTY COOL TOKEN BRO");
+        configuration.addDefault("genius", geniusObject);
         this.config = configuration.init();
     }
 
@@ -404,7 +410,8 @@ public class GroovyBot {
                 new PlaylistCommand(),
                 new AutoPlayCommand(),
                 new CloseCommand(),
-                new EvalCommand()
+                new EvalCommand(),
+                new LyricsCommand()
         );
     }
 
