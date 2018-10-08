@@ -29,7 +29,7 @@ public class WebsiteStats implements Runnable {
         try {
             connection.prepareStatement("DELETE FROM stats").execute();
             PreparedStatement ps = connection.prepareStatement("INSERT INTO stats (playing, servers, users, id) VALUES (?, ?, ?, ?)");
-            ps.setInt(1, groovyBot.getMusicPlayerManager().getPlayerStorage().size());
+            ps.setInt(1, groovyBot.getMusicPlayerManager().getPlayingServers());
             ps.setInt(2, groovyBot.getShardManager().getGuilds().size());
             ps.setInt(3, groovyBot.getShardManager().getUsers().size());
             ps.setLong(4, 402116404301660181L);
