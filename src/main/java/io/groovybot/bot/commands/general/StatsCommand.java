@@ -1,5 +1,6 @@
 package io.groovybot.bot.commands.general;
 
+import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.Command;
 import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
@@ -30,8 +31,8 @@ public class StatsCommand extends Command {
 
         StringBuilder message = new StringBuilder();
         message.append(String.format("\n\n" + event.translate("command.stats.text.playing") + "\n", event.getGroovyBot().getMusicPlayerManager().getPlayingServers()));
-        message.append(String.format(event.translate("command.stats.text.servers") + "\n", event.getJDA().getGuilds().size()));
-        message.append(String.format(event.translate("command.stats.text.members") + "\n", event.getJDA().getUsers().size()));
+        message.append(String.format(event.translate("command.stats.text.servers") + "\n", event.getGroovyBot().getShardManager().getGuilds().size()));
+        message.append(String.format(event.translate("command.stats.text.members") + "\n", event.getGroovyBot().getShardManager().getUsers().size()));
         message.append(String.format(event.translate("command.stats.text.latency") + "\n", event.getJDA().getPing()));
         message.append(String.format(event.translate("command.stats.text.shards") + "\n", event.getJDA().getShardInfo().getShardId() + 1, event.getJDA().getShardInfo().getShardTotal()));
         message.append(String.format(event.translate("command.stats.text.memory") + "\n", humanReadableByteCount(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()), humanReadableByteCount(Runtime.getRuntime().totalMemory())));
