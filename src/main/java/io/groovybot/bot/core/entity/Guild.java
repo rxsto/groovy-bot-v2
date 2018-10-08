@@ -38,11 +38,12 @@ public class Guild extends DatabaseEntitiy {
 
     @Override
     public void updateInDatabase() throws Exception {
-        PreparedStatement ps = getConnection().prepareStatement("UPDATE guilds SET volume = ?, prefix = ?, dj_mode = ? WHERE id = ?");
+        PreparedStatement ps = getConnection().prepareStatement("UPDATE guilds SET volume = ?, prefix = ?, dj_mode = ?, announce_songs = ? WHERE id = ?");
         ps.setInt(1, volume);
         ps.setString(2, prefix);
         ps.setBoolean(3, djMode);
-        ps.setLong(4, entityId);
+        ps.setBoolean(4, announceSongs);
+        ps.setLong(5, entityId);
         ps.execute();
     }
 

@@ -115,7 +115,7 @@ public class GroovyBot {
         statusPage = new StatusPage(httpClient, config.getJSONObject("statuspage"));
         createDefaultDatabase();
         commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") : config.getJSONObject("settings").getString("prefix"), this);
-        serverCountStatistics = new ServerCountStatistics(httpClient, config.getJSONObject("botlists"));
+        serverCountStatistics = new ServerCountStatistics(config.getJSONObject("botlists"));
         keyManager = new KeyManager(postgreSQL.getConnection());
         interactionManager = new InteractionManager();
         eventWaiter = new EventWaiter();
