@@ -73,10 +73,10 @@ public class PlaylistCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            if (args.length < 2)
+            if (args.length < 1)
                 return sendHelp();
             User user = EntityProvider.getUser(event.getAuthor().getIdLong());
-            if (!user.getPlaylists().containsKey(args[1]))
+            if (!user.getPlaylists().containsKey(args[0]))
                 return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
             event.getGroovyBot().getPlaylistManager().deletePlaylist(args[1], event.getAuthor().getIdLong());
             return send(success(event.translate("command.playlist.deleted.title"), String.format(event.translate("command.playlist.deleted.description"), args[1])));
@@ -91,15 +91,15 @@ public class PlaylistCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            if (args.length < 3)
+            if (args.length < 2)
                 return sendHelp();
-            if (!Helpers.isNumeric(args[2]))
+            if (!Helpers.isNumeric(args[1]))
                 return send(error(event.translate(""), event.translate("")));
-            int index = Integer.parseInt(args[2]) - 1;
+            int index = Integer.parseInt(args[1]) - 1;
             User user = EntityProvider.getUser(event.getAuthor().getIdLong());
-            if (!user.getPlaylists().containsKey(args[1]))
+            if (!user.getPlaylists().containsKey(args[0]))
                 return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
-            Playlist playlist = user.getPlaylists().get(args[1]);
+            Playlist playlist = user.getPlaylists().get(args[0]);
             if (index > playlist.getSongs().size())
                 return send(error(event.translate("command.playlist.notinlist.title"), event.translate("command.playlist.notinlist.description")));
             AudioTrack track = playlist.getSongs().get(index);
@@ -116,12 +116,12 @@ public class PlaylistCommand extends Command {
 
         @Override
         protected Result executeCommand(String[] args, CommandEvent event, MusicPlayer player) {
-            if (args.length < 2)
+            if (args.length < 1)
                 return sendHelp();
             User user = EntityProvider.getUser(event.getAuthor().getIdLong());
-            if (!user.getPlaylists().containsKey(args[1]))
+            if (!user.getPlaylists().containsKey(args[0]))
                 return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
-            Playlist playlist = user.getPlaylists().get(args[1]);
+            Playlist playlist = user.getPlaylists().get(args[0]);
             List<AudioTrack> songs = playlist.getSongs();
             if (!Permissions.tierTwo().isCovered(event.getPermissions(), event))
                 songs = songs.stream()
@@ -141,19 +141,19 @@ public class PlaylistCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            if (args.length < 3)
+            if (args.length < 2)
                 return sendHelp();
             MusicPlayer player = event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
             User user = EntityProvider.getUser(event.getAuthor().getIdLong());
-            if (!user.getPlaylists().containsKey(args[1]))
+            if (!user.getPlaylists().containsKey(args[0]))
                 return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
-            String keyword = args[2];
+            String keyword = args[1];
             if (!keyword.startsWith("http://") || !keyword.startsWith("https://"))
                 keyword = "ytsearch: " + keyword;
-            Playlist playlist = user.getPlaylists().get(args[1]);
+            Playlist playlist = user.getPlaylists().get(args[0]);
             if (playlist.getSongs().size() >= 25 && !Permissions.tierTwo().isCovered(event.getPermissions(), event))
                 return send(error(event.translate("command.playlist.tomanysongs.title"), event.translate("command.playlist.tomanysongs.description")));
-            Message infoMessage = sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), args[1])));
+            Message infoMessage = sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), args[0])));
             player.getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
                 @Override
                 public void trackLoaded(AudioTrack track) {
@@ -194,12 +194,12 @@ public class PlaylistCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            if (args.length < 2)
+            if (args.length < 1)
                 return sendHelp();
             User user = EntityProvider.getUser(event.getAuthor().getIdLong());
-            if (!user.getPlaylists().containsKey(args[1]))
+            if (!user.getPlaylists().containsKey(args[0]))
                 return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
-            Playlist playlist = user.getPlaylists().get(args[1]);
+            Playlist playlist = user.getPlaylists().get(args[0]);
             List<AudioTrack> tracks = playlist.getSongs().stream().limit(10).collect(Collectors.toList());
             return send(QueueCommand.formatQueue(tracks, event, 1, null, 0, 0)
                     .setTitle(playlist.getName() + " - " + playlist.getSongs().size() + " songs"));
@@ -214,7 +214,7 @@ public class PlaylistCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            if (args.length < 2)
+            if (args.length < 1)
                 return sendHelp();
             MusicPlayer player = event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
             if (!player.isPlaying())
@@ -222,7 +222,7 @@ public class PlaylistCommand extends Command {
             User user = EntityProvider.getUser(event.getAuthor().getIdLong());
             if (user.getPlaylists().size() > 2 && !Permissions.tierTwo().isCovered(event.getPermissions(), event))
                 return send(error(event.translate("command.playlist.tomanyplaylists.title"), event.translate("command.playlist.tomanyplaylists.description")));
-            if (user.getPlaylists().containsKey(args[1]))
+            if (user.getPlaylists().containsKey(args[0]))
                 return send(error(event.translate("command.playlist.exists.title"), event.translate("command.playlist.exists.description")));
             List<AudioTrack> tracks = new ArrayList<>();
             tracks.add(player.getPlayer().getPlayingTrack());
