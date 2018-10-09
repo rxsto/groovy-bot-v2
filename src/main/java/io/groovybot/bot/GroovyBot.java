@@ -158,6 +158,7 @@ public class GroovyBot {
                 .setEventManager(eventManager)
                 .setToken(config.getJSONObject("bot").getString("token"))
                 .setShardsTotal(retrieveShards())
+                .setShards()
                 .addEventListeners(
                         new ShardsListener(),
                         new CommandLogger(),
