@@ -41,11 +41,11 @@ public class KeyCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            if (args.length < 2)
+            if (args.length < 1)
                 return sendHelp();
             Key.KeyType type;
             try {
-                type = Key.KeyType.valueOf(args[1].toUpperCase());
+                type = Key.KeyType.valueOf(args[0].toUpperCase());
             } catch (Exception e) {
                 return send(error(event.translate("command.key.invalidargument.title"), event.translate("command.key.invalidargument.title")));
             }

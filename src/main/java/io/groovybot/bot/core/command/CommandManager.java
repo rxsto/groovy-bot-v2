@@ -1,7 +1,6 @@
 package io.groovybot.bot.core.command;
 
 import io.groovybot.bot.GroovyBot;
-import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.core.events.command.CommandExecutedEvent;
 import io.groovybot.bot.core.events.command.CommandFailEvent;
 import io.groovybot.bot.core.events.command.NoPermissionEvent;
@@ -9,6 +8,7 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
@@ -29,49 +29,82 @@ public class CommandManager {
         this.bot = bot;
     }
 
-    public void registerCommands(Command... commands) {
-        for (Command command : commands) {
-            registerCommand(command);
-        }
-    }
-
     @SubscribeEvent
     @SuppressWarnings("unused")
-    public void onMessageReceived(GuildMessageReceivedEvent event) {
-        // Stop if bot is not ready yet
-        if (!bot.isAllShardsInitialized())
-            return;
-        if (event instanceof CommandEvent)
-            return;
-        if (event.getAuthor().isBot() || event.getAuthor().isFake() || event.isWebhookMessage())
-            return;
-
-        CommandEvent commandEvent = parseEvent(event);
-
-        if (commandEvent == null)
-            return;
-
-        Command command = commandAssociations.get(commandEvent.getInvocation());
-        if (command == null) {
+    private void onMessageRecieved(GuildMessageReceivedEvent event) {
+        //Check if all shards are running
+        if (!bot.isAllShardsInitialized()) {
             return;
         }
-
-        if (commandEvent.getArgs().length > 0 && command.getSubCommandAssociations().containsKey(commandEvent.getArgs()[0]))
-            command = command.getSubCommandAssociations().get(commandEvent.getArgs()[0]);
-        call(command, commandEvent);
+        //Check if event is not a CommandEvent
+        if (event instanceof CommandEvent) {
+            return;
+        }
+        //Check if invoker is real
+        User author = event.getAuthor();
+        if (author.isBot() || author.isFake() || event.isWebhookMessage())
+            return;
+        parseCommands(event);
     }
 
-    private void call(Command command, CommandEvent commandEvent) {
-        if (!command.getPermissions().isCovered(EntityProvider.getUser(commandEvent.getAuthor().getIdLong()).getPermissions(), commandEvent)) {
+    private void parseCommands(GuildMessageReceivedEvent event) {
+        String prefix = null;
+        String content = event.getMessage().getContentRaw();
+        //Check prefix
+        if (content.startsWith(defaultPrefix))
+            prefix = defaultPrefix;
+        else {
+            String mention = event.getGuild().getSelfMember().getAsMention();
+            if (content.startsWith(mention))
+                prefix = mention;
+            else {
+                String customPrefix = bot.getGuildCache().get(event.getGuild().getIdLong()).getPrefix();
+                if (content.startsWith(customPrefix))
+                    prefix = customPrefix;
+            }
+        }
+        //Abort if message don't start with the right prefix
+        if (prefix == null)
+            return;
+        //Remove prefix
+        String beheaded = content.substring(prefix.length()).trim();
+        //Split arguments
+        String[] allArgs = beheaded.split("\\s+");
+        String invocation = allArgs[0].toLowerCase();
+        //Search for commands
+        if (!commandAssociations.containsKey(invocation))
+            return;
+        Command command = commandAssociations.get(invocation);
+        //Remove invocation
+        String[] commandArgs = new String[allArgs.length - 1];
+        System.arraycopy(allArgs, 1, commandArgs, 0, commandArgs.length);
+        String[] args;
+        //Check for sub commands
+        if (commandArgs.length > 0 && command.getSubCommandAssociations().containsKey(commandArgs[0])) {
+            command = command.getSubCommandAssociations().get(commandArgs[0]);
+            args = new String[commandArgs.length -1];
+            System.arraycopy(commandArgs, 1, args, 0, args.length);
+        } else
+            args = commandArgs;
+        CommandEvent commandEvent = new CommandEvent(event, bot, args, invocation);
+        callCommand(command, commandEvent);
+    }
+
+    private void callCommand(Command command, CommandEvent commandEvent) {
+        //Check permission
+        if (!command.getPermissions().isCovered(bot.getUserCache().get(commandEvent.getAuthor().getIdLong()).getPermissions(), commandEvent)) {
             bot.getEventManager().handle(new NoPermissionEvent(commandEvent, command));
             return;
         }
+        //Run command
         try {
             TextChannel channel = commandEvent.getChannel();
+            //Send typing
             channel.sendTyping().queue();
-            if (commandEvent.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_MANAGE)) {
+            //Delete invoke message
+            if (commandEvent.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
                 commandEvent.getMessage().delete().queue();
-            }
+            //Run the commands run method
             Result result = command.run(commandEvent.getArgs(), commandEvent);
             if (result != null)
                 result.sendMessage(channel, 60);
@@ -81,28 +114,20 @@ public class CommandManager {
         }
     }
 
-    private CommandEvent parseEvent(GuildMessageReceivedEvent event) {
-        String prefix = null;
-        String customPrefix = EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix();
-        String content = event.getMessage().getContentRaw();
-        if (content.startsWith(event.getGuild().getSelfMember().getAsMention()))
-            prefix = event.getGuild().getSelfMember().getAsMention();
-        else if (content.startsWith(defaultPrefix))
-            prefix = defaultPrefix;
-        else if (content.startsWith(customPrefix))
-            prefix = customPrefix;
-
-        if (prefix != null) {
-            String beheaded = content.substring(prefix.length()).trim();
-            String[] allArgs = beheaded.split("\\s+");
-            String invocation = allArgs[0].toLowerCase();
-            String[] args = new String[allArgs.length - 1];
-            System.arraycopy(allArgs, 1, args, 0, args.length);
-            return new CommandEvent(event, bot, args, invocation);
+    /**
+     * Registers  a command handler
+     * @param commands The command handlers {@link io.groovybot.bot.core.command.Command}
+     */
+    public void registerCommands(Command... commands) {
+        for (Command command : commands) {
+            registerCommand(command);
         }
-        return null;
     }
 
+    /**
+     * Registers  a command handler
+     * @param command The command handler {@link io.groovybot.bot.core.command.Command}
+     */
     private void registerCommand(Command command) {
         for (String alias : command.getAliases()) {
             if (commandAssociations.containsKey(alias))
