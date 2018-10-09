@@ -100,4 +100,6 @@ buildNumber.properties
 /.floo
 
 *.iml
-/src/test/java/io/groovybot/bot/tests/SECRETS.java
+/src/test
+src/main/java/io/groovybot/bot/core/events/guilds/
+src/test/resources/

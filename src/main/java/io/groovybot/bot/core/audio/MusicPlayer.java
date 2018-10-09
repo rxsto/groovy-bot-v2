@@ -101,7 +101,7 @@ public class MusicPlayer extends Player {
     @Override
     public void announceSong(AudioPlayer audioPlayer, AudioTrack track) {
         if (EntityProvider.getGuild(guild.getIdLong()).isAnnounceSongs())
-            channel.sendMessage(EmbedUtil.play("Now Playing", String.format("%s (%s)", track.getInfo().title, track.getInfo().author)).build()).queue();
+            SafeMessage.sendMessage(channel, EmbedUtil.play("Now Playing", String.format("%s (%s)", track.getInfo().title, track.getInfo().author)));
     }
 
 
@@ -154,7 +154,7 @@ public class MusicPlayer extends Player {
 
                 if (isURL) {
                     queueTracks(tracks.toArray(new AudioTrack[0]));
-                    infoMessage.editMessage(EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), audioPlaylist.getName())).build()).queue();
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), audioPlaylist.getName())));
                     return;
                 }
                 final AudioTrack track = tracks.get(0);
@@ -166,26 +166,26 @@ public class MusicPlayer extends Player {
 
             @Override
             public void noMatches() {
-                infoMessage.editMessage(EmbedUtil.error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")).build()).queue();
+                SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
             }
 
             @Override
             public void loadFailed(FriendlyException e) {
                 if (e.getMessage().toLowerCase().contains("Unknown file format")) {
-                    infoMessage.editMessage(EmbedUtil.error(event.translate("phrases.searching.unknownformat.tile"), event.translate("phrases.searching.unknownformat.description")).build()).queue();
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unknownformat.tile"), event.translate("phrases.searching.unknownformat.description")));
                     return;
                 }
                 if (e.getMessage().toLowerCase().contains("The playlist is private")) {
-                    infoMessage.editMessage(EmbedUtil.error(event.translate("phrases.searching.private.tile"), event.translate("phrases.searching.private.description")).build()).queue();
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.private.tile"), event.translate("phrases.searching.private.description")));
                     return;
                 }
-                infoMessage.editMessage(EmbedUtil.error(event).build()).queue();
+                SafeMessage.editMessage(infoMessage, EmbedUtil.error(event));
                 log.error("[PlayCommand] Error while loading track!", e);
             }
 
             private boolean checkSong(AudioTrack track) {
                 if (track.getDuration() > 3600000 && !Permissions.tierTwo().isCovered(userPermissions, event)) {
-                    infoMessage.editMessage(EmbedUtil.error(event.translate("phrases.toolongsong.title"), event.translate("phrases.toolongsong.description")).build()).queue();
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.toolongsong.title"), event.translate("phrases.toolongsong.description")));
                     if (trackQueue.isEmpty()) {
                         if (getGuild().getId().equals("403882830225997825"))
                             link.disconnect();
@@ -200,9 +200,9 @@ public class MusicPlayer extends Player {
 
     private void queuedTrack(AudioTrack track, Message infoMessage, CommandEvent event) {
         if (track.getInfo().isStream)
-            infoMessage.editMessage(EmbedUtil.success(event.translate("phrases.searching.streamloaded.title"), String.format(event.translate("phrases.searching.streamloaded.description"), track.getInfo().title)).build()).queue();
+            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.streamloaded.title"), String.format(event.translate("phrases.searching.streamloaded.description"), track.getInfo().title)));
         else
-            infoMessage.editMessage(EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)).build()).queue();
+            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)));
     }
 
     public void update() throws SQLException, IOException {

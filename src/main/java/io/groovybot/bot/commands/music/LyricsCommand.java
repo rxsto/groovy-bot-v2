@@ -31,21 +31,21 @@ public class LyricsCommand extends Command {
         final String title = info.title;
         String lyricsUrl = geniusClient.searchSong(title);
         if (lyricsUrl.equals("")) {
-            infoMessage.editMessage(error(event.translate("command.lyrics.notfound.title"), event.translate("command.lyrics.notfound.description")).build()).queue();
+            editMessage(infoMessage, error(event.translate("command.lyrics.notfound.title"), event.translate("command.lyrics.notfound.description")));
             return null;
         }
-        infoMessage.editMessage(info(event.translate("command.lyrics.crawling.title"), event.translate("command.lyrics.crawling.description")).build()).queue();
+        editMessage(infoMessage, info(event.translate("command.lyrics.crawling.title"), event.translate("command.lyrics.crawling.description")));
         String lyrics;
         try {
             lyrics = geniusClient.findLyrics(lyricsUrl);
         } catch (IOException e) {
-            infoMessage.editMessage(error(event).build()).queue();
+            editMessage(infoMessage, error(event));
             log.error("[Genius] An error occurred while crawling lyrics", e);
             return null;
         }
-        infoMessage.editMessage(info("", String.format(event.translate("command.lyrics.success.description"), lyrics))
+        editMessage(infoMessage, info("", String.format(event.translate("command.lyrics.success.description"), lyrics))
                 .setTitle(String.format(event.translate("command.lyrics.success.title"), title), lyricsUrl)
-                .build()).queue();
+        );
         return null;
     }
 }
