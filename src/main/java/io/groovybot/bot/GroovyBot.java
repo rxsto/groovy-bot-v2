@@ -299,7 +299,8 @@ public class GroovyBot {
                 .put("bots.discordlist.app", "defaultvalue")
                 .put("discord.services", "defaultvalue")
                 .put("discordsbestbots.xyz", "defaultvalue")
-                .put("divinediscordbots.com", "defaultvalue");
+                .put("divinediscordbots.com", "defaultvalue")
+                .put("discordbotindex.com", "defaultvalue");
         configuration.addDefault("botlists", botlistObjects);
         final JSONObject statusPageObject = new JSONObject();
         statusPageObject.put("page_id", "1337");
