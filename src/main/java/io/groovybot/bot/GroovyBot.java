@@ -326,6 +326,7 @@ public class GroovyBot {
         dateLogAppender.setLayout(filePatternLayout);
         dateLogAppender.addFilter(errorResponseFilter);
         latestLogAppender.setFile("logs/latest.log");
+        latestLogAppender.setAppend(false);
         dateLogAppender.setFile(String.format("logs/%s.log", new SimpleDateFormat("dd_MM_yyyy-HH_mm").format(new Date())));
         latestLogAppender.addFilter(errorResponseFilter);
         latestLogAppender.activateOptions();
