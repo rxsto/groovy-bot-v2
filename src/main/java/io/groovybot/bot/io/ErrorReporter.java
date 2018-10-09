@@ -6,45 +6,32 @@ import net.dv8tion.jda.webhook.WebhookClient;
 import net.dv8tion.jda.webhook.WebhookClientBuilder;
 import net.dv8tion.jda.webhook.WebhookMessage;
 import net.dv8tion.jda.webhook.WebhookMessageBuilder;
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
 
+import java.io.Serializable;
 import java.time.Instant;
 
-public class ErrorReporter extends AppenderSkeleton {
+public class ErrorReporter extends AbstractAppender {
 
     private final WebhookClient errorHook;
 
-    public ErrorReporter() {
+    public ErrorReporter(String name, Filter filter, Layout<? extends Serializable> layout) {
+        super(name, filter, layout);
         errorHook = new WebhookClientBuilder(GroovyBot.getInstance().getConfig().getJSONObject("webhooks").getString("error_hook")).build();
     }
 
-    @Override
-    protected void append(LoggingEvent event) {
-        if (errorHook == null)
-            return;
-        if (event.getThrowableInformation() != null)
-            errorHook.send(buildErrorLog(event));
-    }
 
-    @Override
-    public void close() {
-        errorHook.close();
-    }
-
-    @Override
-    public boolean requiresLayout() {
-        return false;
-    }
-
-    private WebhookMessage buildErrorLog(LoggingEvent event) {
+    private WebhookMessage buildErrorLog(LogEvent event) {
         WebhookMessageBuilder out = new WebhookMessageBuilder();
         out.addEmbeds(
                 EmbedUtil.error("An unknown error occurred", String.format("An unkown error occurred in class %s", event.getLoggerName())
                 )
                         .addField("Class", "`" + event.getLoggerName() + "`", false)
-                        .addField("Message", "`" + formatException(event.getThrowableInformation().getThrowable()) + "`", false)
-                        .addField("Stacktrace", "```" + formatStacktrace(event.getThrowableInformation().getThrowable()) + "```", false)
+                        .addField("Message", "`" + formatException(event.getThrown()) + "`", false)
+                        .addField("Stacktrace", "```" + formatStacktrace(event.getThrown()) + "```", false)
                         .setTimestamp(Instant.now())
                         .build()
         );
@@ -61,5 +48,13 @@ public class ErrorReporter extends AppenderSkeleton {
 
     private String formatException(Throwable throwable) {
         return String.format("%s:%s", throwable.getClass().getCanonicalName(), throwable.getMessage());
+    }
+
+    @Override
+    public void append(LogEvent event) {
+        if (errorHook == null)
+            return;
+        if (event.getThrown() != null)
+            errorHook.send(buildErrorLog(event));
     }
 }

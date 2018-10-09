@@ -8,12 +8,12 @@ import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.lyrics.GeniusClient;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.io.IOException;
 
-@Log4j
+@Log4j2
 public class LyricsCommand extends Command {
 
     public LyricsCommand() {

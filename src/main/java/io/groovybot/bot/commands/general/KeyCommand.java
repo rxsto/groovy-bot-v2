@@ -4,11 +4,11 @@ import io.groovybot.bot.core.KeyManager;
 import io.groovybot.bot.core.command.*;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.entity.Key;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.UUID;
 
-@Log4j
+@Log4j2
 public class KeyCommand extends Command {
 
     public KeyCommand() {

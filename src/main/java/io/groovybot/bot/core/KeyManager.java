@@ -2,7 +2,7 @@ package io.groovybot.bot.core;
 
 import io.groovybot.bot.core.entity.Key;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.Objects;
 import java.util.UUID;
 
-@Log4j
+@Log4j2
 @RequiredArgsConstructor
 public class KeyManager {
 

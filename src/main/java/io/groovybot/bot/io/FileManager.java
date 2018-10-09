@@ -1,11 +1,11 @@
 package io.groovybot.bot.io;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.io.IOException;
 
-@Log4j
+@Log4j2
 public class FileManager {
 
     private final String[] DIRECTORIES = {

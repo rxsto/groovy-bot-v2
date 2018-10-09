@@ -2,7 +2,7 @@ package io.groovybot.bot.core.statistics;
 
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.util.NameThreadFactory;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import okhttp3.*;
 import org.json.JSONObject;
 
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-@Log4j
+@Log4j2
 public class StatusPage extends StatsPoster {
 
 

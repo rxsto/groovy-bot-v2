@@ -2,7 +2,7 @@ package io.groovybot.bot.core.statistics;
 
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.util.NameThreadFactory;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-@Log4j
+@Log4j2
 public class WebsiteStats implements Runnable {
 
     private final Connection connection;

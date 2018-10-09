@@ -26,15 +26,13 @@ import io.groovybot.bot.core.statistics.ServerCountStatistics;
 import io.groovybot.bot.core.statistics.StatusPage;
 import io.groovybot.bot.core.statistics.WebsiteStats;
 import io.groovybot.bot.core.translation.TranslationManager;
-import io.groovybot.bot.io.ErrorReporter;
 import io.groovybot.bot.io.FileManager;
 import io.groovybot.bot.io.config.Configuration;
 import io.groovybot.bot.io.database.PostgreSQL;
 import io.groovybot.bot.listeners.*;
-import io.groovybot.bot.util.JDASUCKSFILTER;
 import io.groovybot.bot.util.YoutubeUtil;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.OnlineStatus;
@@ -45,17 +43,20 @@ import net.dv8tion.jda.core.hooks.SubscribeEvent;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.apache.log4j.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-@Log4j
+@Log4j2
 public class GroovyBot {
 
     @Getter
@@ -76,7 +77,6 @@ public class GroovyBot {
     private final MusicPlayerManager musicPlayerManager;
     @Getter
     private final InteractionManager interactionManager;
-    private final JDASUCKSFILTER errorResponseFilter = new JDASUCKSFILTER();
     @Getter
     private final EventWaiter eventWaiter;
     @Getter
@@ -104,10 +104,10 @@ public class GroovyBot {
 
 
     private GroovyBot(String[] args) {
+        initLogger(args);
         instance = this;
         debugMode = String.join(" ", args).contains("debug");
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
-        initLogger(args);
         log.info("Starting Groovy ...");
         new FileManager();
         initConfig();
@@ -313,41 +313,26 @@ public class GroovyBot {
     }
 
     private void initLogger(String[] args) {
-        final ConsoleAppender consoleAppender = new ConsoleAppender();
-        final PatternLayout consolePatternLayout = new PatternLayout("[%d{HH:mm:ss}] [%c] [%p] | %m%n");
-        final FileAppender latestLogAppender = new FileAppender();
-        final FileAppender dateLogAppender = new FileAppender();
-        final PatternLayout filePatternLayout = new PatternLayout("[%d{dd.MMM.yyyy HH:mm:ss,SSS}] [%c] [%p] | %m%n");
+        try {
+            InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("log4j.xml");
+            ConfigurationSource configurationSource = new ConfigurationSource(stream);
+            org.apache.logging.log4j.core.config.Configuration configuration = new XmlConfiguration(LoggerContext.getContext(false), configurationSource);
+            Configurator.initialize(configuration);
+            Configurator.setLevel("org.apache.http", Level.OFF);
+            Configurator.setLevel("org.apache.http.headers", Level.OFF);
+            Configurator.setLevel("org.apache.http.wire", Level.OFF);
+            Configurator.setRootLevel(args.length == 0 ? Level.INFO : Level.toLevel(args[0]));
+        } catch (IOException e) {
+            e.printStackTrace();
+            close();
+        }
 
-        consoleAppender.setLayout(consolePatternLayout);
-        consoleAppender.activateOptions();
-        consoleAppender.addFilter(errorResponseFilter);
-        latestLogAppender.setLayout(filePatternLayout);
-        dateLogAppender.setLayout(filePatternLayout);
-        dateLogAppender.addFilter(errorResponseFilter);
-        latestLogAppender.setFile("logs/latest.log");
-        latestLogAppender.setAppend(false);
-        dateLogAppender.setFile(String.format("logs/%s.log", new SimpleDateFormat("dd_MM_yyyy-HH_mm").format(new Date())));
-        latestLogAppender.addFilter(errorResponseFilter);
-        latestLogAppender.activateOptions();
-        dateLogAppender.activateOptions();
-
-        Logger.getRootLogger().addAppender(consoleAppender);
-        Logger.getRootLogger().addAppender(latestLogAppender);
-        Logger.getRootLogger().addAppender(dateLogAppender);
-        Logger.getLogger("org.apache.http").setLevel(Level.OFF);
-        Logger.getLogger("org.apache.http.headers").setLevel(Level.OFF);
-        Logger.getLogger("org.apache.http.wire").setLevel(Level.OFF);
-        Logger.getRootLogger().setLevel(args.length == 0 ? Level.INFO : Level.toLevel(args[0]));
     }
 
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onReady(AllShardsLoadedEvent event) {
         allShardsInitialized = true;
-        final ErrorReporter errorReporter = new ErrorReporter();
-        errorReporter.addFilter(errorResponseFilter);
-        Logger.getRootLogger().addAppender(errorReporter);
         new GameAnimator(this);
         guildCache = new Cache<>(Guild.class);
         userCache = new Cache<>(User.class);
@@ -418,7 +403,8 @@ public class GroovyBot {
 
     public void close() {
         try {
-            postgreSQL.getConnection().close();
+            if (postgreSQL != null)
+                postgreSQL.getConnection().close();
             if (shardManager != null)
                 shardManager.shutdown();
         } catch (Exception e) {

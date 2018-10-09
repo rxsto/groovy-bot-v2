@@ -6,13 +6,13 @@ import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
 
-@Log4j
+@Log4j2
 public class UpdateCommand extends Command {
 
     public UpdateCommand() {

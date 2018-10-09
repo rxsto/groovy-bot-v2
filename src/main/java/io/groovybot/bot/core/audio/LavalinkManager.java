@@ -8,7 +8,7 @@ import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import io.groovybot.bot.GroovyBot;
 import lavalink.client.io.jda.JdaLavalink;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
@@ -18,7 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Log4j
+@Log4j2
 public class LavalinkManager {
 
     @Getter

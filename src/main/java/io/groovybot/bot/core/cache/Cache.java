@@ -1,12 +1,12 @@
 package io.groovybot.bot.core.cache;
 
 import io.groovybot.bot.core.entity.DatabaseEntitiy;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Log4j
+@Log4j2
 public class Cache<T extends DatabaseEntitiy> {
 
     private final Map<Long, T> cacheMap;

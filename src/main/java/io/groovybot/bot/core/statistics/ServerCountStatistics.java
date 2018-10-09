@@ -2,7 +2,7 @@ package io.groovybot.bot.core.statistics;
 
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.util.NameThreadFactory;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-@Log4j
+@Log4j2
 public class ServerCountStatistics extends StatsPoster {
 
     private GroovyBot groovyBot = GroovyBot.getInstance();

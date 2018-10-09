@@ -3,7 +3,7 @@ package io.groovybot.bot.core.audio;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.core.entity.Playlist;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Log4j
+@Log4j2
 @RequiredArgsConstructor
 public class PlaylistManager {
 
