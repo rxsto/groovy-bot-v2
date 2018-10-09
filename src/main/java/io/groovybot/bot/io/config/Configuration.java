@@ -1,6 +1,6 @@
 package io.groovybot.bot.io.config;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Log4j
+@Log4j2
 public class Configuration extends JSONObject {
 
     private final File configFile;

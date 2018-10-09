@@ -5,7 +5,7 @@ import io.groovybot.bot.GroovyBot;
 import lavalink.client.LavalinkUtil;
 import lombok.Getter;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 
 import java.io.IOException;
@@ -13,10 +13,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-@Log4j
+@Log4j2
 @ToString
 @Getter
 public class Playlist {

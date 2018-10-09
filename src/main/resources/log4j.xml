@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <appender name="console" class="org.apache.logging.log4j.core.appender.ConsoleAppender">
+        <layout class="org.apache.logging.log4j.core.layout.PatternLayout">
+            <param name="ConversionPattern" value=
+                    "[%d{HH:mm:ss}] [%c] [%p] | %m%n"/>
+        </layout>
+        <filter class="io.groovybot.bot.util.JDASUCKSFILTER"/>
+    </appender>
+    <appender name="latestlog" class="org.apache.logging.log4j.core.appender.RollingFileAppender">
+        <param name="append" value="false"/>
+        <param name="file" value="logs/latest.log"/>
+        <layout class="org.apache.logging.log4j.core.layout.PatternLayout">
+            <param name="ConversionPattern" value=
+                    "[%d{dd.MMM.yyyy HH:mm:ss,SSS}] [%c] [%p] | %m%n"/>
+        </layout>
+        <filter class="io.groovybot.bot.util.JDASUCKSFILTER"/>
+    </appender>
+    <appender name="datelog" class="org.apache.logging.log4j.core.appender.RollingFileAppender">
+        <param name="append" value="false"/>
+        <param name="file" value="logs/%d{dd.MMM.yyyy HH:mm:ss,SSS}.log"/>
+        <layout class="org.apache.logging.log4j.core.layout.PatternLayout">
+            <param name="ConversionPattern" value=
+                    "[%d{dd.MMM.yyyy HH:mm:ss,SSS}] [%c] [%p] | %m%n"/>
+        </layout>
+        <filter class="io.groovybot.bot.util.JDASUCKSFILTER"/>
+    </appender>
+    <appender name="webhook" class="io.groovybot.bot.io.ErrorReporter">
+        <filter class="io.groovybot.bot.util.JDASUCKSFILTER"/>
+    </appender>
+</Configuration>

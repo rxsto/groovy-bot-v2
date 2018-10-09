@@ -6,11 +6,11 @@ import io.groovybot.bot.core.events.command.NoPermissionEvent;
 import io.groovybot.bot.util.Colors;
 import io.groovybot.bot.util.EmbedUtil;
 import io.groovybot.bot.util.SafeMessage;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
-@Log4j
+@Log4j2
 public class CommandLogger {
 
     @SubscribeEvent

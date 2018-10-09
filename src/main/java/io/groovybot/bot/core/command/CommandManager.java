@@ -5,7 +5,7 @@ import io.groovybot.bot.core.events.command.CommandExecutedEvent;
 import io.groovybot.bot.core.events.command.CommandFailEvent;
 import io.groovybot.bot.core.events.command.NoPermissionEvent;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.hooks.SubscribeEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-@Log4j
+@Log4j2
 public class CommandManager {
 
     @Getter

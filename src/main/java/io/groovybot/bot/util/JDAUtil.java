@@ -1,12 +1,12 @@
 package io.groovybot.bot.util;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.requests.RequestFuture;
 import net.dv8tion.jda.core.requests.RestAction;
 
 import java.util.concurrent.ExecutionException;
 
-@Log4j
+@Log4j2
 public class JDAUtil {
 
     /**

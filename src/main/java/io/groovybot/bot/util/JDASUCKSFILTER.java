@@ -1,17 +1,21 @@
 package io.groovybot.bot.util;
 
 import net.dv8tion.jda.core.exceptions.ErrorResponseException;
-import org.apache.log4j.spi.Filter;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.filter.AbstractFilter;
 
-public class JDASUCKSFILTER extends Filter {
+public class JDASUCKSFILTER extends AbstractFilter {
 
     @Override
-    public int decide(LoggingEvent event) {
-        if (event.getRenderedMessage().contains("org.apache.http.wire"))
-            return DENY;
-        if (event.getThrowableInformation() != null && event.getThrowableInformation().getThrowable() instanceof ErrorResponseException)
-            return DENY;
-        return ACCEPT;
+    public Result filter(LogEvent event) {
+        return decide(event);
+    }
+
+    public Result decide(LogEvent event) {
+        if (event.getMessage().getFormattedMessage().contains("org.apache.http.wire"))
+            return Result.DENY;
+        if (event.getThrown() != null && event.getThrown() instanceof ErrorResponseException)
+            return Result.DENY;
+        return Result.ACCEPT;
     }
 }

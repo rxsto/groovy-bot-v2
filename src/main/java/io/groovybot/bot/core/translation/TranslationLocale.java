@@ -1,12 +1,12 @@
 package io.groovybot.bot.core.translation;
 
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-@Log4j
+@Log4j2
 @Getter
 public class TranslationLocale {
 

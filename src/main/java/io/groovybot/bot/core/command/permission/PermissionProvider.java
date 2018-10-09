@@ -2,13 +2,13 @@ package io.groovybot.bot.core.command.permission;
 
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.entity.User;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@Log4j
+@Log4j2
 public class PermissionProvider {
 
     public static UserPermissions getUserPermissions(User user) {

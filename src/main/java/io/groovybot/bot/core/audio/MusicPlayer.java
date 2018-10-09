@@ -18,7 +18,7 @@ import lavalink.client.LavalinkUtil;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavaplayerPlayerWrapper;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import org.json.JSONArray;
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Log4j
+@Log4j2
 public class MusicPlayer extends Player {
 
     @Getter

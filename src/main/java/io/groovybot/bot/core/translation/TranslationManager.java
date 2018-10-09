@@ -2,14 +2,14 @@ package io.groovybot.bot.core.translation;
 
 import io.groovybot.bot.core.entity.EntityProvider;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-@Log4j
+@Log4j2
 public class TranslationManager {
 
     @Getter

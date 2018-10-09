@@ -13,7 +13,7 @@ import lavalink.client.player.event.AudioEventAdapterWrapped;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-@Log4j
+@Log4j2
 @RequiredArgsConstructor
 public class Scheduler extends AudioEventAdapterWrapped {
 

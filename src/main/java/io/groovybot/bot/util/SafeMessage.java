@@ -1,6 +1,6 @@
 package io.groovybot.bot.util;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -12,7 +12,7 @@ import net.dv8tion.jda.core.requests.restaction.MessageAction;
 
 import java.util.concurrent.TimeUnit;
 
-@Log4j
+@Log4j2
 @SuppressWarnings("unused")
 public class SafeMessage extends JDAUtil {
 
