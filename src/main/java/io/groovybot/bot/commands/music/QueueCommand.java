@@ -36,7 +36,7 @@ public class QueueCommand extends Command {
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
         if (player.getQueueSize() <= PAGE_SIZE)
             return send(formatQueue((LinkedList<AudioTrack>) player.getTrackQueue(), event, 0, player.getPlayer().getPlayingTrack(), 1, 1));
-        if (!event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
+        if (!event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE))
             return send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
         Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.queue.loading.title"), event.translate("command.queue.loading.description")));
         new QueueMessage(infoMessage, event.getChannel(), event.getMember(), player.getTrackQueue(), event, player.getPlayer().getPlayingTrack());
