@@ -100,7 +100,7 @@ public class QueueCommand extends Command {
 
         private void updateMessage() {
             List<AudioTrack> subQueue = ((LinkedList<AudioTrack>) queue).subList((currentPage - 1) * PAGE_SIZE, ((currentPage - 1) * PAGE_SIZE + PAGE_SIZE) > queue.size() ? queue.size() : (currentPage - 1) * PAGE_SIZE + PAGE_SIZE);
-            getInfoMessage().editMessage(formatQueue(subQueue, commandEvent, (currentPage * PAGE_SIZE - 10), currentPage == 1 ? currentTrack : null, currentPage, pages + 1).build()).queue();
+            editMessage(getInfoMessage(), formatQueue(subQueue, commandEvent, (currentPage * PAGE_SIZE - 10), currentPage == 1 ? currentTrack : null, currentPage, pages + 1));
         }
 
         private void updateEmotes(boolean first) {

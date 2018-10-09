@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import io.groovybot.bot.util.EmbedUtil;
+import io.groovybot.bot.util.SafeMessage;
 import lavalink.client.player.event.AudioEventAdapterWrapped;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -94,10 +95,10 @@ public class Scheduler extends AudioEventAdapterWrapped {
         Message infoMessage = player.announceAutoplay();
         try {
             SearchResult result = player.youtubeClient.retrieveRelatedVideos(track.getIdentifier());
-            infoMessage.editMessage(EmbedUtil.success("Loaded video", String.format("Successfully loaded video `%s`", result.getSnippet().getTitle())).build()).queue();
+            SafeMessage.editMessage(infoMessage, EmbedUtil.success("Loaded video", String.format("Successfully loaded video `%s`", result.getSnippet().getTitle())));
             queueSearchResult(result, infoMessage);
         } catch (IOException e) {
-            infoMessage.editMessage(EmbedUtil.error("Unknown error", "An unknown autoplay-error occurred while retrieving the next video!").build()).queue();
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error("Unknown error", "An unknown autoplay-error occurred while retrieving the next video!"));
             log.error("[Scheduler] Error while retrieving autoplay video", e);
         }
     }
@@ -121,7 +122,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                infoMessage.editMessage(EmbedUtil.error("Unknown error", "An unknown error occurred while queueing song").build()).queue();
+                SafeMessage.editMessage(infoMessage, EmbedUtil.error("Unknown error", "An unknown error occurred while queueing song"));
                 log.error("[AutoPlay] Error while queueing song", exception);
             }
         });

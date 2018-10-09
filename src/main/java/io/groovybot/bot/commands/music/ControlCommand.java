@@ -205,7 +205,7 @@ public class ControlCommand extends SameChannelCommand {
                     .setTitle(String.format(":notes: %s (%s)", currentSong.title, currentSong.author))
                     .setColor(Colors.DARK_BUT_NOT_BLACK)
                     .setDescription(buildDescription(player));
-            getInfoMessage().editMessage(controlPanelEmbed.build()).queue();
+            editMessage(getInfoMessage(), controlPanelEmbed);
         }
 
         private CharSequence buildDescription(MusicPlayer player) {

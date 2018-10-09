@@ -170,16 +170,16 @@ public class PlaylistCommand extends Command {
 
                 @Override
                 public void noMatches() {
-                    infoMessage.editMessage(EmbedUtil.error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")).build()).queue();
+                    editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
                 }
 
                 @Override
                 public void loadFailed(FriendlyException exception) {
-                    infoMessage.editMessage(error(event).build()).queue();
+                    editMessage(infoMessage, error(event));
                 }
 
                 private void addedTrack(AudioTrack track) {
-                    infoMessage.editMessage(success(event.translate("command.playlist.added.title"), String.format(event.translate("command.playlist.added.description"), track.getInfo().title, playlist.getName())).build()).queue();
+                    editMessage(infoMessage, success(event.translate("command.playlist.added.title"), String.format(event.translate("command.playlist.added.description"), track.getInfo().title, playlist.getName())));
                 }
             });
             return null;
