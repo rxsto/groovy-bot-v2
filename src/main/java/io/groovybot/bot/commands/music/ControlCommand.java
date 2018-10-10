@@ -35,7 +35,7 @@ public class ControlCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
-        if (!event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
+        if (!event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE))
             return send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
         if (controlPanelExists(event.getGuild().getIdLong())) {
             Message confirmMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.control.alreadyinuse.title"), event.translate("command.control.alreadyinuse.description")));
