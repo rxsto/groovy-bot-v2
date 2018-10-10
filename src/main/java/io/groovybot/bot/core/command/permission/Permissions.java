@@ -75,9 +75,9 @@ public class Permissions {
         if (adminOnly)
             return permissions.getAdminOnly(event.getGuild());
         if (tierOneOnly)
-            return permissions.getIsTierOne() || permissions.getIsTierTwo();
+            return permissions.isTierOne();
         if (tierTwoOnly)
-            return permissions.getIsTierTwo();
+            return permissions.isTierTwo();
         if (djOnly)
             return permissions.isDj(event.getGuild());
         return false;

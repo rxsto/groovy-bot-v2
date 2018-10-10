@@ -1,7 +1,6 @@
 package io.groovybot.bot.core.entity;
 
 import io.groovybot.bot.GroovyBot;
-import io.groovybot.bot.core.command.permission.PermissionProvider;
 import io.groovybot.bot.core.command.permission.UserPermissions;
 import lombok.Getter;
 
@@ -60,7 +59,7 @@ public class User extends DatabaseEntitiy {
     }
 
     public UserPermissions getPermissions() {
-        return PermissionProvider.getUserPermissions(this);
+        return new UserPermissions(this, GroovyBot.getInstance());
     }
 
     public Map<String, Playlist> getPlaylists() {
