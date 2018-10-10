@@ -1,15 +1,6 @@
 package io.groovybot.bot;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import io.groovybot.bot.commands.general.*;
-import io.groovybot.bot.commands.music.*;
-import io.groovybot.bot.commands.owner.CloseCommand;
-import io.groovybot.bot.commands.owner.EvalCommand;
-import io.groovybot.bot.commands.owner.UpdateCommand;
-import io.groovybot.bot.commands.settings.AnnounceCommand;
-import io.groovybot.bot.commands.settings.DjModeCommand;
-import io.groovybot.bot.commands.settings.LanguageCommand;
-import io.groovybot.bot.commands.settings.PrefixCommand;
 import io.groovybot.bot.core.GameAnimator;
 import io.groovybot.bot.core.KeyManager;
 import io.groovybot.bot.core.audio.LavalinkManager;
@@ -17,9 +8,11 @@ import io.groovybot.bot.core.audio.MusicPlayerManager;
 import io.groovybot.bot.core.audio.PlaylistManager;
 import io.groovybot.bot.core.cache.Cache;
 import io.groovybot.bot.core.command.CommandManager;
+import io.groovybot.bot.core.command.CommandRegistry;
 import io.groovybot.bot.core.command.interaction.InteractionManager;
 import io.groovybot.bot.core.entity.Guild;
 import io.groovybot.bot.core.entity.User;
+import io.groovybot.bot.core.events.EventRegistry;
 import io.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
 import io.groovybot.bot.core.lyrics.GeniusClient;
 import io.groovybot.bot.core.statistics.ServerCountStatistics;
@@ -28,8 +21,8 @@ import io.groovybot.bot.core.statistics.WebsiteStats;
 import io.groovybot.bot.core.translation.TranslationManager;
 import io.groovybot.bot.io.FileManager;
 import io.groovybot.bot.io.config.Configuration;
+import io.groovybot.bot.io.database.DatabaseGenrator;
 import io.groovybot.bot.io.database.PostgreSQL;
-import io.groovybot.bot.listeners.*;
 import io.groovybot.bot.util.YoutubeUtil;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -44,16 +37,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 
 @Log4j2
@@ -104,8 +93,8 @@ public class GroovyBot {
 
 
     private GroovyBot(String[] args) {
-        initLogger(args);
         instance = this;
+        initLogger(args);
         debugMode = String.join(" ", args).contains("debug");
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
         log.info("Starting Groovy ...");
@@ -115,7 +104,8 @@ public class GroovyBot {
         postgreSQL = new PostgreSQL();
         lavalinkManager = new LavalinkManager(this);
         statusPage = new StatusPage(httpClient, config.getJSONObject("statuspage"));
-        createDefaultDatabase();
+        //Generate Databases
+        new DatabaseGenrator(postgreSQL);
         commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") : config.getJSONObject("settings").getString("prefix"), this);
         serverCountStatistics = new ServerCountStatistics(config.getJSONObject("botlists"));
         keyManager = new KeyManager(postgreSQL.getConnection());
@@ -127,13 +117,8 @@ public class GroovyBot {
         playlistManager = new PlaylistManager(postgreSQL.getConnection());
         youtubeClient = YoutubeUtil.create(this);
         geniusClient = new GeniusClient(config.getJSONObject("genius").getString("token"));
-        registerCommands();
-    }
-
-    public static void main(String[] args) {
-        if (instance != null)
-            throw new RuntimeException("Groovy was already initialized in this VM!");
-        new GroovyBot(args);
+        //Register commands
+        new CommandRegistry(commandManager);
     }
 
     private Integer retrieveShards() {
@@ -159,20 +144,10 @@ public class GroovyBot {
                 .setToken(config.getJSONObject("bot").getString("token"))
                 .setShardsTotal(retrieveShards())
                 .setShards()
-                .addEventListeners(
-                        new ShardsListener(),
-                        new CommandLogger(),
-                        new GuildLogger(),
-                        new SelfMentionListener(),
-                        new BetaListener(),
-                        commandManager,
-                        this,
-                        lavalinkManager,
-                        interactionManager,
-                        eventWaiter
-                )
                 .setGame(Game.playing("Starting ..."))
                 .setStatus(OnlineStatus.DO_NOT_DISTURB);
+        // Register events
+        new EventRegistry(shardManagerBuilder, this);
         try {
             shardManager = shardManagerBuilder.build();
             lavalinkManager.initialize();
@@ -182,81 +157,6 @@ public class GroovyBot {
         }
     }
 
-
-    private void createDefaultDatabase() {
-        postgreSQL.addDefault(() -> "create table if not exists guilds\n" +
-                "(\n" +
-                "  id      bigint                not null\n" +
-                "    constraint guilds_pkey\n" +
-                "    primary key,\n" +
-                "  prefix  varchar,\n" +
-                "  volume  integer,\n" +
-                "  dj_mode boolean default false not null\n" +
-                ");");
-        postgreSQL.addDefault(() -> "create table if not exists queues\n" +
-                "(\n" +
-                "  guild_id         bigint not null\n" +
-                "    constraint table_name_pkey\n" +
-                "    primary key,\n" +
-                "  current_track    varchar,\n" +
-                "  current_position bigint,\n" +
-                "  queue            varchar,\n" +
-                "  channel_id       bigint,\n" +
-                "  text_channel_id  bigint\n" +
-                ");");
-        postgreSQL.addDefault(() -> "create table if not exists premium\n" +
-                "(\n" +
-                "  user_id       bigint               not null\n" +
-                "    constraint premium_pkey\n" +
-                "    primary key,\n" +
-                "  patreon_token varchar,\n" +
-                "  type          integer              not null,\n" +
-                "  \"check\"       boolean default true not null,\n" +
-                "  refresh_token varchar,\n" +
-                "  patreon_id    varchar\n" +
-                ");");
-        postgreSQL.addDefault(() -> "create table if not exists users\n" +
-                "(\n" +
-                "  id     bigint not null\n" +
-                "    constraint users_pkey\n" +
-                "    primary key,\n" +
-                "  locale varchar(50)\n" +
-                ");\n");
-        postgreSQL.addDefault(() -> "create table if not exists stats\n" +
-                "(\n" +
-                "  playing integer,\n" +
-                "  servers integer,\n" +
-                "  users   integer,\n" +
-                "  id      bigint not null\n" +
-                "    constraint stats_pk\n" +
-                "    primary key\n" +
-                ");");
-        postgreSQL.addDefault(() -> "create table if not exists lavalink_nodes\n" +
-                "(\n" +
-                "  uri      varchar not null\n" +
-                "    constraint lavalink_nodes_pkey\n" +
-                "    primary key,\n" +
-                "  password varchar\n" +
-                ");");
-        postgreSQL.addDefault(() -> "create table if not exists keys\n" +
-                "(\n" +
-                "  id   serial not null\n" +
-                "    constraint keys_pkey\n" +
-                "    primary key,\n" +
-                "  type varchar,\n" +
-                "  key  varchar\n" +
-                ");");
-        postgreSQL.addDefault(() -> "create table if not exists playlists\n" +
-                "(\n" +
-                "  id       serial not null\n" +
-                "    constraint playlists_pkey\n" +
-                "    primary key,\n" +
-                "  owner_id bigint,\n" +
-                "  tracks   varchar,\n" +
-                "  name     varchar\n" +
-                ");\n");
-        postgreSQL.createDatabases();
-    }
 
     private void initConfig() {
         Configuration configuration = new Configuration("config/config.json");
@@ -315,20 +215,7 @@ public class GroovyBot {
     }
 
     private void initLogger(String[] args) {
-        try {
-            InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream("log4j.xml");
-            ConfigurationSource configurationSource = new ConfigurationSource(stream);
-            org.apache.logging.log4j.core.config.Configuration configuration = new XmlConfiguration(LoggerContext.getContext(false), configurationSource);
-            Configurator.initialize(configuration);
-            Configurator.setLevel("org.apache.http", Level.OFF);
-            Configurator.setLevel("org.apache.http.headers", Level.OFF);
-            Configurator.setLevel("org.apache.http.wire", Level.OFF);
-            Configurator.setRootLevel(args.length == 0 ? Level.INFO : Level.toLevel(args[0]));
-        } catch (IOException e) {
-            e.printStackTrace();
-            close();
-        }
-
+        Configurator.setRootLevel(args.length == 0 ? Level.INFO : Level.toLevel(args[0]));
     }
 
     @SubscribeEvent
@@ -347,70 +234,23 @@ public class GroovyBot {
             statusPage.start();
             serverCountStatistics.start();
             new WebsiteStats(this);
-            //MusicPlayer groovyPlayer = this.musicPlayerManager.getPlayer(event.getJDA().getGuildById(403882830225997825L), event.getJDA().getTextChannelById(486765014976561159L));
-            //groovyPlayer.connect(event.getJDA().getVoiceChannelById(486765249488224277L));
         }
-    }
-
-    private void registerCommands() {
-        commandManager.registerCommands(
-                new HelpCommand(),
-                new PingCommand(),
-                new InfoCommand(),
-                new InviteCommand(),
-                new SupportCommand(),
-                new SponsorCommand(),
-                new DonateCommand(),
-                new VoteCommand(),
-                new StatsCommand(),
-                new ShardCommand(),
-                new PrefixCommand(),
-                new LanguageCommand(),
-                new PlayCommand(),
-                new PlayTopCommand(),
-                new ForcePlayCommand(),
-                new ForcePlayCommand(),
-                new PauseCommand(),
-                new ResumeCommand(),
-                new SkipCommand(),
-                new JoinCommand(),
-                new LeaveCommand(),
-                new VolumeCommand(),
-                new NowPlayingCommand(),
-                new QueueCommand(),
-                new ControlCommand(),
-                new LoopQueueCommand(),
-                new SearchCommand(),
-                new ResetCommand(),
-                new ClearCommand(),
-                new SeekCommand(),
-                new DjModeCommand(),
-                new LoopCommand(),
-                new StopCommand(),
-                new ShuffleCommand(),
-                new MoveCommand(),
-                new RemoveCommand(),
-                new KeyCommand(),
-                new ForcePlayCommand(),
-                new AnnounceCommand(),
-                new ForcePlayCommand(),
-                new UpdateCommand(),
-                new PlaylistCommand(),
-                new AutoPlayCommand(),
-                new CloseCommand(),
-                new EvalCommand(),
-                new LyricsCommand()
-        );
     }
 
     public void close() {
         try {
             if (postgreSQL != null)
-                postgreSQL.getConnection().close();
+                postgreSQL.close();
             if (shardManager != null)
                 shardManager.shutdown();
         } catch (Exception e) {
             log.error("Error while closing bot!", e);
         }
+    }
+
+    public static void main(String[] args) {
+        if (instance != null)
+            throw new RuntimeException("Groovy was already initialized in this VM!");
+        new GroovyBot(args);
     }
 }
