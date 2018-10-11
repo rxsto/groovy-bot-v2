@@ -143,7 +143,6 @@ public class GroovyBot {
                 .setEventManager(eventManager)
                 .setToken(config.getJSONObject("bot").getString("token"))
                 .setShardsTotal(retrieveShards())
-                .setShards()
                 .setGame(Game.playing("Starting ..."))
                 .setStatus(OnlineStatus.DO_NOT_DISTURB);
         // Register events
