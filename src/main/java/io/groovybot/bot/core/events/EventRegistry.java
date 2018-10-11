@@ -14,7 +14,7 @@ public class EventRegistry {
                 new SelfMentionListener(),
                 new BetaListener(),
                 bot.getCommandManager(),
-                this,
+                bot,
                 bot.getLavalinkManager(),
                 bot.getInteractionManager(),
                 bot.getEventWaiter()
