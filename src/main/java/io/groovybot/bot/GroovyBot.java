@@ -4,6 +4,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.core.GameAnimator;
 import io.groovybot.bot.core.KeyManager;
 import io.groovybot.bot.core.audio.LavalinkManager;
+import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.audio.MusicPlayerManager;
 import io.groovybot.bot.core.audio.PlaylistManager;
 import io.groovybot.bot.core.cache.Cache;
@@ -104,7 +105,6 @@ public class GroovyBot {
         postgreSQL = new PostgreSQL();
         lavalinkManager = new LavalinkManager(this);
         statusPage = new StatusPage(httpClient, config.getJSONObject("statuspage"));
-        //Generate Databases
         new DatabaseGenrator(postgreSQL);
         commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") : config.getJSONObject("settings").getString("prefix"), this);
         serverCountStatistics = new ServerCountStatistics(config.getJSONObject("botlists"));
@@ -117,7 +117,6 @@ public class GroovyBot {
         playlistManager = new PlaylistManager(postgreSQL.getConnection());
         youtubeClient = YoutubeUtil.create(this);
         geniusClient = new GeniusClient(config.getJSONObject("genius").getString("token"));
-        //Register commands
         new CommandRegistry(commandManager);
     }
 
@@ -129,6 +128,7 @@ public class GroovyBot {
                 .build();
         try (Response response = httpClient.newCall(request).execute()) {
             assert response.body() != null;
+            System.out.println(response);
             return new JSONObject(response.body().string()).getInt("shards");
         } catch (IOException e) {
             log.warn("[JDA] Error while retrieving shards count");
@@ -146,7 +146,6 @@ public class GroovyBot {
                 .setShards()
                 .setGame(Game.playing("Starting ..."))
                 .setStatus(OnlineStatus.DO_NOT_DISTURB);
-        // Register events
         new EventRegistry(shardManagerBuilder, this);
         try {
             shardManager = shardManagerBuilder.build();
@@ -175,6 +174,7 @@ public class GroovyBot {
         configuration.addDefault("games", gamesArray);
         final JSONObject settingsObject = new JSONObject();
         settingsObject.put("prefix", "g!");
+        settingsObject.put("test_prefix", "gt!");
         settingsObject.put("maxShards", 5);
         configuration.addDefault("settings", settingsObject);
         final JSONArray ownersArray = new JSONArray();
@@ -209,7 +209,7 @@ public class GroovyBot {
         statusPageObject.put("api_key", "defaultvalue");
         configuration.addDefault("statuspage", statusPageObject);
         final JSONObject geniusObject = new JSONObject();
-        geniusObject.put("token", "PRETTY COOL TOKEN BRO");
+        geniusObject.put("token", "defaultvalue");
         configuration.addDefault("genius", geniusObject);
         this.config = configuration.init();
     }
@@ -234,6 +234,8 @@ public class GroovyBot {
             statusPage.start();
             serverCountStatistics.start();
             new WebsiteStats(this);
+            MusicPlayer groovyPlayer = this.musicPlayerManager.getPlayer(event.getJDA().getGuildById(403882830225997825L), event.getJDA().getTextChannelById(486765014976561159L));
+            groovyPlayer.connect(event.getJDA().getVoiceChannelById(486765249488224277L));
         }
     }
 
