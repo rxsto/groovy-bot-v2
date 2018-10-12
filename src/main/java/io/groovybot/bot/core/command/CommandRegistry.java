@@ -33,6 +33,7 @@ public class CommandRegistry {
                 new PauseCommand(),
                 new ResumeCommand(),
                 new SkipCommand(),
+                new PreviousCommand(),
                 new JoinCommand(),
                 new LeaveCommand(),
                 new VolumeCommand(),

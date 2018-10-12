@@ -17,6 +17,9 @@ public class ForcePlayCommand extends SemiInChannelCommand {
     protected Result executeCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (args.length == 0)
             return sendHelp();
+
+        player.setPreviousTrack(player.getPlayer().getPlayingTrack());
+
         player.queueSongs(event, true, false);
         return null;
     }

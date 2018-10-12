@@ -6,6 +6,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.util.YoutubeUtil;
 import lavalink.client.io.jda.JdaLink;
 import lavalink.client.player.IPlayer;
+import lavalink.client.player.LavaplayerPlayerWrapper;
 import lombok.Getter;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -64,11 +65,6 @@ public abstract class Player {
 
     public void seekTo(long time) {
         player.seekTo(time);
-    }
-
-    // UNUSED
-    public void shuffle() {
-        Collections.shuffle((List<?>) trackQueue);
     }
 
     public void setVolume(int volume) {
