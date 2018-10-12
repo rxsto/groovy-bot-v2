@@ -17,7 +17,7 @@ import java.io.IOException;
 public class LyricsCommand extends Command {
 
     public LyricsCommand() {
-        super(new String[] {"lyrics", "lyric", "songtext"}, CommandCategory.MUSIC, Permissions.everyone(), "Provieds you the lyrics of your current song", "");
+        super(new String[]{"lyrics", "lyric", "songtext"}, CommandCategory.MUSIC, Permissions.everyone(), "Provieds you the lyrics of your current song", "");
     }
 
     @Override
@@ -43,9 +43,26 @@ public class LyricsCommand extends Command {
             log.error("[Genius] An error occurred while crawling lyrics", e);
             return null;
         }
-        editMessage(infoMessage, info("", String.format(event.translate("command.lyrics.success.description"), lyrics))
-                .setTitle(String.format(event.translate("command.lyrics.success.title"), title), lyricsUrl)
-        );
+
+        System.out.println(lyrics.length());
+
+        if (lyrics.length() > 2000) {
+            editMessage(infoMessage, info("", String.format(event.translate("command.lyrics.success.description"), lyrics.substring(0, 2000)))
+                    .setTitle(String.format(event.translate("command.lyrics.success.title"), title), lyricsUrl)
+            );
+
+            if (lyrics.length() > 4000) {
+                sendMessageBlocking(event.getChannel(), standard("Lyrics", lyrics.substring(2001, 4000)).setTitle(String.format(event.translate("command.lyrics.success.title"), title), lyricsUrl));
+                sendMessageBlocking(event.getChannel(), standard("Lyrics", lyrics.substring(4001)).setTitle(String.format(event.translate("command.lyrics.success.title"), title), lyricsUrl));
+            } else {
+                sendMessageBlocking(event.getChannel(), standard("Lyrics", lyrics.substring(2001)).setTitle(String.format(event.translate("command.lyrics.success.title"), title), lyricsUrl));
+            }
+        } else {
+            editMessage(infoMessage, info("", String.format(event.translate("command.lyrics.success.description"), lyrics))
+                    .setTitle(String.format(event.translate("command.lyrics.success.title"), title), lyricsUrl)
+            );
+            System.out.println("<2000");
+        }
         return null;
     }
 }
