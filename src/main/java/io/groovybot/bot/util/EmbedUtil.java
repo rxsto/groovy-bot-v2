@@ -45,6 +45,16 @@ public class EmbedUtil extends SafeMessage {
     }
 
     /**
+     * Creates an info embed
+     * @param title The title of the embed
+     * @param description The description of the embed
+     * @return an EmbedBuiler
+     */
+    public static EmbedBuilder standard(String title, String description) {
+        return new EmbedBuilder().setDescription(description).setTitle(title).setColor(Colors.DARK_BUT_NOT_BLACK);
+    }
+
+    /**
      * Creates an play embed
      * @param title The title of the embed
      * @param description The description of the embed
