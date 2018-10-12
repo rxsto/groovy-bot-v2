@@ -18,6 +18,7 @@ import lavalink.client.LavalinkUtil;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavaplayerPlayerWrapper;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -39,12 +40,16 @@ public class MusicPlayer extends Player {
     private final TextChannel channel;
     @Getter
     private final AudioPlayerManager audioPlayerManager;
+    @Getter
+    @Setter
+    private AudioTrack previousTrack;
 
     protected MusicPlayer(Guild guild, TextChannel channel, YoutubeUtil youtubeClient) {
         super(youtubeClient);
         LavalinkManager lavalinkManager = GroovyBot.getInstance().getLavalinkManager();
         this.guild = guild;
         this.channel = channel;
+        this.previousTrack = null;
         instanciatePlayer(lavalinkManager.getLavalink().getLink(guild));
         getPlayer().addListener(getScheduler());
         audioPlayerManager = lavalinkManager.getAudioPlayerManager();
