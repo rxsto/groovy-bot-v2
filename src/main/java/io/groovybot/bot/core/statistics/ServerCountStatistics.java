@@ -21,11 +21,11 @@ public class ServerCountStatistics extends StatsPoster {
     private GroovyBot groovyBot = GroovyBot.getInstance();
     private String botId;
 
-    public ServerCountStatistics( JSONObject configuration) {
+    public ServerCountStatistics(JSONObject configuration) {
         super(Executors.newScheduledThreadPool(1, new NameThreadFactory("ServerCount")), new OkHttpClient.Builder()
-                .connectTimeout(3, TimeUnit.MINUTES)
-                .writeTimeout(3, TimeUnit.MINUTES)
-                .build()
+                        .connectTimeout(3, TimeUnit.MINUTES)
+                        .writeTimeout(3, TimeUnit.MINUTES)
+                        .build()
                 , configuration);
     }
 

@@ -12,7 +12,7 @@ public class EventRegistry {
                 new CommandLogger(),
                 new GuildLogger(),
                 new SelfMentionListener(),
-                new BetaListener(),
+                //new BetaListener(),
                 bot.getCommandManager(),
                 bot,
                 bot.getLavalinkManager(),

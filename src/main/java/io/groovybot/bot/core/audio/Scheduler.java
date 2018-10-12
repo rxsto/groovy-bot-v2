@@ -58,29 +58,40 @@ public class Scheduler extends AudioEventAdapterWrapped {
     private void handleTrackEnd(AudioTrack track, AudioTrackEndReason reason) {
         switch (reason) {
             case FINISHED:
+
                 AudioTrack nextTrack = null;
-                if (autoPlay) {
-                    runAutoplay(track);
-                    return;
-                }
+
                 if (repeating) {
                     track.setPosition(0);
                     nextTrack = track;
                 }
+
                 if (queueRepeating)
                     player.trackQueue.add(track);
+
                 if (shuffle) {
                     if (player.trackQueue.isEmpty()) {
                         player.onEnd(true);
                     }
+
                     final int index = ThreadLocalRandom.current().nextInt(player.trackQueue.size());
                     nextTrack = ((LinkedList<AudioTrack>) player.trackQueue).get(index);
                     ((LinkedList<AudioTrack>) player.trackQueue).remove(index);
                 }
+
+                ((MusicPlayer) player).setPreviousTrack(track);
+
+                if (autoPlay) {
+                    runAutoplay(track);
+                    return;
+                }
+
                 if (!repeating && !shuffle)
                     nextTrack = player.pollTrack();
+
                 if (nextTrack == null)
                     player.onEnd(true);
+
                 player.play(nextTrack, false);
                 break;
             case LOAD_FAILED:

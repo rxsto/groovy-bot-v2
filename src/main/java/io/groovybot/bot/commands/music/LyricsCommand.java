@@ -22,11 +22,11 @@ public class LyricsCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        MusicPlayer player = event.getGroovyBot().getMusicPlayerManager().getPlayer(event);
+        MusicPlayer player = event.getBot().getMusicPlayerManager().getPlayer(event);
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
         Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.lyrics.searching.title"), event.translate("command.lyrics.searching.description")));
-        final GeniusClient geniusClient = event.getGroovyBot().getGeniusClient();
+        final GeniusClient geniusClient = event.getBot().getGeniusClient();
         final AudioTrackInfo info = player.getPlayer().getPlayingTrack().getInfo();
         final String title = info.title;
         String lyricsUrl = geniusClient.searchSong(title);

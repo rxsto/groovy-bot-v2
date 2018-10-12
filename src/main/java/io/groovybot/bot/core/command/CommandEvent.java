@@ -40,5 +40,4 @@ public class CommandEvent extends GuildMessageReceivedEvent {
     public GroovyBot getGroovyBot() {
         return bot;
     }
-
 }
