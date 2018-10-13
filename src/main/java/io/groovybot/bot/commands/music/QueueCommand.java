@@ -34,7 +34,7 @@ public class QueueCommand extends Command {
                 .setTitle(":notes: " + String.format(event.translate("command.queue.title"), event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size()))
                 .setDescription(generateQueueDescription(tracks, startNumber, currentTrack)).setColor(Colors.DARK_BUT_NOT_BLACK);
         if (currentPage != 0 && totalPages != 0)
-            builder.setFooter(currentPage + "/" + totalPages + event.translate("phrases.text.sites"), event.getJDA().getSelfUser().getAvatarUrl());
+            builder.setFooter(currentPage + "/" + totalPages + " " + event.translate("phrases.text.sites"), event.getJDA().getSelfUser().getAvatarUrl());
         return builder;
     }
 
@@ -50,7 +50,7 @@ public class QueueCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        MusicPlayer player = event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
+        MusicPlayer player = event.getBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
         if (player.getQueueSize() <= PAGE_SIZE)
@@ -90,7 +90,6 @@ public class QueueCommand extends Command {
                     currentPage--;
                     break;
                 default:
-                    // Nothing happens
                     break;
             }
             updateEmotes(false);
