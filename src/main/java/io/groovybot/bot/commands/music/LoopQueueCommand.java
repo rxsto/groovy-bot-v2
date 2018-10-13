@@ -1,6 +1,7 @@
 package io.groovybot.bot.commands.music;
 
 import io.groovybot.bot.core.audio.MusicPlayer;
+import io.groovybot.bot.core.audio.Scheduler;
 import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
@@ -15,11 +16,14 @@ public class LoopQueueCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
-        if (!player.getScheduler().isQueueRepeating()) {
-            player.getScheduler().setQueueRepeating(true);
+        Scheduler scheduler = player.getScheduler();
+        if (scheduler.isShuffle() || scheduler.isRepeating())
+            return send(error(event.translate("controlpanel.disable.loopshuffle.title"), event.translate("controlpanel.disable.loopshuffle.description")));
+        if (!scheduler.isQueueRepeating()) {
+            scheduler.setQueueRepeating(true);
             return send(success(event.translate("command.queueloop.enabled.title"), event.translate("command.queueloop.enabled.description")));
         }
-        player.getScheduler().setQueueRepeating(false);
+        scheduler.setQueueRepeating(false);
         return send(success(event.translate("command.queueloop.disabled.title"), event.translate("command.queueloop.disabled.description")));
     }
 }

@@ -14,7 +14,7 @@ public abstract class SemiInChannelSubCommand extends SubCommand {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        MusicPlayer player =event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
+        MusicPlayer player = event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
         if (event.getGuild().getSelfMember().getVoiceState().inVoiceChannel()) {
             if (!event.getGuild().getSelfMember().getVoiceState().inVoiceChannel())
                 return send(error(event.translate("phrases.notinchannel.title"), event.translate("phrases.notinchannel.description")));
