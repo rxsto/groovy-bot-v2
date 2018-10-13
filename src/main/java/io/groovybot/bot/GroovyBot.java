@@ -4,7 +4,6 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.core.GameAnimator;
 import io.groovybot.bot.core.KeyManager;
 import io.groovybot.bot.core.audio.LavalinkManager;
-import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.audio.MusicPlayerManager;
 import io.groovybot.bot.core.audio.PlaylistManager;
 import io.groovybot.bot.core.cache.Cache;
@@ -72,6 +71,10 @@ public class GroovyBot {
     @Getter
     private final KeyManager keyManager;
     @Getter
+    private final YoutubeUtil youtubeClient;
+    @Getter
+    private final GeniusClient geniusClient;
+    @Getter
     private Configuration config;
     @Getter
     private PostgreSQL postgreSQL;
@@ -86,11 +89,7 @@ public class GroovyBot {
     @Getter
     private PlaylistManager playlistManager;
     @Getter
-    private final YoutubeUtil youtubeClient;
-    @Getter
     private boolean allShardsInitialized = false;
-    @Getter
-    private final GeniusClient geniusClient;
 
 
     private GroovyBot(String[] args) {
@@ -120,6 +119,12 @@ public class GroovyBot {
         new CommandRegistry(commandManager);
     }
 
+    public static void main(String[] args) {
+        if (instance != null)
+            throw new RuntimeException("Groovy was already initialized in this VM!");
+        new GroovyBot(args);
+    }
+
     private Integer retrieveShards() {
         Request request = new Request.Builder()
                 .url("https://discordapp.com/api/gateway/bot")
@@ -128,7 +133,6 @@ public class GroovyBot {
                 .build();
         try (Response response = httpClient.newCall(request).execute()) {
             assert response.body() != null;
-            System.out.println(response);
             return new JSONObject(response.body().string()).getInt("shards");
         } catch (IOException e) {
             log.warn("[JDA] Error while retrieving shards count");
@@ -154,7 +158,6 @@ public class GroovyBot {
             Runtime.getRuntime().exit(1);
         }
     }
-
 
     private void initConfig() {
         Configuration configuration = new Configuration("config/config.json");
@@ -245,11 +248,5 @@ public class GroovyBot {
         } catch (Exception e) {
             log.error("Error while closing bot!", e);
         }
-    }
-
-    public static void main(String[] args) {
-        if (instance != null)
-            throw new RuntimeException("Groovy was already initialized in this VM!");
-        new GroovyBot(args);
     }
 }

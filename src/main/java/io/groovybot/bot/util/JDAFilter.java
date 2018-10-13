@@ -4,7 +4,7 @@ import net.dv8tion.jda.core.exceptions.ErrorResponseException;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
 
-public class JDASUCKSFILTER extends AbstractFilter {
+public class JDAFilter extends AbstractFilter {
 
     @Override
     public Result filter(LogEvent event) {

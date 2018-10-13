@@ -17,25 +17,30 @@ import java.io.IOException;
 public class LyricsCommand extends Command {
 
     public LyricsCommand() {
-        super(new String[] {"lyrics", "lyric", "songtext"}, CommandCategory.MUSIC, Permissions.everyone(), "Provieds you the lyrics of your current song", "");
+        super(new String[]{"lyrics", "lyric", "songtext"}, CommandCategory.MUSIC, Permissions.everyone(), "Provieds you the lyrics of your current song", "");
     }
 
     @Override
     public Result run(String[] args, CommandEvent event) {
         MusicPlayer player = event.getBot().getMusicPlayerManager().getPlayer(event);
+
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
+
         Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.lyrics.searching.title"), event.translate("command.lyrics.searching.description")));
         final GeniusClient geniusClient = event.getBot().getGeniusClient();
         final AudioTrackInfo info = player.getPlayer().getPlayingTrack().getInfo();
         final String title = info.title;
         String lyricsUrl = geniusClient.searchSong(title);
+
         if (lyricsUrl.equals("")) {
             editMessage(infoMessage, error(event.translate("command.lyrics.notfound.title"), event.translate("command.lyrics.notfound.description")));
             return null;
         }
+
         editMessage(infoMessage, info(event.translate("command.lyrics.crawling.title"), event.translate("command.lyrics.crawling.description")));
         String lyrics;
+
         try {
             lyrics = geniusClient.findLyrics(lyricsUrl);
         } catch (IOException e) {
@@ -43,8 +48,12 @@ public class LyricsCommand extends Command {
             log.error("[Genius] An error occurred while crawling lyrics", e);
             return null;
         }
-        editMessage(infoMessage, info("", String.format(event.translate("command.lyrics.success.description"), lyrics))
-                .setTitle(String.format(event.translate("command.lyrics.success.title"), title), lyricsUrl)
+
+        lyrics = lyrics.replaceAll("]", "]**");
+        lyrics = lyrics.replaceAll("\\[", "**[");
+
+        editMessage(infoMessage, success("", String.format(event.translate("command.lyrics.success.description"), lyrics.substring(0, 2040)) + " ...")
+                .setTitle(":page_facing_up: " + String.format(event.translate("command.lyrics.success.title"), title), lyricsUrl)
         );
         return null;
     }
