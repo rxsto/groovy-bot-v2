@@ -5,7 +5,7 @@
             <param name="ConversionPattern" value=
                     "[%d{HH:mm:ss}] [%c] [%p] | %m%n"/>
         </layout>
-        <filter class="io.groovybot.bot.util.JDASUCKSFILTER"/>
+        <filter class="io.groovybot.bot.util.JDAFilter"/>
     </appender>
     <appender name="latestlog" class="org.apache.logging.log4j.core.appender.RollingFileAppender">
         <param name="append" value="false"/>
@@ -14,7 +14,7 @@
             <param name="ConversionPattern" value=
                     "[%d{dd.MMM.yyyy HH:mm:ss,SSS}] [%c] [%p] | %m%n"/>
         </layout>
-        <filter class="io.groovybot.bot.util.JDASUCKSFILTER"/>
+        <filter class="io.groovybot.bot.util.JDAFilter"/>
     </appender>
     <appender name="datelog" class="org.apache.logging.log4j.core.appender.RollingFileAppender">
         <param name="append" value="false"/>
@@ -23,9 +23,9 @@
             <param name="ConversionPattern" value=
                     "[%d{dd.MMM.yyyy HH:mm:ss,SSS}] [%c] [%p] | %m%n"/>
         </layout>
-        <filter class="io.groovybot.bot.util.JDASUCKSFILTER"/>
+        <filter class="io.groovybot.bot.util.JDAFilter"/>
     </appender>
     <appender name="webhook" class="io.groovybot.bot.io.ErrorReporter">
-        <filter class="io.groovybot.bot.util.JDASUCKSFILTER"/>
+        <filter class="io.groovybot.bot.util.JDAFilter"/>
     </appender>
 </Configuration>

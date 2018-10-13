@@ -1,6 +1,5 @@
 package io.groovybot.bot.commands.general;
 
-import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.Command;
 import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
