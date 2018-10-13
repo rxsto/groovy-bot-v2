@@ -108,7 +108,7 @@ public class PlaylistCommand extends Command {
         }
     }
 
-    private class LoadCommand extends SemiInChannelSubCommand {
+    public class LoadCommand extends SemiInChannelSubCommand {
 
         public LoadCommand() {
             super(new String[] {"load"}, Permissions.everyone(), "Loads a playlist", "<name>");
