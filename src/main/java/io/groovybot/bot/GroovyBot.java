@@ -3,6 +3,7 @@ package io.groovybot.bot;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.core.GameAnimator;
 import io.groovybot.bot.core.KeyManager;
+import io.groovybot.bot.core.PremiumManager;
 import io.groovybot.bot.core.audio.LavalinkManager;
 import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.audio.MusicPlayerManager;
@@ -91,6 +92,8 @@ public class GroovyBot {
     private boolean allShardsInitialized = false;
     @Getter
     private final GeniusClient geniusClient;
+    @Getter
+    private final PremiumManager premiumManager;
 
 
     private GroovyBot(String[] args) {
@@ -117,6 +120,7 @@ public class GroovyBot {
         playlistManager = new PlaylistManager(postgreSQL.getConnection());
         youtubeClient = YoutubeUtil.create(this);
         geniusClient = new GeniusClient(config.getJSONObject("genius").getString("token"));
+        premiumManager = new PremiumManager();
         new CommandRegistry(commandManager);
     }
 
@@ -210,6 +214,9 @@ public class GroovyBot {
         final JSONObject geniusObject = new JSONObject();
         geniusObject.put("token", "defaultvalue");
         configuration.addDefault("genius", geniusObject);
+        final JSONObject spotifyObject = new JSONObject();
+        settingsObject.put("token", "default value");
+        configuration.addDefault("spotify", spotifyObject);
         this.config = configuration.init();
     }
 

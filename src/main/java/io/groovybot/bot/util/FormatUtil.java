@@ -5,7 +5,11 @@ import io.groovybot.bot.core.command.Command;
 import io.groovybot.bot.core.command.SubCommand;
 import net.dv8tion.jda.core.EmbedBuilder;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static io.groovybot.bot.util.EmbedUtil.info;
@@ -63,6 +67,24 @@ public class FormatUtil {
             return "g!" + subCommand.getMainCommand().getName() + " " + subCommand.getName() + " " + subCommand.getUsage() + " - " + subCommand.getDescription();
         }
         return "g!" + command.getName() + " " + command.getUsage();
+    }
+
+    /**
+     * Converts a timestamp like 2:34 into it's millis
+     * @param timestamp The timestamp
+     * @return The timestamp's millis
+     * @throws ParseException when the provided String where invalid
+     */
+    public static long convertTimestamp(String timestamp) throws ParseException {
+        DateFormat dateFormat = null;
+        int count = timestamp.split(":").length;
+        if (count == 1)
+            dateFormat = new SimpleDateFormat("ss");
+        else if (count == 2)
+            dateFormat = new SimpleDateFormat("mm:ss");
+        else if (count > 2)
+            dateFormat = new SimpleDateFormat("HH:mm:ss");
+        return dateFormat.parse(timestamp).getTime() + TimeUnit.HOURS.toMillis(1);
     }
 
 }

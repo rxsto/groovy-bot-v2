@@ -128,7 +128,7 @@ public class CommandManager {
      * Registers  a command handler
      * @param command The command handler {@link io.groovybot.bot.core.command.Command}
      */
-    private void registerCommand(Command command) {
+    public void registerCommand(Command command) {
         for (String alias : command.getAliases()) {
             if (commandAssociations.containsKey(alias))
                 log.warn(String.format("[CommandManager] Alias %s is already taken by %s", alias, commandAssociations.get(alias).getClass().getCanonicalName()));

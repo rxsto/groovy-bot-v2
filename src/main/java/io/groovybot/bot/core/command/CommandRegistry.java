@@ -59,7 +59,10 @@ public class CommandRegistry {
                 new AutoPlayCommand(),
                 new CloseCommand(),
                 new EvalCommand(),
-                new LyricsCommand()
+                new LyricsCommand(),
+                new VotedCommand(),
+                new JumpToCommand(),
+                new SeekCommand()
         );
     }
 }
