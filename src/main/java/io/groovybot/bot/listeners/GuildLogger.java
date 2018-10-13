@@ -25,7 +25,6 @@ public class GuildLogger {
     @SuppressWarnings("unused")
     private void onGuildJoin(GuildJoinEvent event) {
         sendMessage(event.getGuild(), true, event);
-
     }
 
     @SubscribeEvent
