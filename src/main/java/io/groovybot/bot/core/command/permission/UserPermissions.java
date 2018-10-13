@@ -4,7 +4,6 @@ import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.core.entity.User;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;

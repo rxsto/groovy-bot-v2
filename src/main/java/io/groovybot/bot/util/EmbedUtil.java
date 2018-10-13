@@ -7,7 +7,8 @@ public class EmbedUtil extends SafeMessage {
 
     /**
      * Creates an success embed
-     * @param title The title of the embed
+     *
+     * @param title       The title of the embed
      * @param description The description of the embed
      * @return an EmbedBuiler
      */
@@ -17,7 +18,8 @@ public class EmbedUtil extends SafeMessage {
 
     /**
      * Creates an error embed
-     * @param title The title of the embed
+     *
+     * @param title       The title of the embed
      * @param description The description of the embed
      * @return an EmbedBuiler
      */
@@ -27,6 +29,7 @@ public class EmbedUtil extends SafeMessage {
 
     /**
      * Creates an error embed
+     *
      * @param event The event of the command where the error was thrown
      * @return an EmbedBuilder
      */
@@ -36,7 +39,8 @@ public class EmbedUtil extends SafeMessage {
 
     /**
      * Creates an info embed
-     * @param title The title of the embed
+     *
+     * @param title       The title of the embed
      * @param description The description of the embed
      * @return an EmbedBuiler
      */
@@ -45,8 +49,30 @@ public class EmbedUtil extends SafeMessage {
     }
 
     /**
+     * Creates an standard embed
+     *
+     * @param title       The title of the embed
+     * @param description The description of the embed
+     * @return an EmbedBuiler
+     */
+    public static EmbedBuilder standard(String title, String description) {
+        return new EmbedBuilder().setDescription(description).setTitle(title).setColor(Colors.DARK_BUT_NOT_BLACK);
+    }
+
+    /**
+     * Creates an no-titled embed
+     *
+     * @param description The description of the embed
+     * @return an EmbedBuiler
+     */
+    public static EmbedBuilder notitle(String description) {
+        return new EmbedBuilder().setDescription(description).setColor(Colors.DARK_BUT_NOT_BLACK);
+    }
+
+    /**
      * Creates an play embed
-     * @param title The title of the embed
+     *
+     * @param title       The title of the embed
      * @param description The description of the embed
      * @return an EmbedBuiler
      */
@@ -56,7 +82,8 @@ public class EmbedUtil extends SafeMessage {
 
     /**
      * Creates an join embed
-     * @param title The title of the embed
+     *
+     * @param title       The title of the embed
      * @param description The description of the embed
      * @return an EmbedBuiler
      */

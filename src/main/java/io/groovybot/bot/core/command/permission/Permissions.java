@@ -19,6 +19,7 @@ public class Permissions {
 
     /**
      * Everyone can execute the command
+     *
      * @return a Permission object
      */
     public static Permissions everyone() {
@@ -27,6 +28,7 @@ public class Permissions {
 
     /**
      * Only bot owners can execute the command
+     *
      * @return a Permission object
      */
     public static Permissions ownerOnly() {
@@ -35,6 +37,7 @@ public class Permissions {
 
     /**
      * Only tierOne or tierTwo patreons can execute the command
+     *
      * @return a Permission object
      */
     public static Permissions tierOne() {
@@ -43,6 +46,7 @@ public class Permissions {
 
     /**
      * Only tierTwo patreons can execute the command
+     *
      * @return a Permission object
      */
     public static Permissions tierTwo() {
@@ -51,6 +55,7 @@ public class Permissions {
 
     /**
      * Only users with the ADMINISTRATOR permission can execute the command
+     *
      * @return a Permission object
      */
     public static Permissions adminOnly() {
@@ -59,6 +64,7 @@ public class Permissions {
 
     /**
      * Only DJs can execute the command
+     *
      * @return a Permission object
      */
     public static Permissions djMode() {
