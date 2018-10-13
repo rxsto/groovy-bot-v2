@@ -82,7 +82,7 @@ public class CommandManager {
         //Check for sub commands
         if (commandArgs.length > 0 && command.getSubCommandAssociations().containsKey(commandArgs[0])) {
             command = command.getSubCommandAssociations().get(commandArgs[0]);
-            args = new String[commandArgs.length -1];
+            args = new String[commandArgs.length - 1];
             System.arraycopy(commandArgs, 1, args, 0, args.length);
         } else
             args = commandArgs;
@@ -116,6 +116,7 @@ public class CommandManager {
 
     /**
      * Registers  a command handler
+     *
      * @param commands The command handlers {@link io.groovybot.bot.core.command.Command}
      */
     public void registerCommands(Command... commands) {
@@ -126,6 +127,7 @@ public class CommandManager {
 
     /**
      * Registers  a command handler
+     *
      * @param command The command handler {@link io.groovybot.bot.core.command.Command}
      */
     private void registerCommand(Command command) {

@@ -24,7 +24,8 @@ public abstract class Command extends EmbedUtil {
 
     /**
      * The methods that will be executed when the command gets invokes
-     * @param args The arguments of the command
+     *
+     * @param args  The arguments of the command
      * @param event The event of the command
      * @return a sendable Result or null
      */
@@ -32,6 +33,7 @@ public abstract class Command extends EmbedUtil {
 
     /**
      * Registers a sub command
+     *
      * @param subCommand the sub commands instance
      */
     public void registerSubCommand(SubCommand subCommand) {
@@ -41,6 +43,7 @@ public abstract class Command extends EmbedUtil {
 
     /**
      * Constructs a help message Result
+     *
      * @return A sendable Result
      */
     public Result sendHelp() {
@@ -49,6 +52,7 @@ public abstract class Command extends EmbedUtil {
 
     /**
      * Sends a plain text Message
+     *
      * @param message The content of a message
      * @return A sendable Result
      */
@@ -58,6 +62,7 @@ public abstract class Command extends EmbedUtil {
 
     /**
      * Sends a embed
+     *
      * @param builder The builder of the embed
      * @return A sendable Result
      */

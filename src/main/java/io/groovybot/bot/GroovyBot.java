@@ -73,6 +73,10 @@ public class GroovyBot {
     @Getter
     private final KeyManager keyManager;
     @Getter
+    private final YoutubeUtil youtubeClient;
+    @Getter
+    private final GeniusClient geniusClient;
+    @Getter
     private Configuration config;
     @Getter
     private PostgreSQL postgreSQL;
@@ -87,11 +91,7 @@ public class GroovyBot {
     @Getter
     private PlaylistManager playlistManager;
     @Getter
-    private final YoutubeUtil youtubeClient;
-    @Getter
     private boolean allShardsInitialized = false;
-    @Getter
-    private final GeniusClient geniusClient;
 
 
     private GroovyBot(String[] args) {
@@ -119,6 +119,12 @@ public class GroovyBot {
         youtubeClient = YoutubeUtil.create(this);
         geniusClient = new GeniusClient(config.getJSONObject("genius").getString("token"));
         new CommandRegistry(commandManager);
+    }
+
+    public static void main(String[] args) {
+        if (instance != null)
+            throw new RuntimeException("Groovy was already initialized in this VM!");
+        new GroovyBot(args);
     }
 
     private Integer retrieveShards() {
@@ -164,7 +170,6 @@ public class GroovyBot {
             Runtime.getRuntime().exit(1);
         }
     }
-
 
     private void initConfig() {
         Configuration configuration = new Configuration("config/config.json");
@@ -256,11 +261,5 @@ public class GroovyBot {
         } catch (Exception e) {
             log.error("Error while closing bot!", e);
         }
-    }
-
-    public static void main(String[] args) {
-        if (instance != null)
-            throw new RuntimeException("Groovy was already initialized in this VM!");
-        new GroovyBot(args);
     }
 }
