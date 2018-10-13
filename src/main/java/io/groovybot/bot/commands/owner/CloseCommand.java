@@ -10,12 +10,12 @@ import io.groovybot.bot.util.SafeMessage;
 public class CloseCommand extends Command {
 
     public CloseCommand() {
-        super(new String[] {"close", "stopbot", "botstop"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Stops the bot", "");
+        super(new String[]{"close", "stopbot", "botstop"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Stops the bot", "");
     }
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        SafeMessage.sendMessageBlocking(event.getChannel(), error("Stopping bot!", "Stooooooooopping booooo ... . .  ."));
+        SafeMessage.sendMessageBlocking(event.getChannel(), success("Stopped bot!", "Successfully stopped bot!"));
         System.exit(1);
         return null;
     }

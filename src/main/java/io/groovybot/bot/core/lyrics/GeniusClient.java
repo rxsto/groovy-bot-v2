@@ -22,12 +22,12 @@ public class GeniusClient {
 
     public GeniusClient(String token) {
         this.httpClient = new OkHttpClient.Builder()
-            .addInterceptor(chain -> {
-                Request.Builder requestBuilder = chain.request().newBuilder()
-                        .addHeader("Content-Type", "application/json")
-                        .addHeader("Authorization", "Bearer " + token);
-                return chain.proceed(requestBuilder.build());
-            }).build();
+                .addInterceptor(chain -> {
+                    Request.Builder requestBuilder = chain.request().newBuilder()
+                            .addHeader("Content-Type", "application/json")
+                            .addHeader("Authorization", "Bearer " + token);
+                    return chain.proceed(requestBuilder.build());
+                }).build();
     }
 
     public String searchSong(String query) {
@@ -35,7 +35,7 @@ public class GeniusClient {
                 .url(API_BASE + "/search?q=" + query)
                 .get()
                 .build();
-        try (Response response = httpClient.newCall(request).execute()){
+        try (Response response = httpClient.newCall(request).execute()) {
             return GENIUS_BASE + new JSONObject(response.body().string()).getJSONObject("response").getJSONArray("hits").getJSONObject(0).getJSONObject("result").getString("path");
         } catch (IOException | JSONException e) {
             log.error("[Genius] An error occurred while getting song");
@@ -47,7 +47,7 @@ public class GeniusClient {
         Document songPage = Jsoup.connect(songPath).get();
         songPage.select("br").append("\\n");
         songPage.select("p").prepend("\\n\\n");
-        Elements lyrics= songPage.select(".lyrics");
+        Elements lyrics = songPage.select(".lyrics");
         return Jsoup.clean(lyrics.html(), "", Whitelist.none(), new Document.OutputSettings().prettyPrint(false)).replace("\\n", "\n");
     }
 }

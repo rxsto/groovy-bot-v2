@@ -29,20 +29,6 @@ public class QueueCommand extends Command {
         super(new String[]{"queue", "q"}, CommandCategory.MUSIC, Permissions.everyone(), "Shows you each song inside the queue", "");
     }
 
-    @Override
-    public Result run(String[] args, CommandEvent event) {
-        MusicPlayer player = event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
-        if (!player.isPlaying())
-            return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
-        if (player.getQueueSize() <= PAGE_SIZE)
-            return send(formatQueue((LinkedList<AudioTrack>) player.getTrackQueue(), event, 0, player.getPlayer().getPlayingTrack(), 1, 1));
-        if (!event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE))
-            return send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
-        Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.queue.loading.title"), event.translate("command.queue.loading.description")));
-        new QueueMessage(infoMessage, event.getChannel(), event.getMember(), player.getTrackQueue(), event, player.getPlayer().getPlayingTrack());
-        return null;
-    }
-
     public static EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, AudioTrack currentTrack, int currentPage, int totalPages) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle(":notes: " + String.format(event.translate("command.queue.title"), event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size()))
@@ -60,6 +46,20 @@ public class QueueCommand extends Command {
         tracks.forEach(track -> queueMessage.append(String.format(":white_small_square: `%s.` [%s](%s)\n", trackCount.addAndGet(1), track.getInfo().title, track.getInfo().uri)));
 
         return queueMessage.toString();
+    }
+
+    @Override
+    public Result run(String[] args, CommandEvent event) {
+        MusicPlayer player = event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
+        if (!player.isPlaying())
+            return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
+        if (player.getQueueSize() <= PAGE_SIZE)
+            return send(formatQueue((LinkedList<AudioTrack>) player.getTrackQueue(), event, 0, player.getPlayer().getPlayingTrack(), 1, 1));
+        if (!event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE))
+            return send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
+        Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.queue.loading.title"), event.translate("command.queue.loading.description")));
+        new QueueMessage(infoMessage, event.getChannel(), event.getMember(), player.getTrackQueue(), event, player.getPlayer().getPlayingTrack());
+        return null;
     }
 
     private class QueueMessage extends InteractableMessage {

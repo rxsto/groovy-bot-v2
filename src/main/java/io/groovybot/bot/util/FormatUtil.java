@@ -14,6 +14,7 @@ public class FormatUtil {
 
     /**
      * Retrieves the thumbnail of a Youtube video
+     *
      * @param track The AudioTrack {@link com.sedmelluq.discord.lavaplayer.track.AudioTrack} of the video
      * @return The thumbnails URL
      */
@@ -23,6 +24,7 @@ public class FormatUtil {
 
     /**
      * Formats the milliseconds of a song duration to a readable timestamp
+     *
      * @param millis The milliseconds
      * @return the timespamt as a string
      */
@@ -37,6 +39,7 @@ public class FormatUtil {
 
     /**
      * Formats the helpmessage for a command
+     *
      * @param command The command
      * @return an EmbedBuilder
      */

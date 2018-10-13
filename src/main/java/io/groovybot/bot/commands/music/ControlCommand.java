@@ -6,12 +6,14 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.audio.Scheduler;
+import io.groovybot.bot.core.command.Command;
 import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.interaction.InteractableMessage;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.command.voice.SameChannelCommand;
+import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.util.*;
 import lavalink.client.player.IPlayer;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -41,7 +43,7 @@ public class ControlCommand extends SameChannelCommand {
             Message confirmMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.control.alreadyinuse.title"), event.translate("command.control.alreadyinuse.description")));
             confirmMessage.addReaction("✅").queue();
             confirmMessage.addReaction("❌").queue();
-            event.getGroovyBot().getEventWaiter().waitForEvent(GuildMessageReactionAddEvent.class, e -> confirmMessage.getIdLong() == e.getMessageIdLong() && e.getGuild().equals(event.getGuild()) && !e.getUser().isBot(),
+            event.getBot().getEventWaiter().waitForEvent(GuildMessageReactionAddEvent.class, e -> confirmMessage.getIdLong() == e.getMessageIdLong() && e.getGuild().equals(event.getGuild()) && !e.getUser().isBot(),
                     e -> {
                         if (e.getReactionEmote().getName().equals("✅")) {
                             ControlPanel panel = getControlPanel(event.getGuild().getIdLong());
@@ -49,14 +51,14 @@ public class ControlCommand extends SameChannelCommand {
                                 sendMessage(e.getChannel(), error(event.translate("command.control.alreadyinuse.nopermission.title"), event.translate("command.control.alreadyinuse.nopermission.description")), 5);
                                 return;
                             } else {
-                                new ControlPanel(sendInfoMessage(event), event.getChannel(), event.getMember(), player);
+                                new ControlPanel(event, sendInfoMessage(event), event.getChannel(), event.getMember(), player);
                                 panel.delete();
                             }
                         }
                         confirmMessage.delete().queue();
                     });
         } else
-            new Thread(() -> new ControlPanel(sendInfoMessage(event), event.getChannel(), event.getMember(), player), "ControlPanel").start();
+            new Thread(() -> new ControlPanel(event, sendInfoMessage(event), event.getChannel(), event.getMember(), player), "ControlPanel").start();
         return null;
     }
 
@@ -78,13 +80,15 @@ public class ControlCommand extends SameChannelCommand {
 
     private class ControlPanel extends InteractableMessage implements Runnable {
 
+        private final CommandEvent commandEvent;
         private final VoiceChannel channel;
         private final ScheduledExecutorService scheduler;
         private final MusicPlayer player;
         private boolean ready;
 
-        public ControlPanel(Message infoMessage, TextChannel channel, Member author, MusicPlayer player) {
+        public ControlPanel(CommandEvent commandEvent, Message infoMessage, TextChannel channel, Member author, MusicPlayer player) {
             super(infoMessage, channel, author, infoMessage.getIdLong());
+            this.commandEvent = commandEvent;
             this.channel = author.getGuild().getSelfMember().getVoiceState().getChannel();
             this.player = player;
             this.scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("ControlPanel"));
@@ -121,7 +125,7 @@ public class ControlCommand extends SameChannelCommand {
                     break;
                 case "\uD83D\uDD02":
                     if (playerScheduler.isQueueRepeating() || playerScheduler.isShuffle()) {
-                        sendMessage(translate(author, "controlpanel.loop.shuffle.title"), translate(author, "controlpanel.loop.shuffle.description"));
+                        sendMessage(translate(author, "controlpanel.disable.loopqueueshuffle.title"), translate(author, "controlpanel.disable.loopqueueshuffle.description"));
                         break;
                     }
                     if (!playerScheduler.isRepeating()) {
@@ -133,8 +137,12 @@ public class ControlCommand extends SameChannelCommand {
                     }
                     break;
                 case "\uD83D\uDD01":
+                    if (!Permissions.tierOne().isCovered(EntityProvider.getUser(author.getIdLong()).getPermissions(), this.commandEvent)) {
+                        sendMessageError(this.commandEvent.translate("phrases.nopermission.title"), this.commandEvent.translate("phrases.nopermission.tierone"));
+                        break;
+                    }
                     if (playerScheduler.isRepeating() || playerScheduler.isShuffle()) {
-                        sendMessage(translate(author, "controlpanel.loop.shuffle.title"), translate(author, "controlpanel.loop.shuffle.description"));
+                        sendMessage(translate(author, "controlpanel.disable.loopshuffle.title"), translate(author, "controlpanel.disable.loopshuffle.description"));
                         break;
                     }
                     if (!playerScheduler.isQueueRepeating()) {
@@ -146,13 +154,17 @@ public class ControlCommand extends SameChannelCommand {
                     }
                     break;
                 case "\uD83D\uDD00":
+                    if (!Permissions.tierTwo().isCovered(EntityProvider.getUser(author.getIdLong()).getPermissions(), this.commandEvent)) {
+                        sendMessageError(this.commandEvent.translate("phrases.nopermission.title"), this.commandEvent.translate("phrases.nopermission.tiertwo"));
+                        break;
+                    }
                     if (playerScheduler.isRepeating() || playerScheduler.isQueueRepeating()) {
-                        sendMessage(translate(author, "controlpanel.shuffle.loop.title"), translate(author, "controlpanel.shuffle.loop.description"));
+                        sendMessage(translate(author, "controlpanel.disable.loopqueueloop.title"), translate(author, "controlpanel.disable.loopqueueloop.description"));
                         break;
                     }
                     if (!playerScheduler.isShuffle()) {
                         playerScheduler.setShuffle(true);
-                        sendMessage(translate(author, "controlpanel.shuffle.enabled.title"), translate(author, "controlpanel.shuffle.enabled.description"));
+                        sendMessage(translate(author, "controlpanel.disable.enabled.title"), translate(author, "controlpanel.shuffle.enabled.description"));
                     } else {
                         playerScheduler.setShuffle(false);
                         sendMessage(translate(author, "controlpanel.shuffle.disabled.title"), translate(author, "controlpanel.shuffle.disabled.description"));
@@ -223,6 +235,10 @@ public class ControlCommand extends SameChannelCommand {
 
         private void sendMessage(String title, String message) {
             SafeMessage.sendMessage(getChannel(), EmbedUtil.success(title, message), 3);
+        }
+
+        private void sendMessageError(String title, String message) {
+            SafeMessage.sendMessage(getChannel(), EmbedUtil.error(title, message), 3);
         }
 
         private String getProgressBar(long progress, long full) {

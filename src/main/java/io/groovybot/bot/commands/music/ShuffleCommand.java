@@ -16,7 +16,9 @@ public class ShuffleCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
-        final Scheduler scheduler = player.getScheduler();
+        Scheduler scheduler = player.getScheduler();
+        if (scheduler.isQueueRepeating() || scheduler.isRepeating())
+            return send(error(event.translate("controlpanel.disable.loopqueueloop.title"), event.translate("controlpanel.disable.loopqueueloop.description")));
         if (scheduler.isShuffle()) {
             scheduler.setShuffle(false);
             return send(success(event.translate("command.shuffle.disabled.title"), event.translate("command.shuffle.disabled.description")));
