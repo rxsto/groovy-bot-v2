@@ -18,13 +18,11 @@ import io.groovybot.bot.core.statistics.ServerCountStatistics;
 import io.groovybot.bot.core.statistics.StatusPage;
 import io.groovybot.bot.core.translation.TranslationManager;
 import io.groovybot.bot.io.FileManager;
+import io.groovybot.bot.io.WebsocketConnection;
 import io.groovybot.bot.io.config.Configuration;
 import io.groovybot.bot.io.database.DatabaseGenrator;
 import io.groovybot.bot.io.database.PostgreSQL;
-import io.groovybot.bot.listeners.CommandLogger;
-import io.groovybot.bot.listeners.GuildLogger;
-import io.groovybot.bot.listeners.SelfMentionListener;
-import io.groovybot.bot.listeners.ShardsListener;
+import io.groovybot.bot.listeners.*;
 import io.groovybot.bot.util.YoutubeUtil;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -45,6 +43,7 @@ import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 
 @Log4j2
@@ -80,6 +79,8 @@ public class GroovyBot {
     private Configuration config;
     @Getter
     private PostgreSQL postgreSQL;
+    @Getter
+    private WebsocketConnection websocket;
     @Getter
     private ShardManager shardManager;
     @Getter
@@ -156,6 +157,7 @@ public class GroovyBot {
                         new CommandLogger(),
                         new GuildLogger(),
                         new SelfMentionListener(),
+                        new WebsiteStatsListener(),
                         this,
                         commandManager,
                         lavalinkManager,
@@ -183,6 +185,11 @@ public class GroovyBot {
         dbObject.put("username", "defaultvalue");
         dbObject.put("password", "defaultvalue");
         configuration.addDefault("db", dbObject);
+        final JSONObject wsObject = new JSONObject();
+        wsObject.put("host", "defaultvalue");
+        wsObject.put("port", "defaultvalue");
+        wsObject.put("token", "defaultvalue");
+        configuration.addDefault("websocket", wsObject);
         final JSONArray gamesArray = new JSONArray();
         gamesArray.put("gamename");
         configuration.addDefault("games", gamesArray);
@@ -243,7 +250,13 @@ public class GroovyBot {
         try {
             musicPlayerManager.initPlayers();
         } catch (SQLException | IOException e) {
-            log.error("Error while initializing players!", e);
+            log.error("[MusicPlayerManager] Error while initializing MusicPlayers!", e);
+        }
+
+        try {
+            websocket = new WebsocketConnection();
+        } catch (URISyntaxException e) {
+            log.error("[WebsocketConnection] Error while initializing WebsocketConnection!", e);
         }
 
         if (!debugMode) {
@@ -259,7 +272,7 @@ public class GroovyBot {
             if (shardManager != null)
                 shardManager.shutdown();
         } catch (Exception e) {
-            log.error("Error while closing bot!", e);
+            log.error("[Core] Error while closing bot!", e);
         }
     }
 }

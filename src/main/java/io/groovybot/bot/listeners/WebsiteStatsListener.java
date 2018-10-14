@@ -8,7 +8,6 @@ import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
-import org.java_websocket.server.WebSocketServer;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -17,17 +16,16 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("unused")
 @Log4j2
 public class WebsiteStatsListener implements Runnable {
+
     private final ScheduledExecutorService scheduler;
 
-    public WebsiteStatsListener(WebSocketServer webSocket) {
+    public WebsiteStatsListener() {
         scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("websiteStats"));
-        scheduler.scheduleAtFixedRate(this, 0, 30, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this, 0, 1, TimeUnit.SECONDS);
     }
 
     @SubscribeEvent
     private void onGuildJoin(GuildJoinEvent event) {
-        log.debug("JoinEvent");
-        System.out.println("I am not clever enough to enable debug logs");
         updateStats();
     }
 
@@ -52,6 +50,9 @@ public class WebsiteStatsListener implements Runnable {
     }
 
     private void updateStats() {
-        String message = String.format("%s:%s:%s", GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size(), GroovyBot.getInstance().getLavalinkManager().countPlayers());
+        if (GroovyBot.getInstance().getWebsocket().isClosed())
+            return;
+        String message = String.format("%s-poststats:%s:%s:%s", GroovyBot.getInstance().getConfig().getJSONObject("websocket").getString("token"), GroovyBot.getInstance().getLavalinkManager().countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size());
+        GroovyBot.getInstance().getWebsocket().send(message);
     }
 }
