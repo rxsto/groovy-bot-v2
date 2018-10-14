@@ -1,6 +1,7 @@
 package io.groovybot.bot.listeners;
 
 import io.groovybot.bot.GroovyBot;
+import io.groovybot.bot.io.WebsocketConnection;
 import io.groovybot.bot.util.NameThreadFactory;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
@@ -52,7 +53,6 @@ public class WebsiteStatsListener implements Runnable {
     private void updateStats() {
         if (GroovyBot.getInstance().getWebsocket().isClosed())
             return;
-        String message = String.format("%s-poststats:%s:%s:%s", GroovyBot.getInstance().getConfig().getJSONObject("websocket").getString("token"), GroovyBot.getInstance().getLavalinkManager().countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size());
-        GroovyBot.getInstance().getWebsocket().send(message);
+        GroovyBot.getInstance().getWebsocket().send(WebsocketConnection.parseMessage("poststats", WebsocketConnection.parseStats(GroovyBot.getInstance().getLavalinkManager().countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
     }
 }
