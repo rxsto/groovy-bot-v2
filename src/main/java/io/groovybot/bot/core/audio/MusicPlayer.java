@@ -37,7 +37,9 @@ public class MusicPlayer extends Player {
 
     @Getter
     private final Guild guild;
-    private final TextChannel channel;
+    @Getter
+    @Setter
+    private TextChannel channel;
     @Getter
     private final AudioPlayerManager audioPlayerManager;
     @Getter
