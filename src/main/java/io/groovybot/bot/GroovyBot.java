@@ -20,7 +20,7 @@ import io.groovybot.bot.core.translation.TranslationManager;
 import io.groovybot.bot.io.FileManager;
 import io.groovybot.bot.io.WebsocketConnection;
 import io.groovybot.bot.io.config.Configuration;
-import io.groovybot.bot.io.database.DatabaseGenrator;
+import io.groovybot.bot.io.database.DatabaseGenerator;
 import io.groovybot.bot.io.database.PostgreSQL;
 import io.groovybot.bot.listeners.*;
 import io.groovybot.bot.util.YoutubeUtil;
@@ -107,7 +107,7 @@ public class GroovyBot {
         postgreSQL = new PostgreSQL();
         lavalinkManager = new LavalinkManager(this);
         statusPage = new StatusPage(httpClient, config.getJSONObject("statuspage"));
-        new DatabaseGenrator(postgreSQL);
+        new DatabaseGenerator(postgreSQL);
         commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") : config.getJSONObject("settings").getString("prefix"), this);
         serverCountStatistics = new ServerCountStatistics(config.getJSONObject("botlists"));
         keyManager = new KeyManager(postgreSQL.getConnection());

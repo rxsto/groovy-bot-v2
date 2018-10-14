@@ -1,8 +1,8 @@
 package io.groovybot.bot.io.database;
 
-public class DatabaseGenrator {
+public class DatabaseGenerator {
 
-    public DatabaseGenrator(PostgreSQL postgreSQL) {
+    public DatabaseGenerator(PostgreSQL postgreSQL) {
         postgreSQL.addDefault(() -> "create table if not exists guilds\n" +
                 "(\n" +
                 "  id      bigint                not null\n" +
