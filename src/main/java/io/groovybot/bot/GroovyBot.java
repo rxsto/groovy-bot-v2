@@ -247,6 +247,8 @@ public class GroovyBot {
 
     public void close() {
         try {
+            if (commandManager != null)
+                commandManager.close();
             if (postgreSQL != null)
                 postgreSQL.close();
             if (shardManager != null)
