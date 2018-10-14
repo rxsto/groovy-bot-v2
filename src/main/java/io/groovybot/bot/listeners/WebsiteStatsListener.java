@@ -9,6 +9,7 @@ import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
+import org.json.JSONObject;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,7 +23,7 @@ public class WebsiteStatsListener implements Runnable {
 
     public WebsiteStatsListener() {
         scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("websiteStats"));
-        scheduler.scheduleAtFixedRate(this, 0, 1, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this, 0, 30, TimeUnit.SECONDS);
     }
 
     @SubscribeEvent
@@ -47,7 +48,11 @@ public class WebsiteStatsListener implements Runnable {
 
     @Override
     public void run() {
-        updateStats();
+        sendHeartBeat();
+    }
+
+    private void sendHeartBeat() {
+        GroovyBot.getInstance().getWebsocket().send(WebsocketConnection.parseMessage("heartbeat", new JSONObject().put("state", "alive")).toString());
     }
 
     private void updateStats() {
