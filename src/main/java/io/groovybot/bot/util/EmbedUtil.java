@@ -1,7 +1,9 @@
 package io.groovybot.bot.util;
 
+import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.CommandEvent;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.Guild;
 
 public class EmbedUtil extends SafeMessage {
 
@@ -13,7 +15,7 @@ public class EmbedUtil extends SafeMessage {
      * @return an EmbedBuiler
      */
     public static EmbedBuilder success(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle(":white_check_mark: " + title).setColor(Colors.DARK_BUT_NOT_BLACK);
+        return new EmbedBuilder().setDescription(description).setTitle("✅ " + title).setColor(Colors.DARK_BUT_NOT_BLACK);
     }
 
     /**
@@ -24,7 +26,7 @@ public class EmbedUtil extends SafeMessage {
      * @return an EmbedBuiler
      */
     public static EmbedBuilder error(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle(":x: " + title).setColor(Colors.DARK_BUT_NOT_BLACK);
+        return new EmbedBuilder().setDescription(description).setTitle("❌ " + title).setColor(Colors.DARK_BUT_NOT_BLACK);
     }
 
     /**
@@ -45,7 +47,7 @@ public class EmbedUtil extends SafeMessage {
      * @return an EmbedBuiler
      */
     public static EmbedBuilder info(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle(":information_source: " + title).setColor(Colors.DARK_BUT_NOT_BLACK);
+        return new EmbedBuilder().setDescription(description).setTitle("ℹ " + title).setColor(Colors.DARK_BUT_NOT_BLACK);
     }
 
     /**
@@ -77,7 +79,7 @@ public class EmbedUtil extends SafeMessage {
      * @return an EmbedBuiler
      */
     public static EmbedBuilder play(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle(":notes: " + title).setColor(Colors.DARK_BUT_NOT_BLACK);
+        return new EmbedBuilder().setDescription(description).setTitle("🎶 " + title).setColor(Colors.DARK_BUT_NOT_BLACK);
     }
 
     /**
@@ -88,6 +90,18 @@ public class EmbedUtil extends SafeMessage {
      * @return an EmbedBuiler
      */
     public static EmbedBuilder join(String title, String description, boolean joined) {
-        return new EmbedBuilder().setDescription(description).setTitle(String.format("%s ", joined ? ":white_check_mark:" : ":x:") + title).setColor(Colors.DARK_BUT_NOT_BLACK);
+        return new EmbedBuilder().setDescription(description).setTitle(String.format("%s ", joined ? "✅" : "❌") + title).setColor(Colors.DARK_BUT_NOT_BLACK);
+    }
+
+    /**
+     * Creates an welcome embed
+     *
+     * @param guild The guild Groovy joined
+     * @return an EmbedBuiler
+     */
+    public static EmbedBuilder welcome(Guild guild) {
+        String title = "\uD83C\uDFB6 **Hey, I'm Groovy, the best music-bot on Discord!**";
+        String description = title + "\n" + "▫ My **prefix** on this guild **is** **`g!`**\n▫ **Change** my **prefix** with **`g!prefix`**\n▫ For a **list** of **all commands** type **`g!help`**\n▫ You **want** to **play** music? **Right now?** Try **`g!play`**\n▫ **Join** our **support-server** at **https://discord.gg/5s5TsW2**";
+        return new EmbedBuilder().setDescription(description).setColor(Colors.DARK_BUT_NOT_BLACK).setThumbnail(guild.getSelfMember().getUser().getAvatarUrl()).setFooter("Let's enjoy some good music!", guild.getSelfMember().getUser().getAvatarUrl());
     }
 }

@@ -18,7 +18,7 @@ public class ShardCommand extends Command {
     public Result run(String[] args, CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Colors.DARK_BUT_NOT_BLACK);
-        builder.setDescription(":white_check_mark: " + String.format(event.translate("command.shard.description"), event.getJDA().getShardInfo().getShardId() + 1, event.getJDA().getPing()));
+        builder.setDescription("✅ " + String.format(event.translate("command.shard.description"), event.getJDA().getShardInfo().getShardId() + 1, event.getJDA().getPing()));
         return send(builder);
     }
 }

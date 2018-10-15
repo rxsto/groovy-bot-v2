@@ -31,7 +31,7 @@ public class QueueCommand extends Command {
 
     public static EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, AudioTrack currentTrack, int currentPage, int totalPages) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(":notes: " + String.format(event.translate("command.queue.title"), event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size()))
+                .setTitle("🎶 " + String.format(event.translate("command.queue.title"), event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size()))
                 .setDescription(generateQueueDescription(tracks, startNumber, currentTrack)).setColor(Colors.DARK_BUT_NOT_BLACK);
         if (currentPage != 0 && totalPages != 0)
             builder.setFooter(currentPage + "/" + totalPages + " " + event.translate("phrases.text.sites"), event.getJDA().getSelfUser().getAvatarUrl());
@@ -43,7 +43,7 @@ public class QueueCommand extends Command {
         AtomicInteger trackCount = new AtomicInteger(startNumber);
         if (currentTrack != null)
             queueMessage.append(String.format("**[Now]** [%s](%s)\n\n", currentTrack.getInfo().title, currentTrack.getInfo().uri));
-        tracks.forEach(track -> queueMessage.append(String.format(":white_small_square: `%s.` [%s](%s)\n", trackCount.addAndGet(1), track.getInfo().title, track.getInfo().uri)));
+        tracks.forEach(track -> queueMessage.append(String.format("▫ `%s.` [%s](%s)\n", trackCount.addAndGet(1), track.getInfo().title, track.getInfo().uri)));
 
         return queueMessage.toString();
     }
