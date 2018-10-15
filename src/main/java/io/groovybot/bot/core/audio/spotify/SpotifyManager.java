@@ -3,11 +3,9 @@ package io.groovybot.bot.core.audio.spotify;
 import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
-import com.wrapper.spotify.model_objects.special.SearchResult;
 import com.wrapper.spotify.model_objects.specification.Playlist;
 import com.wrapper.spotify.model_objects.specification.Track;
 import com.wrapper.spotify.requests.data.playlists.GetPlaylistRequest;
-import com.wrapper.spotify.requests.data.search.SearchItemRequest;
 import com.wrapper.spotify.requests.data.tracks.GetTrackRequest;
 import lombok.extern.log4j.Log4j2;
 import okhttp3.*;
@@ -27,7 +25,6 @@ public class SpotifyManager {
 
     public SpotifyManager(String clientId, String clientToken) {
         this.httpClient = new OkHttpClient.Builder().build();
-        log.info(Credentials.basic(clientId, clientToken));
         this.spotifyApi = SpotifyApi.builder()
                 .setAccessToken(getToken(Credentials.basic(clientId, clientToken)))
                 .build();
@@ -55,7 +52,6 @@ public class SpotifyManager {
 
     public Track getTrack(String url) {
         final String trackId = parseTrackPattern(url);
-        log.info(trackId);
         GetTrackRequest getTrackRequest = this.spotifyApi.getTrack(trackId)
                 .market(CountryCode.DE)
                 .build();
