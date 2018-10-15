@@ -69,9 +69,10 @@ public class SpotifyManager {
 
     public Playlist getPlaylist(String url) {
         String[] data = parsePlaylistPattern(url);
+        if (data == null)
+            return null;
         final String userId = data[0];
         final String playlistId = data[1];
-        log.info(userId + " " + playlistId);
         GetPlaylistRequest getPlaylistRequest = this.spotifyApi.getPlaylist(userId, playlistId)
                 .market(CountryCode.DE)
                 .build();
