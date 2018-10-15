@@ -6,6 +6,9 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.wrapper.spotify.model_objects.special.SearchResult;
+import com.wrapper.spotify.model_objects.specification.Paging;
+import com.wrapper.spotify.model_objects.specification.Track;
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.permission.Permissions;
@@ -133,6 +136,17 @@ public class MusicPlayer extends Player {
             isUrl = false;
         }
 
+        if ((keyword.startsWith("http://") || keyword.startsWith("https://")) && keyword.contains("spotify")) {
+            Track track = event.getBot().getSpotifyManager().getTrack(keyword);
+            SafeMessage.sendMessageBlocking(
+                    event.getChannel(),
+                    EmbedUtil.info("Spotify Search Query", track.getArtists()[0].getName() + " - " + track.getName())
+            );
+            keyword = "ytsearch: " + track.getArtists()[0].getName() + " - " + track.getName();
+            log.info(keyword);
+            isUrl = false;
+        }
+
         Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), event.getArguments())));
 
         final boolean isURL = isUrl;
@@ -196,7 +210,7 @@ public class MusicPlayer extends Player {
                     if (trackQueue.isEmpty()) {
                         if (getGuild().getId().equals("403882830225997825"))
                             link.disconnect();
-                        System.out.println("Disconnect 3");
+                        //System.out.println("Disconnect 3");
                     }
                     return false;
                 }
