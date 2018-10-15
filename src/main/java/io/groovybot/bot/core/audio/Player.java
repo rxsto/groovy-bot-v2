@@ -6,11 +6,12 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.util.YoutubeUtil;
 import lavalink.client.io.jda.JdaLink;
 import lavalink.client.player.IPlayer;
-import lavalink.client.player.LavaplayerPlayerWrapper;
 import lombok.Getter;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public abstract class Player {
 

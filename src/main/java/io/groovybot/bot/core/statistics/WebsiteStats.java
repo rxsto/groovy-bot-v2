@@ -12,6 +12,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Log4j2
+@Deprecated
 public class WebsiteStats implements Runnable {
 
     private final Connection connection;

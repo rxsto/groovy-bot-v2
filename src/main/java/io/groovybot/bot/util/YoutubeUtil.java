@@ -20,20 +20,6 @@ public class YoutubeUtil {
     private final YouTube client;
     private final GroovyBot bot;
 
-    /**
-     * Construcs a new Youtube util instance
-     * @param bot the current GroovyBot instance
-     * @return a new YoutubeUtil instance
-     */
-    public static YoutubeUtil create(GroovyBot bot) {
-        try {
-            return new YoutubeUtil(bot);
-        } catch (GeneralSecurityException | IOException e) {
-            log.error("[YouTube] Error while establishing connection to YouTube", e);
-        }
-        return null;
-    }
-
     private YoutubeUtil(GroovyBot bot) throws GeneralSecurityException, IOException {
         this.bot = bot;
         this.client = new YouTube.Builder(
@@ -47,18 +33,27 @@ public class YoutubeUtil {
                 .build();
     }
 
-    private class RequestInitializer extends YouTubeRequestInitializer {
-        @Override
-        protected void initializeYouTubeRequest(YouTubeRequest<?> youTubeRequest) {
-            youTubeRequest.setKey(bot.getConfig().getJSONObject("youtube").getString("apikey"));
+    /**
+     * Construcs a new Youtube util instance
+     *
+     * @param bot the current GroovyBot instance
+     * @return a new YoutubeUtil instance
+     */
+    public static YoutubeUtil create(GroovyBot bot) {
+        try {
+            return new YoutubeUtil(bot);
+        } catch (GeneralSecurityException | IOException e) {
+            log.error("[YouTube] Error while establishing connection to YouTube", e);
         }
+        return null;
     }
 
     /**
      * Retrieves the next video for the autoplay function
+     *
      * @param videoId the ID of the prevoius video
      * @return The new videos SearchResult
-     * @throws IOException when an IO error occurred
+     * @throws IOException          when an IO error occurred
      * @throws NullPointerException When no video where found
      */
     public SearchResult retrieveRelatedVideos(String videoId) throws IOException, NullPointerException {
@@ -71,6 +66,13 @@ public class YoutubeUtil {
         if (searchResults.getItems().isEmpty())
             throw new NullPointerException("No videos were found");
         return searchResults.getItems().get(0);
+    }
+
+    private class RequestInitializer extends YouTubeRequestInitializer {
+        @Override
+        protected void initializeYouTubeRequest(YouTubeRequest<?> youTubeRequest) {
+            youTubeRequest.setKey(bot.getConfig().getJSONObject("youtube").getString("apikey"));
+        }
     }
 
 }

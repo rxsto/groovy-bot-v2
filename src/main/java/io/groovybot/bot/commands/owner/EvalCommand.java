@@ -15,7 +15,7 @@ import javax.script.ScriptException;
 public class EvalCommand extends Command {
 
     public EvalCommand() {
-        super(new String[] {"eval"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Run code with Groovy", "<code>");
+        super(new String[]{"eval"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Run code with Groovy", "<code>");
     }
 
     @Override

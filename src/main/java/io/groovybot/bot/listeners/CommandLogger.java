@@ -24,7 +24,7 @@ public class CommandLogger {
     private void onCommandFail(CommandFailEvent failEvent) {
         log.error(String.format("[Command] Command %s threw an error %s on guild %s(%d)", failEvent.getCommand().getName(), failEvent.getAuthor().getName(), failEvent.getGuild().getName(), failEvent.getGuild().getIdLong()), failEvent.getThrowable());
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(":no_entry_sign: " + failEvent.translate("phrases.error.internal"))
+                .setTitle("❌ " + failEvent.translate("phrases.error.internal"))
                 .setDescription(String.format("We're sorry, but an internal error occured\n```%s```", failEvent.getThrowable().getClass().getCanonicalName() + ": " + failEvent.getThrowable().getMessage()))
                 .setColor(Colors.DARK_BUT_NOT_BLACK);
         SafeMessage.sendMessage(failEvent.getChannel(), builder);
