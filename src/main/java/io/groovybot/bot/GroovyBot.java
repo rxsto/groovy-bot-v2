@@ -3,7 +3,10 @@ package io.groovybot.bot;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.core.GameAnimator;
 import io.groovybot.bot.core.KeyManager;
-import io.groovybot.bot.core.audio.*;
+import io.groovybot.bot.core.audio.LavalinkManager;
+import io.groovybot.bot.core.audio.MusicPlayer;
+import io.groovybot.bot.core.audio.MusicPlayerManager;
+import io.groovybot.bot.core.audio.PlaylistManager;
 import io.groovybot.bot.core.audio.spotify.SpotifyManager;
 import io.groovybot.bot.core.cache.Cache;
 import io.groovybot.bot.core.command.CommandManager;
@@ -11,17 +14,17 @@ import io.groovybot.bot.core.command.CommandRegistry;
 import io.groovybot.bot.core.command.interaction.InteractionManager;
 import io.groovybot.bot.core.entity.Guild;
 import io.groovybot.bot.core.entity.User;
-import io.groovybot.bot.core.events.EventRegistry;
 import io.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
 import io.groovybot.bot.core.lyrics.GeniusClient;
 import io.groovybot.bot.core.statistics.ServerCountStatistics;
 import io.groovybot.bot.core.statistics.StatusPage;
-import io.groovybot.bot.core.statistics.WebsiteStats;
 import io.groovybot.bot.core.translation.TranslationManager;
 import io.groovybot.bot.io.FileManager;
+import io.groovybot.bot.io.WebsocketConnection;
 import io.groovybot.bot.io.config.Configuration;
-import io.groovybot.bot.io.database.DatabaseGenrator;
+import io.groovybot.bot.io.database.DatabaseGenerator;
 import io.groovybot.bot.io.database.PostgreSQL;
+import io.groovybot.bot.listeners.*;
 import io.groovybot.bot.util.YoutubeUtil;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -42,6 +45,7 @@ import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 
 @Log4j2
@@ -70,9 +74,15 @@ public class GroovyBot {
     @Getter
     private final KeyManager keyManager;
     @Getter
+    private final YoutubeUtil youtubeClient;
+    @Getter
+    private final GeniusClient geniusClient;
+    @Getter
     private Configuration config;
     @Getter
     private PostgreSQL postgreSQL;
+    @Getter
+    private WebsocketConnection websocket;
     @Getter
     private ShardManager shardManager;
     @Getter
@@ -84,11 +94,7 @@ public class GroovyBot {
     @Getter
     private PlaylistManager playlistManager;
     @Getter
-    private final YoutubeUtil youtubeClient;
-    @Getter
     private boolean allShardsInitialized = false;
-    @Getter
-    private final GeniusClient geniusClient;
     @Getter
     private final SpotifyManager spotifyManager;
 
@@ -104,7 +110,7 @@ public class GroovyBot {
         postgreSQL = new PostgreSQL();
         lavalinkManager = new LavalinkManager(this);
         statusPage = new StatusPage(httpClient, config.getJSONObject("statuspage"));
-        new DatabaseGenrator(postgreSQL);
+        new DatabaseGenerator(postgreSQL);
         commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") : config.getJSONObject("settings").getString("prefix"), this);
         serverCountStatistics = new ServerCountStatistics(config.getJSONObject("botlists"));
         keyManager = new KeyManager(postgreSQL.getConnection());
@@ -120,6 +126,12 @@ public class GroovyBot {
         spotifyManager = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_token"));
     }
 
+    public static void main(String[] args) {
+        if (instance != null)
+            throw new RuntimeException("Groovy was already initialized in this VM!");
+        new GroovyBot(args);
+    }
+
     private Integer retrieveShards() {
         Request request = new Request.Builder()
                 .url("https://discordapp.com/api/gateway/bot")
@@ -128,7 +140,6 @@ public class GroovyBot {
                 .build();
         try (Response response = httpClient.newCall(request).execute()) {
             assert response.body() != null;
-            System.out.println(response);
             return new JSONObject(response.body().string()).getInt("shards");
         } catch (IOException e) {
             log.warn("[JDA] Error while retrieving shards count");
@@ -140,12 +151,23 @@ public class GroovyBot {
         eventManager = new AnnotatedEventManager();
         DefaultShardManagerBuilder shardManagerBuilder = new DefaultShardManagerBuilder()
                 .setHttpClient(httpClient)
-                .setEventManager(eventManager)
+                .setEventManagerProvider((id) -> eventManager)
                 .setToken(config.getJSONObject("bot").getString("token"))
                 .setShardsTotal(retrieveShards())
                 .setGame(Game.playing("Starting ..."))
-                .setStatus(OnlineStatus.DO_NOT_DISTURB);
-        new EventRegistry(shardManagerBuilder, this);
+                .setStatus(OnlineStatus.DO_NOT_DISTURB)
+                .addEventListeners(
+                        new ShardsListener(),
+                        new CommandLogger(),
+                        new GuildLogger(),
+                        new SelfMentionListener(),
+                        new WebsiteStatsListener(),
+                        this,
+                        commandManager,
+                        lavalinkManager,
+                        interactionManager,
+                        eventWaiter
+                );
         try {
             shardManager = shardManagerBuilder.build();
             lavalinkManager.initialize();
@@ -155,19 +177,23 @@ public class GroovyBot {
         }
     }
 
-
     private void initConfig() {
         Configuration configuration = new Configuration("config/config.json");
         final JSONObject botObject = new JSONObject();
         botObject.put("token", "defaultvalue");
         configuration.addDefault("bot", botObject);
         final JSONObject dbObject = new JSONObject();
-        dbObject.put("host", "127.0.0.1");
-        dbObject.put("port", 5432);
+        dbObject.put("host", "defaultvalue");
+        dbObject.put("port", "defaultvalue");
         dbObject.put("database", "defaultvalue");
         dbObject.put("username", "defaultvalue");
         dbObject.put("password", "defaultvalue");
         configuration.addDefault("db", dbObject);
+        final JSONObject wsObject = new JSONObject();
+        wsObject.put("host", "defaultvalue");
+        wsObject.put("port", "defaultvalue");
+        wsObject.put("token", "defaultvalue");
+        configuration.addDefault("websocket", wsObject);
         final JSONArray gamesArray = new JSONArray();
         gamesArray.put("gamename");
         configuration.addDefault("games", gamesArray);
@@ -207,8 +233,8 @@ public class GroovyBot {
                 .put("discordbotindex.com", "defaultvalue");
         configuration.addDefault("botlists", botlistObjects);
         final JSONObject statusPageObject = new JSONObject();
-        statusPageObject.put("page_id", "1337");
-        statusPageObject.put("metric_id", "7331");
+        statusPageObject.put("page_id", "defaultvalue");
+        statusPageObject.put("metric_id", "defaultvalue");
         statusPageObject.put("api_key", "defaultvalue");
         configuration.addDefault("statuspage", statusPageObject);
         final JSONObject geniusObject = new JSONObject();
@@ -228,15 +254,22 @@ public class GroovyBot {
         new GameAnimator(this);
         guildCache = new Cache<>(Guild.class);
         userCache = new Cache<>(User.class);
+
         try {
             musicPlayerManager.initPlayers();
         } catch (SQLException | IOException e) {
-            log.error("Error while initializing players!", e);
+            log.error("[MusicPlayerManager] Error while initializing MusicPlayers!", e);
         }
+
+        try {
+            websocket = new WebsocketConnection();
+        } catch (URISyntaxException e) {
+            log.error("[WebsocketConnection] Error while initializing WebsocketConnection!", e);
+        }
+
         if (!debugMode) {
             statusPage.start();
             serverCountStatistics.start();
-            new WebsiteStats(this);
         }
     }
 
@@ -247,13 +280,7 @@ public class GroovyBot {
             if (shardManager != null)
                 shardManager.shutdown();
         } catch (Exception e) {
-            log.error("Error while closing bot!", e);
+            log.error("[Core] Error while closing bot!", e);
         }
-    }
-
-    public static void main(String[] args) {
-        if (instance != null)
-            throw new RuntimeException("Groovy was already initialized in this VM!");
-        new GroovyBot(args);
     }
 }

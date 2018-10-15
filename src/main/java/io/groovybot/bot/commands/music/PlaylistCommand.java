@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class PlaylistCommand extends Command {
 
     public PlaylistCommand() {
-        super(new String[] {"playlist", "playlists"}, CommandCategory.MUSIC, Permissions.everyone(), "Let's you use Playlists", "");
+        super(new String[]{"playlist", "playlists"}, CommandCategory.MUSIC, Permissions.everyone(), "Let's you use Playlists", "");
         registerSubCommand(new SaveCommand());
         registerSubCommand(new AddCommand());
         registerSubCommand(new LoadCommand());
@@ -111,7 +111,7 @@ public class PlaylistCommand extends Command {
     private class LoadCommand extends SemiInChannelSubCommand {
 
         public LoadCommand() {
-            super(new String[] {"load"}, Permissions.everyone(), "Loads a playlist", "<name>");
+            super(new String[]{"load"}, Permissions.everyone(), "Loads a playlist", "<name>");
         }
 
         @Override
@@ -136,7 +136,7 @@ public class PlaylistCommand extends Command {
     private class AddCommand extends SubCommand {
 
         public AddCommand() {
-            super(new String[] {"add", "addsong"}, Permissions.everyone(), "Adds a song to the playlist", "<name> <url>");
+            super(new String[]{"add", "addsong"}, Permissions.everyone(), "Adds a song to the playlist", "<name> <url>");
         }
 
         @Override
@@ -209,7 +209,7 @@ public class PlaylistCommand extends Command {
     private class SaveCommand extends SubCommand {
 
         public SaveCommand() {
-            super(new String[] {"save", "savequeue"}, Permissions.everyone(), "Saves the queue into a playlist", "<name>");
+            super(new String[]{"save", "savequeue"}, Permissions.everyone(), "Saves the queue into a playlist", "<name>");
         }
 
         @Override

@@ -24,6 +24,7 @@ public class CommandEvent extends GuildMessageReceivedEvent {
 
     /**
      * Returns the translation of a key
+     *
      * @param key the key of the translation
      * @return the translation as a String
      */

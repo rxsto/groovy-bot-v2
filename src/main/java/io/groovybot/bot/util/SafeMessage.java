@@ -30,11 +30,11 @@ public class SafeMessage extends JDAUtil {
         if (hasWritePermissions(channel))
             if (hasEmbedPermissions(channel))
                 return prevoiusMessage.editMessage(newMessage);
-            else 
+            else
                 return prevoiusMessage.editMessage(formatEmbed(newMessage));
         return channel.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage(String.format("I am unable to write on your server in channel %s", channel.getName()));
     }
-    
+
     public static void editMessage(Message prevoiusMessage, EmbedBuilder builder) {
         getEditAction(prevoiusMessage, buildMessage(builder)).queue();
     }
@@ -96,17 +96,17 @@ public class SafeMessage extends JDAUtil {
     private static boolean hasEmbedPermissions(Channel channel) {
         return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_EMBED_LINKS);
     }
-    
+
     private static Message buildMessage(MessageEmbed embed) {
         return new MessageBuilder().setEmbed(embed).build();
     }
-    
+
     private static Message buildMessage(EmbedBuilder embedBuilder) {
         return buildMessage(embedBuilder.build());
     }
-    
+
     private static Message buildMessage(String content) {
         return new MessageBuilder().setContent(content).build();
     }
-    
+
 }

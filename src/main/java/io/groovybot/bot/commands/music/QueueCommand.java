@@ -29,9 +29,28 @@ public class QueueCommand extends Command {
         super(new String[]{"queue", "q"}, CommandCategory.MUSIC, Permissions.everyone(), "Shows you each song inside the queue", "");
     }
 
+    public static EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, AudioTrack currentTrack, int currentPage, int totalPages) {
+        EmbedBuilder builder = new EmbedBuilder()
+                .setTitle("🎶 " + String.format(event.translate("command.queue.title"), event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size()))
+                .setDescription(generateQueueDescription(tracks, startNumber, currentTrack)).setColor(Colors.DARK_BUT_NOT_BLACK);
+        if (currentPage != 0 && totalPages != 0)
+            builder.setFooter(currentPage + "/" + totalPages + " " + event.translate("phrases.text.sites"), event.getJDA().getSelfUser().getAvatarUrl());
+        return builder;
+    }
+
+    private static String generateQueueDescription(List<AudioTrack> tracks, int startNumber, AudioTrack currentTrack) {
+        StringBuilder queueMessage = new StringBuilder();
+        AtomicInteger trackCount = new AtomicInteger(startNumber);
+        if (currentTrack != null)
+            queueMessage.append(String.format("**[Now]** [%s](%s)\n\n", currentTrack.getInfo().title, currentTrack.getInfo().uri));
+        tracks.forEach(track -> queueMessage.append(String.format("▫ `%s.` [%s](%s)\n", trackCount.addAndGet(1), track.getInfo().title, track.getInfo().uri)));
+
+        return queueMessage.toString();
+    }
+
     @Override
     public Result run(String[] args, CommandEvent event) {
-        MusicPlayer player = event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
+        MusicPlayer player = event.getBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
         if (player.getQueueSize() <= PAGE_SIZE)
@@ -41,25 +60,6 @@ public class QueueCommand extends Command {
         Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.queue.loading.title"), event.translate("command.queue.loading.description")));
         new QueueMessage(infoMessage, event.getChannel(), event.getMember(), player.getTrackQueue(), event, player.getPlayer().getPlayingTrack());
         return null;
-    }
-
-    public static EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, AudioTrack currentTrack, int currentPage, int totalPages) {
-        EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(":notes: " + String.format(event.translate("command.queue.title"), event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size()))
-                .setDescription(generateQueueDescription(tracks, startNumber, currentTrack)).setColor(Colors.DARK_BUT_NOT_BLACK);
-        if (currentPage != 0 && totalPages != 0)
-            builder.setFooter(currentPage + "/" + totalPages + event.translate("phrases.text.sites"), event.getJDA().getSelfUser().getAvatarUrl());
-        return builder;
-    }
-
-    private static String generateQueueDescription(List<AudioTrack> tracks, int startNumber, AudioTrack currentTrack) {
-        StringBuilder queueMessage = new StringBuilder();
-        AtomicInteger trackCount = new AtomicInteger(startNumber);
-        if (currentTrack != null)
-            queueMessage.append(String.format("**[Now]** [%s](%s)\n\n", currentTrack.getInfo().title, currentTrack.getInfo().uri));
-        tracks.forEach(track -> queueMessage.append(String.format(":white_small_square: `%s.` [%s](%s)\n", trackCount.addAndGet(1), track.getInfo().title, track.getInfo().uri)));
-
-        return queueMessage.toString();
     }
 
     private class QueueMessage extends InteractableMessage {
@@ -90,7 +90,6 @@ public class QueueCommand extends Command {
                     currentPage--;
                     break;
                 default:
-                    // Nothing happens
                     break;
             }
             updateEmotes(false);

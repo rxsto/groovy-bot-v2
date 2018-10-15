@@ -30,7 +30,7 @@ public class HelpCommand extends Command {
 
     private EmbedBuilder formatCommandList(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(":information_source: " + event.translate("command.help.title"))
+                .setTitle("ℹ " + event.translate("command.help.title"))
                 .setColor(Colors.DARK_BUT_NOT_BLACK)
                 .setDescription(String.format(event.translate("command.help.description"), EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix()));
         for (CommandCategory commandCategory : CommandCategory.class.getEnumConstants()) {
