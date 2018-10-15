@@ -77,5 +77,4 @@ public class PostgreSQL implements Closeable {
         String getCreateStatement();
 
     }
-
 }
