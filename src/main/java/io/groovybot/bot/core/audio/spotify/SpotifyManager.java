@@ -7,6 +7,7 @@ import com.wrapper.spotify.model_objects.specification.Playlist;
 import com.wrapper.spotify.model_objects.specification.Track;
 import com.wrapper.spotify.requests.data.playlists.GetPlaylistRequest;
 import com.wrapper.spotify.requests.data.tracks.GetTrackRequest;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import okhttp3.*;
 import org.json.JSONObject;
@@ -19,7 +20,9 @@ import java.util.regex.Pattern;
 public class SpotifyManager {
 
     private final OkHttpClient httpClient;
+    @Getter
     private final SpotifyApi spotifyApi;
+
     private static final Pattern PLAYLIST_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/user/(.*)/playlist/([^?/\\s]*)");
     private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/track/([^?/\\s]*)");
 
@@ -101,9 +104,5 @@ public class SpotifyManager {
         //saves the id of the playlist
         result[1] = matcher.group(2);
         return result;
-    }
-
-    public SpotifyApi getSpotifyApi() {
-        return this.spotifyApi;
     }
 }
