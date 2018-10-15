@@ -10,7 +10,7 @@ public class SelfMentionListener {
     @SuppressWarnings("unused")
     private void onMention(GuildMessageReceivedEvent event) {
         if (event.getMessage().getContentRaw().equals(event.getGuild().getSelfMember().getAsMention())) {
-            event.getChannel().sendMessage(String.format(":vulcan: Wazzup mate, my name is Groovy and my prefix on this guild is **`%s`**", EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix())).queue();
+            event.getChannel().sendMessage(String.format("\uD83D\uDD96 Wazzup mate, my name is Groovy and my prefix on this guild is **`%s`**", EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix())).queue();
         }
     }
 }

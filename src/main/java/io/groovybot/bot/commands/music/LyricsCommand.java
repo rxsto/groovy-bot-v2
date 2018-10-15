@@ -53,7 +53,7 @@ public class LyricsCommand extends Command {
         lyrics = lyrics.replaceAll("\\[", "**[");
 
         editMessage(infoMessage, success("", String.format(event.translate("command.lyrics.success.description"), lyrics.substring(0, 2040)) + " ...")
-                .setTitle(":page_facing_up: " + String.format(event.translate("command.lyrics.success.title"), title), lyricsUrl)
+                .setTitle("\uD83D\uDCC4 " + String.format(event.translate("command.lyrics.success.title"), title), lyricsUrl)
         );
         return null;
     }

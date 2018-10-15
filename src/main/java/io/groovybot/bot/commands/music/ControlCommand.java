@@ -214,7 +214,7 @@ public class ControlCommand extends SameChannelCommand {
                 return;
             AudioTrackInfo currentSong = player.getPlayer().getPlayingTrack().getInfo();
             EmbedBuilder controlPanelEmbed = new EmbedBuilder()
-                    .setTitle(String.format(":notes: %s (%s)", currentSong.title, currentSong.author))
+                    .setTitle(String.format("🎶 %s (%s)", currentSong.title, currentSong.author))
                     .setColor(Colors.DARK_BUT_NOT_BLACK)
                     .setDescription(buildDescription(player));
             editMessage(getInfoMessage(), controlPanelEmbed);
