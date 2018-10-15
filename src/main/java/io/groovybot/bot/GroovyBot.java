@@ -3,10 +3,8 @@ package io.groovybot.bot;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.core.GameAnimator;
 import io.groovybot.bot.core.KeyManager;
-import io.groovybot.bot.core.audio.LavalinkManager;
-import io.groovybot.bot.core.audio.MusicPlayer;
-import io.groovybot.bot.core.audio.MusicPlayerManager;
-import io.groovybot.bot.core.audio.PlaylistManager;
+import io.groovybot.bot.core.audio.*;
+import io.groovybot.bot.core.audio.spotify.SpotifyManager;
 import io.groovybot.bot.core.cache.Cache;
 import io.groovybot.bot.core.command.CommandManager;
 import io.groovybot.bot.core.command.CommandRegistry;
@@ -91,7 +89,8 @@ public class GroovyBot {
     private boolean allShardsInitialized = false;
     @Getter
     private final GeniusClient geniusClient;
-
+    @Getter
+    private final SpotifyManager spotifyManager;
 
     private GroovyBot(String[] args) {
         instance = this;
@@ -118,6 +117,7 @@ public class GroovyBot {
         youtubeClient = YoutubeUtil.create(this);
         geniusClient = new GeniusClient(config.getJSONObject("genius").getString("token"));
         new CommandRegistry(commandManager);
+        spotifyManager = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_token"));
     }
 
     private Integer retrieveShards() {
@@ -186,6 +186,10 @@ public class GroovyBot {
         final JSONObject youtubeObject = new JSONObject();
         youtubeObject.put("apikey", "defaultvalue");
         configuration.addDefault("youtube", youtubeObject);
+        final JSONObject spotifyObject = new JSONObject();
+        spotifyObject.put("client_id", "defaultvalue");
+        spotifyObject.put("client_token", "defaultvalue");
+        configuration.addDefault("spotify", spotifyObject);
         final JSONObject botlistObjects = new JSONObject()
                 .put("botlist.space", "defaultvalue")
                 .put("bots.ondiscord.xyz", "defaultvalue")
