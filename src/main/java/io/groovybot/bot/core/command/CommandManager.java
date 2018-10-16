@@ -54,7 +54,6 @@ public class CommandManager implements Closeable {
     }
 
     private void parseCommands(GuildMessageReceivedEvent event) {
-        System.out.println("Parsing command in thread " + Thread.currentThread().getName());
         String prefix = null;
         String content = event.getMessage().getContentRaw();
         //Check prefix
