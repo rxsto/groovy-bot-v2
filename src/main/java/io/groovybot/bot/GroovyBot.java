@@ -4,7 +4,6 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.core.GameAnimator;
 import io.groovybot.bot.core.KeyManager;
 import io.groovybot.bot.core.audio.LavalinkManager;
-import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.audio.MusicPlayerManager;
 import io.groovybot.bot.core.audio.PlaylistManager;
 import io.groovybot.bot.core.audio.spotify.SpotifyManager;
@@ -97,11 +96,14 @@ public class GroovyBot {
     private boolean allShardsInitialized = false;
     @Getter
     private final SpotifyManager spotifyManager;
+    private final boolean enableWebsocket;
 
     private GroovyBot(String[] args) {
         instance = this;
         initLogger(args);
         debugMode = String.join(" ", args).contains("debug");
+        enableWebsocket = !String.join(" ", args).contains("--no-websocket");
+        log.info("Websocket" + enableWebsocket);
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
         log.info("Starting Groovy ...");
         new FileManager();
@@ -240,11 +242,12 @@ public class GroovyBot {
         final JSONObject geniusObject = new JSONObject();
         geniusObject.put("token", "defaultvalue");
         configuration.addDefault("genius", geniusObject);
+
         this.config = configuration.init();
     }
 
     private void initLogger(String[] args) {
-        Configurator.setRootLevel(args.length == 0 ? Level.INFO : Level.toLevel(args[0]));
+        Configurator.setRootLevel(args.length == 0 ? Level.INFO : Level.toLevel(args[0], Level.INFO));
     }
 
     @SubscribeEvent
@@ -261,11 +264,12 @@ public class GroovyBot {
             log.error("[MusicPlayerManager] Error while initializing MusicPlayers!", e);
         }
 
-        try {
-            websocket = new WebsocketConnection();
-        } catch (URISyntaxException e) {
-            log.error("[WebsocketConnection] Error while initializing WebsocketConnection!", e);
-        }
+        if (enableWebsocket)
+            try {
+                websocket = new WebsocketConnection();
+            } catch (URISyntaxException e) {
+                log.error("[WebsocketConnection] Error while initializing WebsocketConnection!", e);
+            }
 
         if (!debugMode) {
             statusPage.start();
