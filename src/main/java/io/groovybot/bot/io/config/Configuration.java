@@ -72,6 +72,17 @@ public class Configuration extends JSONObject {
         defaults.forEach((key, value) -> {
             if (!jsonObject.has(key))
                 jsonObject.put(key, value);
+            else {
+                Object defaultObject = defaults.get(key);
+                //Ignore JSONArrays
+                if (!(defaultObject instanceof JSONObject))
+                    return;
+                JSONObject extistingObject = jsonObject.getJSONObject(key);
+                ((JSONObject) defaultObject).toMap().forEach((defaultKey, defaultValue) -> {
+                    if (!extistingObject.has(defaultKey))
+                        extistingObject.put(defaultKey, defaultValue);
+                });
+            }
         });
         return jsonObject;
     }
