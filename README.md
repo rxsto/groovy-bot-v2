@@ -114,8 +114,10 @@ We'd love to hear about that! You are able to support with money by donating on 
 
 ---
 
-## [License](LICENSE)
+### [License]
+[GPL-3.0](https://github.com/GroovyDevs/Bot/blob/develop/LICENSE)
 
+## Vote for us!
 [![Discord Bots](https://discordbots.org/api/widget/status/402116404301660181.svg?noavatar=true)](https://discordbots.org/bot/402116404301660181)
 [![Discordbots.com](https://discordbotlist.com/bots/402116404301660181/widget")](https://discordbotlist.com/bots/402116404301660181/)
 [![botsfordiscord.com](https://botsfordiscord.com/api/bot/402116404301660181/widget)](https://botsfordiscord.com/bots/402116404301660181)  
