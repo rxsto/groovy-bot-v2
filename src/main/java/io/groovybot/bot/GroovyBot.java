@@ -163,13 +163,14 @@ public class GroovyBot {
                         new CommandLogger(),
                         new GuildLogger(),
                         new SelfMentionListener(),
-                        new WebsiteStatsListener(),
                         this,
                         commandManager,
                         lavalinkManager,
                         interactionManager,
                         eventWaiter
                 );
+        if (enableWebsocket)
+            shardManagerBuilder.addEventListeners(new WebsiteStatsListener());
         try {
             shardManager = shardManagerBuilder.build();
             lavalinkManager.initialize();
