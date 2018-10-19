@@ -30,8 +30,7 @@ public class ServerCountStatistics extends StatsPoster {
     }
 
     public synchronized void start() {
-        //this.botId = groovyBot.getShardManager().getApplicationInfo().complete().getId();
-        this.botId = "402116404301660181";
+        this.botId = groovyBot.getShardManager().getApplicationInfo().complete().getId();
         scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.MINUTES);
     }
 
