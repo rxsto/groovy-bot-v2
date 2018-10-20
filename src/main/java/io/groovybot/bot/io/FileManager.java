@@ -9,7 +9,7 @@ import java.io.IOException;
 public class FileManager {
 
     private final String[] DIRECTORIES = {
-            "config"
+            "config",
     };
 
     private final String[] FILES = {
