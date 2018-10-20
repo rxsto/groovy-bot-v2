@@ -56,7 +56,7 @@ public class WebsiteStatsListener implements Runnable {
     }
 
     private void updateStats() {
-        if (GroovyBot.getInstance().getWebsocket().isClosed())
+        if (GroovyBot.getInstance().getWebsocket().isClosed() || !GroovyBot.getInstance().getWebsocket().isOpen())
             return;
         log.debug("[Websocket] Sending Heartbeat to Server!");
         GroovyBot.getInstance().getWebsocket().send(WebsocketConnection.parseMessage("poststats", WebsocketConnection.parseStats(GroovyBot.getInstance().getLavalinkManager().countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
