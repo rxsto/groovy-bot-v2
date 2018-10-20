@@ -6,21 +6,24 @@ import net.dv8tion.jda.webhook.WebhookClient;
 import net.dv8tion.jda.webhook.WebhookClientBuilder;
 import net.dv8tion.jda.webhook.WebhookMessage;
 import net.dv8tion.jda.webhook.WebhookMessageBuilder;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.*;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 import java.io.Serializable;
 import java.time.Instant;
 
+@Plugin(name = "WebhookAppender", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE)
+@SuppressWarnings("unused")
 public class ErrorReporter extends AbstractAppender {
 
-    private final WebhookClient errorHook;
+    private WebhookClient errorHook;
 
     public ErrorReporter(String name, Filter filter, Layout<? extends Serializable> layout) {
         super(name, filter, layout);
-        errorHook = new WebhookClientBuilder(GroovyBot.getInstance().getConfig().getJSONObject("webhooks").getString("error_hook")).build();
     }
 
 
@@ -40,7 +43,7 @@ public class ErrorReporter extends AbstractAppender {
 
     private String formatStacktrace(Throwable throwable) {
         StringBuilder out = new StringBuilder();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 10; i++) {
             out.append(throwable.getStackTrace()[i]).append("\n");
         }
         return out.toString();
@@ -52,9 +55,16 @@ public class ErrorReporter extends AbstractAppender {
 
     @Override
     public void append(LogEvent event) {
+        if (errorHook == null && GroovyBot.getInstance().getConfig() != null)
+            errorHook = new WebhookClientBuilder(GroovyBot.getInstance().getConfig().getJSONObject("webhooks").getString("error_hook")).build();
         if (errorHook == null)
             return;
         if (event.getThrown() != null)
             errorHook.send(buildErrorLog(event));
+    }
+
+    @PluginFactory
+    public static ErrorReporter createAppender(@PluginAttribute("name") String name, @PluginElement("Filter") Filter filter) {
+        return new ErrorReporter(name, filter, null);
     }
 }

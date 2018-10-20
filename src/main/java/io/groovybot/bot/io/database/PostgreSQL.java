@@ -20,7 +20,6 @@ public class PostgreSQL implements Closeable {
 
     private final List<PostgreSQLDatabase> defaults;
     @Getter
-    private Connection connection;
     private HikariDataSource dataSource;
 
     public PostgreSQL() {
@@ -44,19 +43,18 @@ public class PostgreSQL implements Closeable {
 
         try {
             dataSource = new HikariDataSource(hikariConfig);
-            connection = dataSource.getConnection();
-        } catch (SQLException | HikariPool.PoolInitializationException e) {
+        } catch (HikariPool.PoolInitializationException e) {
             log.error("[Database] Error while connecting to database!", e);
+            return;
         }
 
-        if (connection != null)
-            log.info("[Database] Connected!");
+        log.info("[Database] Connected!");
     }
 
     public void createDatabases() {
         defaults.forEach(postgreSQLDatabase -> {
             try {
-                connection.prepareStatement(postgreSQLDatabase.getCreateStatement()).execute();
+                getConnection().prepareStatement(postgreSQLDatabase.getCreateStatement()).execute();
             } catch (SQLException e) {
                 log.error("[Database] Error while creating databases!", e);
             }
@@ -70,6 +68,10 @@ public class PostgreSQL implements Closeable {
     @Override
     public void close() throws IOException {
         dataSource.close();
+    }
+
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 
     public interface PostgreSQLDatabase {

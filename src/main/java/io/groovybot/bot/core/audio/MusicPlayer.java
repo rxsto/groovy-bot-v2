@@ -227,46 +227,48 @@ public class MusicPlayer extends Player {
     }
 
     public void update() throws SQLException, IOException {
-        Connection connection = GroovyBot.getInstance().getPostgreSQL().getConnection();
+        try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getConnection()) {
 
-        PreparedStatement ps = connection.prepareStatement("INSERT INTO queues (guild_id, current_track, current_position, queue, channel_id, text_channel_id, volume) VALUES (?,?,?,?,?,?,?)");
-        ps.setLong(1, guild.getIdLong());
-        ps.setString(2, LavalinkUtil.toMessage(player.getPlayingTrack()));
-        ps.setLong(3, player.getTrackPosition());
-        ps.setString(4, getBuildedQueue());
-        ps.setLong(5, guild.getSelfMember().getVoiceState().getChannel().getIdLong());
-        ps.setLong(6, channel.getIdLong());
-        ps.setInt(7, player.getVolume());
-        ps.execute();
 
-        this.clearQueue();
-        getScheduler().setShuffle(false);
-        getScheduler().setQueueRepeating(false);
-        getScheduler().setRepeating(false);
-        setVolume(100);
-        if (isPaused())
-            resume();
-        getAudioPlayerManager().loadItem("https://cdn.groovybot.gq/sounds/update.mp3", new AudioLoadResultHandler() {
-            @Override
-            public void trackLoaded(AudioTrack track) {
-                queueTrack(track, true, false);
-            }
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO queues (guild_id, current_track, current_position, queue, channel_id, text_channel_id, volume) VALUES (?,?,?,?,?,?,?)");
+            ps.setLong(1, guild.getIdLong());
+            ps.setString(2, LavalinkUtil.toMessage(player.getPlayingTrack()));
+            ps.setLong(3, player.getTrackPosition());
+            ps.setString(4, getBuildedQueue());
+            ps.setLong(5, guild.getSelfMember().getVoiceState().getChannel().getIdLong());
+            ps.setLong(6, channel.getIdLong());
+            ps.setInt(7, player.getVolume());
+            ps.execute();
 
-            @Override
-            public void playlistLoaded(AudioPlaylist playlist) {
+            this.clearQueue();
+            getScheduler().setShuffle(false);
+            getScheduler().setQueueRepeating(false);
+            getScheduler().setRepeating(false);
+            setVolume(100);
+            if (isPaused())
+                resume();
+            getAudioPlayerManager().loadItem("https://cdn.groovybot.gq/sounds/update.mp3", new AudioLoadResultHandler() {
+                @Override
+                public void trackLoaded(AudioTrack track) {
+                    queueTrack(track, true, false);
+                }
 
-            }
+                @Override
+                public void playlistLoaded(AudioPlaylist playlist) {
 
-            @Override
-            public void noMatches() {
+                }
 
-            }
+                @Override
+                public void noMatches() {
 
-            @Override
-            public void loadFailed(FriendlyException exception) {
+                }
 
-            }
-        });
+                @Override
+                public void loadFailed(FriendlyException exception) {
+
+                }
+            });
+        }
     }
 
     private String getBuildedQueue() throws IOException {
