@@ -21,6 +21,7 @@ import io.groovybot.bot.core.translation.TranslationManager;
 import io.groovybot.bot.io.FileManager;
 import io.groovybot.bot.io.WebsocketConnection;
 import io.groovybot.bot.io.config.Configuration;
+import io.groovybot.bot.io.config.ConfigurationSetup;
 import io.groovybot.bot.io.database.DatabaseGenerator;
 import io.groovybot.bot.io.database.PostgreSQL;
 import io.groovybot.bot.listeners.*;
@@ -39,7 +40,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
@@ -76,6 +76,8 @@ public class GroovyBot {
     private final YoutubeUtil youtubeClient;
     @Getter
     private final GeniusClient geniusClient;
+    @Getter
+    private final SpotifyManager spotifyManager;
     @Getter
     private Configuration config;
     @Getter

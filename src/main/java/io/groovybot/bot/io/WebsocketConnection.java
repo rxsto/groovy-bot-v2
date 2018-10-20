@@ -25,6 +25,23 @@ public class WebsocketConnection extends WebSocketClient {
         this.connection = GroovyBot.getInstance().getPostgreSQL().getConnection();
     }
 
+    public static JSONObject parseStats(int playing, int guilds, int users) {
+        JSONObject object = new JSONObject();
+        object.put("playing", playing);
+        object.put("guilds", guilds);
+        object.put("users", users);
+
+        return object;
+    }
+
+    public static JSONObject parseMessage(String type, JSONObject data) {
+        JSONObject object = new JSONObject();
+        object.put("type", type);
+        object.put("data", data);
+
+        return object;
+    }
+
     @Override
     public void onOpen(ServerHandshake serverHandshake) {
         log.info("[Websocket] WebsocketConnection opened!");
@@ -69,22 +86,5 @@ public class WebsocketConnection extends WebSocketClient {
         }
 
         this.send(parseMessage("authorization", new JSONObject().put("token", token)).toString());
-    }
-
-    public static JSONObject parseStats(int playing, int guilds, int users) {
-        JSONObject object = new JSONObject();
-        object.put("playing", playing);
-        object.put("guilds", guilds);
-        object.put("users", users);
-
-        return object;
-    }
-
-    public static JSONObject parseMessage(String type, JSONObject data) {
-        JSONObject object = new JSONObject();
-        object.put("type", type);
-        object.put("data", data);
-
-        return object;
     }
 }
