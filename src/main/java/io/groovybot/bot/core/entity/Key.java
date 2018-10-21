@@ -32,7 +32,8 @@ public class Key {
     public void redeem(User user) throws Exception {
         switch (type) {
             case BETA:
-                try (Connection connection = dataSource.getConnection()) {
+                try {
+                    Connection connection = dataSource.getConnection();
                     PreparedStatement ps = connection.prepareStatement("INSERT INTO beta (user_id) VALUES (?)");
                     ps.setLong(1, user.getIdLong());
                     ps.execute();

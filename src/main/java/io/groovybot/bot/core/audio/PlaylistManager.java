@@ -26,7 +26,8 @@ public class PlaylistManager {
 
     public Map<String, Playlist> getPlaylist(Long ownerId) {
         Map<String, Playlist> out = new HashMap<>();
-        try (Connection connection = dataSource.getConnection()) {
+        try {
+            Connection connection = dataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM playlists WHERE owner_id = ?");
             ps.setLong(1, ownerId);
             ResultSet rs = ps.executeQuery();
