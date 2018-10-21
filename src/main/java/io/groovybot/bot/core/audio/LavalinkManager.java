@@ -13,6 +13,7 @@ import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
 import java.net.URI;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,8 +43,8 @@ public class LavalinkManager {
                 groovyBot.getShardManager().getShardsTotal(),
                 groovyBot.getShardManager()::getShardById
         );
-        try {
-            PreparedStatement ps = groovyBot.getPostgreSQL().getConnection().prepareStatement("SELECT * FROM lavalink_nodes");
+        try (Connection connection = groovyBot.getPostgreSQL().getDataSource().getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM lavalink_nodes");
             ResultSet rs = ps.executeQuery();
             while (rs.next())
                 lavalink.addNode(URI.create(rs.getString("uri")), rs.getString("password"));

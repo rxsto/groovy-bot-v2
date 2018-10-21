@@ -74,6 +74,6 @@ public class DatabaseGenerator {
                 "  tracks   varchar,\n" +
                 "  name     varchar\n" +
                 ");\n");
-        postgreSQL.createDatabases();
+        //postgreSQL.createDatabases();
     }
 }

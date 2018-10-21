@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,8 +41,8 @@ public class Playlist {
         this.name = name;
         this.ownerId = ownerId;
         this.songs = songs;
-        try {
-            PreparedStatement ps = GroovyBot.getInstance().getPostgreSQL().getConnection().prepareStatement(
+        try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
+            PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO playlists (owner_id, tracks, name) VALUES (?, ?, ?)");
             ps.setLong(1, ownerId);
             ps.setString(2, convertTracks().toString());
@@ -65,8 +66,8 @@ public class Playlist {
     }
 
     private void update() {
-        try {
-            PreparedStatement ps = GroovyBot.getInstance().getPostgreSQL().getConnection().prepareStatement(
+        try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
+            PreparedStatement ps = connection.prepareStatement(
                     "UPDATE playlists SET tracks = ? WHERE id = ?"
             );
             ps.setString(1, convertTracks().toString());

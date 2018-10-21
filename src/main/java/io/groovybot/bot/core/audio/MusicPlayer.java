@@ -136,13 +136,15 @@ public class MusicPlayer extends Player {
 
         if ((keyword.startsWith("http://") || keyword.startsWith("https://")) && keyword.contains("spotify")) {
             Track track = event.getBot().getSpotifyManager().getTrack(keyword);
-            SafeMessage.sendMessageBlocking(
-                    event.getChannel(),
-                    EmbedUtil.info("Spotify Search Query", track.getArtists()[0].getName() + " - " + track.getName())
-            );
-            keyword = "ytsearch: " + track.getArtists()[0].getName() + " - " + track.getName();
-            log.info(keyword);
-            isUrl = false;
+            if (track != null) {
+                SafeMessage.sendMessageBlocking(
+                        event.getChannel(),
+                        EmbedUtil.info("Spotify Search Query", track.getArtists()[0].getName() + " - " + track.getName())
+                );
+                keyword = "ytsearch: " + track.getArtists()[0].getName() + " - " + track.getName();
+                log.info(keyword);
+                isUrl = false;
+            }
         }
 
         Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), event.getArguments())));
@@ -225,7 +227,7 @@ public class MusicPlayer extends Player {
     }
 
     public void update() throws SQLException, IOException {
-        try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getConnection()) {
+        try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO queues (guild_id, current_track, current_position, queue, channel_id, text_channel_id, volume) VALUES (?,?,?,?,?,?,?)");
             ps.setLong(1, guild.getIdLong());
             ps.setString(2, LavalinkUtil.toMessage(player.getPlayingTrack()));
