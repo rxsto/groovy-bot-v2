@@ -21,7 +21,8 @@ public class WebsocketConnection extends WebSocketClient {
     private HikariDataSource dataSource;
 
     public WebsocketConnection() throws URISyntaxException {
-        super(new URI("ws://91.200.102.167:6015"));
+        super(new URI(String.format("%s:%s", GroovyBot.getInstance().getConfig().getJSONObject("websocket").getString("host"), GroovyBot.getInstance().getConfig().getJSONObject("websocket").getInt("port"))));
+        log.info("[Websocket] Connecting to websocket");
         this.connect();
         this.dataSource = GroovyBot.getInstance().getPostgreSQL().getDataSource();
     }

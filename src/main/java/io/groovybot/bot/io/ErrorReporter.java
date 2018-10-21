@@ -48,6 +48,8 @@ public class ErrorReporter extends AbstractAppender {
     private String formatStacktrace(Throwable throwable) {
         StringBuilder out = new StringBuilder();
         for (int i = 0; i < 10; i++) {
+            if (i > throwable.getStackTrace().length)
+                break;
             out.append(throwable.getStackTrace()[i]).append("\n");
         }
         return out.toString();

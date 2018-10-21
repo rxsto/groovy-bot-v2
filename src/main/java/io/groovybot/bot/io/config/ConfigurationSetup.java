@@ -20,7 +20,6 @@ public class ConfigurationSetup {
         final JSONObject wsObject = new JSONObject();
         wsObject.put("host", "defaultvalue");
         wsObject.put("port", "defaultvalue");
-        wsObject.put("token", "defaultvalue");
         configuration.addDefault("websocket", wsObject);
         final JSONArray gamesArray = new JSONArray();
         gamesArray.put("gamename");
