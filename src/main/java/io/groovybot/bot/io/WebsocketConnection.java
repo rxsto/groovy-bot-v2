@@ -2,6 +2,7 @@ package io.groovybot.bot.io;
 
 import com.zaxxer.hikari.HikariDataSource;
 import io.groovybot.bot.GroovyBot;
+import io.groovybot.bot.io.config.Configuration;
 import lombok.extern.log4j.Log4j2;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -21,7 +22,8 @@ public class WebsocketConnection extends WebSocketClient {
     private HikariDataSource dataSource;
 
     public WebsocketConnection() throws URISyntaxException {
-        super(new URI("ws://127.0.0.1:6015"));
+        super(new URI(String.format("%s:%s", GroovyBot.getInstance().getConfig().getJSONObject("websocket").getString("host"), GroovyBot.getInstance().getConfig().getJSONObject("websocket").getInt("port"))));
+        log.info("[Websocket] Connecting to websocket");
         this.connect();
         this.dataSource = GroovyBot.getInstance().getPostgreSQL().getDataSource();
     }

@@ -1,7 +1,7 @@
 version: '3'
 services:
     lavalink:
-      image: fredboat/lavalink:feature_close-events-
+      image: fredboat/lavalink:master-
       ports:
         - "8099:2333"
       restart: always
@@ -20,7 +20,7 @@ services:
         - "$PWD:/opt/groovy/"
       command: ["./wait-for-lavalink.sh", "java", "-jar", "groovybot.jar", "debug"]
     websocket:
-      build: .
+      build: ./websocket
       networks:
         - backend
       volumes:
