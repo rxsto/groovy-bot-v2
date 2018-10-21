@@ -104,7 +104,6 @@ public class GroovyBot {
         initLogger(args);
         debugMode = String.join(" ", args).contains("debug");
         enableWebsocket = !String.join(" ", args).contains("--no-websocket");
-        log.info("Websocket" + enableWebsocket);
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
         log.info("Starting Groovy ...");
         new FileManager();

@@ -32,14 +32,14 @@ public class PostgreSQL implements Closeable {
         } catch (ClassNotFoundException e) {
             log.error("[Database] Error while connecting to database!", e);
         }
-        hikariConfig.setJdbcUrl(String.format("jdbc:postgresql://%s:%d/%s", configuration.getString("host"), configuration.getInt("port"), configuration.getString("database")));
+        hikariConfig.setJdbcUrl(String.format("jdbc:postgresql://%s:%d/%s?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false", configuration.getString("host"), configuration.getInt("port"), configuration.getString("database")));
         hikariConfig.setUsername(configuration.getString("username"));
         hikariConfig.setPassword(configuration.getString("password"));
         hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
         hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
         hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        hikariConfig.addDataSourceProperty("serverTimezone", "Europe/Berlin");
-        hikariConfig.addDataSourceProperty("useSSL", "false");
+        hikariConfig.setMinimumIdle(15);
+
 
         try {
             dataSource = new HikariDataSource(hikariConfig);
