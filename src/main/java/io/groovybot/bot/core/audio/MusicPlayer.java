@@ -225,7 +225,7 @@ public class MusicPlayer extends Player {
     }
 
     public void update() throws SQLException, IOException {
-        try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getConnection()) {
+        try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO queues (guild_id, current_track, current_position, queue, channel_id, text_channel_id, volume) VALUES (?,?,?,?,?,?,?)");
             ps.setLong(1, guild.getIdLong());
             ps.setString(2, LavalinkUtil.toMessage(player.getPlayingTrack()));
