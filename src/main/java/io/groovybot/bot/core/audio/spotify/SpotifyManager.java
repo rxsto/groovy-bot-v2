@@ -19,11 +19,12 @@ import java.util.regex.Pattern;
 @Log4j2
 public class SpotifyManager {
 
-    private static final Pattern PLAYLIST_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/user/(.*)/playlist/([^?/\\s]*)");
-    private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/track/([^?/\\s]*)");
     private final OkHttpClient httpClient;
     @Getter
     private final SpotifyApi spotifyApi;
+
+    private static final Pattern PLAYLIST_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/user/(.*)/playlist/([^?/\\s]*)");
+    private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/track/([^?/\\s]*)");
 
     public SpotifyManager(String clientId, String clientToken) {
         this.httpClient = new OkHttpClient.Builder().build();

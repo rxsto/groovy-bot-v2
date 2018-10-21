@@ -58,7 +58,7 @@ public class GuildLogger {
             sortedChannels.put(textChannel.getName(), textChannel);
         }
 
-        sortedChannels.forEach((name, channel) -> {
+        sortedChannels.forEach( (name, channel) -> {
             if (name.contains("music"))
                 preferredChannels.add(channel);
             if (name.contains("bot"))

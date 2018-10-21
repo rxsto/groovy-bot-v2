@@ -6,6 +6,8 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.wrapper.spotify.model_objects.special.SearchResult;
+import com.wrapper.spotify.model_objects.specification.Paging;
 import com.wrapper.spotify.model_objects.specification.Track;
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.CommandEvent;
@@ -39,10 +41,10 @@ public class MusicPlayer extends Player {
     @Getter
     private final Guild guild;
     @Getter
-    private final AudioPlayerManager audioPlayerManager;
-    @Getter
     @Setter
     private TextChannel channel;
+    @Getter
+    private final AudioPlayerManager audioPlayerManager;
     @Getter
     @Setter
     private AudioTrack previousTrack;

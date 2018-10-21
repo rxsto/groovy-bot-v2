@@ -66,8 +66,7 @@ public class PostgreSQL implements Closeable {
     }
 
     @Override
-    public void close() {
-        System.out.println("CLOSE");
+    public void close() throws IOException {
         dataSource.close();
     }
 
