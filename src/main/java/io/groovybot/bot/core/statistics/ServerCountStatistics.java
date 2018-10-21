@@ -31,7 +31,7 @@ public class ServerCountStatistics extends StatsPoster {
 
     public synchronized void start() {
         this.botId = groovyBot.getShardManager().getApplicationInfo().complete().getId();
-        scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.MINUTES);
+        //scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.MINUTES);
     }
 
     @Override
