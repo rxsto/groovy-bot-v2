@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.json.JSONObject;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -66,6 +67,7 @@ public class PostgreSQL implements Closeable {
 
     @Override
     public void close() {
+        System.out.println("CLOSE");
         dataSource.close();
     }
 

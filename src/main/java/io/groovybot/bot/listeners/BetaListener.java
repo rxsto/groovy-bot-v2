@@ -16,8 +16,7 @@ public class BetaListener {
     @SuppressWarnings("unused")
     private void onGuildJoin(GuildJoinEvent event) {
         final GroovyBot instance = GroovyBot.getInstance();
-        try {
-            Connection connection = instance.getPostgreSQL().getConnection();
+        try (Connection connection = instance.getPostgreSQL().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM beta WHERE user_id = ?");
             ps.setLong(1, event.getGuild().getOwnerIdLong());
             if (!ps.executeQuery().next() && instance.isDebugMode())

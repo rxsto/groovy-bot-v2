@@ -28,8 +28,7 @@ public class WebsiteStats implements Runnable {
 
     @Override
     public void run() {
-        try {
-            Connection connection = dataSource.getConnection();
+        try (Connection connection = dataSource.getConnection()) {
             connection.prepareStatement("DELETE FROM stats").execute();
             PreparedStatement ps = connection.prepareStatement("INSERT INTO stats (playing, servers, users, id) VALUES (?, ?, ?, ?)");
             ps.setInt(1, groovyBot.getMusicPlayerManager().getPlayingServers());
