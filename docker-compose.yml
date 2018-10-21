@@ -13,11 +13,19 @@ services:
       build: .
       depends_on:
         - "lavalink"
+        - "websocket"
       networks:
         - backend
       volumes:
         - "$PWD:/opt/groovy/"
       command: ["./wait-for-lavalink.sh", "java", "-jar", "groovybot.jar", "debug"]
+    websocket:
+      build: .
+      networks:
+        - backend
+      volumes:
+      - "$PWD:/opt/groovy/websocket"
+
 networks:
     backend:
 
