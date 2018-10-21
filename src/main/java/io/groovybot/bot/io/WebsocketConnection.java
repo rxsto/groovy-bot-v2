@@ -34,8 +34,9 @@ public class WebsocketConnection extends WebSocketClient {
         return object;
     }
 
-    public static JSONObject parseMessage(String type, JSONObject data) {
+    public static JSONObject parseMessage(String client, String type, JSONObject data) {
         JSONObject object = new JSONObject();
+        object.put("client", client);
         object.put("type", type);
         object.put("data", data);
 
@@ -46,6 +47,7 @@ public class WebsocketConnection extends WebSocketClient {
     public void onOpen(ServerHandshake serverHandshake) {
         log.info("[Websocket] WebsocketConnection opened!");
         authorize();
+        GroovyBot.getInstance().getWebsocket().send(WebsocketConnection.parseMessage("bot","poststats", WebsocketConnection.parseStats(GroovyBot.getInstance().getLavalinkManager().countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
     }
 
     @Override
@@ -59,7 +61,7 @@ public class WebsocketConnection extends WebSocketClient {
             authorize();
 
         if (object.get("type").equals("botgetstats"))
-            this.send(parseMessage("poststats", parseStats(GroovyBot.getInstance().getLavalinkManager().countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
+            this.send(parseMessage("bot","poststats", parseStats(GroovyBot.getInstance().getLavalinkManager().countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
     }
 
     @Override
@@ -85,6 +87,6 @@ public class WebsocketConnection extends WebSocketClient {
             log.error("[Websocket] Error while authorizing!", e);
         }
 
-        this.send(parseMessage("authorization", new JSONObject().put("token", token)).toString());
+        this.send(parseMessage("bot","authorization", new JSONObject().put("token", token)).toString());
     }
 }
