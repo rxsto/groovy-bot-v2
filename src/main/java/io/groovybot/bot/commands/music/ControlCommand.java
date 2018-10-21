@@ -6,6 +6,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.audio.Scheduler;
+import io.groovybot.bot.core.command.Command;
 import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;

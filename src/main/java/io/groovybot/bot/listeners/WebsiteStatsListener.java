@@ -52,14 +52,13 @@ public class WebsiteStatsListener implements Runnable {
     }
 
     private void sendHeartBeat() {
-        GroovyBot.getInstance().getWebsocket().send(WebsocketConnection.parseMessage("bot","heartbeat", new JSONObject().put("state", "alive")).toString());
-        log.debug("[Websocket] Sending Heartbeat to Server!");
+        GroovyBot.getInstance().getWebsocket().send(WebsocketConnection.parseMessage("heartbeat", new JSONObject().put("state", "alive")).toString());
     }
 
     private void updateStats() {
-        if (GroovyBot.getInstance().getWebsocket().isClosed() || !GroovyBot.getInstance().getWebsocket().isOpen())
+        if (GroovyBot.getInstance().getWebsocket().isClosed())
             return;
-        log.debug("[Websocket] Updating stats!");
-        GroovyBot.getInstance().getWebsocket().send(WebsocketConnection.parseMessage("bot","poststats", WebsocketConnection.parseStats(GroovyBot.getInstance().getLavalinkManager().countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
+        log.debug("[Websocket] Sending Heartbeat to Server!");
+        GroovyBot.getInstance().getWebsocket().send(WebsocketConnection.parseMessage("poststats", WebsocketConnection.parseStats(GroovyBot.getInstance().getLavalinkManager().countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
     }
 }
