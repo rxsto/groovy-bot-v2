@@ -2,7 +2,6 @@ package io.groovybot.bot.io;
 
 import com.zaxxer.hikari.HikariDataSource;
 import io.groovybot.bot.GroovyBot;
-import io.groovybot.bot.io.config.Configuration;
 import lombok.extern.log4j.Log4j2;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
