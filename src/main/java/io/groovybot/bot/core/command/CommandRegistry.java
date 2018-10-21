@@ -61,7 +61,8 @@ public class CommandRegistry {
                 new CloseCommand(),
                 new EvalCommand(),
                 new LyricsCommand(),
-                new SwitchCommand()
+                new SwitchCommand(),
+                new PartnerCommand()
         );
     }
 }
