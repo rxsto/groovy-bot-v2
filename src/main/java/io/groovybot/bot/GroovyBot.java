@@ -39,6 +39,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -117,13 +118,13 @@ public class GroovyBot {
         new DatabaseGenerator(postgreSQL);
         commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") : config.getJSONObject("settings").getString("prefix"), this);
         serverCountStatistics = new ServerCountStatistics(config.getJSONObject("botlists"));
-        keyManager = new KeyManager(postgreSQL.getConnection());
+        keyManager = new KeyManager(postgreSQL.getDataSource());
         interactionManager = new InteractionManager();
         eventWaiter = new EventWaiter();
         initShardManager();
         musicPlayerManager = new MusicPlayerManager();
         translationManager = new TranslationManager();
-        playlistManager = new PlaylistManager(postgreSQL.getConnection());
+        playlistManager = new PlaylistManager(postgreSQL.getDataSource());
         youtubeClient = YoutubeUtil.create(this);
         geniusClient = new GeniusClient(config.getJSONObject("genius").getString("token"));
         new CommandRegistry(commandManager);
@@ -188,6 +189,12 @@ public class GroovyBot {
 
     private void initLogger(String[] args) {
         Configurator.setRootLevel(args.length == 0 ? Level.INFO : Level.toLevel(args[0], Level.INFO));
+        try {
+            Configurator.initialize(ClassLoader.getSystemClassLoader(), new ConfigurationSource(ClassLoader.getSystemResourceAsStream("log4j2.xml")));
+        } catch (IOException e) {
+            System.err.println("Error while initializing logger");
+            close();
+        }
     }
 
     @SubscribeEvent

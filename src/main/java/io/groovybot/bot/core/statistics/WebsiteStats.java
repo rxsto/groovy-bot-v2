@@ -1,5 +1,6 @@
 package io.groovybot.bot.core.statistics;
 
+import com.zaxxer.hikari.HikariDataSource;
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.util.NameThreadFactory;
 import lombok.extern.log4j.Log4j2;
@@ -15,19 +16,19 @@ import java.util.concurrent.TimeUnit;
 @Deprecated
 public class WebsiteStats implements Runnable {
 
-    private final Connection connection;
+    private final HikariDataSource dataSource;
     private final GroovyBot groovyBot;
 
     public WebsiteStats(GroovyBot groovyBot) {
         this.groovyBot = groovyBot;
-        this.connection = groovyBot.getPostgreSQL().getConnection();
-        //ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("WebsiteStats"));
-        //scheduler.scheduleAtFixedRate(this, 0, 20, TimeUnit.SECONDS);
+        this.dataSource = groovyBot.getPostgreSQL().getDataSource();
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("WebsiteStats"));
+        scheduler.scheduleAtFixedRate(this, 0, 20, TimeUnit.SECONDS);
     }
 
     @Override
     public void run() {
-        try {
+        try (Connection connection = dataSource.getConnection()) {
             connection.prepareStatement("DELETE FROM stats").execute();
             PreparedStatement ps = connection.prepareStatement("INSERT INTO stats (playing, servers, users, id) VALUES (?, ?, ?, ?)");
             ps.setInt(1, groovyBot.getMusicPlayerManager().getPlayingServers());
