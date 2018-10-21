@@ -78,7 +78,8 @@ public class WebsocketConnection extends WebSocketClient {
     public void authorize() {
         String token = null;
 
-        try (Connection connection = dataSource.getConnection()){
+        try {
+            Connection connection = dataSource.getConnection();
             PreparedStatement getToken = connection.prepareStatement("SELECT * FROM websocket");
             ResultSet rs = getToken.executeQuery();
             while (rs.next()) {
