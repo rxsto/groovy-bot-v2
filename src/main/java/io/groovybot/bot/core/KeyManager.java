@@ -40,8 +40,7 @@ public class KeyManager {
 
     public UUID generateKey(Key.KeyType type) {
         Key key = new Key(type);
-        try {
-            Connection connection = dataSource.getConnection();
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO \"keys\" (type, \"key\") VALUES (?,?)");
             ps.setString(1, type.toString());
             ps.setString(2, key.getKey().toString());
@@ -53,8 +52,7 @@ public class KeyManager {
     }
 
     private PreparedStatement getKeyStatement(String key) {
-        try {
-            Connection connection = dataSource.getConnection();
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM \"keys\" WHERE \"key\" = ?");
             ps.setString(1, key);
             return ps;
