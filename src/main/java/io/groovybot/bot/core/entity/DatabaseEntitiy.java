@@ -20,6 +20,4 @@ public abstract class DatabaseEntitiy {
     protected Connection getConnection() throws SQLException {
         return GroovyBot.getInstance().getPostgreSQL().getConnection();
     }
-
-
 }
