@@ -18,6 +18,6 @@ public abstract class DatabaseEntitiy {
     public abstract void updateInDatabase() throws Exception;
 
     protected Connection getConnection() throws SQLException {
-        return GroovyBot.getInstance().getPostgreSQL().getConnection();
+        return GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection();
     }
 }

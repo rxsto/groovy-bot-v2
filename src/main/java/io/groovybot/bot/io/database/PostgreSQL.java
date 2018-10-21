@@ -39,8 +39,6 @@ public class PostgreSQL implements Closeable {
         hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
         hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         hikariConfig.setMinimumIdle(15);
-
-
         try {
             dataSource = new HikariDataSource(hikariConfig);
         } catch (HikariPool.PoolInitializationException e) {
@@ -53,8 +51,8 @@ public class PostgreSQL implements Closeable {
 
     public void createDatabases() {
         defaults.forEach(postgreSQLDatabase -> {
-            try {
-                getConnection().prepareStatement(postgreSQLDatabase.getCreateStatement()).execute();
+            try (Connection connection = dataSource.getConnection()){
+                connection.prepareStatement(postgreSQLDatabase.getCreateStatement()).execute();
             } catch (SQLException e) {
                 log.error("[Database] Error while creating databases!", e);
             }
@@ -70,9 +68,6 @@ public class PostgreSQL implements Closeable {
         dataSource.close();
     }
 
-    public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
-    }
 
     public interface PostgreSQLDatabase {
 

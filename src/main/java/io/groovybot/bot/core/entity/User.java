@@ -4,6 +4,7 @@ import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.permission.UserPermissions;
 import lombok.Getter;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Locale;
@@ -18,31 +19,35 @@ public class User extends DatabaseEntitiy {
 
     public User(Long entityId) throws Exception {
         super(entityId);
-        PreparedStatement userStatement = getConnection().prepareStatement("SELECT * FROM users WHERE id = ?");
-        userStatement.setLong(1, entityId);
-        ResultSet userResult = userStatement.executeQuery();
-        if (userResult.next())
-            locale = Locale.forLanguageTag(userResult.getString("locale").replace("_", "-"));
-        else {
-            PreparedStatement insertStatement = getConnection().prepareStatement("INSERT INTO users (id, locale) VALUES (?, ?)");
-            insertStatement.setLong(1, entityId);
-            insertStatement.setString(2, locale.toLanguageTag().replace("-", "_"));
-            insertStatement.execute();
+        try (Connection connection = getConnection()) {
+            PreparedStatement userStatement = connection.prepareStatement("SELECT * FROM users WHERE id = ?");
+            userStatement.setLong(1, entityId);
+            ResultSet userResult = userStatement.executeQuery();
+            if (userResult.next())
+                locale = Locale.forLanguageTag(userResult.getString("locale").replace("_", "-"));
+            else {
+                PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO users (id, locale) VALUES (?, ?)");
+                insertStatement.setLong(1, entityId);
+                insertStatement.setString(2, locale.toLanguageTag().replace("-", "_"));
+                insertStatement.execute();
+            }
         }
     }
 
     @Override
     public void updateInDatabase() throws Exception {
-        PreparedStatement ps = getConnection().prepareStatement("UPDATE users SET locale = ? WHERE id = ?");
-        ps.setString(1, locale.toLanguageTag().replace("-", "_"));
-        ps.setLong(2, entityId);
-        ps.execute();
-        PreparedStatement ps2 = getConnection().prepareStatement("INSERT INTO premium (user_id, type, \"check\")" +
-                "VALUES (?, ?, FALSE)");
-        ps2.setLong(1, entityId);
-        ps2.setLong(2, tierTwo ? 2 : tierOne ? 1 : 0);
-        if (tierTwo || tierOne)
-            ps2.execute();
+        try (Connection connection = getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("UPDATE users SET locale = ? WHERE id = ?");
+            ps.setString(1, locale.toLanguageTag().replace("-", "_"));
+            ps.setLong(2, entityId);
+            ps.execute();
+            PreparedStatement ps2 = connection.prepareStatement("INSERT INTO premium (user_id, type, \"check\")" +
+                    "VALUES (?, ?, FALSE)");
+            ps2.setLong(1, entityId);
+            ps2.setLong(2, tierTwo ? 2 : tierOne ? 1 : 0);
+            if (tierTwo || tierOne)
+                ps2.execute();
+        }
     }
 
     public void setLocale(Locale locale) {

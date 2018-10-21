@@ -42,7 +42,6 @@ public class SpotifyManager {
         try (Response response = httpClient.newCall(requestBuilder.build()).execute()) {
             if (response.body() != null) {
                 JSONObject jsonObject = new JSONObject(response.body().string());
-                log.info(jsonObject.toString());
                 if (jsonObject.has("access_token"))
                     return jsonObject.getString("access_token");
             }

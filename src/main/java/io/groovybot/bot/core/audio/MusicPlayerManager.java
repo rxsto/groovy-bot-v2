@@ -44,28 +44,29 @@ public class MusicPlayerManager {
     }
 
     public void initPlayers() throws SQLException, IOException {
-        Connection connection = GroovyBot.getInstance().getPostgreSQL().getConnection();
+        try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
 
-        PreparedStatement ps = connection.prepareStatement("SELECT * FROM queues");
-        ResultSet rs = ps.executeQuery();
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM queues");
+            ResultSet rs = ps.executeQuery();
 
-        while (rs.next()) {
-            Guild guild = GroovyBot.getInstance().getShardManager().getGuildById(rs.getLong("guild_id"));
-            TextChannel textChannel = guild.getTextChannelById(rs.getLong("text_channel_id"));
-            VoiceChannel voiceChannel = guild.getVoiceChannelById(rs.getLong("channel_id"));
+            while (rs.next()) {
+                Guild guild = GroovyBot.getInstance().getShardManager().getGuildById(rs.getLong("guild_id"));
+                TextChannel textChannel = guild.getTextChannelById(rs.getLong("text_channel_id"));
+                VoiceChannel voiceChannel = guild.getVoiceChannelById(rs.getLong("channel_id"));
 
-            MusicPlayer player = getPlayer(guild, textChannel);
+                MusicPlayer player = getPlayer(guild, textChannel);
 
-            player.connect(voiceChannel);
-            player.setVolume(rs.getInt("volume"));
-            player.play(LavalinkUtil.toAudioTrack(rs.getString("current_track")));
-            player.seekTo(rs.getLong("current_position"));
-            for (Object track : new JSONArray(rs.getString("queue"))) {
-                player.queueTrack(LavalinkUtil.toAudioTrack(track.toString()), false, false);
+                player.connect(voiceChannel);
+                player.setVolume(rs.getInt("volume"));
+                player.play(LavalinkUtil.toAudioTrack(rs.getString("current_track")));
+                player.seekTo(rs.getLong("current_position"));
+                for (Object track : new JSONArray(rs.getString("queue"))) {
+                    player.queueTrack(LavalinkUtil.toAudioTrack(track.toString()), false, false);
+                }
             }
-        }
 
-        PreparedStatement delPs = connection.prepareStatement("DELETE FROM queues");
-        delPs.execute();
+            PreparedStatement delPs = connection.prepareStatement("DELETE FROM queues");
+            delPs.execute();
+        }
     }
 }
