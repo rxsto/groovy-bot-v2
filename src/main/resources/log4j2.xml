@@ -9,7 +9,7 @@
             <PatternLayout pattern="[%-5level] (%d{HH:mm:ss}) [%t] %logger{36} | %msg%n" />
             <JDAFilter />
         </File>
-        <RollingFile name="Log" fileName="groovy.log" filePattern="log/groovy-%d{MM-dd-yy}.log.gz">
+        <RollingFile name="Log" fileName="logs/groovy-%d{MM-dd-yy}.log" filePattern="log/groovy-%d{MM-dd-yy}.log.gz">
             <PatternLayout pattern="[%-5level] (%d{HH:mm:ss}) [%t] %logger{36} | %msg%n" />
             <Policies>
                 <TimeBasedTriggeringPolicy/>
