@@ -19,6 +19,7 @@
         <Async name="Async">
             <AppenderRef ref="Log"/>
             <AppenderRef ref="LatestLog"/>
+            <AppenderRef ref="WebhookAppender" />
         </Async>
         <WebhookAppender name="WebhookAppender" >
             <JDAFilter />
@@ -28,7 +29,6 @@
         <Root>
             <AppenderRef ref="Console"/>
             <AppenderRef ref="Async" />
-            <AppenderRef ref="WebhookAppender" />
         </Root>
     </Loggers>
 </Configuration>
