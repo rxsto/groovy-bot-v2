@@ -41,7 +41,6 @@ import okhttp3.Response;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
@@ -81,6 +80,8 @@ public class GroovyBot {
     @Getter
     private final SpotifyManager spotifyManager;
     @Getter
+    private final boolean enableWebsocket;
+    @Getter
     private Configuration config;
     @Getter
     private PostgreSQL postgreSQL;
@@ -98,8 +99,6 @@ public class GroovyBot {
     private PlaylistManager playlistManager;
     @Getter
     private boolean allShardsInitialized = false;
-    @Getter
-    private final boolean enableWebsocket;
 
     private GroovyBot(String[] args) {
         instance = this;
