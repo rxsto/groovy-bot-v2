@@ -136,13 +136,15 @@ public class MusicPlayer extends Player {
 
         if ((keyword.startsWith("http://") || keyword.startsWith("https://")) && keyword.contains("spotify")) {
             Track track = event.getBot().getSpotifyManager().getTrack(keyword);
-            SafeMessage.sendMessageBlocking(
-                    event.getChannel(),
-                    EmbedUtil.info("Spotify Search Query", track.getArtists()[0].getName() + " - " + track.getName())
-            );
-            keyword = "ytsearch: " + track.getArtists()[0].getName() + " - " + track.getName();
-            log.info(keyword);
-            isUrl = false;
+            if (track != null) {
+                SafeMessage.sendMessageBlocking(
+                        event.getChannel(),
+                        EmbedUtil.info("Spotify Search Query", track.getArtists()[0].getName() + " - " + track.getName())
+                );
+                keyword = "ytsearch: " + track.getArtists()[0].getName() + " - " + track.getName();
+                log.info(keyword);
+                isUrl = false;
+            }
         }
 
         Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), event.getArguments())));
