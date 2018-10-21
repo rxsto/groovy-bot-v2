@@ -12,6 +12,11 @@ import org.apache.logging.log4j.core.filter.AbstractFilter;
 @SuppressWarnings("unused")
 public class JDAFilter extends AbstractFilter {
 
+    @PluginFactory
+    public static JDAFilter createFilter() {
+        return new JDAFilter();
+    }
+
     @Override
     public Result filter(LogEvent event) {
         return decide(event);
@@ -23,10 +28,5 @@ public class JDAFilter extends AbstractFilter {
         if (event.getThrown() != null && event.getThrown() instanceof ErrorResponseException)
             return Result.DENY;
         return Result.ACCEPT;
-    }
-
-    @PluginFactory
-    public static JDAFilter createFilter() {
-        return new JDAFilter();
     }
 }
