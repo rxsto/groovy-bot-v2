@@ -26,6 +26,10 @@ public class ErrorReporter extends AbstractAppender {
         super(name, filter, layout);
     }
 
+    @PluginFactory
+    public static ErrorReporter createAppender(@PluginAttribute("name") String name, @PluginElement("Filter") Filter filter) {
+        return new ErrorReporter(name, filter, null);
+    }
 
     private WebhookMessage buildErrorLog(LogEvent event) {
         WebhookMessageBuilder out = new WebhookMessageBuilder();
@@ -61,10 +65,5 @@ public class ErrorReporter extends AbstractAppender {
             return;
         if (event.getThrown() != null)
             errorHook.send(buildErrorLog(event));
-    }
-
-    @PluginFactory
-    public static ErrorReporter createAppender(@PluginAttribute("name") String name, @PluginElement("Filter") Filter filter) {
-        return new ErrorReporter(name, filter, null);
     }
 }
