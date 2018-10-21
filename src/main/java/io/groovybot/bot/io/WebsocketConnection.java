@@ -1,5 +1,6 @@
 package io.groovybot.bot.io;
 
+import com.zaxxer.hikari.HikariDataSource;
 import io.groovybot.bot.GroovyBot;
 import lombok.extern.log4j.Log4j2;
 import org.java_websocket.client.WebSocketClient;
@@ -17,12 +18,12 @@ import java.sql.SQLException;
 @Log4j2
 public class WebsocketConnection extends WebSocketClient {
 
-    private Connection connection;
+    private HikariDataSource dataSource;
 
     public WebsocketConnection() throws URISyntaxException {
         super(new URI("ws://127.0.0.1:6015"));
         this.connect();
-        this.connection = GroovyBot.getInstance().getPostgreSQL().getConnection();
+        this.dataSource = GroovyBot.getInstance().getPostgreSQL().getDataSource();
     }
 
     public static JSONObject parseStats(int playing, int guilds, int users) {
@@ -77,7 +78,7 @@ public class WebsocketConnection extends WebSocketClient {
     public void authorize() {
         String token = null;
 
-        try {
+        try (Connection connection = dataSource.getConnection()){
             PreparedStatement getToken = connection.prepareStatement("SELECT * FROM websocket");
             ResultSet rs = getToken.executeQuery();
             while (rs.next()) {

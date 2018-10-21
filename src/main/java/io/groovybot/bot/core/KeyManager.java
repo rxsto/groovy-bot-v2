@@ -1,5 +1,6 @@
 package io.groovybot.bot.core;
 
+import com.zaxxer.hikari.HikariDataSource;
 import io.groovybot.bot.core.entity.Key;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -15,10 +16,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class KeyManager {
 
-    private final Connection connection;
+    private final HikariDataSource dataSource;
 
     public boolean keyExists(String key) {
-        System.out.println(key);
         try {
             return Objects.requireNonNull(getKeyStatement(key)).executeQuery().next();
         } catch (SQLException e) {
@@ -31,7 +31,7 @@ public class KeyManager {
         try {
             ResultSet rs = Objects.requireNonNull(getKeyStatement(key)).executeQuery();
             if (rs.next())
-                return new Key(Key.KeyType.valueOf(rs.getString("type")), UUID.fromString(rs.getString("key")), connection);
+                return new Key(Key.KeyType.valueOf(rs.getString("type")), UUID.fromString(rs.getString("key")), dataSource);
         } catch (SQLException e) {
             log.error("[KeyManager] Error occurred while retrieving key", e);
         }
@@ -40,7 +40,7 @@ public class KeyManager {
 
     public UUID generateKey(Key.KeyType type) {
         Key key = new Key(type);
-        try {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO \"keys\" (type, \"key\") VALUES (?,?)");
             ps.setString(1, type.toString());
             ps.setString(2, key.getKey().toString());
@@ -52,7 +52,7 @@ public class KeyManager {
     }
 
     private PreparedStatement getKeyStatement(String key) {
-        try {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM \"keys\" WHERE \"key\" = ?");
             ps.setString(1, key);
             return ps;
