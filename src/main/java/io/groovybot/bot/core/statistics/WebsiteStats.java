@@ -21,8 +21,8 @@ public class WebsiteStats implements Runnable {
     public WebsiteStats(GroovyBot groovyBot) {
         this.groovyBot = groovyBot;
         this.connection = groovyBot.getPostgreSQL().getConnection();
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("WebsiteStats"));
-        scheduler.scheduleAtFixedRate(this, 0, 20, TimeUnit.SECONDS);
+        //ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("WebsiteStats"));
+        //scheduler.scheduleAtFixedRate(this, 0, 20, TimeUnit.SECONDS);
     }
 
     @Override

@@ -37,7 +37,7 @@ public class StatsCommand extends Command {
         message.append(String.format(event.translate("command.stats.text.memory") + "\n", humanReadableByteCount(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()), humanReadableByteCount(Runtime.getRuntime().totalMemory())));
 
         builder.setDescription(message);
-
-        return send(builder);
+        sendMessageBlocking(event.getChannel(), builder);
+        return null;
     }
 }
