@@ -9,6 +9,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,8 +39,8 @@ public class UserPermissions {
     }
 
     private int retrievePatreonTier() {
-        try {
-            PreparedStatement ps = GroovyBot.getInstance().getPostgreSQL().getConnection().prepareStatement("SELECT type FROM premium WHERE user_id = ?");
+        try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("SELECT type FROM premium WHERE user_id = ?");
             ps.setLong(1, user.getEntityId());
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {

@@ -1,6 +1,7 @@
 package io.groovybot.bot.core.command;
 
 import io.groovybot.bot.GroovyBot;
+import io.groovybot.bot.core.entity.Guild;
 import io.groovybot.bot.core.events.command.CommandExecutedEvent;
 import io.groovybot.bot.core.events.command.CommandFailEvent;
 import io.groovybot.bot.core.events.command.NoPermissionEvent;
@@ -58,6 +59,8 @@ public class CommandManager {
             if (content.startsWith(mention))
                 prefix = mention;
             else {
+                if (bot.getGuildCache() == null)
+                    return;
                 String customPrefix = bot.getGuildCache().get(event.getGuild().getIdLong()).getPrefix();
                 if (content.startsWith(customPrefix))
                     prefix = customPrefix;
