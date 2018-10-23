@@ -2,6 +2,7 @@ package io.groovybot.bot.io;
 
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.util.EmbedUtil;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.webhook.WebhookClient;
 import net.dv8tion.jda.webhook.WebhookClientBuilder;
 import net.dv8tion.jda.webhook.WebhookMessage;
@@ -33,15 +34,16 @@ public class ErrorReporter extends AbstractAppender {
 
     private WebhookMessage buildErrorLog(LogEvent event) {
         WebhookMessageBuilder out = new WebhookMessageBuilder();
-        out.addEmbeds(
-                EmbedUtil.error("An unknown error occurred", String.format("An unkown error occurred in class %s", event.getLoggerName())
-                )
-                        .addField("Class", "`" + event.getLoggerName() + "`", false)
-                        .addField("Message", "`" + formatException(event.getThrown()) + "`", false)
-                        .addField("Stacktrace", "```" + formatStacktrace(event.getThrown()) + "```", false)
-                        .setTimestamp(Instant.now())
-                        .build()
-        );
+        Throwable throwable = event.getThrown();
+        EmbedBuilder builder =  EmbedUtil.error("An unknown error occurred", String.format("An unkown error occurred in class %s", event.getLoggerName())
+        )
+                .addField("Class", "`" + event.getLoggerName() + "`", false)
+                .addField("Message", "`" + formatException(throwable) + "`", false)
+                .addField("Stacktrace", "```" + formatStacktrace(throwable) + "```", false)
+                .setTimestamp(Instant.now());
+        if (throwable.getCause() != null)
+            builder.addField("Cause", "```" + formatStacktrace(throwable.getCause()) + "```", false);
+        out.addEmbeds(builder.build());
         return out.build();
     }
 
