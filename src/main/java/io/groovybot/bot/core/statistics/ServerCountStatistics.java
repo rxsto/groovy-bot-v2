@@ -24,6 +24,7 @@ public class ServerCountStatistics extends StatsPoster {
     public ServerCountStatistics(JSONObject configuration) {
         super(Executors.newScheduledThreadPool(1, new NameThreadFactory("ServerCount")), new OkHttpClient.Builder()
                         .connectTimeout(3, TimeUnit.MINUTES)
+                        .readTimeout(3, TimeUnit.MINUTES)
                         .writeTimeout(3, TimeUnit.MINUTES)
                         .build()
                 , configuration);
@@ -31,11 +32,12 @@ public class ServerCountStatistics extends StatsPoster {
 
     public synchronized void start() {
         this.botId = groovyBot.getShardManager().getApplicationInfo().complete().getId();
-        //scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.MINUTES);
     }
 
     @Override
     public void run() {
+        log.debug("[StatsPoster] Posting stats");
         JSONObject object = new JSONObject();
         object.put("server_count", String.valueOf(groovyBot.getShardManager().getGuilds().size()))
                 .put("bot_id", botId)
@@ -68,6 +70,7 @@ public class ServerCountStatistics extends StatsPoster {
                 assert response.body() != null;
                 log.warn(String.format("[ServerCount] Error while posting stats! Response: %s", response.body().string()));
             }
+            log.debug(String.format("[StatsPoster] Posted stats. Got response %s", response.body().string()));
         } catch (IOException e) {
             log.error("[ServerCount] Error while posting stats!", e);
         }

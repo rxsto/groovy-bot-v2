@@ -90,6 +90,8 @@ public class SafeMessage extends JDAUtil {
 
 
     private static boolean hasWritePermissions(Channel channel) {
+        if (channel.getGuild() == null)
+            return false;
         return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE);
     }
 

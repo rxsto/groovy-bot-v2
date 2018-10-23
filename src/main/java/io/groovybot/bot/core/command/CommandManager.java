@@ -105,7 +105,7 @@ public class CommandManager {
             //Send typing
             channel.sendTyping().queue();
             //Delete invoke message
-            if (commandEvent.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
+            if (commandEvent.getGuild().getSelfMember().hasPermission(commandEvent.getChannel(), Permission.MESSAGE_MANAGE))
                 commandEvent.getMessage().delete().queue();
             //Run the commands run method
             Result result = command.run(commandEvent.getArgs(), commandEvent);
@@ -118,7 +118,7 @@ public class CommandManager {
     }
 
     /**
-     * Registers  a command handler
+     * Registers a command handler
      *
      * @param commands The command handlers {@link io.groovybot.bot.core.command.Command}
      */
