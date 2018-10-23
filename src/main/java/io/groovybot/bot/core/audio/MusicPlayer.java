@@ -87,7 +87,9 @@ public class MusicPlayer extends Player {
         if (announce)
             SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not **queue** more songs?"));
         if (!this.getGuild().getId().equals("403882830225997825"))
-            link.disconnect();
+            //Prevent NPE
+            if (link != null)
+                link.disconnect();
         stop();
     }
 
@@ -192,12 +194,17 @@ public class MusicPlayer extends Player {
 
             @Override
             public void loadFailed(FriendlyException e) {
-                if (e.getMessage().toLowerCase().contains("Unknown file format")) {
+                final String message = e.getMessage().toLowerCase();
+                if (message.contains("Unknown file format")) {
                     SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unknownformat.tile"), event.translate("phrases.searching.unknownformat.description")));
                     return;
                 }
-                if (e.getMessage().toLowerCase().contains("The playlist is private")) {
+                if (message.contains("The playlist is private")) {
                     SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.private.tile"), event.translate("phrases.searching.private.description")));
+                    return;
+                }
+                if (message.contains("This video is not available") || message.contains("The uploader has not made this video available in your country") || message.contains("This video contains content from UMG, who has blocked it in your country on copyright grounds")) {
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unavailable.tile"), event.translate("phrases.searching.unavailable.description")));
                     return;
                 }
                 SafeMessage.editMessage(infoMessage, EmbedUtil.error(event));

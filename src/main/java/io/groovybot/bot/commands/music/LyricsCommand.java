@@ -11,8 +11,6 @@ import io.groovybot.bot.core.lyrics.GeniusClient;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.io.IOException;
-
 @Log4j2
 public class LyricsCommand extends Command {
 
@@ -38,23 +36,10 @@ public class LyricsCommand extends Command {
             return null;
         }
 
-        editMessage(infoMessage, info(event.translate("command.lyrics.crawling.title"), event.translate("command.lyrics.crawling.description")));
-        String lyrics;
+        editMessage(infoMessage, info(event.translate("command.lyrics.found.title"), String.format(event.translate("command.lyrics.found.description"), lyricsUrl)));
 
-        try {
-            lyrics = geniusClient.findLyrics(lyricsUrl);
-        } catch (IOException e) {
-            editMessage(infoMessage, error(event));
-            log.error("[Genius] An error occurred while crawling lyrics", e);
-            return null;
-        }
-
-        lyrics = lyrics.replaceAll("]", "]**");
-        lyrics = lyrics.replaceAll("\\[", "**[");
-
-        editMessage(infoMessage, success("", String.format(event.translate("command.lyrics.success.description"), lyrics.substring(0, 2040)) + " ...")
-                .setTitle("\uD83D\uDCC4 " + String.format(event.translate("command.lyrics.success.title"), title), lyricsUrl)
-        );
         return null;
     }
+
+
 }
