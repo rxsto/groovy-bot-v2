@@ -43,11 +43,4 @@ public class GeniusClient {
         }
     }
 
-    public String findLyrics(String songPath) throws IOException {
-        Document songPage = Jsoup.connect(songPath).get();
-        songPage.select("br").append("\\n");
-        songPage.select("p").prepend("\\n\\n");
-        Elements lyrics = songPage.select(".lyrics");
-        return Jsoup.clean(lyrics.html(), "", Whitelist.none(), new Document.OutputSettings().prettyPrint(false)).replace("\\n", "\n");
-    }
 }
