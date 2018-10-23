@@ -54,7 +54,6 @@ public class SpotifyManager {
     public Track getTrack(String url) {
         final String trackId = parseTrackPattern(url);
         GetTrackRequest getTrackRequest = this.spotifyApi.getTrack(trackId)
-                .market(CountryCode.DE)
                 .build();
         Track track = null;
         try {
@@ -72,7 +71,6 @@ public class SpotifyManager {
         final String userId = data[0];
         final String playlistId = data[1];
         GetPlaylistRequest getPlaylistRequest = this.spotifyApi.getPlaylist(userId, playlistId)
-                .market(CountryCode.DE)
                 .build();
         Playlist playlist = null;
         try {
