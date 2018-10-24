@@ -40,6 +40,4 @@ public class LyricsCommand extends Command {
 
         return null;
     }
-
-
 }

@@ -46,7 +46,7 @@ public class SearchCommand extends SemiInChannelCommand {
         player.getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                sendMessage(event.getChannel(), EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("commands.search.oneresult.description"), track.getInfo().title)));
+                sendMessage(event.getChannel(), EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("command.search.oneresult.description"), track.getInfo().title)));
                 player.play(track, false);
             }
 
@@ -119,7 +119,7 @@ public class SearchCommand extends SemiInChannelCommand {
             }
             int song = Integer.parseInt(contentRaw);
             if (song > 5 || (song - 1) > searchResults.size()) {
-                sendMessage(event.getChannel(), error(translate(author, "commands.search.invalidnumber.title"), translate(author, "commands.search.invalidnumber.description")), 8);
+                sendMessage(event.getChannel(), error(translate(author, "phrases.invalidnumber.title"), translate(author, "phrases.invalidnumber.description")), 8);
                 unregister();
                 return;
             }

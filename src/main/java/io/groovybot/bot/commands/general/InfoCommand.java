@@ -17,11 +17,12 @@ public class InfoCommand extends Command {
         String prefix = EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix();
         return send(
                 info(event.translate("command.info.title"), String.format(event.translate("command.info.description"), prefix, prefix, prefix))
-                        .addField(event.translate("command.info.developers"), "**Rxsto#4224\nSchlaubi#0001\n'Kuseru × セルゲイ#2251**", false)
-                        .addField(event.translate("command.info.sourcecode"), "[github.com/GroovyDevs](http://github.com/GroovyDevs)", false)
-                        .addField(event.translate("command.info.translate"), "[i18n.groovybot.gq](http://i18n.groovybot.space)", true)
-                        .addField(event.translate("command.info.support"), "[discord.gg/5s5TsW2](https://discord.gg/5s5TsW2)", false)
-                        .addField(event.translate("command.info.invite"), "[groovybot.gq/invite](https://groovybot.gq/invite)", true)
+                        .addField(event.translate("command.info.invite"), "**[groovybot.gq/invite](https://groovybot.gq/invite)**", true)
+                        .addField(event.translate("command.info.support"), "**[discord.gg/5s5TsW2](https://discord.gg/5s5TsW2)**", true)
+                        .addField(event.translate("command.info.donate"), "**[patreon.com/rxsto](https://groovybot.gq/donate)**", true)
+                        .addField(event.translate("command.info.translate"), "**[i18n.groovybot.gq](http://i18n.groovybot.gq)**", true)
+                        .addField(event.translate("command.info.sourcecode"), "**[github.com/GroovyDevs](http://github.com/GroovyDevs)**", true)
+                        .addField(event.translate("command.info.sponsor"), "**[deinserverhost.de](https://deinserverhost.de/aff.php?aff=2892)**", true)
         );
     }
 }
