@@ -51,7 +51,7 @@ public class PostgreSQL implements Closeable {
 
     public void createDatabases() {
         defaults.forEach(postgreSQLDatabase -> {
-            try (Connection connection = dataSource.getConnection()){
+            try (Connection connection = dataSource.getConnection()) {
                 connection.prepareStatement(postgreSQLDatabase.getCreateStatement()).execute();
             } catch (SQLException e) {
                 log.error("[Database] Error while creating databases!", e);

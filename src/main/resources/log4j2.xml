@@ -1,34 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration packages="io.groovybot.bot">
+    <Properties>
+        <property name="fileDate">${date:dd-MM-yyyy}</property>
+    </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%-5level] (%d{HH:mm:ss}) [%t] %logger{36} | %msg%n" />
-            <JDAFilter />
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} » %msg%n"/>
+            <JDAFilter/>
         </Console>
-        <File name="LatestLog" fileName="latest.log" append="false">
-            <PatternLayout pattern="[%-5level] (%d{HH:mm:ss}) [%t] %logger{36} | %msg%n" />
-            <JDAFilter />
+        <File name="LatestLog" fileName="logs/latest.log" append="false">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} » %msg%n"/>
+            <JDAFilter/>
         </File>
-        <RollingFile name="Log" fileName="logs/groovy-%d{MM-dd-yy}.log" filePattern="log/groovy-%d{MM-dd-yy}.log.gz">
-            <PatternLayout pattern="[%-5level] (%d{HH:mm:ss}) [%t] %logger{36} | %msg%n" />
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-            </Policies>
-            <JDAFilter />
-        </RollingFile>
+        <File name="Log">
+            <FileName>logs/bot-${fileDate}.log</FileName>
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <JDAFilter/>
+        </File>
         <Async name="Async">
             <AppenderRef ref="Log"/>
             <AppenderRef ref="LatestLog"/>
-            <AppenderRef ref="WebhookAppender" />
+            <AppenderRef ref="WebhookAppender"/>
         </Async>
-        <WebhookAppender name="WebhookAppender" >
-            <JDAFilter />
+        <WebhookAppender name="WebhookAppender">
+            <JDAFilter/>
         </WebhookAppender>
     </Appenders>
     <Loggers>
         <Root>
             <AppenderRef ref="Console"/>
-            <AppenderRef ref="Async" />
+            <AppenderRef ref="Async"/>
         </Root>
     </Loggers>
 </Configuration>

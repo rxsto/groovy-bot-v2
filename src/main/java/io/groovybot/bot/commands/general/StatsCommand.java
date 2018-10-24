@@ -35,6 +35,7 @@ public class StatsCommand extends Command {
         message.append(String.format(event.translate("command.stats.text.latency") + "\n", event.getJDA().getPing()));
         message.append(String.format(event.translate("command.stats.text.shards") + "\n", event.getJDA().getShardInfo().getShardId() + 1, event.getJDA().getShardInfo().getShardTotal()));
         message.append(String.format(event.translate("command.stats.text.memory") + "\n", humanReadableByteCount(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()), humanReadableByteCount(Runtime.getRuntime().totalMemory())));
+        message.append(String.format(event.translate("command.stats.text.threads") + "\n", Thread.getAllStackTraces().size()));
 
         builder.setDescription(message);
         sendMessageBlocking(event.getChannel(), builder);
