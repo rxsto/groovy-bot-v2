@@ -51,6 +51,8 @@ public class MusicPlayerManager {
 
             while (rs.next()) {
                 Guild guild = GroovyBot.getInstance().getShardManager().getGuildById(rs.getLong("guild_id"));
+                if (guild == null)
+                    continue;
                 TextChannel textChannel = guild.getTextChannelById(rs.getLong("text_channel_id"));
                 VoiceChannel voiceChannel = guild.getVoiceChannelById(rs.getLong("channel_id"));
 

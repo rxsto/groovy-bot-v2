@@ -52,7 +52,11 @@ public class ErrorReporter extends AbstractAppender {
         for (int i = 0; i < 10; i++) {
             if (i > throwable.getStackTrace().length)
                 break;
-            out.append(throwable.getStackTrace()[i]).append("\n");
+            try {
+                out.append(throwable.getStackTrace()[i]).append("\n");
+            } catch (ArrayIndexOutOfBoundsException e) {
+                break;
+            }
         }
         return out.toString();
     }
