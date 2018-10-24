@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class LavalinkManager {
 
     @Getter
-    private JdaLavalink lavalink;
+    private static JdaLavalink lavalink;
     @Getter
     private AudioPlayerManager audioPlayerManager;
     private GroovyBot groovyBot;
@@ -60,7 +60,7 @@ public class LavalinkManager {
             lavalink.onEvent(event);
     }
 
-    public int countPlayers() {
+    public static int countPlayers() {
         if (lavalink == null)
             return 0;
         AtomicInteger playingPlayers = new AtomicInteger();

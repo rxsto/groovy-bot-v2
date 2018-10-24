@@ -103,3 +103,5 @@ buildNumber.properties
 /src/test
 src/main/java/io/groovybot/bot/core/events/guilds/
 src/test/resources/
+
+*.gz
