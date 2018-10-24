@@ -2,6 +2,7 @@ package io.groovybot.bot.io;
 
 import com.zaxxer.hikari.HikariDataSource;
 import io.groovybot.bot.GroovyBot;
+import io.groovybot.bot.core.audio.LavalinkManager;
 import lombok.extern.log4j.Log4j2;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -49,7 +50,7 @@ public class WebsocketConnection extends WebSocketClient {
     public void onOpen(ServerHandshake serverHandshake) {
         log.info("[Websocket] WebsocketConnection opened!");
         authorize();
-        GroovyBot.getInstance().getWebsocket().send(WebsocketConnection.parseMessage("bot", "poststats", WebsocketConnection.parseStats(GroovyBot.getInstance().getLavalinkManager().countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
+        this.send(WebsocketConnection.parseMessage("bot", "poststats", WebsocketConnection.parseStats(LavalinkManager.countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
     }
 
     @Override
@@ -63,12 +64,18 @@ public class WebsocketConnection extends WebSocketClient {
             authorize();
 
         if (object.get("type").equals("botgetstats"))
-            this.send(parseMessage("bot", "poststats", parseStats(GroovyBot.getInstance().getLavalinkManager().countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
+            this.send(WebsocketConnection.parseMessage("bot", "poststats", WebsocketConnection.parseStats(LavalinkManager.countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
     }
 
     @Override
     public void onClose(int i, String s, boolean b) {
-        log.info("[Websocket] WebsocketConnection closed! " + i + " " + s);
+        log.info("[Websocket] WebsocketConnection closed! Trying to reconnect in 5 seconds");
+        try {
+            Thread.sleep(5000L);
+            new Thread(this::reconnect, "WebsocketThread").start();
+        } catch (InterruptedException e) {
+            log.error("[Websocket] Error while reconnecting");
+        }
     }
 
     @Override
