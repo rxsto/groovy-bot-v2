@@ -244,7 +244,6 @@ public class MusicPlayer extends Player {
             ps.setLong(6, channel.getIdLong());
             ps.setInt(7, player.getVolume());
             ps.execute();
-
             this.clearQueue();
             getScheduler().setShuffle(false);
             getScheduler().setQueueRepeating(false);

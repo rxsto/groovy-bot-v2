@@ -1,6 +1,7 @@
 package io.groovybot.bot.core;
 
 import io.groovybot.bot.GroovyBot;
+import io.groovybot.bot.core.audio.LavalinkManager;
 import io.groovybot.bot.util.NameThreadFactory;
 import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.OnlineStatus;
@@ -19,7 +20,7 @@ public class GameAnimator implements Runnable {
     private Game[] games;
 
     public GameAnimator(GroovyBot groovyBot) {
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("GameAnimator"));
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new NameThreadFactory("GameAnimator"));
         List<Game> gameList = new ArrayList<>();
         this.shardManager = groovyBot.getShardManager();
         groovyBot.getConfig().getJSONArray("games").forEach(game -> gameList.add(parseGame(String.valueOf(game))));
@@ -47,6 +48,6 @@ public class GameAnimator implements Runnable {
     }
 
     private String parsePlaceholders(String game) {
-        return game.replace("%channels%", String.valueOf(GroovyBot.getInstance().getMusicPlayerManager().getPlayingServers())).replace("%guilds%", String.valueOf(shardManager.getGuilds().size())).replace("%users%", String.valueOf(shardManager.getUsers().size())).replace("%shards%", String.valueOf(shardManager.getShardsTotal()));
+        return game.replace("%channels%", String.valueOf(LavalinkManager.countPlayers())).replace("%guilds%", String.valueOf(shardManager.getGuilds().size())).replace("%users%", String.valueOf(shardManager.getUsers().size())).replace("%shards%", String.valueOf(shardManager.getShardsTotal()));
     }
 }
