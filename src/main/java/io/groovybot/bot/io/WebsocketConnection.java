@@ -60,6 +60,9 @@ public class WebsocketConnection extends WebSocketClient {
         if (!object.has("type") || !object.has("data"))
             return;
 
+        if (object.get("type").equals("error"))
+            log.error("[Websocket] An error occurred! " + object.getJSONObject("data").getString("text"));
+
         if (object.get("type").equals("forbidden"))
             authorize();
 
