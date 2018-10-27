@@ -56,7 +56,7 @@ public class UserPermissions {
         if (!EntityProvider.getGuild(guild.getIdLong()).isDjMode())
             return true;
         if (guild.getMemberById(user.getEntityId()).getVoiceState().inVoiceChannel())
-            if (guild.getMemberById(user.getEntityId()).getVoiceState().getChannel().getMembers().size() == 2)
+            if (guild.getMemberById(user.getEntityId()).getVoiceState().getChannel().getMembers().size() == 1)
                 return true;
         for (Role role : guild.getMemberById(user.getEntityId()).getRoles()) {
             if (role.getName().toLowerCase().contains("dj"))
