@@ -106,3 +106,5 @@ src/test/resources/
 
 *.gz
 /config/old-config.json
+/lavalink.env
+/groovy.sh
