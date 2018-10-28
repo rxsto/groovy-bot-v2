@@ -1,6 +1,5 @@
 package io.groovybot.bot.core.audio.spotify;
 
-import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.specification.Playlist;
@@ -53,8 +52,8 @@ public class SpotifyManager {
 
     public Track getTrack(String url) {
         final String trackId = parseTrackPattern(url);
-		if (track == null) 
-			return null;
+        if (trackId == null)
+            return null;
         GetTrackRequest getTrackRequest = this.spotifyApi.getTrack(trackId)
                 .build();
         Track track = null;
