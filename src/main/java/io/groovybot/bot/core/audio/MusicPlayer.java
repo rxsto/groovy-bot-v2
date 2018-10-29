@@ -13,6 +13,7 @@ import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.command.permission.UserPermissions;
 import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.util.EmbedUtil;
+import io.groovybot.bot.util.FormatUtil;
 import io.groovybot.bot.util.SafeMessage;
 import io.groovybot.bot.util.YoutubeUtil;
 import lavalink.client.LavalinkUtil;
@@ -53,7 +54,7 @@ public class MusicPlayer extends Player {
         this.guild = guild;
         this.channel = channel;
         this.previousTrack = null;
-        instanciatePlayer(lavalinkManager.getLavalink().getLink(guild));
+        instanciatePlayer(LavalinkManager.getLavalink().getLink(guild));
         getPlayer().addListener(getScheduler());
         audioPlayerManager = lavalinkManager.getAudioPlayerManager();
     }
@@ -111,7 +112,7 @@ public class MusicPlayer extends Player {
     @Override
     public void announceSong(AudioPlayer audioPlayer, AudioTrack track) {
         if (EntityProvider.getGuild(guild.getIdLong()).isAnnounceSongs())
-            SafeMessage.sendMessage(channel, EmbedUtil.play("Now Playing", String.format("%s (%s)", track.getInfo().title, track.getInfo().author)));
+            SafeMessage.sendMessage(channel, EmbedUtil.play("Now Playing", FormatUtil.formatTrack(track)));
     }
 
 
@@ -157,7 +158,7 @@ public class MusicPlayer extends Player {
             public void trackLoaded(AudioTrack audioTrack) {
                 if (!checkSong(audioTrack))
                     return;
-                queueTrack(audioTrack, force, playtop);
+                queueTrack(audioTrack, force, playtop, event.getAuthor());
                 queuedTrack(audioTrack, infoMessage, event);
             }
 
@@ -183,7 +184,7 @@ public class MusicPlayer extends Player {
                 final AudioTrack track = tracks.get(0);
                 if (!checkSong(track))
                     return;
-                queueTrack(track, force, playtop);
+                queueTrack(track, force, playtop, event.getAuthor());
                 queuedTrack(track, infoMessage, event);
             }
 
@@ -195,18 +196,21 @@ public class MusicPlayer extends Player {
             @Override
             public void loadFailed(FriendlyException e) {
                 final String message = e.getMessage().toLowerCase();
-                if (message.contains("Unknown file format")) {
+                if (message.contains("unknown file format")) {
                     SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unknownformat.tile"), event.translate("phrases.searching.unknownformat.description")));
                     return;
                 }
-                if (message.contains("The playlist is private")) {
+
+                if (message.contains("the playlist is private")) {
                     SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.private.tile"), event.translate("phrases.searching.private.description")));
                     return;
                 }
-                if (message.contains("This video is not available") || message.contains("The uploader has not made this video available in your country") || message.contains("This video contains content from UMG, who has blocked it in your country on copyright grounds")) {
+
+                if (message.contains("this video is not available") || message.contains("the uploader has not made this video available in your country") || message.contains("this video contains content from umg, who has blocked it in your country on copyright grounds")) {
                     SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unavailable.tile"), event.translate("phrases.searching.unavailable.description")));
                     return;
                 }
+
                 SafeMessage.editMessage(infoMessage, EmbedUtil.error(event));
                 log.error("[PlayCommand] Error while loading track!", e);
             }
@@ -217,7 +221,6 @@ public class MusicPlayer extends Player {
                     if (trackQueue.isEmpty()) {
                         if (getGuild().getId().equals("403882830225997825"))
                             link.disconnect();
-                        //System.out.println("Disconnect 3");
                     }
                     return false;
                 }

@@ -73,13 +73,13 @@ public class PlaylistCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            if (args.length < 1)
+            if (args.length == 0)
                 return sendHelp();
             User user = EntityProvider.getUser(event.getAuthor().getIdLong());
             if (!user.getPlaylists().containsKey(args[0]))
                 return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
-            event.getGroovyBot().getPlaylistManager().deletePlaylist(args[1], event.getAuthor().getIdLong());
-            return send(success(event.translate("command.playlist.deleted.title"), String.format(event.translate("command.playlist.deleted.description"), args[1])));
+            event.getBot().getPlaylistManager().deletePlaylist(args[0], event.getAuthor().getIdLong());
+            return send(success(event.translate("command.playlist.deleted.title"), String.format(event.translate("command.playlist.deleted.description"), args[0])));
         }
     }
 
@@ -116,7 +116,7 @@ public class PlaylistCommand extends Command {
 
         @Override
         protected Result executeCommand(String[] args, CommandEvent event, MusicPlayer player) {
-            if (args.length < 1)
+            if (args.length == 0)
                 return sendHelp();
             User user = EntityProvider.getUser(event.getAuthor().getIdLong());
             if (!user.getPlaylists().containsKey(args[0]))
@@ -143,7 +143,7 @@ public class PlaylistCommand extends Command {
         public Result run(String[] args, CommandEvent event) {
             if (args.length < 2)
                 return sendHelp();
-            MusicPlayer player = event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
+            MusicPlayer player = event.getBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
             User user = EntityProvider.getUser(event.getAuthor().getIdLong());
             if (!user.getPlaylists().containsKey(args[0]))
                 return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
@@ -194,7 +194,7 @@ public class PlaylistCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            if (args.length < 1)
+            if (args.length == 0)
                 return sendHelp();
             User user = EntityProvider.getUser(event.getAuthor().getIdLong());
             if (!user.getPlaylists().containsKey(args[0]))
@@ -214,9 +214,9 @@ public class PlaylistCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            if (args.length < 1)
+            if (args.length == 0)
                 return sendHelp();
-            MusicPlayer player = event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
+            MusicPlayer player = event.getBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
             if (!player.isPlaying())
                 return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
             User user = EntityProvider.getUser(event.getAuthor().getIdLong());
@@ -227,7 +227,7 @@ public class PlaylistCommand extends Command {
             List<AudioTrack> tracks = new ArrayList<>();
             tracks.add(player.getPlayer().getPlayingTrack());
             tracks.addAll(player.trackQueue);
-            Playlist playlist = event.getGroovyBot().getPlaylistManager().createPlaylist(args[1], user.getEntityId(), tracks);
+            Playlist playlist = event.getBot().getPlaylistManager().createPlaylist(args[0], user.getEntityId(), tracks);
             return send(success(event.translate("command.playlist.created.title"), String.format(event.translate("command.playlist.created.description"), playlist.getName())));
         }
     }

@@ -1,9 +1,12 @@
 package io.groovybot.bot.util;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import io.groovybot.bot.core.audio.QueuedTrack;
 import io.groovybot.bot.core.command.Command;
 import io.groovybot.bot.core.command.SubCommand;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.User;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -11,6 +14,12 @@ import java.util.stream.Collectors;
 import static io.groovybot.bot.util.EmbedUtil.info;
 
 public class FormatUtil {
+
+    public static String formatTrack(AudioTrack track) {
+        QueuedTrack queuedTrack = ((QueuedTrack) track);
+        AudioTrackInfo trackInfo = queuedTrack.getInfo();
+        return String.format("%s (%s) **Requested by %s**", trackInfo.title, trackInfo.author, formatUserName(queuedTrack.getRequester()));
+    }
 
     /**
      * Retrieves the thumbnail of a Youtube video
@@ -66,6 +75,10 @@ public class FormatUtil {
             return "g!" + subCommand.getMainCommand().getName() + " " + subCommand.getName() + " " + subCommand.getUsage() + " - " + subCommand.getDescription();
         }
         return "g!" + command.getName() + " " + command.getUsage();
+    }
+
+    public static String formatUserName(User user) {
+        return String.format("%s#%s", user.getName(), user.getDiscriminator());
     }
 
 }

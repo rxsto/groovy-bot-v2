@@ -16,7 +16,8 @@ public class CloseCommand extends Command {
     @Override
     public Result run(String[] args, CommandEvent event) {
         SafeMessage.sendMessageBlocking(event.getChannel(), success("Stopped bot!", "Successfully stopped bot!"));
-        System.exit(1);
+        System.exit(0);
         return null;
     }
+
 }

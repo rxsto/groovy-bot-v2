@@ -1,6 +1,7 @@
 package io.groovybot.bot.core;
 
 import com.zaxxer.hikari.HikariDataSource;
+import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.entity.Key;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,7 +21,7 @@ public class KeyManager {
 
     public boolean keyExists(String key) {
         try {
-            return Objects.requireNonNull(getKeyStatement(key)).executeQuery().next();
+            return Objects.requireNonNull(getKeyInfo(key)).next();
         } catch (SQLException e) {
             log.error("[KeyManager] Error occurred while retrieving key", e);
         }
@@ -29,7 +30,7 @@ public class KeyManager {
 
     public Key getKey(String key) {
         try {
-            ResultSet rs = Objects.requireNonNull(getKeyStatement(key)).executeQuery();
+            ResultSet rs = Objects.requireNonNull(getKeyInfo(key));
             if (rs.next())
                 return new Key(Key.KeyType.valueOf(rs.getString("type")), UUID.fromString(rs.getString("key")), dataSource);
         } catch (SQLException e) {
@@ -51,11 +52,11 @@ public class KeyManager {
         return key.getKey();
     }
 
-    private PreparedStatement getKeyStatement(String key) {
+    private ResultSet getKeyInfo(String key) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM \"keys\" WHERE \"key\" = ?");
             ps.setString(1, key);
-            return ps;
+            return ps.executeQuery();
         } catch (SQLException e) {
             log.error("[KeyManager] Error occurred while retrieving key", e);
             return null;
