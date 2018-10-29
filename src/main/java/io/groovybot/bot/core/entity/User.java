@@ -58,8 +58,12 @@ public class User extends DatabaseEntitiy {
     public void setPremium(int type) {
         if (type == 1)
             tierOne = true;
-        else
+        else if (type == 2)
             tierTwo = true;
+        else {
+            tierOne = false;
+            tierTwo = false;
+        }
         update();
     }
 
