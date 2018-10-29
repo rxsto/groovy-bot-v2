@@ -21,14 +21,14 @@ public class LanguageCommand extends Command {
     public Result run(String[] args, CommandEvent event) {
         User user = EntityProvider.getUser(event.getAuthor().getIdLong());
         if (args.length == 0)
-            return send(info(event.translate("command.language.info.title"), String.format(event.translate("command.language.info.description"), user.getLocale().getLanguage(), formatAvailableLanguages(event.getGroovyBot().getTranslationManager()))));
+            return send(info(event.translate("command.language.info.title"), String.format(event.translate("command.language.info.description"), user.getLocale().getLanguage(), formatAvailableLanguages(event.getBot().getTranslationManager()))));
         Locale locale;
         try {
             locale = Locale.forLanguageTag(args[0].replace("_", "-"));
         } catch (Exception e) {
             return send(error(event.translate("command.language.invalid.title"), event.translate("command.language.invalid.description")));
         }
-        if (!event.getGroovyBot().getTranslationManager().isTranslated(locale))
+        if (!event.getBot().getTranslationManager().isTranslated(locale))
             return send(error(event.translate("command.language.nottranslated.title"), event.translate("command.language.nottranslated.description")));
         user.setLocale(locale);
         return send(success(event.translate("command.language.set.title"), String.format(event.translate("command.language.set.description"), locale.getLanguage())));

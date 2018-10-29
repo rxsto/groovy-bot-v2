@@ -21,10 +21,10 @@ public class HelpCommand extends Command {
     public Result run(String[] args, CommandEvent event) {
         if (args.length == 0)
             return send(formatCommandList(event));
-        if (!event.getGroovyBot().getCommandManager().getCommandAssociations().containsKey(args[0])) {
+        if (!event.getBot().getCommandManager().getCommandAssociations().containsKey(args[0])) {
             return send(error(event.translate("command.help.notfound.title"), event.translate("command.help.notfound.description")));
         }
-        Command command = event.getGroovyBot().getCommandManager().getCommandAssociations().get(args[0]);
+        Command command = event.getBot().getCommandManager().getCommandAssociations().get(args[0]);
         return send(formatCommand(command));
     }
 
@@ -34,7 +34,7 @@ public class HelpCommand extends Command {
                 .setColor(Colors.DARK_BUT_NOT_BLACK)
                 .setDescription(String.format(event.translate("command.help.description"), EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix()));
         for (CommandCategory commandCategory : CommandCategory.class.getEnumConstants()) {
-            String formattedCategory = formatCategory(commandCategory, event.getGroovyBot().getCommandManager());
+            String formattedCategory = formatCategory(commandCategory, event.getBot().getCommandManager());
             if (!"".equals(formattedCategory))
                 builder.addField(commandCategory.getDisplayName(), formattedCategory, false);
         }

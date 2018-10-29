@@ -6,44 +6,79 @@ import org.json.JSONObject;
 public class ConfigurationSetup {
 
     public static Configuration setupConfig() {
+        // Create new file
         Configuration configuration = new Configuration("config/config.json");
-        final JSONObject botObject = new JSONObject();
-        botObject.put("token", "defaultvalue");
-        configuration.addDefault("bot", botObject);
-        final JSONObject dbObject = new JSONObject();
-        dbObject.put("host", "defaultvalue");
-        dbObject.put("port", "defaultvalue");
-        dbObject.put("database", "defaultvalue");
-        dbObject.put("username", "defaultvalue");
-        dbObject.put("password", "defaultvalue");
-        configuration.addDefault("db", dbObject);
-        final JSONObject wsObject = new JSONObject();
-        wsObject.put("host", "defaultvalue");
-        wsObject.put("port", "defaultvalue");
-        configuration.addDefault("websocket", wsObject);
-        final JSONArray gamesArray = new JSONArray();
-        gamesArray.put("gamename");
-        configuration.addDefault("games", gamesArray);
-        final JSONObject settingsObject = new JSONObject();
-        settingsObject.put("prefix", "g!");
-        settingsObject.put("test_prefix", "gt!");
-        settingsObject.put("maxShards", 5);
-        configuration.addDefault("settings", settingsObject);
-        final JSONArray ownersArray = new JSONArray();
-        ownersArray.put(264048760580079616L);
-        ownersArray.put(254892085000405004L);
-        configuration.addDefault("owners", ownersArray);
-        final JSONObject webhookObject = new JSONObject();
-        webhookObject.put("error_hook", "http://hook.com");
-        configuration.addDefault("webhooks", webhookObject);
-        final JSONObject youtubeObject = new JSONObject();
-        youtubeObject.put("apikey", "defaultvalue");
-        configuration.addDefault("youtube", youtubeObject);
-        final JSONObject spotifyObject = new JSONObject();
-        spotifyObject.put("client_id", "defaultvalue");
-        spotifyObject.put("client_token", "defaultvalue");
-        configuration.addDefault("spotify", spotifyObject);
-        final JSONObject botlistObjects = new JSONObject()
+
+        // Create object for bot
+        final JSONObject bot = new JSONObject();
+        bot.put("token", "defaultvalue");
+        configuration.addDefault("bot", bot);
+
+        // Create object for database
+        final JSONObject db = new JSONObject();
+        db.put("host", "defaultvalue");
+        db.put("port", "defaultvalue");
+        db.put("database", "defaultvalue");
+        db.put("username", "defaultvalue");
+        db.put("password", "defaultvalue");
+        configuration.addDefault("db", db);
+
+        // Create object for websocket
+        final JSONObject ws = new JSONObject();
+        ws.put("host", "defaultvalue");
+        ws.put("port", "defaultvalue");
+        configuration.addDefault("websocket", ws);
+
+        // Create array for games
+        final JSONArray games = new JSONArray();
+        games.put("defaultvalue");
+        configuration.addDefault("games", games);
+
+        // Create object for settings
+        final JSONObject settings = new JSONObject();
+        settings.put("prefix", "g!");
+        settings.put("debug", "gt!");
+        settings.put("shards", 6);
+        configuration.addDefault("settings", settings);
+
+        // Create array for owners
+        final JSONArray owners = new JSONArray();
+        owners.put(264048760580079616L);
+        owners.put(254892085000405004L);
+        owners.put(306480135832338432L);
+        configuration.addDefault("owners", owners);
+
+        // Create object for webhooks
+        final JSONObject webhook = new JSONObject();
+        webhook.put("error", "defaultvalue");
+        webhook.put("guilds", "defaultvalue");
+        configuration.addDefault("webhooks", webhook);
+
+        // Create object for youtube
+        final JSONObject youtube = new JSONObject();
+        youtube.put("apikey", "defaultvalue");
+        configuration.addDefault("youtube", youtube);
+
+        // Create object for spotify
+        final JSONObject spotify = new JSONObject();
+        spotify.put("client_id", "defaultvalue");
+        spotify.put("client_secret", "defaultvalue");
+        configuration.addDefault("spotify", spotify);
+
+        // Create object for genius
+        final JSONObject genius = new JSONObject();
+        genius.put("token", "defaultvalue");
+        configuration.addDefault("genius", genius);
+
+        // Create object for statuspage
+        final JSONObject statuspage = new JSONObject();
+        statuspage.put("page_id", "defaultvalue");
+        statuspage.put("metric_id", "defaultvalue");
+        statuspage.put("api_key", "defaultvalue");
+        configuration.addDefault("statuspage", statuspage);
+
+        // Create object for botlists
+        final JSONObject botlists = new JSONObject()
                 .put("botlist.space", "defaultvalue")
                 .put("bots.ondiscord.xyz", "defaultvalue")
                 .put("discordboats.xyz", "defaultvalue")
@@ -58,15 +93,9 @@ public class ConfigurationSetup {
                 .put("discordsbestbots.xyz", "defaultvalue")
                 .put("divinediscordbots.com", "defaultvalue")
                 .put("discordbotindex.com", "defaultvalue");
-        configuration.addDefault("botlists", botlistObjects);
-        final JSONObject statusPageObject = new JSONObject();
-        statusPageObject.put("page_id", "defaultvalue");
-        statusPageObject.put("metric_id", "defaultvalue");
-        statusPageObject.put("api_key", "defaultvalue");
-        configuration.addDefault("statuspage", statusPageObject);
-        final JSONObject geniusObject = new JSONObject();
-        geniusObject.put("token", "defaultvalue");
-        configuration.addDefault("genius", geniusObject);
+        configuration.addDefault("botlists", botlists);
+
+        // Return config
         return configuration;
     }
 }

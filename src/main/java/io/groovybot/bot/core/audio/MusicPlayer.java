@@ -53,7 +53,7 @@ public class MusicPlayer extends Player {
         this.guild = guild;
         this.channel = channel;
         this.previousTrack = null;
-        instanciatePlayer(lavalinkManager.getLavalink().getLink(guild));
+        instanciatePlayer(LavalinkManager.getLavalink().getLink(guild));
         getPlayer().addListener(getScheduler());
         audioPlayerManager = lavalinkManager.getAudioPlayerManager();
     }
@@ -87,7 +87,6 @@ public class MusicPlayer extends Player {
         if (announce)
             SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not **queue** more songs?"));
         if (!this.getGuild().getId().equals("403882830225997825"))
-            //Prevent NPE
             if (link != null)
                 link.disconnect();
         stop();
@@ -95,12 +94,12 @@ public class MusicPlayer extends Player {
 
     @Override
     public Message announceAutoplay() {
-        return SafeMessage.sendMessageBlocking(channel, EmbedUtil.info("Searching video", "Searching new autoplay video"));
+        return SafeMessage.sendMessageBlocking(channel, EmbedUtil.info("Searching video!", "Searching new autoplay video ..."));
     }
 
     @Override
     public void announceRequeue(AudioTrack track) {
-        SafeMessage.sendMessage(channel, EmbedUtil.success("An error occurred while queueing song", "An unexpected error occurred while queueing song, trying to requeue now!"));
+        SafeMessage.sendMessage(channel, EmbedUtil.success("An error occurred while queueing song!", "An unexpected error occurred while queueing song, trying to requeue now."));
     }
 
     @Override
@@ -137,7 +136,7 @@ public class MusicPlayer extends Player {
         }
 
         if ((keyword.startsWith("http://") || keyword.startsWith("https://")) && keyword.contains("spotify")) {
-            Track track = event.getBot().getSpotifyManager().getTrack(keyword);
+            Track track = event.getBot().getSpotifyClient().getTrack(keyword);
             if (track != null) {
                 SafeMessage.sendMessageBlocking(
                         event.getChannel(),
@@ -180,9 +179,12 @@ public class MusicPlayer extends Player {
                     SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), audioPlaylist.getName())));
                     return;
                 }
+
                 final AudioTrack track = tracks.get(0);
+
                 if (!checkSong(track))
                     return;
+
                 queueTrack(track, force, playtop);
                 queuedTrack(track, infoMessage, event);
             }
@@ -195,30 +197,41 @@ public class MusicPlayer extends Player {
             @Override
             public void loadFailed(FriendlyException e) {
                 final String message = e.getMessage().toLowerCase();
-                if (message.contains("Unknown file format")) {
-                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unknownformat.tile"), event.translate("phrases.searching.unknownformat.description")));
+
+                if (message.contains("unknown file format")) {
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unknownformat.title"), event.translate("phrases.searching.unknownformat.description")));
                     return;
                 }
-                if (message.contains("The playlist is private")) {
-                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.private.tile"), event.translate("phrases.searching.private.description")));
+
+                if (message.contains("the playlist is private")) {
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.private.title"), event.translate("phrases.searching.private.description")));
                     return;
                 }
-                if (message.contains("This video is not available") || message.contains("The uploader has not made this video available in your country") || message.contains("This video contains content from UMG, who has blocked it in your country on copyright grounds")) {
-                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unavailable.tile"), event.translate("phrases.searching.unavailable.description")));
+
+                if (message.contains("this video is not available")) {
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unavailable.title"), event.translate("phrases.searching.unavailable.description")));
                     return;
                 }
+
+                if (message.contains("the uploader has not made this video available in your country")) {
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.country.title"), event.translate("phrases.searching.country.description")));
+                    return;
+                }
+
+                if (message.contains("this video contains content from umg, who has blocked it in your country on copyright grounds")) {
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.copyright.title"), event.translate("phrases.searching.copyright.description")));
+                    return;
+                }
+
                 SafeMessage.editMessage(infoMessage, EmbedUtil.error(event));
                 log.error("[PlayCommand] Error while loading track!", e);
             }
 
             private boolean checkSong(AudioTrack track) {
                 if (track.getDuration() > 3600000 && !Permissions.tierTwo().isCovered(userPermissions, event)) {
-                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.toolongsong.title"), event.translate("phrases.toolongsong.description")));
-                    if (trackQueue.isEmpty()) {
-                        if (getGuild().getId().equals("403882830225997825"))
-                            link.disconnect();
-                        //System.out.println("Disconnect 3");
-                    }
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.patreon.songduration.title"), event.translate("phrases.patreon.songduration.description")));
+                    if (trackQueue.isEmpty())
+                        leave();
                     return false;
                 }
                 return true;
@@ -235,7 +248,10 @@ public class MusicPlayer extends Player {
 
     public void update() throws SQLException, IOException {
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
+            // Initialize preparedstatement
             PreparedStatement ps = connection.prepareStatement("INSERT INTO queues (guild_id, current_track, current_position, queue, channel_id, text_channel_id, volume) VALUES (?,?,?,?,?,?,?)");
+
+            // Set values for preparedstatement
             ps.setLong(1, guild.getIdLong());
             ps.setString(2, LavalinkUtil.toMessage(player.getPlayingTrack()));
             ps.setLong(3, player.getTrackPosition());
@@ -243,6 +259,8 @@ public class MusicPlayer extends Player {
             ps.setLong(5, guild.getSelfMember().getVoiceState().getChannel().getIdLong());
             ps.setLong(6, channel.getIdLong());
             ps.setInt(7, player.getVolume());
+
+
             ps.execute();
             this.clearQueue();
             getScheduler().setShuffle(false);

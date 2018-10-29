@@ -31,7 +31,7 @@ public class QueueCommand extends Command {
 
     public static EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, AudioTrack currentTrack, int currentPage, int totalPages) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle("🎶 " + String.format(event.translate("command.queue.title"), event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size()))
+                .setTitle("🎶 " + String.format(event.translate("command.queue.title"), event.getBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size()))
                 .setDescription(generateQueueDescription(tracks, startNumber, currentTrack)).setColor(Colors.DARK_BUT_NOT_BLACK);
         if (currentPage != 0 && totalPages != 0)
             builder.setFooter(currentPage + "/" + totalPages + " " + event.translate("phrases.text.sites"), event.getJDA().getSelfUser().getAvatarUrl());
