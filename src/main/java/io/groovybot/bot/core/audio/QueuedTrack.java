@@ -73,13 +73,13 @@ public class QueuedTrack implements AudioTrack {
     }
 
     @Override
-    public void setUserData(Object userData) {
-        track.setUserData(userData);
+    public Object getUserData() {
+        return track.getUserData();
     }
 
     @Override
-    public Object getUserData() {
-        return track.getUserData();
+    public void setUserData(Object userData) {
+        track.setUserData(userData);
     }
 
     @Override

@@ -52,8 +52,8 @@ public class SpotifyManager {
 
     public Track getTrack(String url) {
         final String trackId = parseTrackPattern(url);
-		if (trackId == null)
-			return null;
+        if (trackId == null)
+            return null;
         GetTrackRequest getTrackRequest = this.spotifyApi.getTrack(trackId)
                 .build();
         Track track = null;

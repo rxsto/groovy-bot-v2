@@ -7,7 +7,6 @@ import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.util.Colors;
-import io.groovybot.bot.util.EmbedUtil;
 import io.groovybot.bot.util.FormatUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 

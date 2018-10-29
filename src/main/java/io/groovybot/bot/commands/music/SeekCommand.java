@@ -15,7 +15,7 @@ import java.text.ParseException;
 public class SeekCommand extends SameChannelCommand {
 
     public SeekCommand() {
-        super(new String[] {"seek", "seekto"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you seek to a specific position", "[HH]:[mm]:<ss>");
+        super(new String[]{"seek", "seekto"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you seek to a specific position", "[HH]:[mm]:<ss>");
     }
 
     @Override

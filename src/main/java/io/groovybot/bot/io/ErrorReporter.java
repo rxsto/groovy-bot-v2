@@ -35,7 +35,7 @@ public class ErrorReporter extends AbstractAppender {
     private WebhookMessage buildErrorLog(LogEvent event) {
         WebhookMessageBuilder out = new WebhookMessageBuilder();
         Throwable throwable = event.getThrown();
-        EmbedBuilder builder =  EmbedUtil.error("An unknown error occurred", String.format("An unkown error occurred in class %s", event.getLoggerName())
+        EmbedBuilder builder = EmbedUtil.error("An unknown error occurred", String.format("An unkown error occurred in class %s", event.getLoggerName())
         )
                 .addField("Class", "`" + event.getLoggerName() + "`", false)
                 .addField("Message", "`" + formatException(throwable) + "`", false)

@@ -20,6 +20,7 @@ public abstract class Player {
 
     @Getter
     private final Scheduler scheduler;
+    private final SelfUser selfUser;
     @Getter
     public Queue<AudioTrack> trackQueue;
     @Getter
@@ -27,7 +28,6 @@ public abstract class Player {
     @Getter
     protected IPlayer player;
     protected YoutubeUtil youtubeClient;
-    private final SelfUser selfUser;
 
     public Player(YoutubeUtil youtubeClient) {
         this.trackQueue = new LinkedList<>();

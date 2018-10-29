@@ -37,6 +37,19 @@ public class LavalinkManager {
         audioPlayerManager.registerSourceManager(new HttpAudioSourceManager());
     }
 
+    public static int countPlayers() {
+        if (lavalink == null)
+            return 0;
+        AtomicInteger playingPlayers = new AtomicInteger();
+        lavalink.getNodes().forEach(
+                node -> {
+                    if (node.getStats() != null)
+                        playingPlayers.addAndGet(node.getStats().getPlayingPlayers());
+                }
+        );
+        return playingPlayers.get();
+    }
+
     public void initialize() {
         log.info("[LavalinkManager] Initializing Lavalink and trying to connect to Nodes ...");
 
@@ -64,18 +77,5 @@ public class LavalinkManager {
     private void onEvent(Event event) {
         if (lavalink != null)
             lavalink.onEvent(event);
-    }
-
-    public static int countPlayers() {
-        if (lavalink == null)
-            return 0;
-        AtomicInteger playingPlayers = new AtomicInteger();
-        lavalink.getNodes().forEach(
-                node -> {
-                    if (node.getStats() != null)
-                        playingPlayers.addAndGet(node.getStats().getPlayingPlayers());
-                }
-        );
-        return playingPlayers.get();
     }
 }
