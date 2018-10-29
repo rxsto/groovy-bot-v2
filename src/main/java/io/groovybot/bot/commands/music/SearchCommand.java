@@ -68,7 +68,7 @@ public class SearchCommand extends SemiInChannelCommand {
             @Override
             public void loadFailed(FriendlyException exception) {
                 sendMessage(event.getChannel(), error(event), 10);
-                event.getGroovyBot().getEventManager().handle(new CommandFailEvent(event, instance, exception));
+                event.getBot().getEventManager().handle(new CommandFailEvent(event, instance, exception));
                 leave();
             }
 

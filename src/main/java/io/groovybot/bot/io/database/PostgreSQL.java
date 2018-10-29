@@ -23,7 +23,7 @@ public class PostgreSQL implements Closeable {
     private HikariDataSource dataSource;
 
     public PostgreSQL() {
-        log.info("[Database] Connecting ...");
+        log.info("[Database] Connecting to Database ...");
         defaults = new ArrayList<>();
         JSONObject configuration = GroovyBot.getInstance().getConfig().getJSONObject("db");
         HikariConfig hikariConfig = new HikariConfig();
@@ -42,7 +42,7 @@ public class PostgreSQL implements Closeable {
         try {
             dataSource = new HikariDataSource(hikariConfig);
         } catch (HikariPool.PoolInitializationException e) {
-            log.error("[Database] Error while connecting to database!", e);
+            log.error("[Database] Error while connecting to Database!", e);
             return;
         }
 
