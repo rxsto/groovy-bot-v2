@@ -105,3 +105,6 @@ src/main/java/io/groovybot/bot/core/events/guilds/
 src/test/resources/
 
 *.gz
+/config/old-config.json
+/lavalink.env
+/groovy.sh
