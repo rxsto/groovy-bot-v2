@@ -131,10 +131,12 @@ public class Scheduler extends AudioEventAdapterWrapped {
             }
 
             @Override
-            public void playlistLoaded(AudioPlaylist playlist) {}
+            public void playlistLoaded(AudioPlaylist playlist) {
+            }
 
             @Override
-            public void noMatches() {}
+            public void noMatches() {
+            }
 
             @Override
             public void loadFailed(FriendlyException exception) {

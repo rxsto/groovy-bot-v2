@@ -42,7 +42,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions tierOne() {
-        return new Permissions(false, false, true, false, false, false, false,"tierone");
+        return new Permissions(false, false, true, false, false, false, false, "tierone");
     }
 
     /**
@@ -51,7 +51,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions tierTwo() {
-        return new Permissions(false, false, false, true, false, false, false,"tiertwo");
+        return new Permissions(false, false, false, true, false, false, false, "tiertwo");
     }
 
     /**
@@ -60,7 +60,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions adminOnly() {
-        return new Permissions(false, false, false, false, true, false, false,"admin");
+        return new Permissions(false, false, false, false, true, false, false, "admin");
     }
 
     /**
@@ -69,11 +69,12 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions djMode() {
-        return new Permissions(false, false, false, false, false, true, false,"djmode");
+        return new Permissions(false, false, false, false, false, true, false, "djmode");
     }
 
     /**
      * Only users that voted for our bot on DBL
+     *
      * @return a Permission object
      */
     public static Permissions votedOnly() {

@@ -1,7 +1,6 @@
 package io.groovybot.bot.core;
 
 import com.zaxxer.hikari.HikariDataSource;
-import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.entity.Key;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

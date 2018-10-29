@@ -86,6 +86,8 @@ public class GroovyBot {
     @Getter
     private final boolean enableWebsocket;
     @Getter
+    private final PremiumManager premiumManager;
+    @Getter
     private Configuration config;
     @Getter
     private PostgreSQL postgreSQL;
@@ -103,10 +105,6 @@ public class GroovyBot {
     private PlaylistManager playlistManager;
     @Getter
     private boolean allShardsInitialized = false;
-    @Getter
-    private final GeniusClient geniusClient;
-    @Getter
-    private final PremiumManager premiumManager;
 
     private GroovyBot(String[] args) throws IOException {
 

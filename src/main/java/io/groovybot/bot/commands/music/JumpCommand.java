@@ -9,10 +9,10 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 import io.groovybot.bot.util.FormatUtil;
 import net.dv8tion.jda.core.utils.Helpers;
 
-public class JumpToCommand extends SameChannelCommand {
+public class JumpCommand extends SameChannelCommand {
 
-    public JumpToCommand() {
-        super(new String[]{"jumpto"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you jump to specific positions", "[-]<seconds>");
+    public JumpCommand() {
+        super(new String[]{"jump", "jumpto"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you jump to a specific position", "[-]<seconds>");
     }
 
     @Override
