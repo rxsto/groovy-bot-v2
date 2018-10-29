@@ -20,4 +20,11 @@ public abstract class DatabaseEntitiy {
     protected Connection getConnection() throws SQLException {
         return GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof DatabaseEntitiy))
+            return false;
+        return ((DatabaseEntitiy) obj).getEntityId().equals(entityId);
+    }
 }
