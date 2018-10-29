@@ -25,7 +25,7 @@ public class TranslationManager {
                     return getResourceBundle().getString(key);
                 else {
                     log.error(String.format("TranslationLocale for '%s' missing in default locale %s", key, defaultLocale.getLanguageName()));
-                    return "Missing translation.";
+                    return String.format("Missing translation for %s.", key);
                 }
             }
         };
@@ -34,6 +34,7 @@ public class TranslationManager {
         locales.add(defaultLocale);
         locales.add(new TranslationLocale(this, new Locale("nl", "NL"), "Dutch (Netherlands)"));
         locales.add(new TranslationLocale(this, new Locale("de", "DE"), "Deutsch (Deutschland)"));
+        locales.add(new TranslationLocale(this, new Locale("fr", "FR"), "French (France)"));
     }
 
     public TranslationLocale getLocaleByLocale(Locale locale) {

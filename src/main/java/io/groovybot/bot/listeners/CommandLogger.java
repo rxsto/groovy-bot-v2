@@ -16,13 +16,13 @@ public class CommandLogger {
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onCommandExecution(CommandExecutedEvent executedEvent) {
-        log.info(String.format("[Command] %s » %s#%s | %s (%s)", executedEvent.getCommand().getName(), executedEvent.getAuthor().getName(), executedEvent.getAuthor().getDiscriminator(), executedEvent.getGuild().getName(), executedEvent.getGuild().getIdLong()));
+        log.info(String.format("[Command] %s - %s#%s | %s (%s)", executedEvent.getCommand().getName(), executedEvent.getAuthor().getName(), executedEvent.getAuthor().getDiscriminator(), executedEvent.getGuild().getName(), executedEvent.getGuild().getIdLong()));
     }
 
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onCommandFail(CommandFailEvent failEvent) {
-        log.error(String.format("[Command] %s » %s#%s | %s (%s)", failEvent.getCommand().getName(), failEvent.getAuthor().getName(), failEvent.getAuthor().getDiscriminator(), failEvent.getGuild().getName(), failEvent.getGuild().getIdLong()), failEvent.getThrowable());
+        log.error(String.format("[Command] %s - %s#%s | %s (%s)", failEvent.getCommand().getName(), failEvent.getAuthor().getName(), failEvent.getAuthor().getDiscriminator(), failEvent.getGuild().getName(), failEvent.getGuild().getIdLong()), failEvent.getThrowable());
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("❌ " + failEvent.translate("phrases.error.internal"))
                 .setDescription(String.format("We're sorry, but an internal error occured\n```%s```", failEvent.getThrowable().getClass().getCanonicalName() + ": " + failEvent.getThrowable().getMessage()))

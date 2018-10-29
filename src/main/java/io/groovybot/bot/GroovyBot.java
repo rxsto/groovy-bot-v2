@@ -35,6 +35,7 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 import net.dv8tion.jda.core.hooks.IEventManager;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
+import net.dv8tion.jda.core.requests.RestAction;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -53,6 +54,8 @@ public class GroovyBot {
 
     @Getter
     private static GroovyBot instance;
+    @Getter
+    private final long startupTime;
     @Getter
     private final OkHttpClient httpClient;
     @Getter
@@ -78,7 +81,7 @@ public class GroovyBot {
     @Getter
     private final GeniusClient geniusClient;
     @Getter
-    private final SpotifyManager spotifyManager;
+    private final SpotifyManager spotifyClient;
     @Getter
     private final boolean enableWebsocket;
     @Getter
@@ -100,58 +103,99 @@ public class GroovyBot {
     @Getter
     private boolean allShardsInitialized = false;
 
-    private GroovyBot(String[] args) {
+    private GroovyBot(String[] args) throws IOException {
+
+        // Setting startuptime
+        startupTime = System.currentTimeMillis();
+
+        // For debugging
+        RestAction.setPassContext(true);
+        RestAction.DEFAULT_FAILURE = Throwable::printStackTrace;
+
         instance = this;
+
+        // Initializing logger
         initLogger(args);
+
+        // Checking for debug-mode
         debugMode = String.join(" ", args).contains("debug");
+
+        // Checking for websocket-mode
         enableWebsocket = !String.join(" ", args).contains("--no-websocket");
+
+        // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+
         log.info("Starting Groovy ...");
+
+        // Initializing filemanager
         new FileManager();
+
+        // Initializing config
         initConfig();
-        httpClient = new OkHttpClient();
+
+        // Initializing database
+        log.info("[Database] Initializing Database ...");
         postgreSQL = new PostgreSQL();
+
+        httpClient = new OkHttpClient();
         lavalinkManager = new LavalinkManager(this);
         statusPage = new StatusPage(httpClient, config.getJSONObject("statuspage"));
+
+        // Generating tables
         new DatabaseGenerator(postgreSQL);
-        commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("test_prefix") : config.getJSONObject("settings").getString("prefix"), this);
+
+        System.out.println(debugMode ? config.getJSONObject("settings").getString("debug") : config.getJSONObject("settings").getString("prefix"));
+        commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("debug") : config.getJSONObject("settings").getString("prefix"), this);
         serverCountStatistics = new ServerCountStatistics(config.getJSONObject("botlists"));
         keyManager = new KeyManager(postgreSQL.getDataSource());
         interactionManager = new InteractionManager();
         eventWaiter = new EventWaiter();
+
+        // Initializing shardmanager
         initShardManager();
+
         musicPlayerManager = new MusicPlayerManager();
         translationManager = new TranslationManager();
         playlistManager = new PlaylistManager(postgreSQL.getDataSource());
         youtubeClient = YoutubeUtil.create(this);
+        spotifyClient = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
         geniusClient = new GeniusClient(config.getJSONObject("genius").getString("token"));
+
+        // Registering commands
         new CommandRegistry(commandManager);
-        spotifyManager = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_token"));
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if (instance != null)
             throw new RuntimeException("Groovy was already initialized in this VM!");
         new GroovyBot(args);
     }
 
     private Integer retrieveShards() {
+        log.info("[ShardManager] Trying to retrieve ShardCount ...");
         Request request = new Request.Builder()
                 .url("https://discordapp.com/api/gateway/bot")
                 .addHeader("Authorization", config.getJSONObject("bot").getString("token"))
                 .get()
                 .build();
+
         try (Response response = httpClient.newCall(request).execute()) {
             assert response.body() != null;
-            return new JSONObject(response.body().string()).getInt("shards");
+            int shardCount = new JSONObject(response.body().string()).getInt("shards");
+            log.info(String.format("[ShardManager] Launching with %s %s ...", shardCount, shardCount == 1 ? "Shard" : "Shards"));
+            return shardCount;
         } catch (IOException e) {
-            log.warn("[JDA] Error while retrieving shards count");
-            return config.getJSONObject("settings").getInt("maxShards");
+            int shardCount = config.getJSONObject("settings").getInt("shards");
+            log.error(String.format("[ShardManager] Error while retrieving ShardsCount, launching with default value (%s %s)", shardCount, shardCount == 1 ? "Shard" : "Shards"), e);
+            return shardCount;
         }
     }
 
     private void initShardManager() {
         eventManager = new AnnotatedEventManager();
+
+        // Building shardmanager
         DefaultShardManagerBuilder shardManagerBuilder = new DefaultShardManagerBuilder()
                 .setHttpClient(httpClient)
                 .setEventManagerProvider((id) -> eventManager)
@@ -160,62 +204,73 @@ public class GroovyBot {
                 .setGame(Game.playing("Starting ..."))
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
                 .addEventListeners(
+                        this,
                         new ShardsListener(),
                         new CommandLogger(),
                         new GuildLogger(),
                         new SelfMentionListener(),
-                        this,
                         commandManager,
                         lavalinkManager,
                         interactionManager,
                         eventWaiter
                 );
+
         if (enableWebsocket)
             shardManagerBuilder.addEventListeners(new WebsiteStatsListener());
+
         try {
             shardManager = shardManagerBuilder.build();
+            log.info("[LavalinkManager] Initializing LavalinkManager ...");
             lavalinkManager.initialize();
         } catch (LoginException e) {
-            log.error("[JDA] Could not initialize bot!", e);
+            log.error("[ShardManager] Could not initialize bot!", e);
             Runtime.getRuntime().exit(1);
         }
     }
 
     private void initConfig() {
+        // Initializing config
         this.config = ConfigurationSetup.setupConfig().init();
     }
 
-    private void initLogger(String[] args) {
+    private void initLogger(String[] args) throws IOException {
+        // Setting logging-level
         Configurator.setRootLevel(args.length == 0 ? Level.INFO : Level.toLevel(args[0], Level.INFO));
-        try {
-            Configurator.initialize(ClassLoader.getSystemClassLoader(), new ConfigurationSource(ClassLoader.getSystemResourceAsStream("log4j2.xml")));
-        } catch (IOException e) {
-            System.err.println("Error while initializing logger");
-            close();
-        }
+
+        // Initializing logger
+        Configurator.initialize(ClassLoader.getSystemClassLoader(), new ConfigurationSource(ClassLoader.getSystemResourceAsStream("log4j2.xml")));
     }
 
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onReady(AllShardsLoadedEvent event) {
         allShardsInitialized = true;
+
+        // Initializing gameanimator
         new GameAnimator(this);
+
+        // Creating cache
         guildCache = new Cache<>(Guild.class);
         userCache = new Cache<>(User.class);
 
+        // Initializing players
         try {
+            log.info("[MusicPlayerManager] Initializing MusicPlayers ...");
             musicPlayerManager.initPlayers();
         } catch (SQLException | IOException e) {
             log.error("[MusicPlayerManager] Error while initializing MusicPlayers!", e);
         }
 
+        // Initializing websocket
         if (enableWebsocket)
             try {
+                log.info("[WebSocket] Initializing WebSocket ...");
                 websocket = new WebsocketConnection();
             } catch (URISyntaxException e) {
-                log.error("[WebsocketConnection] Error while initializing WebsocketConnection!", e);
+                log.error("[WebSocket] Error while initializing WebSocket!", e);
             }
 
+        // Initializing statuspage and servercountstatistics
         if (!debugMode) {
             statusPage.start();
             serverCountStatistics.start();

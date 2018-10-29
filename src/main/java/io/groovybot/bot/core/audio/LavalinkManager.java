@@ -29,7 +29,7 @@ public class LavalinkManager {
     private GroovyBot groovyBot;
 
     public LavalinkManager(GroovyBot groovyBot) {
-        log.info("[Lavalink] Connecting to lavalink nodes");
+        log.info("[LavalinkManager] Connecting to Nodes ...");
         this.groovyBot = groovyBot;
         this.audioPlayerManager = new DefaultAudioPlayerManager();
         audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());
@@ -38,19 +38,25 @@ public class LavalinkManager {
     }
 
     public void initialize() {
+        log.info("[LavalinkManager] Initializing Lavalink and trying to connect to Nodes ...");
+
         lavalink = new JdaLavalink(
                 groovyBot.getShardManager().getApplicationInfo().complete().getId(),
                 groovyBot.getShardManager().getShardsTotal(),
                 groovyBot.getShardManager()::getShardById
         );
+
         try (Connection connection = groovyBot.getPostgreSQL().getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM lavalink_nodes");
             ResultSet rs = ps.executeQuery();
             while (rs.next())
                 lavalink.addNode(URI.create(rs.getString("uri")), rs.getString("password"));
         } catch (SQLException e) {
-            log.error("[Lavalink] Error while loading lavalink");
+            log.error("[LavalinkManager] Error while loading Lavalink!");
+            return;
         }
+
+        log.info(String.format("[LavalinkManager] Successfully initialized Lavalink with %s %s!", lavalink.getNodes().size(), lavalink.getNodes().size() == 1 ? "Node" : "Nodes"));
     }
 
     @SubscribeEvent

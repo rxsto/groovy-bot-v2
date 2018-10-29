@@ -58,6 +58,7 @@ public class CommandRegistry {
                 new SwitchCommand(),
                 new PartnerCommand(),
                 new BlackListCommand()
+                new UptimeCommand()
         );
     }
 }
