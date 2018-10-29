@@ -73,7 +73,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>3.8.1_437</version>
+            <version>3.8.1_439</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>com.github.FredBoat</groupId>
             <artifactId>Lavalink-Client</artifactId>
-            <version>125b074065</version>
+            <version>fbd2975</version>
         </dependency>
         <dependency>
             <groupId>com.jagrosh</groupId>

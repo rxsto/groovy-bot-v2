@@ -36,7 +36,7 @@ public class MusicPlayerManager {
     }
 
     public int getPlayingServers() {
-        return GroovyBot.getInstance().getLavalinkManager().countPlayers();
+        return LavalinkManager.countPlayers();
     }
 
     public void update(Guild guild, MusicPlayer player) {

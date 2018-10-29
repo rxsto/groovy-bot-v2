@@ -3,11 +3,14 @@ package io.groovybot.bot.core.audio;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.util.YoutubeUtil;
 import lavalink.client.io.jda.JdaLink;
 import lavalink.client.player.IPlayer;
 import lombok.Getter;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.SelfUser;
+import net.dv8tion.jda.core.entities.User;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -24,11 +27,13 @@ public abstract class Player {
     @Getter
     protected IPlayer player;
     protected YoutubeUtil youtubeClient;
+    private final SelfUser selfUser;
 
     public Player(YoutubeUtil youtubeClient) {
         this.trackQueue = new LinkedList<>();
         this.scheduler = new Scheduler(this);
         this.youtubeClient = youtubeClient;
+        this.selfUser = GroovyBot.getInstance().getShardManager().getApplicationInfo().getJDA().getSelfUser();
     }
 
     protected void instanciatePlayer(JdaLink link) {
@@ -85,15 +90,20 @@ public abstract class Player {
     }
 
     public void queueTrack(AudioTrack track, boolean force, boolean playtop) {
+        queueTrack(track, force, playtop, selfUser);
+    }
+
+    public void queueTrack(AudioTrack track, boolean force, boolean playtop, User requester) {
+        QueuedTrack queuedTrack = new QueuedTrack(track, requester);
         if (force) {
-            play(track, false);
+            play(queuedTrack, false);
             return;
         }
 
         if (playtop) {
-            ((LinkedList<AudioTrack>) trackQueue).addFirst(track);
+            ((LinkedList<AudioTrack>) trackQueue).addFirst(queuedTrack);
         } else {
-            trackQueue.add(track);
+            trackQueue.add(queuedTrack);
         }
 
         if (!isPlaying())

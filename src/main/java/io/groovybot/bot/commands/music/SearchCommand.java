@@ -124,7 +124,7 @@ public class SearchCommand extends SemiInChannelCommand {
                 return;
             }
             AudioTrack track = searchResults.get(song - 1);
-            player.queueTrack(track, false, false);
+            player.queueTrack(track, false, false, author);
             sendMessage(event.getChannel(), EmbedUtil.success(translate(author, "phrases.searching.trackloaded.title"), String.format(translate(author, "phrases.searching.trackloaded.description"), track.getInfo().title)));
             unregister();
         }

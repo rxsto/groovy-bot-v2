@@ -2,6 +2,7 @@ package io.groovybot.bot.commands.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.core.audio.MusicPlayer;
+import io.groovybot.bot.core.audio.QueuedTrack;
 import io.groovybot.bot.core.command.Command;
 import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
@@ -9,6 +10,7 @@ import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.interaction.InteractableMessage;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.util.Colors;
+import io.groovybot.bot.util.FormatUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
@@ -31,7 +33,7 @@ public class QueueCommand extends Command {
 
     public static EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, AudioTrack currentTrack, int currentPage, int totalPages) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle("🎶 " + String.format(event.translate("command.queue.title"), event.getGroovyBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size()))
+                .setTitle("🎶 " + String.format(event.translate("command.queue.title"), event.getBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size()))
                 .setDescription(generateQueueDescription(tracks, startNumber, currentTrack)).setColor(Colors.DARK_BUT_NOT_BLACK);
         if (currentPage != 0 && totalPages != 0)
             builder.setFooter(currentPage + "/" + totalPages + " " + event.translate("phrases.text.sites"), event.getJDA().getSelfUser().getAvatarUrl());
@@ -42,8 +44,8 @@ public class QueueCommand extends Command {
         StringBuilder queueMessage = new StringBuilder();
         AtomicInteger trackCount = new AtomicInteger(startNumber);
         if (currentTrack != null)
-            queueMessage.append(String.format("**[Now]** [%s](%s)\n\n", currentTrack.getInfo().title, currentTrack.getInfo().uri));
-        tracks.forEach(track -> queueMessage.append(String.format("▫ `%s.` [%s](%s)\n", trackCount.addAndGet(1), track.getInfo().title, track.getInfo().uri)));
+            queueMessage.append(String.format("**[Now]** [%s](%s) - **Requested by %s**\n\n", currentTrack.getInfo().title, currentTrack.getInfo().uri, FormatUtil.formatUserName(((QueuedTrack) currentTrack).getRequester())));
+        tracks.forEach(track -> queueMessage.append(String.format("▫ `%s.` [%s](%s) - **%s**\n", trackCount.addAndGet(1), track.getInfo().title, track.getInfo().uri, FormatUtil.formatUserName(((QueuedTrack) track).getRequester()))));
 
         return queueMessage.toString();
     }

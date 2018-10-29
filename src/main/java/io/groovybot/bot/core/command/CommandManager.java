@@ -51,18 +51,23 @@ public class CommandManager {
     private void parseCommands(GuildMessageReceivedEvent event) {
         String prefix = null;
         String content = event.getMessage().getContentRaw();
+        String lowerCasedContent = content.toLowerCase();
+        Guild guild = bot.getGuildCache().get(event.getGuild().getIdLong());
+        //Check if channel is blacklisted
+        if (guild.isChannelBlacklisted(event.getChannel().getIdLong()))
+            return;
         //Check prefix
-        if (content.startsWith(defaultPrefix))
+        if (lowerCasedContent.startsWith(defaultPrefix))
             prefix = defaultPrefix;
         else {
             String mention = event.getGuild().getSelfMember().getAsMention();
-            if (content.startsWith(mention))
+            if (lowerCasedContent.startsWith(mention))
                 prefix = mention;
             else {
                 if (bot.getGuildCache() == null)
                     return;
-                String customPrefix = bot.getGuildCache().get(event.getGuild().getIdLong()).getPrefix();
-                if (content.startsWith(customPrefix))
+                String customPrefix = guild.getPrefix();
+                if (lowerCasedContent.startsWith(customPrefix))
                     prefix = customPrefix;
             }
         }

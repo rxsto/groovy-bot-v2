@@ -3,10 +3,12 @@ package io.groovybot.bot.core.entity;
 import io.groovybot.bot.GroovyBot;
 import lombok.Getter;
 import lombok.ToString;
+import org.json.JSONArray;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 
 @Getter
 @ToString
@@ -16,6 +18,7 @@ public class Guild extends DatabaseEntitiy {
     private String prefix = "g!";
     private boolean djMode = false;
     private boolean announceSongs = true;
+    private JSONArray blacklistedChannels = new JSONArray();
 
     public Guild(Long entityId) throws Exception {
         super(entityId);
@@ -29,13 +32,15 @@ public class Guild extends DatabaseEntitiy {
                 prefix = rs.getString("prefix");
                 djMode = rs.getBoolean("dj_mode");
                 announceSongs = rs.getBoolean("announce_songs");
+                blacklistedChannels = new JSONArray(rs.getString("blacklisted_channels"));
             } else {
-                PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO guilds (id, prefix, volume, dj_mode) VALUES (?, ?, ?, ?)");
+                PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO guilds (id, prefix, volume, dj_mode, blacklisted_channels) VALUES (?, ?, ?, ?, ?)");
                 insertStatement.setLong(1, entityId);
                 insertStatement.setString(2, prefix);
                 insertStatement.setInt(3, volume);
                 insertStatement.setBoolean(4, djMode);
-                ps.execute();
+                insertStatement.setString(5, blacklistedChannels.toString());
+                insertStatement.execute();
             }
         }
     }
@@ -43,12 +48,13 @@ public class Guild extends DatabaseEntitiy {
     @Override
     public void updateInDatabase() throws Exception {
         try (Connection connection = getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET volume = ?, prefix = ?, dj_mode = ?, announce_songs = ? WHERE id = ?");
+            PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET volume = ?, prefix = ?, dj_mode = ?, announce_songs = ?, blacklisted_channels = ? WHERE id = ?");
             ps.setInt(1, volume);
             ps.setString(2, prefix);
             ps.setBoolean(3, djMode);
             ps.setBoolean(4, announceSongs);
-            ps.setLong(5, entityId);
+            ps.setString(5, blacklistedChannels.toString());
+            ps.setLong(6, entityId);
             ps.execute();
         }
     }
@@ -71,6 +77,32 @@ public class Guild extends DatabaseEntitiy {
     public void setAnnounceSongs(boolean announceSongs) {
         this.announceSongs = announceSongs;
         update();
+    }
+
+    public void blacklistChannel(long channelId) {
+        blacklistedChannels.put(channelId);
+        update();
+    }
+
+    public void unBlacklistChannel(long channelId) {
+        if (isChannelBlacklisted(channelId)) {
+            final List<Object> channels = blacklistedChannels.toList();
+            channels.remove(channelId);
+            blacklistedChannels = new JSONArray(channels);
+            update();
+        }
+    }
+
+    public boolean hasBlacklistedChannels() {
+        return !blacklistedChannels.isEmpty();
+    }
+
+    public List<Object> getBlacklistedChannels() {
+        return blacklistedChannels.toList();
+    }
+
+    public boolean isChannelBlacklisted(long channelId) {
+        return blacklistedChannels.toList().contains(channelId);
     }
 
     private void update() {

@@ -20,7 +20,7 @@ public class KeyCommand extends Command {
     public Result run(String[] args, CommandEvent event) {
         if (args.length == 0)
             return sendHelp();
-        KeyManager keyManager = event.getGroovyBot().getKeyManager();
+        KeyManager keyManager = event.getBot().getKeyManager();
         if (!keyManager.keyExists(args[0]))
             return send(error(event.translate("command.key.invalidkey.title"), event.translate("command.key.invalidkey.description")));
         Key key = keyManager.getKey(args[0]);
@@ -49,7 +49,7 @@ public class KeyCommand extends Command {
             } catch (Exception e) {
                 return send(error(event.translate("command.key.invalidargument.title"), event.translate("command.key.invalidargument.title")));
             }
-            UUID id = event.getGroovyBot().getKeyManager().generateKey(type);
+            UUID id = event.getBot().getKeyManager().generateKey(type);
             return send(success(event.translate("command.key.created.title"), String.format(event.translate("command.key.created.description"), id.toString())));
         }
     }
