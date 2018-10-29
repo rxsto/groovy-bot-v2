@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.io.IOException;
@@ -39,7 +40,6 @@ public class Scheduler extends AudioEventAdapterWrapped {
     @Setter
     private boolean autoPlay = false;
 
-
     @Override
     public void onTrackStart(AudioPlayer audioPlayer, AudioTrack track) {
         player.announceSong(audioPlayer, track);
@@ -58,6 +58,13 @@ public class Scheduler extends AudioEventAdapterWrapped {
     private void handleTrackEnd(AudioTrack track, AudioTrackEndReason reason) {
         switch (reason) {
             case FINISHED:
+                Guild guild = ((MusicPlayer) player).getGuild();
+
+                if (guild.getSelfMember().getVoiceState().getChannel().getMembers().size() == 1) {
+                    player.stop();
+                    ((MusicPlayer) player).leave();
+                    return;
+                }
 
                 AudioTrack nextTrack = null;
 
@@ -94,9 +101,11 @@ public class Scheduler extends AudioEventAdapterWrapped {
 
                 player.play(nextTrack, false);
                 break;
+
             case LOAD_FAILED:
                 player.play(player.pollTrack(), true);
                 break;
+
             default:
                 break;
         }
@@ -122,18 +131,14 @@ public class Scheduler extends AudioEventAdapterWrapped {
             }
 
             @Override
-            public void playlistLoaded(AudioPlaylist playlist) {
-                System.out.println("playlists");
-            }
+            public void playlistLoaded(AudioPlaylist playlist) {}
 
             @Override
-            public void noMatches() {
-                System.out.println("no matched");
-            }
+            public void noMatches() {}
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                SafeMessage.editMessage(infoMessage, EmbedUtil.error("Unknown error", "An unknown error occurred while queueing song"));
+                SafeMessage.editMessage(infoMessage, EmbedUtil.error("Unknown error", "An unknown error occurred while queueing song!"));
                 log.error("[AutoPlay] Error while queueing song", exception);
             }
         });
