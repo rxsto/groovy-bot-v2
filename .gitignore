@@ -103,3 +103,6 @@ buildNumber.properties
 /src/test
 src/main/java/io/groovybot/bot/core/events/guilds/
 src/test/resources/
+/lavalink.env
+/groovy.sh
+/config/old-config.json
