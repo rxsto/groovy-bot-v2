@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class VotedCommand extends Command {
 
     public VotedCommand() {
-        super(new String[] {"voted"}, CommandCategory.GENERAL, Permissions.votedOnly(), "Get patreon features for free", "");
+        super(new String[]{"voted"}, CommandCategory.GENERAL, Permissions.votedOnly(), "Get patreon features for free", "");
     }
 
     @Override
@@ -23,6 +23,6 @@ public class VotedCommand extends Command {
         if (!premiumManager.isAllowed(groovyUser))
             return send(error(event.translate("command.voted.notpermitted.title"), event.translate("command.voted.notpermitted.description")));
         event.getBot().getPremiumManager().givePremium(groovyUser, 1, TimeUnit.HOURS);
-        return send(info("PREMIUUUM", "It looks like you have voted for us THANK YOU!"));
+        return send(info(event.translate("command.voted.title"), event.translate("command.voted.description")));
     }
 }

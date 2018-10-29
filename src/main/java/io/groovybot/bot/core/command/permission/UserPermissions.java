@@ -73,11 +73,11 @@ public class UserPermissions {
     public boolean hasVoted() {
         Request request = new Request.Builder()
                 .url(new HttpUrl.Builder()
-                                .scheme("https")
-                                .host("discordbots.org")
-                                .addPathSegments(String.format("api/bots/%s/check", "402116404301660181"))
-                                .addQueryParameter("userId", String.valueOf(user.getEntityId()))
-                                .build())
+                        .scheme("https")
+                        .host("discordbots.org")
+                        .addPathSegments(String.format("api/bots/%s/check", "402116404301660181"))
+                        .addQueryParameter("userId", String.valueOf(user.getEntityId()))
+                        .build())
                 .addHeader("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQwMjExNjQwNDMwMTY2MDE4MSIsImJvdCI6dHJ1ZSwiaWF0IjoxNTM4OTEzODMzfQ.iNAKR9LSr4jIGh1PL0FnxrvVXH-60lAjRmx1bd1fk6E")
                 .get()
                 .build();
