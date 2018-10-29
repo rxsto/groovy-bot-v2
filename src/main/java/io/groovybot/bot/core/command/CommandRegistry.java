@@ -54,11 +54,8 @@ public class CommandRegistry {
                 new AutoPlayCommand(),
                 new CloseCommand(),
                 new EvalCommand(),
-                new LyricsCommand(),
-                new SwitchCommand(),
-                new PartnerCommand(),
-                new BlackListCommand()
-                new UptimeCommand()
+                new VotedCommand(),
+                new JumpToCommand(),
         );
     }
 }

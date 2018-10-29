@@ -14,6 +14,7 @@ public class Permissions {
     private final Boolean tierTwoOnly;
     private final Boolean adminOnly;
     private final Boolean djOnly;
+    private final Boolean votedOnly;
     @Getter
     private final String identifier;
 
@@ -23,7 +24,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions everyone() {
-        return new Permissions(true, false, false, false, false, false, "everyone");
+        return new Permissions(true, false, false, false, false, false, false, "everyone");
     }
 
     /**
@@ -32,7 +33,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions ownerOnly() {
-        return new Permissions(false, true, false, false, false, false, "owner");
+        return new Permissions(false, true, false, false, false, false, false, "owner");
     }
 
     /**
@@ -41,7 +42,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions tierOne() {
-        return new Permissions(false, false, true, false, false, false, "tierone");
+        return new Permissions(false, false, true, false, false, false, false,"tierone");
     }
 
     /**
@@ -50,7 +51,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions tierTwo() {
-        return new Permissions(false, false, false, true, false, false, "tiertwo");
+        return new Permissions(false, false, false, true, false, false, false,"tiertwo");
     }
 
     /**
@@ -59,7 +60,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions adminOnly() {
-        return new Permissions(false, false, false, false, true, false, "admin");
+        return new Permissions(false, false, false, false, true, false, false,"admin");
     }
 
     /**
@@ -68,18 +69,28 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions djMode() {
-        return new Permissions(false, false, false, false, false, true, "djmode");
+        return new Permissions(false, false, false, false, false, true, false,"djmode");
+    }
+
+    /**
+     * Only users that voted for our bot on DBL
+     * @return a Permission object
+     */
+    public static Permissions votedOnly() {
+        return new Permissions(false, false, false, false, false, false, true, "voted");
     }
 
     public Boolean isCovered(UserPermissions permissions, CommandEvent event) {
-        if (permissions.getIsOwner())
-            return true;
+        /*if (permissions.getIsOwner())
+            return true;*/
         if (publicCommand)
             return true;
         if (ownerOnly)
             return permissions.getIsOwner();
         if (adminOnly)
             return permissions.getAdminOnly(event.getGuild());
+        if (votedOnly)
+            return permissions.hasVoted();
         if (tierOneOnly)
             return permissions.isTierOne();
         if (tierTwoOnly)

@@ -3,6 +3,8 @@ package io.groovybot.bot.core.command;
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.permission.UserPermissions;
 import io.groovybot.bot.core.entity.EntityProvider;
+import io.groovybot.bot.core.entity.Guild;
+import io.groovybot.bot.core.entity.User;
 import lombok.Getter;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
@@ -35,4 +37,19 @@ public class CommandEvent extends GuildMessageReceivedEvent {
     public String getArguments() {
         return String.join(" ", args);
     }
+
+    /**
+     * @return the Groovy user instance
+     */
+    public User getGroovyUser() {
+        return EntityProvider.getUser(getAuthor().getIdLong());
+    }
+
+    /**
+     * @return the Groovy guild instance
+     */
+    public Guild getGroovyGuid() {
+        return EntityProvider.getGuild(getGuild().getIdLong());
+    }
+
 }
