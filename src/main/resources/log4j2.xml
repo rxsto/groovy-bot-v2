@@ -5,20 +5,22 @@
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} » %msg%n"/>
+            <PatternLayout>
+                <pattern>[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} » %msg%n</pattern>
+            </PatternLayout>
             <JDAFilter/>
         </Console>
         <File name="LatestLog" append="false">
             <FileName>logs/latest.log</FileName>
             <PatternLayout>
-                <pattern>[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} » %msg%n</pattern>
+                <pattern>[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} - %msg%n</pattern>
             </PatternLayout>
             <JDAFilter/>
         </File>
         <File name="Log">
             <FileName>logs/bot-${fileDate}.log</FileName>
             <PatternLayout>
-                <pattern>[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} » %msg%n</pattern>
+                <pattern>[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} - %msg%n</pattern>
             </PatternLayout>
             <JDAFilter/>
         </File>

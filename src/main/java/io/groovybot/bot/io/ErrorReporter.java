@@ -68,7 +68,7 @@ public class ErrorReporter extends AbstractAppender {
     @Override
     public void append(LogEvent event) {
         if (errorHook == null && GroovyBot.getInstance().getConfig() != null)
-            errorHook = new WebhookClientBuilder(GroovyBot.getInstance().getConfig().getJSONObject("webhooks").getString("error_hook")).build();
+            errorHook = new WebhookClientBuilder(GroovyBot.getInstance().getConfig().getJSONObject("webhooks").getString("error")).build();
         if (errorHook == null)
             return;
         if (event.getThrown() != null)

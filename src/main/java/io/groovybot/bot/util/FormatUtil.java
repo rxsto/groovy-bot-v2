@@ -77,6 +77,22 @@ public class FormatUtil {
         return "g!" + command.getName() + " " + command.getUsage();
     }
 
+    public static String humanReadableByteCount(long bytes) {
+        int unit = 1024;
+        if (bytes < unit) return bytes + "B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = ("KMGTPE").charAt(exp - 1) + ("");
+        return String.format("%.1f%sB", bytes / Math.pow(unit, exp), pre).replace(",", ".");
+    }
+
+    public static String parseUptime(long time){
+        int days = (int)(time / 24 / 60 / 60 / 1000);
+        int hours = (int)((time - days * 86400000) / 60 / 60 / 1000);
+        int mins = (int)((time - days * 86400000 - hours * 3600000) / 60 / 1000);
+        int secs = (int)((time - days * 86400000 - hours * 3600000 - mins * 60000) / 1000);
+        return String.format("%sd, %sh, %smin, %ss", days, hours, mins, secs);
+    }
+    
     public static String formatUserName(User user) {
         return String.format("%s#%s", user.getName(), user.getDiscriminator());
     }

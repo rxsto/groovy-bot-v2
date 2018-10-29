@@ -35,10 +35,4 @@ public class CommandEvent extends GuildMessageReceivedEvent {
     public String getArguments() {
         return String.join(" ", args);
     }
-
-    @Deprecated
-    /*  Use get bot instead */
-    public GroovyBot getGroovyBot() {
-        return bot;
-    }
 }
