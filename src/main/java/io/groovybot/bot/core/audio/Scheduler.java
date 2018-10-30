@@ -67,7 +67,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
                 }
 
                 if (queueRepeating)
-                    player.trackQueue.add(track);
+                    player.trackQueue.add((QueuedTrack) track);
 
                 if (shuffle) {
                     if (player.trackQueue.isEmpty()) {
@@ -75,8 +75,8 @@ public class Scheduler extends AudioEventAdapterWrapped {
                     }
 
                     final int index = ThreadLocalRandom.current().nextInt(player.trackQueue.size());
-                    nextTrack = ((LinkedList<AudioTrack>) player.trackQueue).get(index);
-                    ((LinkedList<AudioTrack>) player.trackQueue).remove(index);
+                    nextTrack = ((LinkedList<QueuedTrack>) player.trackQueue).get(index);
+                    ((LinkedList<QueuedTrack>) player.trackQueue).remove(index);
                 }
 
                 ((MusicPlayer) player).setPreviousTrack(track);

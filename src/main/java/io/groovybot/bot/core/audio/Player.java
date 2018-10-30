@@ -12,16 +12,14 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.SelfUser;
 import net.dv8tion.jda.core.entities.User;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public abstract class Player {
 
     @Getter
     private final Scheduler scheduler;
     @Getter
-    public Queue<AudioTrack> trackQueue;
+    public Queue<QueuedTrack> trackQueue;
     @Getter
     public JdaLink link;
     @Getter
@@ -101,7 +99,7 @@ public abstract class Player {
         }
 
         if (playtop) {
-            ((LinkedList<AudioTrack>) trackQueue).addFirst(queuedTrack);
+            ((LinkedList<QueuedTrack>) trackQueue).addFirst(queuedTrack);
         } else {
             trackQueue.add(queuedTrack);
         }
@@ -110,8 +108,12 @@ public abstract class Player {
             play(pollTrack(), false);
     }
 
-    public void queueTracks(AudioTrack... tracks) {
-        trackQueue.addAll(Arrays.asList(tracks));
+    public void queueTracks(User requester, AudioTrack... tracks) {
+        List<QueuedTrack> trackList = new ArrayList<>();
+        for (AudioTrack track : tracks) {
+            trackList.add(new QueuedTrack(track, requester));
+        }
+        trackQueue.addAll(trackList);
         if (!isPlaying())
             play(pollTrack(), false);
     }

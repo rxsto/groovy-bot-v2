@@ -2,6 +2,7 @@ package io.groovybot.bot.commands.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.core.audio.MusicPlayer;
+import io.groovybot.bot.core.audio.QueuedTrack;
 import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
@@ -26,7 +27,7 @@ public class RemoveCommand extends SameChannelCommand {
         int query = Integer.parseInt(args[0]);
         if (query > player.trackQueue.size() || query < 1)
             return send(error(event.translate("command.remove.notinqueue.title"), event.translate("command.remove.notinqueue.description")));
-        ((LinkedList<AudioTrack>) player.trackQueue).remove(query - 1);
+        ((LinkedList<QueuedTrack>) player.trackQueue).remove(query - 1);
         return send(success(event.translate("command.remove.removed.title"), String.format(event.translate("command.remove.removed.description"), query)));
     }
 }

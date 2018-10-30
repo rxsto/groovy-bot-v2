@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.core.audio.MusicPlayer;
+import io.groovybot.bot.core.audio.QueuedTrack;
 import io.groovybot.bot.core.command.*;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.command.voice.SemiInChannelSubCommand;
@@ -128,7 +129,7 @@ public class PlaylistCommand extends Command {
                         .limit(25 - player.getQueueSize())
                         .filter(track -> track.getDuration() < 3600000)
                         .collect(Collectors.toList());
-            player.queueTracks(songs.toArray(new AudioTrack[0]));
+            player.queueTracks(event.getAuthor(), songs.toArray(new AudioTrack[0]));
             return send(success(event.translate("command.playlist.load.title"), String.format(event.translate("command.playlist.load.description"), playlist.getName())));
         }
     }
@@ -201,7 +202,9 @@ public class PlaylistCommand extends Command {
                 return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
             Playlist playlist = user.getPlaylists().get(args[0]);
             List<AudioTrack> tracks = playlist.getSongs().stream().limit(10).collect(Collectors.toList());
-            return send(QueueCommand.formatQueue(tracks, event, 1, null, 0, 0)
+            List<QueuedTrack> queuedTracks = new ArrayList<>();
+            tracks.forEach(track -> queuedTracks.add(new QueuedTrack(track, event.getAuthor())));
+            return send(QueueCommand.formatQueue(queuedTracks, event, 1, null, 0, 0)
                     .setTitle(playlist.getName() + " - " + playlist.getSongs().size() + " songs"));
         }
     }
