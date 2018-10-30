@@ -5,10 +5,7 @@ import io.groovybot.bot.commands.music.*;
 import io.groovybot.bot.commands.owner.CloseCommand;
 import io.groovybot.bot.commands.owner.EvalCommand;
 import io.groovybot.bot.commands.owner.UpdateCommand;
-import io.groovybot.bot.commands.settings.AnnounceCommand;
-import io.groovybot.bot.commands.settings.DjModeCommand;
-import io.groovybot.bot.commands.settings.LanguageCommand;
-import io.groovybot.bot.commands.settings.PrefixCommand;
+import io.groovybot.bot.commands.settings.*;
 
 public class CommandRegistry {
 
@@ -59,7 +56,9 @@ public class CommandRegistry {
                 new EvalCommand(),
                 new VotedCommand(),
                 new JumpCommand(),
-                new UptimeCommand()
+                new UptimeCommand(),
+                new LyricsCommand(),
+                new BlackListCommand()
         );
     }
 }
