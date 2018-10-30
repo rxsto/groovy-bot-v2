@@ -27,7 +27,6 @@ public class GuildLogger {
     @SuppressWarnings("unused")
     private void onGuildJoin(GuildJoinEvent event) {
         sendMessage(event.getGuild(), true, event);
-        joinMessage(event.getGuild());
     }
 
     @SubscribeEvent
@@ -45,52 +44,5 @@ public class GuildLogger {
                         .build()
         );
         client.send(out.build());
-    }
-
-    private void joinMessage(Guild guild) {
-        List channels = guild.getTextChannels();
-
-        Map<String, TextChannel> sortedChannels = new HashMap<>();
-        Set<TextChannel> preferredChannels = new HashSet<>();
-
-        for (Object channel : channels) {
-            TextChannel textChannel = ((TextChannel) channel);
-            sortedChannels.put(textChannel.getName(), textChannel);
-        }
-
-        sortedChannels.forEach((name, channel) -> {
-            if (name.contains("music"))
-                preferredChannels.add(channel);
-            if (name.contains("bot"))
-                preferredChannels.add(channel);
-            if (name.contains("command"))
-                preferredChannels.add(channel);
-            if (name.contains("talk"))
-                preferredChannels.add(channel);
-            if (name.contains("chat"))
-                preferredChannels.add(channel);
-            if (name.contains("general"))
-                preferredChannels.add(channel);
-        });
-
-        boolean found = false;
-
-        for (Object channel : preferredChannels) {
-            if (((TextChannel) channel).canTalk()) {
-                EmbedUtil.sendMessageBlocking(((TextChannel) channel), EmbedUtil.welcome(guild));
-                found = true;
-                break;
-            }
-        }
-
-        if (found)
-            return;
-
-        for (Object channel : channels) {
-            if (((TextChannel) channel).canTalk()) {
-                EmbedUtil.sendMessageBlocking(((TextChannel) channel), EmbedUtil.welcome(guild));
-                break;
-            }
-        }
     }
 }
