@@ -2,6 +2,7 @@ package io.groovybot.bot.commands.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.core.audio.MusicPlayer;
+import io.groovybot.bot.core.audio.QueuedTrack;
 import io.groovybot.bot.core.command.CommandCategory;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
@@ -10,6 +11,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 import net.dv8tion.jda.core.utils.Helpers;
 
 import java.util.LinkedList;
+import java.util.Queue;
 
 public class MoveCommand extends SameChannelCommand {
 
@@ -31,12 +33,12 @@ public class MoveCommand extends SameChannelCommand {
         if (songPos == wantPos)
             return send(error(event.translate("phrases.samenumbers.title"), event.translate("phrases.samenumbers.description")));
 
-        LinkedList<AudioTrack> trackQueue = (LinkedList<AudioTrack>) player.getTrackQueue();
+        LinkedList<QueuedTrack> trackQueue = (LinkedList<QueuedTrack>) player.getTrackQueue();
 
         int songPosIndex = songPos - 1;
         int wantPosIndex = wantPos - 1;
 
-        AudioTrack preSave = trackQueue.get(songPosIndex);
+        QueuedTrack preSave = trackQueue.get(songPosIndex);
         trackQueue.remove(songPosIndex);
         trackQueue.add(wantPosIndex, preSave);
 

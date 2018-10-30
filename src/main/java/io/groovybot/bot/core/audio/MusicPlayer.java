@@ -177,7 +177,7 @@ public class MusicPlayer extends Player {
                 }
 
                 if (isURL) {
-                    queueTracks(tracks.toArray(new AudioTrack[0]));
+                    queueTracks(event.getAuthor(), tracks.toArray(new AudioTrack[0]));
                     SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), audioPlaylist.getName())));
                     return;
                 }
