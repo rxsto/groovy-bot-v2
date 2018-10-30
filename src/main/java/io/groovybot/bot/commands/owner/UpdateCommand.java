@@ -21,7 +21,7 @@ public class UpdateCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        Map<Long, MusicPlayer> players = event.getGroovyBot().getMusicPlayerManager().getPlayerStorage();
+        Map<Long, MusicPlayer> players = event.getBot().getMusicPlayerManager().getPlayerStorage();
 
         players.forEach((id, player) -> {
             try {

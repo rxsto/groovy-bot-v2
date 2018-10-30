@@ -29,35 +29,12 @@ public class LavalinkManager {
     private GroovyBot groovyBot;
 
     public LavalinkManager(GroovyBot groovyBot) {
-        log.info("[Lavalink] Connecting to lavalink nodes");
+        log.info("[LavalinkManager] Connecting to Nodes ...");
         this.groovyBot = groovyBot;
         this.audioPlayerManager = new DefaultAudioPlayerManager();
         audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());
         audioPlayerManager.registerSourceManager(new SoundCloudAudioSourceManager());
         audioPlayerManager.registerSourceManager(new HttpAudioSourceManager());
-    }
-
-    public void initialize() {
-        lavalink = new JdaLavalink(
-                groovyBot.getShardManager().getApplicationInfo().complete().getId(),
-                groovyBot.getShardManager().getShardsTotal(),
-                groovyBot.getShardManager()::getShardById
-        );
-        try (Connection connection = groovyBot.getPostgreSQL().getDataSource().getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM lavalink_nodes");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next())
-                lavalink.addNode(URI.create(rs.getString("uri")), rs.getString("password"));
-        } catch (SQLException e) {
-            log.error("[Lavalink] Error while loading lavalink");
-        }
-    }
-
-    @SubscribeEvent
-    @SuppressWarnings("unused")
-    private void onEvent(Event event) {
-        if (lavalink != null)
-            lavalink.onEvent(event);
     }
 
     public static int countPlayers() {
@@ -71,5 +48,34 @@ public class LavalinkManager {
                 }
         );
         return playingPlayers.get();
+    }
+
+    public void initialize() {
+        log.info("[LavalinkManager] Initializing Lavalink and trying to connect to Nodes ...");
+
+        lavalink = new JdaLavalink(
+                groovyBot.getShardManager().getApplicationInfo().complete().getId(),
+                groovyBot.getShardManager().getShardsTotal(),
+                groovyBot.getShardManager()::getShardById
+        );
+
+        try (Connection connection = groovyBot.getPostgreSQL().getDataSource().getConnection()) {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM lavalink_nodes");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                lavalink.addNode(URI.create(rs.getString("uri")), rs.getString("password"));
+        } catch (SQLException e) {
+            log.error("[LavalinkManager] Error while loading Lavalink!");
+            return;
+        }
+
+        log.info(String.format("[LavalinkManager] Successfully initialized Lavalink with %s %s!", lavalink.getNodes().size(), lavalink.getNodes().size() == 1 ? "Node" : "Nodes"));
+    }
+
+    @SubscribeEvent
+    @SuppressWarnings("unused")
+    private void onEvent(Event event) {
+        if (lavalink != null)
+            lavalink.onEvent(event);
     }
 }
