@@ -58,7 +58,8 @@ public class CommandRegistry {
                 new CloseCommand(),
                 new EvalCommand(),
                 new VotedCommand(),
-                new JumpCommand()
+                new JumpCommand(),
+                new UptimeCommand()
         );
     }
 }
