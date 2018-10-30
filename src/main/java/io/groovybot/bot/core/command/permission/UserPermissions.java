@@ -82,6 +82,7 @@ public class UserPermissions {
                 .get()
                 .build();
         try (Response response = GroovyBot.getInstance().getHttpClient().newCall(request).execute()) {
+            assert response.body() != null;
             return new JSONObject(response.body().string()).getInt("voted") == 1;
         } catch (IOException e) {
             log.error("[DBL] Error occurred while retrieving vote information");
