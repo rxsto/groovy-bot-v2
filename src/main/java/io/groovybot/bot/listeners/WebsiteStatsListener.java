@@ -2,29 +2,16 @@ package io.groovybot.bot.listeners;
 
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.io.WebsocketConnection;
-import io.groovybot.bot.util.NameThreadFactory;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
-import org.json.JSONObject;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("unused")
 @Log4j2
-public class WebsiteStatsListener implements Runnable {
-
-    private final ScheduledExecutorService scheduler;
-
-    public WebsiteStatsListener() {
-        scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("websiteStats"));
-        scheduler.scheduleAtFixedRate(this, 0, 30, TimeUnit.SECONDS);
-    }
+public class WebsiteStatsListener {
 
     @SubscribeEvent
     private void onGuildJoin(GuildJoinEvent event) {
@@ -44,15 +31,6 @@ public class WebsiteStatsListener implements Runnable {
     @SubscribeEvent
     private void onMemberLeave(GuildMemberLeaveEvent event) {
         updateStats();
-    }
-
-    @Override
-    public void run() {
-        sendHeartBeat();
-    }
-
-    private void sendHeartBeat() {
-        GroovyBot.getInstance().getWebsocket().send(WebsocketConnection.parseMessage("bot", "heartbeat", new JSONObject().put("state", "alive")).toString());
     }
 
     private void updateStats() {
