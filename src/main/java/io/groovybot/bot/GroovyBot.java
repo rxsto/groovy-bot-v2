@@ -207,9 +207,10 @@ public class GroovyBot {
                 .addEventListeners(
                         this,
                         new ShardsListener(),
-                        new CommandLogger(),
                         new GuildLogger(),
+                        new CommandLogger(),
                         new SelfMentionListener(),
+                        new JoinGuildListener(),
                         commandManager,
                         lavalinkManager,
                         interactionManager,
