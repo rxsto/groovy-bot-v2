@@ -5,6 +5,7 @@ import io.groovybot.bot.core.entity.Guild;
 import io.groovybot.bot.core.events.command.CommandExecutedEvent;
 import io.groovybot.bot.core.events.command.CommandFailEvent;
 import io.groovybot.bot.core.events.command.NoPermissionEvent;
+import io.groovybot.bot.util.NameThreadFactory;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.Permission;
@@ -13,21 +14,26 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
+import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Log4j2
-public class CommandManager {
+public class CommandManager implements Closeable {
 
     @Getter
     private final Map<String, Command> commandAssociations;
     private final String defaultPrefix;
     private final GroovyBot bot;
+    private final ExecutorService executor;
 
     public CommandManager(String defaultPrefix, GroovyBot bot) {
         commandAssociations = new HashMap<>();
         this.defaultPrefix = defaultPrefix;
         this.bot = bot;
+        this.executor = Executors.newCachedThreadPool(new NameThreadFactory("CommandExecutor"));
     }
 
     @SubscribeEvent
@@ -45,7 +51,7 @@ public class CommandManager {
         User author = event.getAuthor();
         if (author.isBot() || author.isFake() || event.isWebhookMessage())
             return;
-        parseCommands(event);
+        executor.execute(() -> parseCommands(event));
     }
 
     private void parseCommands(GuildMessageReceivedEvent event) {
@@ -138,12 +144,17 @@ public class CommandManager {
      *
      * @param command The command handler {@link io.groovybot.bot.core.command.Command}
      */
-    private void registerCommand(Command command) {
+    public void registerCommand(Command command) {
         for (String alias : command.getAliases()) {
             if (commandAssociations.containsKey(alias))
                 log.warn(String.format("[CommandManager] Alias %s is already taken by %s", alias, commandAssociations.get(alias).getClass().getCanonicalName()));
             else
                 commandAssociations.put(alias, command);
         }
+    }
+
+    @Override
+    public void close() {
+        executor.shutdown();
     }
 }

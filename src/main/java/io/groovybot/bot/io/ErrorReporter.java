@@ -35,7 +35,7 @@ public class ErrorReporter extends AbstractAppender {
     private WebhookMessage buildErrorLog(LogEvent event) {
         WebhookMessageBuilder out = new WebhookMessageBuilder();
         Throwable throwable = event.getThrown();
-        EmbedBuilder builder =  EmbedUtil.error("An unknown error occurred", String.format("An unkown error occurred in class %s", event.getLoggerName())
+        EmbedBuilder builder = EmbedUtil.error("An unknown error occurred", String.format("An unkown error occurred in class %s", event.getLoggerName())
         )
                 .addField("Class", "`" + event.getLoggerName() + "`", false)
                 .addField("Message", "`" + formatException(throwable) + "`", false)
@@ -68,7 +68,7 @@ public class ErrorReporter extends AbstractAppender {
     @Override
     public void append(LogEvent event) {
         if (errorHook == null && GroovyBot.getInstance().getConfig() != null)
-            errorHook = new WebhookClientBuilder(GroovyBot.getInstance().getConfig().getJSONObject("webhooks").getString("error_hook")).build();
+            errorHook = new WebhookClientBuilder(GroovyBot.getInstance().getConfig().getJSONObject("webhooks").getString("error")).build();
         if (errorHook == null)
             return;
         if (event.getThrown() != null)

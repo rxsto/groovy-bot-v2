@@ -24,10 +24,10 @@ public class SpotifyManager {
     @Getter
     private final SpotifyApi spotifyApi;
 
-    public SpotifyManager(String clientId, String clientToken) {
+    public SpotifyManager(String clientId, String clientSecret) {
         this.httpClient = new OkHttpClient.Builder().build();
         this.spotifyApi = SpotifyApi.builder()
-                .setAccessToken(getToken(Credentials.basic(clientId, clientToken)))
+                .setAccessToken(getToken(Credentials.basic(clientId, clientSecret)))
                 .build();
     }
 
@@ -52,8 +52,8 @@ public class SpotifyManager {
 
     public Track getTrack(String url) {
         final String trackId = parseTrackPattern(url);
-		if (trackId == null) 
-			return null;
+        if (trackId == null)
+            return null;
         GetTrackRequest getTrackRequest = this.spotifyApi.getTrack(trackId)
                 .build();
         Track track = null;

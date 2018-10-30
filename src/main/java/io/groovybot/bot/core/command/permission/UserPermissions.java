@@ -8,7 +8,12 @@ import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -63,5 +68,24 @@ public class UserPermissions {
                 return true;
         }
         return false;
+    }
+
+    public boolean hasVoted() {
+        Request request = new Request.Builder()
+                .url(new HttpUrl.Builder()
+                        .scheme("https")
+                        .host("discordbots.org")
+                        .addPathSegments(String.format("api/bots/%s/check", "402116404301660181"))
+                        .addQueryParameter("userId", String.valueOf(user.getEntityId()))
+                        .build())
+                .addHeader("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQwMjExNjQwNDMwMTY2MDE4MSIsImJvdCI6dHJ1ZSwiaWF0IjoxNTM4OTEzODMzfQ.iNAKR9LSr4jIGh1PL0FnxrvVXH-60lAjRmx1bd1fk6E")
+                .get()
+                .build();
+        try (Response response = GroovyBot.getInstance().getHttpClient().newCall(request).execute()) {
+            return new JSONObject(response.body().string()).getInt("voted") == 1;
+        } catch (IOException e) {
+            log.error("[DBL] Error occurred while retrieving vote information");
+            return false;
+        }
     }
 }
