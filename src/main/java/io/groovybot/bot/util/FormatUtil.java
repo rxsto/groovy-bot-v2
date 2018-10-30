@@ -117,7 +117,18 @@ public class FormatUtil {
             dateFormat = new SimpleDateFormat("mm:ss");
         else if (count > 2)
             dateFormat = new SimpleDateFormat("HH:mm:ss");
+        assert dateFormat != null;
         return dateFormat.parse(timestamp).getTime() + TimeUnit.HOURS.toMillis(1);
     }
 
+    public static String formatLyrics(String lyrics) {
+        String edit = lyrics.replaceAll("\\[(.*?)]", "**[$1]**");
+        if (edit.length() > 2000) {
+            String pre = edit.substring(0, 2000);
+            if (pre.substring(pre.lastIndexOf(' ') + 1).contains("**"))
+                pre = pre.substring(0, pre.lastIndexOf(" "));
+            return pre + " ...";
+        }
+        return edit;
+    }
 }
