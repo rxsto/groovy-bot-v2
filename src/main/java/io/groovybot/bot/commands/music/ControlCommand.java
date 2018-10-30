@@ -57,7 +57,7 @@ public class ControlCommand extends SameChannelCommand {
                         confirmMessage.delete().queue();
                     });
         } else
-            new Thread(() -> new ControlPanel(event, sendInfoMessage(event), event.getChannel(), event.getMember(), player), "ControlPanel").start();
+            new Thread(() -> new ControlPanel(event, sendInfoMessage(event), event.getChannel(), event.getMember(), player), "command.control").start();
         return null;
     }
 
@@ -90,7 +90,7 @@ public class ControlCommand extends SameChannelCommand {
             this.commandEvent = commandEvent;
             this.channel = author.getGuild().getSelfMember().getVoiceState().getChannel();
             this.player = player;
-            this.scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("ControlPanel"));
+            this.scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("command.control"));
             for (String emote : EMOTES) {
                 waitForEntity(getInfoMessage().addReaction(emote));
             }
@@ -112,27 +112,27 @@ public class ControlCommand extends SameChannelCommand {
                 case "⏯":
                     if (!player.isPaused()) {
                         musicPlayer.setPaused(true);
-                        sendMessage(translate(author, "controlpanel.paused.title"), translate(author, "controlpanel.paused.description"));
+                        sendMessage(translate(author, "command.control.paused.title"), translate(author, "command.control.paused.description"));
                     } else {
                         musicPlayer.setPaused(false);
-                        sendMessage(translate(author, "controlpanel.resumed.title"), translate(author, "controlpanel.resumed.description"));
+                        sendMessage(translate(author, "command.control.resumed.title"), translate(author, "command.control.resumed.description"));
                     }
                     break;
                 case "⏭":
                     this.player.skip();
-                    sendMessage(translate(author, "controlpanel.skipped.title"), translate(author, "controlpanel.skipped.description"));
+                    sendMessage(translate(author, "command.control.skipped.title"), translate(author, "command.control.skipped.description"));
                     break;
                 case "\uD83D\uDD02":
                     if (playerScheduler.isQueueRepeating() || playerScheduler.isShuffle()) {
-                        sendMessage(translate(author, "controlpanel.disable.loopqueueshuffle.title"), translate(author, "controlpanel.disable.loopqueueshuffle.description"));
+                        sendMessage(translate(author, "command.control.disable.loopqueueshuffle.title"), translate(author, "command.control.disable.loopqueueshuffle.description"));
                         break;
                     }
                     if (!playerScheduler.isRepeating()) {
                         playerScheduler.setRepeating(true);
-                        sendMessage(translate(author, "controlpanel.repeating.enabled.title"), translate(author, "controlpanel.repeating.enabled.description"));
+                        sendMessage(translate(author, "command.control.repeating.enabled.title"), translate(author, "command.control.repeating.enabled.description"));
                     } else {
                         playerScheduler.setRepeating(false);
-                        sendMessage(translate(author, "controlpanel.repeating.disabled.title"), translate(author, "controlpanel.repeating.disabled.description"));
+                        sendMessage(translate(author, "command.control.repeating.disabled.title"), translate(author, "command.control.repeating.disabled.description"));
                     }
                     break;
                 case "\uD83D\uDD01":
@@ -141,15 +141,15 @@ public class ControlCommand extends SameChannelCommand {
                         break;
                     }
                     if (playerScheduler.isRepeating() || playerScheduler.isShuffle()) {
-                        sendMessage(translate(author, "controlpanel.disable.loopshuffle.title"), translate(author, "controlpanel.disable.loopshuffle.description"));
+                        sendMessage(translate(author, "command.control.disable.loopshuffle.title"), translate(author, "command.control.disable.loopshuffle.description"));
                         break;
                     }
                     if (!playerScheduler.isQueueRepeating()) {
                         playerScheduler.setQueueRepeating(true);
-                        sendMessage(translate(author, "controlpanel.queuerepeating.enabled.title"), translate(author, "controlpanel.queuerepeating.enabled.description"));
+                        sendMessage(translate(author, "command.control.queuerepeating.enabled.title"), translate(author, "command.control.queuerepeating.enabled.description"));
                     } else {
                         playerScheduler.setQueueRepeating(false);
-                        sendMessage(translate(author, "controlpanel.queuerepeating.disabled.title"), translate(author, "controlpanel.queuerepeating.disabled.description"));
+                        sendMessage(translate(author, "command.control.queuerepeating.disabled.title"), translate(author, "command.control.queuerepeating.disabled.description"));
                     }
                     break;
                 case "\uD83D\uDD00":
@@ -158,42 +158,42 @@ public class ControlCommand extends SameChannelCommand {
                         break;
                     }
                     if (playerScheduler.isRepeating() || playerScheduler.isQueueRepeating()) {
-                        sendMessage(translate(author, "controlpanel.disable.loopqueueloop.title"), translate(author, "controlpanel.disable.loopqueueloop.description"));
+                        sendMessage(translate(author, "command.control.disable.loopqueueloop.title"), translate(author, "command.control.disable.loopqueueloop.description"));
                         break;
                     }
                     if (!playerScheduler.isShuffle()) {
                         playerScheduler.setShuffle(true);
-                        sendMessage(translate(author, "controlpanel.disable.enabled.title"), translate(author, "controlpanel.shuffle.enabled.description"));
+                        sendMessage(translate(author, "command.control.disable.enabled.title"), translate(author, "command.control.shuffle.enabled.description"));
                     } else {
                         playerScheduler.setShuffle(false);
-                        sendMessage(translate(author, "controlpanel.shuffle.disabled.title"), translate(author, "controlpanel.shuffle.disabled.description"));
+                        sendMessage(translate(author, "command.control.shuffle.disabled.title"), translate(author, "command.control.shuffle.disabled.description"));
                     }
                     break;
                 case "\uD83D\uDD0A":
                     if (musicPlayer.getVolume() == 200) {
-                        sendMessage(translate(author, "controlpanel.volume.tohigh.title"), translate(author, "controlpanel.volume.tohigh.description"));
+                        sendMessage(translate(author, "command.control.volume.tohigh.title"), translate(author, "command.control.volume.tohigh.description"));
                         return;
                     }
                     if (musicPlayer.getVolume() >= 190)
                         this.player.setVolume(200);
                     else
                         this.player.setVolume(musicPlayer.getVolume() + 10);
-                    sendMessage(translate(author, "controlpanel.volume.increased.title"), String.format(translate(author, "controlpanel.volume.increased.description"), musicPlayer.getVolume()));
+                    sendMessage(translate(author, "command.control.volume.increased.title"), String.format(translate(author, "command.control.volume.increased.description"), musicPlayer.getVolume()));
                     break;
                 case "\uD83D\uDD09":
                     if (musicPlayer.getVolume() == 0) {
-                        sendMessage(translate(author, "controlpanel.volume.tolow.title"), translate(author, "controlpanel.volume.tolow.description"));
+                        sendMessage(translate(author, "command.control.volume.tolow.title"), translate(author, "command.control.volume.tolow.description"));
                         return;
                     }
                     if (musicPlayer.getVolume() <= 10)
                         this.player.setVolume(0);
                     else
                         this.player.setVolume(musicPlayer.getVolume() - 10);
-                    sendMessage(translate(author, "controlpanel.volume.decreased.title"), String.format(translate(author, "controlpanel.volume.decreased.description"), musicPlayer.getVolume()));
+                    sendMessage(translate(author, "command.control.volume.decreased.title"), String.format(translate(author, "command.control.volume.decreased.description"), musicPlayer.getVolume()));
                     break;
                 case "\uD83D\uDD04":
                     player.seekTo(0);
-                    sendMessage(translate(author, "controlpanel.reset.title"), String.format(translate(author, "controlpanel.reset.description"), musicPlayer.getVolume()));
+                    sendMessage(translate(author, "command.control.reset.title"), String.format(translate(author, "command.control.reset.description"), musicPlayer.getVolume()));
                     break;
                 default:
                     break;
