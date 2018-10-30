@@ -100,3 +100,4 @@ src/test/resources/
 /config/old-config.json
 
 *.gz
+/update.mp3
