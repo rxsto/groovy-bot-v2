@@ -255,13 +255,13 @@ public class GroovyBot {
         guildCache = new Cache<>(Guild.class);
         userCache = new Cache<>(User.class);
 
-        // Initializing players
-        try {
+        // Initializing players - CURRENTLY NONFUNCTIONAL
+        /*try {
             log.info("[MusicPlayerManager] Initializing MusicPlayers ...");
             musicPlayerManager.initPlayers();
         } catch (SQLException | IOException e) {
             log.error("[MusicPlayerManager] Error while initializing MusicPlayers!", e);
-        }
+        }*/
 
         // Initializing websocket
         if (enableWebsocket)
