@@ -6,6 +6,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.safety.Whitelist;
 
 import java.io.IOException;
 
@@ -32,11 +36,33 @@ public class GeniusClient {
                 .get()
                 .build();
         try (Response response = httpClient.newCall(request).execute()) {
+            assert response.body() != null;
             return GENIUS_BASE + new JSONObject(response.body().string()).getJSONObject("response").getJSONArray("hits").getJSONObject(0).getJSONObject("result").getString("path");
         } catch (IOException | JSONException e) {
-            log.error("[Genius] An error occurred while getting song");
-            return "";
+            return null;
         }
     }
 
+    public String getLyrics(String url) {
+        try {
+            Document document = Jsoup.connect(url).get();
+            document.select("br").append("\\n");
+            document.select("p").prepend("\\n\\n");
+            Element element = document.selectFirst(".lyrics");
+            return Jsoup.clean(element.html(), "", Whitelist.none(), new Document.OutputSettings().prettyPrint(false)).replace("\\n", "\n");
+        } catch (IOException e) {
+            log.error("[GeniusClient] An error occurred while getting lyrics!", e);
+            return null;
+        }
+    }
+
+    public String getTitle(String url) {
+        try {
+            Document document = Jsoup.connect(url).get();
+            return document.title().split(" \\| Genius Lyrics")[0];
+        } catch (IOException e) {
+            log.error("[GeniusClient] An error occurred while getting lyrics!", e);
+            return null;
+        }
+    }
 }
