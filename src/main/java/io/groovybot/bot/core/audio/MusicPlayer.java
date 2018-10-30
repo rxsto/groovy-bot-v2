@@ -251,6 +251,10 @@ public class MusicPlayer extends Player {
             // Initialize preparedstatement
             PreparedStatement ps = connection.prepareStatement("INSERT INTO queues (guild_id, current_track, current_position, queue, channel_id, text_channel_id, volume) VALUES (?,?,?,?,?,?,?)");
 
+            // Checking if able to update
+            if (player.getPlayingTrack() == null || guild.getSelfMember().getVoiceState().getChannel() == null)
+                return;
+
             // Set values for preparedstatement
             ps.setLong(1, guild.getIdLong());
             ps.setString(2, LavalinkUtil.toMessage(player.getPlayingTrack()));
@@ -259,16 +263,17 @@ public class MusicPlayer extends Player {
             ps.setLong(5, guild.getSelfMember().getVoiceState().getChannel().getIdLong());
             ps.setLong(6, channel.getIdLong());
             ps.setInt(7, player.getVolume());
-
-
             ps.execute();
+
             this.clearQueue();
             getScheduler().setShuffle(false);
             getScheduler().setQueueRepeating(false);
             getScheduler().setRepeating(false);
             setVolume(100);
+
             if (isPaused())
                 resume();
+
             getAudioPlayerManager().loadItem("https://cdn.groovybot.gq/sounds/update.mp3", new AudioLoadResultHandler() {
                 @Override
                 public void trackLoaded(AudioTrack track) {
