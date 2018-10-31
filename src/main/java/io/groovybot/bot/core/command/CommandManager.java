@@ -63,8 +63,8 @@ public class CommandManager implements Closeable {
 
         // Check if channel is not commandschannel
         if (guild.hasCommandsChannel())
-            if (event.getChannel() != guild.getCommandsChannel()) {
-                EmbedUtil.sendMessage(event.getChannel(), EmbedUtil.error("Not allowed!", String.format("It is **not allowed** to use me in **this channel** as %s is the **only** channel for **commands**!", guild.getCommandsChannel().getAsMention())), 5);
+            if (event.getChannel() != guild.getBotChannel()) {
+                EmbedUtil.sendMessage(event.getChannel(), EmbedUtil.error("Not allowed!", String.format("It is **not allowed** to use me in **this channel** as %s is the **only** channel for **commands**!", guild.getBotChannel().getAsMention())), 5);
                 return;
             }
 

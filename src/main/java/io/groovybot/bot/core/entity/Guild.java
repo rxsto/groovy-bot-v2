@@ -2,7 +2,6 @@ package io.groovybot.bot.core.entity;
 
 import io.groovybot.bot.GroovyBot;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import net.dv8tion.jda.core.entities.TextChannel;
 import org.json.JSONArray;
@@ -36,7 +35,8 @@ public class Guild extends DatabaseEntitiy {
                 prefix = rs.getString("prefix");
                 djMode = rs.getBoolean("dj_mode");
                 announceSongs = rs.getBoolean("announce_songs");
-                if (rs.getObject("commands_channel") != null) botChannel = GroovyBot.getInstance().getShardManager().getTextChannelById(rs.getLong("commands_channel"));
+                if (rs.getObject("commands_channel") != null)
+                    botChannel = GroovyBot.getInstance().getShardManager().getTextChannelById(rs.getLong("commands_channel"));
                 else botChannel = null;
                 blacklistedChannels = new JSONArray(rs.getString("blacklisted_channels"));
             } else {

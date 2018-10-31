@@ -21,10 +21,9 @@ public class SpotifyManager {
     private static final Pattern PLAYLIST_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/user/(.*)/playlist/([^?/\\s]*)");
     private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/track/([^?/\\s]*)");
     private final OkHttpClient httpClient;
+    private final String clientId, clientSecret;
     @Getter
     private SpotifyApi spotifyApi;
-    private final String clientId, clientSecret;
-
     private volatile long accessTokenExpires = 0;
     private volatile String accessToken = "";
 
