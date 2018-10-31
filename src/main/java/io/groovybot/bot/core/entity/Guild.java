@@ -22,7 +22,6 @@ public class Guild extends DatabaseEntitiy {
     private boolean announceSongs = true;
     private JSONArray blacklistedChannels = new JSONArray();
     @Getter
-    @Setter
     private TextChannel botChannel = null;
 
     public Guild(Long entityId) throws Exception {
@@ -90,6 +89,11 @@ public class Guild extends DatabaseEntitiy {
 
     public void blacklistChannel(long channelId) {
         blacklistedChannels.put(channelId);
+        update();
+    }
+
+    public void setBotChannel(TextChannel botChannel) {
+        this.botChannel = botChannel;
         update();
     }
 

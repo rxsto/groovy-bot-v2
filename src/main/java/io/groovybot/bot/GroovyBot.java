@@ -210,6 +210,7 @@ public class GroovyBot {
                         new JoinGuildListener(),
                         new CommandLogger(),
                         new Logger(),
+                        new BlacklistWatcher(guildCache),
                         commandManager,
                         lavalinkManager,
                         interactionManager,

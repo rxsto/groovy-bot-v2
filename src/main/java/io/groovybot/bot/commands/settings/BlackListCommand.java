@@ -84,6 +84,9 @@ public class BlackListCommand extends Command {
                 }
                 channelNames.append(channel.getAsMention()).append(",");
             });
+            if (channelNames.toString().equals(""))
+                return send(error(event.translate("command.blacklist.nochannels.title"), event.translate("command.blacklist.nochannels.description")));
+
             channelNames.replace(channelNames.lastIndexOf(","), channelNames.lastIndexOf(",") + 1, "");
             return send(info(event.translate("command.blacklist.list.title"), String.format(event.translate("command.blacklist.list.description"), channelNames.toString())));
         }

@@ -24,7 +24,7 @@ public class BotChannelCommand extends Command {
             if (mentionedChannels.isEmpty())
                 return sendHelp();
             else {
-                event.getGroovyGuild().setCommandsChannel(mentionedChannels.get(0));
+                event.getGroovyGuild().setBotChannel(mentionedChannels.get(0));
                 return send(success(event.translate("command.botchannel.title"), String.format(event.translate("command.botchannel.description"), mentionedChannels.get(0))));
             }
         }
@@ -40,8 +40,8 @@ public class BotChannelCommand extends Command {
         public Result run(String[] args, CommandEvent event) {
             if (!event.getGroovyGuild().hasCommandsChannel())
                 return send(error(event.translate("command.botchannel.no.channel.title"), event.translate("command.botchannel.no.channel.description")));
-            TextChannel oldBotChannel = event.getGroovyGuild().getCommandsChannel();
-            event.getGroovyGuild().setCommandsChannel(null);
+            TextChannel oldBotChannel = event.getGroovyGuild().getBotChannel();
+            event.getGroovyGuild().setBotChannel(null);
             return send(success(event.translate("command.botchannel.disable.title"), String.format(event.translate("command.botchannel.disable.description"), oldBotChannel.getAsMention())));
         }
     }
