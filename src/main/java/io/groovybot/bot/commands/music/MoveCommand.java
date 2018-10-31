@@ -1,6 +1,5 @@
 package io.groovybot.bot.commands.music;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.audio.QueuedTrack;
 import io.groovybot.bot.core.command.CommandCategory;
@@ -11,7 +10,6 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 import net.dv8tion.jda.core.utils.Helpers;
 
 import java.util.LinkedList;
-import java.util.Queue;
 
 public class MoveCommand extends SameChannelCommand {
 

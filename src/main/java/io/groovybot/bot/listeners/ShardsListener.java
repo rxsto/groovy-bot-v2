@@ -17,6 +17,6 @@ public class ShardsListener {
         tempLoadedShards++;
         ShardManager shardManager = GroovyBot.getInstance().getShardManager();
         if (tempLoadedShards == shardManager.getShardsTotal())
-            GroovyBot.getInstance().getEventManager().handle(new AllShardsLoadedEvent(event.getJDA(), 200));
+            GroovyBot.getInstance().getEventManager().handle(new AllShardsLoadedEvent(event.getJDA(), event.getResponseNumber()));
     }
 }

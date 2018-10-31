@@ -1,6 +1,5 @@
 package io.groovybot.bot.commands.music;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.audio.QueuedTrack;
 import io.groovybot.bot.core.command.CommandCategory;

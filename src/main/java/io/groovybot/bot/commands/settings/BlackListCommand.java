@@ -10,7 +10,7 @@ import java.util.List;
 public class BlackListCommand extends Command {
 
     public BlackListCommand() {
-        super(new String[]{"blacklist"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Block commands in some channels", "");
+        super(new String[]{"blacklist", "bl"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Block commands in some channels", "");
         registerSubCommand(new ListCommand());
         registerSubCommand(new AddCommand());
         registerSubCommand(new RemoveCommand());
@@ -26,7 +26,7 @@ public class BlackListCommand extends Command {
     private class AddCommand extends SubCommand {
 
         public AddCommand() {
-            super(new String[]{"add", "block", "blacklist"}, Permissions.adminOnly(), "Let's you block commands in a channel", "<#channel>");
+            super(new String[]{"add", "block"}, Permissions.adminOnly(), "Let's you block commands in a channel", "<#channel>");
         }
 
         @Override
@@ -46,7 +46,7 @@ public class BlackListCommand extends Command {
     private class RemoveCommand extends SubCommand {
 
         public RemoveCommand() {
-            super(new String[]{"remove", "del", "unblock"}, Permissions.adminOnly(), "Unblocks commands from a channel", "<#channel>");
+            super(new String[]{"remove", "rm", "unblock"}, Permissions.adminOnly(), "Unblocks commands from a channel", "<#channel>");
         }
 
         @Override
@@ -61,7 +61,6 @@ public class BlackListCommand extends Command {
             guild.unBlacklistChannel(target.getIdLong());
             return send(success(event.translate("command.blacklist.removed.title"), String.format(event.translate("command.blacklist.removed.description"), target.getName())));
         }
-
     }
 
     private class ListCommand extends SubCommand {
@@ -83,8 +82,11 @@ public class BlackListCommand extends Command {
                     guild.unBlacklistChannel(channelId);
                     return;
                 }
-                channelNames.append("`").append(channel.getName()).append("`").append(",");
+                channelNames.append(channel.getAsMention()).append(",");
             });
+            if (channelNames.toString().equals(""))
+                return send(error(event.translate("command.blacklist.nochannels.title"), event.translate("command.blacklist.nochannels.description")));
+
             channelNames.replace(channelNames.lastIndexOf(","), channelNames.lastIndexOf(",") + 1, "");
             return send(info(event.translate("command.blacklist.list.title"), String.format(event.translate("command.blacklist.list.description"), channelNames.toString())));
         }

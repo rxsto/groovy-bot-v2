@@ -102,4 +102,4 @@ src/test/resources/
 *.gz
 /update.mp3
 
-latest\.log
+*.log

@@ -48,7 +48,6 @@ import org.json.JSONObject;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 
 @Log4j2
 public class GroovyBot {
@@ -207,10 +206,11 @@ public class GroovyBot {
                 .addEventListeners(
                         this,
                         new ShardsListener(),
-                        new GuildLogger(),
-                        new CommandLogger(),
                         new SelfMentionListener(),
                         new JoinGuildListener(),
+                        new CommandLogger(),
+                        new Logger(),
+                        new BlacklistWatcher(guildCache),
                         commandManager,
                         lavalinkManager,
                         interactionManager,
