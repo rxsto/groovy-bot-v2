@@ -50,5 +50,4 @@ public class PlaylistManager {
             log.error("[Playlist] Error while deleting playlist", e);
         }
     }
-
 }

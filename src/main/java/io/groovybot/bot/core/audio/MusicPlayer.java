@@ -144,7 +144,7 @@ public class MusicPlayer extends Player {
                         EmbedUtil.info("Spotify Search Query", track.getArtists()[0].getName() + " - " + track.getName())
                 );
                 keyword = "ytsearch: " + track.getArtists()[0].getName() + " - " + track.getName();
-                log.info(keyword);
+                log.debug(keyword);
                 isUrl = false;
             }
         }
