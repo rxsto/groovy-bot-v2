@@ -22,32 +22,63 @@ public class SpotifyManager {
     private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/track/([^?/\\s]*)");
     private final OkHttpClient httpClient;
     @Getter
-    private final SpotifyApi spotifyApi;
+    private SpotifyApi spotifyApi;
+    private final String clientId, clientSecret;
+
+    private volatile long accessTokenExpires = 0;
+    private volatile String accessToken = "";
 
     public SpotifyManager(String clientId, String clientSecret) {
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
         this.httpClient = new OkHttpClient.Builder().build();
+
+        refreshAccessToken();
+        if (accessToken.isEmpty() || accessToken.equals(""))
+            return;
         this.spotifyApi = SpotifyApi.builder()
-                .setAccessToken(getToken(Credentials.basic(clientId, clientSecret)))
+                .setAccessToken(accessToken)
                 .build();
     }
 
-    private String getToken(String auth) {
+    private void refreshAccessToken() {
+        if (System.currentTimeMillis() > this.accessTokenExpires) try {
+            retrieveAccessToken();
+        } catch (Exception e) {
+            log.error("the access token could not be refreshed", e);
+        }
+    }
+
+    private void retrieveAccessToken() {
+        //checks if the clientId or the clientSecret are null or even the default value
+        if ((this.clientId.isEmpty() || this.clientId.equals("defaultvalue"))
+                || (this.clientSecret.isEmpty() || this.clientSecret.equals("defaultvalue"))) {
+            log.info("The clientId or the clientSecret haven't been set correctly! Please configure your Spotify credentials, to use the Spotify api.");
+            return;
+        }
+
+        //creating post request to Spotify api
         FormBody.Builder formBody = new FormBody.Builder();
         formBody.add("grant_type", "client_credentials");
         Request.Builder requestBuilder = new Request.Builder()
                 .post(formBody.build())
-                .header("Authorization", auth)
+                .header("Authorization", Credentials.basic(this.clientId, this.clientSecret))
                 .url("https://accounts.spotify.com/api/token");
+        //executing post request
         try (Response response = httpClient.newCall(requestBuilder.build()).execute()) {
             if (response.body() != null) {
                 JSONObject jsonObject = new JSONObject(response.body().string());
-                if (jsonObject.has("access_token"))
-                    return jsonObject.getString("access_token");
+                //checking if access token is available
+                if (jsonObject.has("access_token")) {
+                    //declaring the access token and the time after the access token expires
+                    this.accessToken = jsonObject.getString("access_token");
+                    this.accessTokenExpires = System.currentTimeMillis() + (jsonObject.getInt("expires_in") * 100);
+                    log.debug("received access token: " + accessToken + " which expires in: " + jsonObject.getInt("expires_in") + " seconds.");
+                }
             }
         } catch (IOException e) {
-            log.error(e);
+            log.error("the access token couldn't be retrieved", e);
         }
-        return null;
     }
 
     public Track getTrack(String url) {
@@ -60,7 +91,7 @@ public class SpotifyManager {
         try {
             track = getTrackRequest.execute();
         } catch (IOException | SpotifyWebApiException e) {
-            log.error(e);
+            log.error("the track could not be retrieved", e);
         }
         return track;
     }

@@ -39,7 +39,7 @@ public class FormatUtil {
      * Formats the milliseconds of a song duration to a readable timestamp
      *
      * @param millis The milliseconds
-     * @return the timespamt as a string
+     * @return the timestamp as a string
      */
     public static String formatTimestamp(long millis) {
         long seconds = millis / 1000;
