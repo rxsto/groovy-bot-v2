@@ -48,7 +48,7 @@ public class CommandEvent extends GuildMessageReceivedEvent {
     /**
      * @return the Groovy guild instance
      */
-    public Guild getGroovyGuid() {
+    public Guild getGroovyGuild() {
         return EntityProvider.getGuild(getGuild().getIdLong());
     }
 

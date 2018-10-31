@@ -58,7 +58,8 @@ public class CommandRegistry {
                 new JumpCommand(),
                 new UptimeCommand(),
                 new LyricsCommand(),
-                new BlackListCommand()
+                new BlackListCommand(),
+                new BotChannelCommand()
         );
     }
 }
