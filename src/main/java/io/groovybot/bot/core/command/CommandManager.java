@@ -5,6 +5,7 @@ import io.groovybot.bot.core.entity.Guild;
 import io.groovybot.bot.core.events.command.CommandExecutedEvent;
 import io.groovybot.bot.core.events.command.CommandFailEvent;
 import io.groovybot.bot.core.events.command.NoPermissionEvent;
+import io.groovybot.bot.util.EmbedUtil;
 import io.groovybot.bot.util.NameThreadFactory;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -39,18 +40,18 @@ public class CommandManager implements Closeable {
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onMessageRecieved(GuildMessageReceivedEvent event) {
-        //Check if all shards are running
-        if (!bot.isAllShardsInitialized()) {
-            return;
-        }
-        //Check if event is not a CommandEvent
-        if (event instanceof CommandEvent) {
-            return;
-        }
-        //Check if invoker is real
+
+        // Check if all shards are running
+        if (!event.getGuild().getId().equals("403882830225997825"))
+            if (!bot.isAllShardsInitialized())
+                return;
+
+        // Check if event is not a CommandEvent
+        if (event instanceof CommandEvent) return;
+
+        // Check if invoker is real
         User author = event.getAuthor();
-        if (author.isBot() || author.isFake() || event.isWebhookMessage())
-            return;
+        if (author.isBot() || author.isFake() || event.isWebhookMessage()) return;
         executor.execute(() -> parseCommands(event));
     }
 
@@ -59,10 +60,21 @@ public class CommandManager implements Closeable {
         String content = event.getMessage().getContentRaw();
         String lowerCasedContent = content.toLowerCase();
         Guild guild = bot.getGuildCache().get(event.getGuild().getIdLong());
-        //Check if channel is blacklisted
-        if (guild.isChannelBlacklisted(event.getChannel().getIdLong()))
+
+        // Check if channel is not commandschannel
+        if (guild.hasCommandsChannel())
+            if (event.getChannel() != guild.getCommandsChannel()) {
+                EmbedUtil.sendMessage(event.getChannel(), EmbedUtil.error("Not allowed!", String.format("It is **not allowed** to use me in **this channel** as %s is the **only** channel for **commands**!", guild.getCommandsChannel().getAsMention())), 5);
+                return;
+            }
+
+        // Check if channel is blacklisted
+        if (guild.isChannelBlacklisted(event.getChannel().getIdLong())) {
+            EmbedUtil.sendMessage(event.getChannel(), EmbedUtil.error("Not allowed!", "It is **not allowed** to use me in **this channel** as this channel is **blacklisted**!"), 5);
             return;
-        //Check prefix
+        }
+
+        // Check prefix
         if (lowerCasedContent.startsWith(defaultPrefix))
             prefix = defaultPrefix;
         else {
@@ -77,22 +89,27 @@ public class CommandManager implements Closeable {
                     prefix = customPrefix;
             }
         }
+
         //Abort if message don't start with the right prefix
-        if (prefix == null)
-            return;
+        if (prefix == null) return;
+
         //Remove prefix
         String beheaded = content.substring(prefix.length()).trim();
+
         //Split arguments
         String[] allArgs = beheaded.split("\\s+");
         String invocation = allArgs[0].toLowerCase();
+
         //Search for commands
-        if (!commandAssociations.containsKey(invocation))
-            return;
+        if (!commandAssociations.containsKey(invocation)) return;
+
         Command command = commandAssociations.get(invocation);
+
         //Remove invocation
         String[] commandArgs = new String[allArgs.length - 1];
         System.arraycopy(allArgs, 1, commandArgs, 0, commandArgs.length);
         String[] args;
+
         //Check for sub commands
         if (commandArgs.length > 0 && command.getSubCommandAssociations().containsKey(commandArgs[0])) {
             command = command.getSubCommandAssociations().get(commandArgs[0]);
@@ -110,15 +127,19 @@ public class CommandManager implements Closeable {
             bot.getEventManager().handle(new NoPermissionEvent(commandEvent, command));
             return;
         }
+
         //Run command
         try {
             TextChannel channel = commandEvent.getChannel();
+
             //Send typing
             channel.sendTyping().queue();
+
             //Delete invoke message
             if (commandEvent.getGuild().getSelfMember().hasPermission(commandEvent.getChannel(), Permission.MESSAGE_MANAGE))
                 commandEvent.getMessage().delete().queue();
-            //Run the commands run method
+
+            //Run the commands run() method
             Result result = command.run(commandEvent.getArgs(), commandEvent);
             if (result != null)
                 result.sendMessage(channel, 60);
@@ -129,7 +150,7 @@ public class CommandManager implements Closeable {
     }
 
     /**
-     * Registers a command handler
+     * Registers commands
      *
      * @param commands The command handlers {@link io.groovybot.bot.core.command.Command}
      */
@@ -140,7 +161,7 @@ public class CommandManager implements Closeable {
     }
 
     /**
-     * Registers  a command handler
+     * Registers a command
      *
      * @param command The command handler {@link io.groovybot.bot.core.command.Command}
      */
