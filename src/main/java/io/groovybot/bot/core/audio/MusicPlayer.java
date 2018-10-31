@@ -30,8 +30,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -137,15 +136,42 @@ public class MusicPlayer extends Player {
         }
 
         if ((keyword.startsWith("http://") || keyword.startsWith("https://")) && keyword.contains("spotify")) {
-            Track track = event.getBot().getSpotifyClient().getTrack(keyword);
-            if (track != null) {
-                SafeMessage.sendMessageBlocking(
-                        event.getChannel(),
-                        EmbedUtil.info("Spotify Search Query", track.getArtists()[0].getName() + " - " + track.getName())
-                );
-                keyword = "ytsearch: " + track.getArtists()[0].getName() + " - " + track.getName();
-                log.debug(keyword);
-                isUrl = false;
+            if (keyword.contains("track")) {
+                Track track = event.getBot().getSpotifyClient().getTrack(keyword);
+                if (track != null) {
+                    SafeMessage.sendMessageBlocking(
+                            event.getChannel(),
+                            EmbedUtil.info("Spotify Search Query", track.getArtists()[0].getName() + " - " + track.getName())
+                    );
+                    keyword = "ytsearch: " + track.getArtists()[0].getName() + " - " + track.getName();
+                    log.debug(keyword);
+                    isUrl = false;
+                }
+            } else if (keyword.contains("playlist")) {
+                List<String> trackList = event.getBot().getSpotifyClient().getPlaylistImporter().getPlaylistItems(keyword);
+//                event.getBot().getSpotifyClient().searchForTracks(keyword, 0);
+//                trackList.forEach(track -> getAudioPlayerManager().loadItem("ytsearch: " + track, new AudioLoadResultHandler() {
+//                    @Override
+//                    public void trackLoaded(AudioTrack track) {
+//
+//                    }
+//
+//                    @Override
+//                    public void playlistLoaded(AudioPlaylist playlist) {
+//
+//                    }
+//
+//                    @Override
+//                    public void noMatches() {
+//
+//                    }
+//
+//                    @Override
+//                    public void loadFailed(FriendlyException exception) {
+//
+//                    }
+//                }));
+                return;
             }
         }
 
@@ -159,6 +185,7 @@ public class MusicPlayer extends Player {
                     return;
                 queueTrack(audioTrack, force, playtop, event.getAuthor());
                 queuedTrack(audioTrack, infoMessage, event);
+
             }
 
             @Override
