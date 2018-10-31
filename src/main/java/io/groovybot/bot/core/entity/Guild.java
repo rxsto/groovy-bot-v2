@@ -2,7 +2,9 @@ package io.groovybot.bot.core.entity;
 
 import io.groovybot.bot.GroovyBot;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
+import net.dv8tion.jda.core.entities.TextChannel;
 import org.json.JSONArray;
 
 import java.sql.Connection;
@@ -19,6 +21,9 @@ public class Guild extends DatabaseEntitiy {
     private boolean djMode = false;
     private boolean announceSongs = true;
     private JSONArray blacklistedChannels = new JSONArray();
+    @Getter
+    @Setter
+    private TextChannel botChannel = null;
 
     public Guild(Long entityId) throws Exception {
         super(entityId);
@@ -32,6 +37,8 @@ public class Guild extends DatabaseEntitiy {
                 prefix = rs.getString("prefix");
                 djMode = rs.getBoolean("dj_mode");
                 announceSongs = rs.getBoolean("announce_songs");
+                if (rs.getObject("commands_channel") != null) botChannel = GroovyBot.getInstance().getShardManager().getTextChannelById(rs.getLong("commands_channel"));
+                else botChannel = null;
                 blacklistedChannels = new JSONArray(rs.getString("blacklisted_channels"));
             } else {
                 PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO guilds (id, prefix, volume, dj_mode, blacklisted_channels) VALUES (?, ?, ?, ?, ?)");
@@ -48,13 +55,15 @@ public class Guild extends DatabaseEntitiy {
     @Override
     public void updateInDatabase() throws Exception {
         try (Connection connection = getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET volume = ?, prefix = ?, dj_mode = ?, announce_songs = ?, blacklisted_channels = ? WHERE id = ?");
+            PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET volume = ?, prefix = ?, dj_mode = ?, announce_songs = ?, commands_channel = ?, blacklisted_channels = ? WHERE id = ?");
             ps.setInt(1, volume);
             ps.setString(2, prefix);
             ps.setBoolean(3, djMode);
             ps.setBoolean(4, announceSongs);
-            ps.setString(5, blacklistedChannels.toString());
-            ps.setLong(6, entityId);
+            if (hasCommandsChannel()) ps.setLong(5, botChannel.getIdLong());
+            else ps.setObject(5, null);
+            ps.setString(6, blacklistedChannels.toString());
+            ps.setLong(7, entityId);
             ps.execute();
         }
     }
@@ -95,6 +104,10 @@ public class Guild extends DatabaseEntitiy {
 
     public boolean hasBlacklistedChannels() {
         return !blacklistedChannels.isEmpty();
+    }
+
+    public boolean hasCommandsChannel() {
+        return botChannel != null;
     }
 
     public List<Object> getBlacklistedChannels() {
