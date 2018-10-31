@@ -22,17 +22,17 @@ public class SafeMessage extends JDAUtil {
                 return channel.sendMessage(message);
             else
                 return channel.sendMessage(formatEmbed(message));
-        return channel.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage(String.format("I am unable to write on your server in channel %s", channel.getName()));
+        return channel.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage(String.format(":no_entry_sign: I am unable to write on your server in channel %s!", channel.getAsMention()));
     }
 
-    private static MessageAction getEditAction(Message prevoiusMessage, Message newMessage) {
-        Channel channel = prevoiusMessage.getTextChannel();
+    private static MessageAction getEditAction(Message previousMessage, Message newMessage) {
+        TextChannel channel = previousMessage.getTextChannel();
         if (hasWritePermissions(channel))
             if (hasEmbedPermissions(channel))
-                return prevoiusMessage.editMessage(newMessage);
+                return previousMessage.editMessage(newMessage);
             else
-                return prevoiusMessage.editMessage(formatEmbed(newMessage));
-        return channel.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage(String.format("I am unable to write on your server in channel %s", channel.getName()));
+                return previousMessage.editMessage(formatEmbed(newMessage));
+        return channel.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage(String.format(":no_entry_sign: I am unable to write on your server in channel %s!", channel.getAsMention()));
     }
 
     public static void editMessage(Message prevoiusMessage, EmbedBuilder builder) {
