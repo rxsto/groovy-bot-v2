@@ -1,6 +1,7 @@
 package io.groovybot.bot.listeners;
 
 import io.groovybot.bot.GroovyBot;
+import io.groovybot.bot.core.audio.LavalinkManager;
 import io.groovybot.bot.io.WebsocketConnection;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
@@ -36,6 +37,6 @@ public class WebsiteStatsListener {
     private void updateStats() {
         if (GroovyBot.getInstance().getWebsocket() == null || GroovyBot.getInstance().getWebsocket().isClosed() || !GroovyBot.getInstance().getWebsocket().isOpen())
             return;
-        GroovyBot.getInstance().getWebsocket().send(WebsocketConnection.parseMessage("bot", "poststats", WebsocketConnection.parseStats(GroovyBot.getInstance().getLavalinkManager().countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
+        GroovyBot.getInstance().getWebsocket().send(WebsocketConnection.parseMessage("bot", "poststats", WebsocketConnection.parseStats(LavalinkManager.countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
     }
 }
