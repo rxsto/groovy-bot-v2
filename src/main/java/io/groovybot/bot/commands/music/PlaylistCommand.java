@@ -87,7 +87,7 @@ public class PlaylistCommand extends Command {
     private class RemoveCommand extends SubCommand {
 
         public RemoveCommand() {
-            super(new String[]{"remove"}, Permissions.everyone(), "Removes a track from a playlist", "<name> <index>");
+            super(new String[]{"remove", "rm"}, Permissions.everyone(), "Removes a track from a playlist", "<name> <index>");
         }
 
         @Override
@@ -212,7 +212,7 @@ public class PlaylistCommand extends Command {
     private class SaveCommand extends SubCommand {
 
         public SaveCommand() {
-            super(new String[]{"save", "savequeue"}, Permissions.everyone(), "Saves the queue into a playlist", "<name>");
+            super(new String[]{"save", "sv", "savequeue"}, Permissions.everyone(), "Saves the queue into a playlist", "<name>");
         }
 
         @Override
