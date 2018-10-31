@@ -4,6 +4,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import io.groovybot.bot.core.audio.QueuedTrack;
 import io.groovybot.bot.core.command.Command;
+import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.SubCommand;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.User;
@@ -130,5 +131,16 @@ public class FormatUtil {
             return pre + " ...";
         }
         return edit;
+    }
+
+    public static String parseShardsMessage(CommandEvent event) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        event.getBot().getShardManager().getShards().forEach(shard -> {
+
+            stringBuilder.append(String.format("%s. %s - %s - %s - %sms", shard.getShardInfo().getShardId() + 1, event.getBot().getShardManager().getStatus(shard.getShardInfo().getShardId()), shard.getGuilds().size(), shard.getUsers().size(), shard.getPing())).append("\n");
+        });
+
+        return stringBuilder.toString();
     }
 }
