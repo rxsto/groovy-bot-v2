@@ -3,9 +3,9 @@ package io.groovybot.bot.core.audio;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.*;
 import com.wrapper.spotify.model_objects.specification.Track;
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.CommandEvent;
@@ -207,6 +207,7 @@ public class MusicPlayer extends Player {
 
                 if (!checkSong(track))
                     return;
+
                 queueTrack(track, force, playtop, event.getAuthor());
                 queuedTrack(track, infoMessage, event);
             }
