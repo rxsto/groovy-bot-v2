@@ -129,6 +129,7 @@ public class MusicPlayer extends Player {
         }
         String keyword = event.getArguments();
         boolean isUrl = true;
+        Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), event.getArguments())));
 
         if (!keyword.startsWith("http://") && !keyword.startsWith("https://")) {
             keyword = "ytsearch: " + keyword;
@@ -149,33 +150,28 @@ public class MusicPlayer extends Player {
                 }
             } else if (keyword.contains("playlist")) {
                 List<String> trackList = event.getBot().getSpotifyClient().getPlaylistImporter().getPlaylistItems(keyword);
-//                event.getBot().getSpotifyClient().searchForTracks(keyword, 0);
-//                trackList.forEach(track -> getAudioPlayerManager().loadItem("ytsearch: " + track, new AudioLoadResultHandler() {
-//                    @Override
-//                    public void trackLoaded(AudioTrack track) {
-//
-//                    }
-//
-//                    @Override
-//                    public void playlistLoaded(AudioPlaylist playlist) {
-//
-//                    }
-//
-//                    @Override
-//                    public void noMatches() {
-//
-//                    }
-//
-//                    @Override
-//                    public void loadFailed(FriendlyException exception) {
-//
-//                    }
-//                }));
-                return;
+                Queue<String> queue = new LinkedList<>(trackList);
+                queue.forEach(s -> getAudioPlayerManager().loadItem("ytsearch: " + s, new AudioLoadResultHandler() {
+                    @Override
+                    public void trackLoaded(AudioTrack track) {
+                    }
+
+                    @Override
+                    public void playlistLoaded(AudioPlaylist playlist) {
+                        AudioTrack track = playlist.getTracks().get(0);
+                        queueTrack(track, force, playtop, event.getAuthor());
+                    }
+
+                    @Override
+                    public void noMatches() {
+                    }
+
+                    @Override
+                    public void loadFailed(FriendlyException exception) {
+                    }
+                }));
             }
         }
-
-        Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), event.getArguments())));
 
         final boolean isURL = isUrl;
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
@@ -185,7 +181,6 @@ public class MusicPlayer extends Player {
                     return;
                 queueTrack(audioTrack, force, playtop, event.getAuthor());
                 queuedTrack(audioTrack, infoMessage, event);
-
             }
 
             @Override
@@ -309,17 +304,14 @@ public class MusicPlayer extends Player {
 
                 @Override
                 public void playlistLoaded(AudioPlaylist playlist) {
-
                 }
 
                 @Override
                 public void noMatches() {
-
                 }
 
                 @Override
                 public void loadFailed(FriendlyException exception) {
-
                 }
             });
         }

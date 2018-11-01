@@ -1,12 +1,10 @@
 package io.groovybot.bot.core.audio.spotify;
 
-import com.sedmelluq.discord.lavaplayer.track.*;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.specification.Playlist;
 import com.wrapper.spotify.model_objects.specification.Track;
 import com.wrapper.spotify.requests.data.tracks.GetTrackRequest;
-import io.groovybot.bot.core.audio.SearchResultHandler;
 import io.groovybot.bot.core.audio.spotify.request.GetNormalPlaylistRequest;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -14,12 +12,7 @@ import okhttp3.*;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,10 +26,8 @@ public class SpotifyManager {
     private final String clientId, clientSecret;
     @Getter
     private SpotifyApi spotifyApi;
-    private final String clientId, clientSecret;
     @Getter
     private final SpotifyPlaylistImporter playlistImporter;
-    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     private volatile long accessTokenExpires = 0;
     private volatile String accessToken = "";
@@ -93,23 +84,6 @@ public class SpotifyManager {
         } catch (IOException e) {
             log.error("The access token couldn't be retrieved", e);
         }
-    }
-
-    public AudioPlaylist searchForTracks(String query, int timeout) {
-        SearchResultHandler.PlaylistSearchException playlistSearchException = null;
-        List<AudioTrack> trackList = new ArrayList<>();
-        Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/search?q=" + query + "&type=track")
-                .header("Authorization", "Bearer " + accessToken)
-                .get()
-                .build();
-        try (Response response = httpClient.newCall(request).execute()) {
-            JSONObject jsonObject = new JSONObject(response.body().string());
-            log.info(jsonObject.toString(2));
-        } catch (IOException e) {
-            log.error(e);
-        }
-        return new BasicAudioPlaylist("No searching results for " + query, Collections.emptyList(), null, true);
     }
 
     public Track getTrack(String url) {
