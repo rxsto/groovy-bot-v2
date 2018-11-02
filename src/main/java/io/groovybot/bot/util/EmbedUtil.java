@@ -50,27 +50,6 @@ public class EmbedUtil extends SafeMessage {
     }
 
     /**
-     * Creates an standard embed
-     *
-     * @param title       The title of the embed
-     * @param description The description of the embed
-     * @return an EmbedBuiler
-     */
-    public static EmbedBuilder standard(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle(title).setColor(Colors.DARK_BUT_NOT_BLACK);
-    }
-
-    /**
-     * Creates an no-titled embed
-     *
-     * @param description The description of the embed
-     * @return an EmbedBuiler
-     */
-    public static EmbedBuilder notitle(String description) {
-        return new EmbedBuilder().setDescription(description).setColor(Colors.DARK_BUT_NOT_BLACK);
-    }
-
-    /**
      * Creates an play embed
      *
      * @param title       The title of the embed
@@ -79,17 +58,6 @@ public class EmbedUtil extends SafeMessage {
      */
     public static EmbedBuilder play(String title, String description) {
         return new EmbedBuilder().setDescription(description).setTitle("🎶 " + title).setColor(Colors.DARK_BUT_NOT_BLACK);
-    }
-
-    /**
-     * Creates an join embed
-     *
-     * @param title       The title of the embed
-     * @param description The description of the embed
-     * @return an EmbedBuiler
-     */
-    public static EmbedBuilder join(String title, String description, boolean joined) {
-        return new EmbedBuilder().setDescription(description).setTitle(String.format("%s ", joined ? "✅" : "❌") + title).setColor(Colors.DARK_BUT_NOT_BLACK);
     }
 
     /**
