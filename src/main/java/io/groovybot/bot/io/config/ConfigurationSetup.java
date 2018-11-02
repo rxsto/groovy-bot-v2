@@ -50,8 +50,9 @@ public class ConfigurationSetup {
 
         // Create object for webhooks
         final JSONObject webhook = new JSONObject();
-        webhook.put("error", "defaultvalue");
-        webhook.put("guilds", "defaultvalue");
+        webhook.put("error_logger", "defaultvalue");
+        webhook.put("guild_logger", "defaultvalue");
+        webhook.put("user_logger", "defaultvalue");
         configuration.addDefault("webhooks", webhook);
 
         // Create object for youtube
