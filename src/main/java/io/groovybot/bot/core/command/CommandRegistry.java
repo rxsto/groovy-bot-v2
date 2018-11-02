@@ -24,8 +24,6 @@ public class CommandRegistry {
                 new PrefixCommand(),
                 new LanguageCommand(),
                 new PlayCommand(),
-                new PlayTopCommand(),
-                new ForcePlayCommand(),
                 new PauseCommand(),
                 new ResumeCommand(),
                 new SkipCommand(),
@@ -54,12 +52,15 @@ public class CommandRegistry {
                 new AutoPlayCommand(),
                 new CloseCommand(),
                 new EvalCommand(),
-                new VotedCommand(),
                 new JumpCommand(),
                 new UptimeCommand(),
                 new LyricsCommand(),
                 new BlackListCommand(),
-                new BotChannelCommand()
+                new BotChannelCommand(),
+                new SwitchCommand(),
+                new PartnerCommand(),
+                new SettingsCommand(),
+                new UserSettingsCommand()
         );
     }
 }
