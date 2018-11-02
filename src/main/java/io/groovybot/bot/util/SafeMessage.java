@@ -88,7 +88,6 @@ public class SafeMessage extends JDAUtil {
         }
     }
 
-
     private static boolean hasWritePermissions(Channel channel) {
         if (channel.getGuild() == null)
             return false;
@@ -110,5 +109,4 @@ public class SafeMessage extends JDAUtil {
     private static Message buildMessage(String content) {
         return new MessageBuilder().setContent(content).build();
     }
-
 }
