@@ -48,6 +48,7 @@ import org.json.JSONObject;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 
 @Log4j2
 public class GroovyBot {
@@ -128,7 +129,7 @@ public class GroovyBot {
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
 
-        log.info("Starting Groovy ...");
+        log.info("[Core] Starting Groovy ...");
 
         // Initializing filemanager
         new FileManager();
@@ -168,7 +169,7 @@ public class GroovyBot {
 
     public static void main(String[] args) throws IOException {
         if (instance != null)
-            throw new RuntimeException("Groovy was already initialized in this VM!");
+            throw new RuntimeException("[Core] Groovy was already initialized in this VM!");
         new GroovyBot(args);
     }
 
@@ -225,7 +226,7 @@ public class GroovyBot {
             log.info("[LavalinkManager] Initializing LavalinkManager ...");
             lavalinkManager.initialize();
         } catch (LoginException e) {
-            log.error("[ShardManager] Could not initialize bot!", e);
+            log.error("[Core] Could not initialize bot!", e);
             Runtime.getRuntime().exit(1);
         }
     }
@@ -256,12 +257,12 @@ public class GroovyBot {
         userCache = new Cache<>(User.class);
 
         // Initializing players - CURRENTLY NONFUNCTIONAL
-        /*try {
+        try {
             log.info("[MusicPlayerManager] Initializing MusicPlayers ...");
             musicPlayerManager.initPlayers();
         } catch (SQLException | IOException e) {
             log.error("[MusicPlayerManager] Error while initializing MusicPlayers!", e);
-        }*/
+        }
 
         // Initializing websocket
         if (enableWebsocket)
