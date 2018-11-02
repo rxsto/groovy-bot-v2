@@ -29,7 +29,7 @@ public class KeyManager {
 
     public Key getKey(String key) {
         try {
-            ResultSet rs = Objects.requireNonNull(getKeyInfo(key).executeQuery());
+            ResultSet rs = Objects.requireNonNull(Objects.requireNonNull(getKeyInfo(key)).executeQuery());
             if (rs.next())
                 return new Key(Key.KeyType.valueOf(rs.getString("type")), UUID.fromString(rs.getString("key")), dataSource);
         } catch (SQLException e) {
