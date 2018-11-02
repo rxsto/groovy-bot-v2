@@ -5,13 +5,15 @@ public class DatabaseGenerator {
     public DatabaseGenerator(PostgreSQL postgreSQL) {
         postgreSQL.addDefault(() -> "create table if not exists guilds\n" +
                 "(\n" +
-                "  id             bigint                not null\n" +
+                "  id                   bigint                not null\n" +
                 "    constraint guilds_pkey\n" +
                 "    primary key,\n" +
-                "  prefix         varchar,\n" +
-                "  volume         integer,\n" +
-                "  dj_mode        boolean default false not null,\n" +
-                "  announce_songs boolean default true\n" +
+                "  prefix               varchar,\n" +
+                "  volume               integer,\n" +
+                "  dj_mode              boolean default false not null,\n" +
+                "  announce_songs       boolean default true,\n" +
+                "  blacklisted_channels varchar default '[]' :: character varying,\n" +
+                "  commands_channel     bigint\n" +
                 ");");
 
         postgreSQL.addDefault(() -> "create table if not exists keys\n" +
