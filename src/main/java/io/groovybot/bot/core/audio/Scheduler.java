@@ -29,10 +29,10 @@ public class Scheduler extends AudioEventAdapterWrapped {
     private final Player player;
     @Getter
     @Setter
-    private boolean queueRepeating = false;
+    private boolean loopqueue = false;
     @Getter
     @Setter
-    private boolean repeating = false;
+    private boolean loop = false;
     @Getter
     @Setter
     private boolean shuffle = false;
@@ -60,6 +60,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
             case FINISHED:
                 Guild guild = ((MusicPlayer) player).getGuild();
 
+                // Leave if bot alone
                 if (guild.getSelfMember().getVoiceState().getChannel().getMembers().size() == 1) {
                     player.stop();
                     ((MusicPlayer) player).leave();
@@ -68,34 +69,41 @@ public class Scheduler extends AudioEventAdapterWrapped {
 
                 AudioTrack nextTrack = null;
 
-                if (repeating) {
-                    track.setPosition(0);
-                    nextTrack = track;
+                // Loop-mode (repeat ended song)
+                if (loop) {
+                    player.play(track);
+                    return;
                 }
 
-                if (queueRepeating) player.trackQueue.add((QueuedTrack) track);
+                // Loopqueue-mode (add track to end of queue)
+                if (loopqueue) player.trackQueue.add(track);
 
+                // Shuffle-mode
                 if (shuffle) {
                     if (player.trackQueue.isEmpty())
                         player.onEnd(true);
-
-                    final int index = ThreadLocalRandom.current().nextInt(player.trackQueue.size());
-                    nextTrack = ((LinkedList<QueuedTrack>) player.trackQueue).get(index);
-                    ((LinkedList<QueuedTrack>) player.trackQueue).remove(index);
+                    else {
+                        final int index = ThreadLocalRandom.current().nextInt(player.trackQueue.size());
+                        nextTrack = ((LinkedList<AudioTrack>) player.trackQueue).get(index);
+                        ((LinkedList<AudioTrack>) player.trackQueue).remove(index);
+                    }
                 }
 
-                ((MusicPlayer) player).setPreviousTrack(track);
-
-                if (autoPlay) {
+                // Check for autoplay (only use it if queue empty)
+                if (autoPlay == player.trackQueue.isEmpty()) {
                     runAutoplay(track);
                     return;
                 }
 
-                if (!repeating && !shuffle) nextTrack = player.pollTrack();
+                // If not loop and not shuffle get next track and remove it from queue
+                if (!shuffle) nextTrack = player.pollTrack();
 
+                // Set previous-track to ended song
+                if (!loopqueue) ((MusicPlayer) player).setPreviousTrack(track);
+
+                // If no nexttrack end and leave else play nexttrack
                 if (nextTrack == null) player.onEnd(true);
-
-                player.play(nextTrack, false);
+                else player.play(nextTrack, false);
                 break;
 
             case LOAD_FAILED:
@@ -128,15 +136,17 @@ public class Scheduler extends AudioEventAdapterWrapped {
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
+                player.play(playlist.getTracks().get(0), false);
             }
 
             @Override
             public void noMatches() {
+                SafeMessage.editMessage(infoMessage, EmbedUtil.error("Couldn't find an AutoPlay-Track!", "We're sorry, but there **wasn't any result**! **Please try again**!"));
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                SafeMessage.editMessage(infoMessage, EmbedUtil.error("Unknown error", "An unknown error occurred while queueing song!"));
+                SafeMessage.editMessage(infoMessage, EmbedUtil.error("Unknown error", "An **unknown error** occurred while **queueing** song!"));
                 log.error("[AutoPlay] Error while queueing song", exception);
             }
         });
