@@ -3,27 +3,20 @@ package io.groovybot.bot.core.audio;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.util.YoutubeUtil;
 import lavalink.client.io.jda.JdaLink;
 import lavalink.client.player.IPlayer;
 import lombok.Getter;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.SelfUser;
-import net.dv8tion.jda.core.entities.User;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public abstract class Player {
 
     @Getter
     private final Scheduler scheduler;
-    private final SelfUser selfUser;
     @Getter
-    public Queue<QueuedTrack> trackQueue;
+    public Queue<AudioTrack> trackQueue;
     @Getter
     public JdaLink link;
     @Getter
@@ -34,7 +27,6 @@ public abstract class Player {
         this.trackQueue = new LinkedList<>();
         this.scheduler = new Scheduler(this);
         this.youtubeClient = youtubeClient;
-        this.selfUser = GroovyBot.getInstance().getShardManager().getApplicationInfo().getJDA().getSelfUser();
     }
 
     protected void instanciatePlayer(JdaLink link) {
@@ -90,32 +82,21 @@ public abstract class Player {
         return track;
     }
 
-    public void queueTrack(AudioTrack track, boolean force, boolean playtop) {
-        queueTrack(track, force, playtop, selfUser);
-    }
-
-    public void queueTrack(AudioTrack track, boolean force, boolean playtop, User requester) {
-        QueuedTrack queuedTrack = new QueuedTrack(track, requester);
+    public void queueTrack(AudioTrack audioTrack, boolean force, boolean playtop) {
         if (force) {
-            play(queuedTrack, false);
+            play(audioTrack, false);
             return;
         }
 
-        if (playtop) {
-            ((LinkedList<QueuedTrack>) trackQueue).addFirst(queuedTrack);
-        } else {
-            trackQueue.add(queuedTrack);
-        }
+        if (playtop) ((LinkedList<AudioTrack>) trackQueue).addFirst(audioTrack);
+        else trackQueue.add(audioTrack);
 
-        if (!isPlaying())
-            play(pollTrack(), false);
+        if (!isPlaying()) play(pollTrack(), false);
     }
 
-    public void queueTracks(User requester, AudioTrack... tracks) {
-        List<QueuedTrack> trackList = new ArrayList<>();
-        for (AudioTrack track : tracks) {
-            trackList.add(new QueuedTrack(track, requester));
-        }
+    public void queueTracks(AudioTrack... tracks) {
+        List<AudioTrack> trackList = new ArrayList<>();
+        Collections.addAll(trackList, tracks);
         trackQueue.addAll(trackList);
         if (!isPlaying())
             play(pollTrack(), false);
@@ -152,11 +133,11 @@ public abstract class Player {
     }
 
     public boolean loopEnabled() {
-        return scheduler.isRepeating();
+        return scheduler.isLoop();
     }
 
     public boolean queueLoopEnabled() {
-        return scheduler.isQueueRepeating();
+        return scheduler.isLoopqueue();
     }
 
     public boolean shuffleEnabled() {
