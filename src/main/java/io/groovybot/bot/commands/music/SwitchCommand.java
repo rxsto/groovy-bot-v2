@@ -9,7 +9,7 @@ import io.groovybot.bot.core.command.voice.InChannelCommand;
 
 public class SwitchCommand extends InChannelCommand {
     public SwitchCommand() {
-        super(new String[]{"switch"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you to switch the default text-channel for messages", "");
+        super(new String[]{"switch"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you to switch the text-channel or/and the voicechannel of Groovy", "");
     }
 
     @Override

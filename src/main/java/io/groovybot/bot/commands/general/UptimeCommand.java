@@ -9,7 +9,7 @@ import io.groovybot.bot.util.FormatUtil;
 
 public class UptimeCommand extends Command {
     public UptimeCommand() {
-        super(new String[]{"uptime", "up"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you some statistics", "");
+        super(new String[]{"uptime", "up"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you some Groovy's uptime", "");
     }
 
     @Override

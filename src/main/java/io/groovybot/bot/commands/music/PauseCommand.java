@@ -9,13 +9,14 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 
 public class PauseCommand extends SameChannelCommand {
     public PauseCommand() {
-        super(new String[]{"pause"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you pause the bot", "");
+        super(new String[]{"pause"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you pause Groovy", "");
     }
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
+
         if (player.isPaused())
             return send(error(event.translate("command.pause.already.title"), event.translate("command.pause.already.description")));
 

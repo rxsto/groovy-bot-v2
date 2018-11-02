@@ -10,7 +10,7 @@ import io.groovybot.bot.util.SafeMessage;
 public class CloseCommand extends Command {
 
     public CloseCommand() {
-        super(new String[]{"close", "stopbot", "botstop"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Stops the bot", "");
+        super(new String[]{"close", "stopbot", "botstop"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Lets you close Groovy", "");
     }
 
     @Override
@@ -19,5 +19,4 @@ public class CloseCommand extends Command {
         System.exit(0);
         return null;
     }
-
 }

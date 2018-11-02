@@ -14,7 +14,7 @@ import java.lang.management.ManagementFactory;
 
 public class StatsCommand extends Command {
     public StatsCommand() {
-        super(new String[]{"stats"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you Groovy's current stats", "");
+        super(new String[]{"stats"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you statistics about Groovy", "");
     }
 
     @Override
@@ -22,6 +22,7 @@ public class StatsCommand extends Command {
         OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
 
         EmbedBuilder builder = new EmbedBuilder();
+
         builder.setColor(Colors.DARK_BUT_NOT_BLACK);
         builder.setTitle(":chart_with_upwards_trend: " + event.translate("command.stats.title"));
         builder.addField(event.translate("command.stats.text.playing"), String.format("**%s** %s", event.getBot().getMusicPlayerManager().getPlayingServers(), event.translate("phrases.text.guilds")), true);
@@ -33,6 +34,7 @@ public class StatsCommand extends Command {
         builder.addField(event.translate("command.stats.text.memory"), String.format("**%s**", FormatUtil.humanReadableByteCount(operatingSystemMXBean.getTotalPhysicalMemorySize() - operatingSystemMXBean.getFreePhysicalMemorySize())), true);
         builder.addField(event.translate("command.stats.text.threads"), String.format("**%s** %s", Thread.getAllStackTraces().size(), event.translate("phrases.text.threads")), true);
         builder.addField(event.translate("command.stats.text.uptime"), String.format("**%s**", FormatUtil.parseUptime(System.currentTimeMillis() - event.getBot().getStartupTime())), true);
+
         return send(builder);
     }
 }

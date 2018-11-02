@@ -33,7 +33,7 @@ public class SearchCommand extends SemiInChannelCommand {
     private final SearchCommand instance;
 
     public SearchCommand() {
-        super(new String[]{"search", "find"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you search songs", "<song>");
+        super(new String[]{"search", "find"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you search for songs", "<song>");
         instance = this;
     }
 
@@ -124,7 +124,7 @@ public class SearchCommand extends SemiInChannelCommand {
                 return;
             }
             AudioTrack track = searchResults.get(song - 1);
-            player.queueTrack(track, false, false, author);
+            player.queueTrack(track, false, false);
             sendMessage(event.getChannel(), EmbedUtil.success(translate(author, "phrases.searching.trackloaded.title"), String.format(translate(author, "phrases.searching.trackloaded.description"), track.getInfo().title)));
             unregister();
         }

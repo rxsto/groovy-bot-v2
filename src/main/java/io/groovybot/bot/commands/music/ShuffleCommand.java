@@ -11,18 +11,18 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 public class ShuffleCommand extends SameChannelCommand {
 
     public ShuffleCommand() {
-        super(new String[]{"shuffle", "sh"}, CommandCategory.MUSIC, Permissions.tierTwo(), "Lets you activate shuffling", "");
+        super(new String[]{"shuffle", "sh"}, CommandCategory.MUSIC, Permissions.tierTwo(), "Lets you toggle the shuffle-mode", "");
     }
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         Scheduler scheduler = player.getScheduler();
-        if (scheduler.isQueueRepeating() || scheduler.isRepeating())
-            return send(error(event.translate("controlpanel.disable.loopqueueloop.title"), event.translate("controlpanel.disable.loopqueueloop.description")));
+
         if (scheduler.isShuffle()) {
             scheduler.setShuffle(false);
             return send(success(event.translate("command.shuffle.disabled.title"), event.translate("command.shuffle.disabled.description")));
         }
+
         scheduler.setShuffle(true);
         return send(success(event.translate("command.shuffle.enabled.title"), event.translate("command.shuffle.enabled.description")));
     }

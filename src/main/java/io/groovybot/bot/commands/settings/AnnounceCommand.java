@@ -11,7 +11,7 @@ import io.groovybot.bot.core.entity.Guild;
 public class AnnounceCommand extends Command {
 
     public AnnounceCommand() {
-        super(new String[]{"announce", "announcesongs"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Lets you disable the song announcements", "");
+        super(new String[]{"announce", "announcesongs"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Lets you toggle the announcement-mode", "");
     }
 
     @Override

@@ -23,8 +23,9 @@ public class EvalCommand extends Command {
         if (args.length == 0) {
             return sendHelp();
         }
+
         ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("Nashorn");
-        //Import stuff
+
         try {
             scriptEngine.eval("var imports = new JavaImporter(" +
                     "java.nio.file," +
@@ -38,7 +39,7 @@ public class EvalCommand extends Command {
                     "Packages.com.sun.management" +
                     ");");
         } catch (ScriptException e) {
-            log.error("[EvalCommand] error while importing stuff", e);
+            log.error("[EvalCommand] Error while importing libs!", e);
             return send(error(event));
         }
 
@@ -47,19 +48,22 @@ public class EvalCommand extends Command {
         scriptEngine.put("channel", event.getChannel());
         scriptEngine.put("message", event.getMessage());
         scriptEngine.put("author", event.getAuthor());
+
         String code = event.getArguments();
+
         if (code.toLowerCase().contains("gettoken"))
             return send(error("Oh no", "You wanted to leak our token"));
+
         try {
-            Object out = scriptEngine.eval(
+            Object result = scriptEngine.eval(
                     "{" +
                             "with (imports) {" +
                             code +
                             "}" +
                             "};");
-            return send(info("Evaluated successfully", "Input: ```" + code + "```\n Output:```" + out == null ? "null" : out.toString() + "```"));
+            return send(info("Evaluated successfully", String.format("```%s```", result.toString())));
         } catch (ScriptException e) {
-            return send(error("An error occurred", String.format("An exception was thrown: ```%s```", e.getMessage())));
+            return send(error("An error occurred!", String.format("An exception was thrown: ```%s```", e.getMessage())));
         }
     }
 }

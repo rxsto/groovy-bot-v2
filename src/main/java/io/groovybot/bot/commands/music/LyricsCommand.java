@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class LyricsCommand extends Command {
 
     public LyricsCommand() {
-        super(new String[]{"lyrics", "lyric", "ly", "songtext"}, CommandCategory.MUSIC, Permissions.everyone(), "Provides you lyrics from either the current song or the given query", "[query]");
+        super(new String[]{"lyrics", "ly"}, CommandCategory.MUSIC, Permissions.everyone(), "Provides you lyrics from either the current song or the given query", "[query]");
     }
 
     @Override

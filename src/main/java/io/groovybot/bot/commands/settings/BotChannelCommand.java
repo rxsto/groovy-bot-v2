@@ -9,7 +9,7 @@ import java.util.List;
 public class BotChannelCommand extends Command {
 
     public BotChannelCommand() {
-        super(new String[]{"botchannel", "bc"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Lets you set a specific channel that will be the only one that is useable for commands", "[#channel]");
+        super(new String[]{"botchannel"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Lets you set Groovy's botchannel", "<#channel>");
         registerSubCommand(new DisableCommand());
     }
 
@@ -33,13 +33,14 @@ public class BotChannelCommand extends Command {
     private class DisableCommand extends SubCommand {
 
         public DisableCommand() {
-            super(new String[]{"disable", "reset", "off", "false"}, Permissions.adminOnly(), "Disables the botchannel", "");
+            super(new String[]{"disable"}, Permissions.adminOnly(), "Disables the botchannel", "");
         }
 
         @Override
         public Result run(String[] args, CommandEvent event) {
             if (!event.getGroovyGuild().hasCommandsChannel())
                 return send(error(event.translate("command.botchannel.no.channel.title"), event.translate("command.botchannel.no.channel.description")));
+
             TextChannel oldBotChannel = event.getGroovyGuild().getBotChannel();
             event.getGroovyGuild().setBotChannel(null);
             return send(success(event.translate("command.botchannel.disable.title"), String.format(event.translate("command.botchannel.disable.description"), oldBotChannel.getAsMention())));

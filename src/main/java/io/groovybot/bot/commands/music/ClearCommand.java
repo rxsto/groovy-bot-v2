@@ -10,7 +10,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 public class ClearCommand extends SameChannelCommand {
 
     public ClearCommand() {
-        super(new String[]{"clear", "purge", "cls", "cl"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you clear the queue", "");
+        super(new String[]{"clear", "purge"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you clear the queue", "");
     }
 
     @Override
