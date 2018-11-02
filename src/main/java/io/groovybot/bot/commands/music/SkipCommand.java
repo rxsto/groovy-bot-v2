@@ -9,9 +9,8 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 
 public class SkipCommand extends SameChannelCommand {
     public SkipCommand() {
-        super(new String[]{"skip", "s"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you skip the current track", "[position]");
+        super(new String[]{"skip", "s"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you skip the current/to a specific track", "[position]");
     }
-
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
@@ -24,7 +23,9 @@ public class SkipCommand extends SameChannelCommand {
             player.getScheduler().runAutoplay(player.getPlayer().getPlayingTrack());
             return null;
         }
+
         int skipTo;
+
         if (args.length == 0)
             skipTo = 1;
         else {
@@ -36,9 +37,10 @@ public class SkipCommand extends SameChannelCommand {
         }
 
         player.skipTo(skipTo);
-        if (args.length > 0) {
+
+        if (args.length > 0)
             return send(success(event.translate("command.skip.success.title"), String.format(event.translate("command.skip.success.more.description"), skipTo)));
-        }
+
         return send(success(event.translate("command.skip.success.title"), (event.translate("command.skip.success.one.description"))));
     }
 }

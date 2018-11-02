@@ -21,9 +21,10 @@ public class HelpCommand extends Command {
     public Result run(String[] args, CommandEvent event) {
         if (args.length == 0)
             return send(formatCommandList(event));
-        if (!event.getBot().getCommandManager().getCommandAssociations().containsKey(args[0])) {
+
+        if (!event.getBot().getCommandManager().getCommandAssociations().containsKey(args[0]))
             return send(error(event.translate("command.help.notfound.title"), event.translate("command.help.notfound.description")));
-        }
+
         Command command = event.getBot().getCommandManager().getCommandAssociations().get(args[0]);
         return send(formatCommand(command));
     }

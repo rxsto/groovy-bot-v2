@@ -12,7 +12,7 @@ import lombok.extern.log4j.Log4j2;
 public class PlayCommand extends SemiInChannelCommand {
 
     public PlayCommand() {
-        super(new String[]{"play", "p", "add"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you play any music you want", "<song/url>");
+        super(new String[]{"play", "p", "add"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you play any music you want", "[-soundcloud] [-playskip] [-playtop] <song/url>");
     }
 
     @Override
@@ -24,8 +24,7 @@ public class PlayCommand extends SemiInChannelCommand {
             }
             return sendHelp();
         }
-        player.queueSongs(event, false, false);
+        player.queueSongs(event);
         return null;
     }
-
 }

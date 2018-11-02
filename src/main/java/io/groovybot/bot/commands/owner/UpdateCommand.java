@@ -16,11 +16,14 @@ import java.util.Map;
 public class UpdateCommand extends Command {
 
     public UpdateCommand() {
-        super(new String[]{"update", "up"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Lets you announce an update for Groovy", "");
+        super(new String[]{"update"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Lets you announce an update for Groovy", "");
     }
 
     @Override
     public Result run(String[] args, CommandEvent event) {
+        if (!event.getChannel().getId().equals("508001588237828096"))
+            return send(error("Forbidden!", String.format("Please use this command in %s!", event.getJDA().getTextChannelById(508001588237828096L).getAsMention())));
+
         Map<Long, MusicPlayer> players = event.getBot().getMusicPlayerManager().getPlayerStorage();
 
         players.forEach((id, player) -> {

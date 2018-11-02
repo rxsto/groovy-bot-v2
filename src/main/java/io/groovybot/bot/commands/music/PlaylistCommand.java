@@ -5,7 +5,6 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.core.audio.MusicPlayer;
-import io.groovybot.bot.core.audio.QueuedTrack;
 import io.groovybot.bot.core.command.*;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.command.voice.SemiInChannelSubCommand;
@@ -26,7 +25,7 @@ import java.util.stream.Collectors;
 public class PlaylistCommand extends Command {
 
     public PlaylistCommand() {
-        super(new String[]{"playlist", "playlists"}, CommandCategory.MUSIC, Permissions.everyone(), "Let's you use Playlists", "");
+        super(new String[]{"playlist", "playlists"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you create own playlists", "");
         registerSubCommand(new SaveCommand());
         registerSubCommand(new AddCommand());
         registerSubCommand(new LoadCommand());
@@ -46,7 +45,7 @@ public class PlaylistCommand extends Command {
     private class ListCommand extends SubCommand {
 
         public ListCommand() {
-            super(new String[]{"list"}, Permissions.everyone(), "Lists all of your playlists", "");
+            super(new String[]{"list"}, Permissions.everyone(), "Lists all your playlists", "");
         }
 
         @Override
@@ -69,7 +68,7 @@ public class PlaylistCommand extends Command {
     private class DeleteCommand extends SubCommand {
 
         public DeleteCommand() {
-            super(new String[]{"delete", "del"}, Permissions.everyone(), "Deletes a playlists", "<name>");
+            super(new String[]{"delete", "del"}, Permissions.everyone(), "Deletes a playlist", "<name>");
         }
 
         @Override
@@ -129,7 +128,7 @@ public class PlaylistCommand extends Command {
                         .limit(25 - player.getQueueSize())
                         .filter(track -> track.getDuration() < 3600000)
                         .collect(Collectors.toList());
-            player.queueTracks(event.getAuthor(), songs.toArray(new AudioTrack[0]));
+            player.queueTracks(songs.toArray(new AudioTrack[0]));
             return send(success(event.translate("command.playlist.load.title"), String.format(event.translate("command.playlist.load.description"), playlist.getName())));
         }
     }
@@ -137,7 +136,7 @@ public class PlaylistCommand extends Command {
     private class AddCommand extends SubCommand {
 
         public AddCommand() {
-            super(new String[]{"add", "addsong"}, Permissions.everyone(), "Adds a song to the playlist", "<name> <url>");
+            super(new String[]{"add", "addsong"}, Permissions.everyone(), "Adds a song to a playlist", "<name> <url>");
         }
 
         @Override
@@ -190,7 +189,7 @@ public class PlaylistCommand extends Command {
     private class ShowCommand extends SubCommand {
 
         public ShowCommand() {
-            super(new String[]{"show"}, Permissions.everyone(), "Shows you the content of a playlist", "<name>");
+            super(new String[]{"show"}, Permissions.everyone(), "Shows you all songs of a playlist", "<name>");
         }
 
         @Override
@@ -201,9 +200,7 @@ public class PlaylistCommand extends Command {
             if (!user.getPlaylists().containsKey(args[0]))
                 return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
             Playlist playlist = user.getPlaylists().get(args[0]);
-            List<AudioTrack> tracks = playlist.getSongs().stream().limit(10).collect(Collectors.toList());
-            List<QueuedTrack> queuedTracks = new ArrayList<>();
-            tracks.forEach(track -> queuedTracks.add(new QueuedTrack(track, event.getAuthor())));
+            List<AudioTrack> queuedTracks = playlist.getSongs().stream().limit(10).collect(Collectors.toList());
             return send(QueueCommand.formatQueue(queuedTracks, event, 1, null, 0, 0)
                     .setTitle(playlist.getName() + " - " + playlist.getSongs().size() + " songs"));
         }

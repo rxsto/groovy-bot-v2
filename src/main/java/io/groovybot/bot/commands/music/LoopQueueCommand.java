@@ -11,19 +11,22 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 public class LoopQueueCommand extends SameChannelCommand {
 
     public LoopQueueCommand() {
-        super(new String[]{"loopqueue", "lq", "looprepeat", "lr"}, CommandCategory.MUSIC, Permissions.tierOne(), "Loops the whole queue", "");
+        super(new String[]{"loopqueue", "lq", "looprepeat", "lr"}, CommandCategory.MUSIC, Permissions.tierOne(), "Lets you toggle the loopqueue-mode", "");
     }
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         Scheduler scheduler = player.getScheduler();
-        if (scheduler.isShuffle() || scheduler.isRepeating())
-            return send(error(event.translate("controlpanel.disable.loopshuffle.title"), event.translate("controlpanel.disable.loopshuffle.description")));
-        if (!scheduler.isQueueRepeating()) {
-            scheduler.setQueueRepeating(true);
+
+        if (scheduler.isLoop())
+            return send(error(event.translate("command.control.disable.loop.title"), event.translate("command.control.disable.loop.description")));
+
+        if (!scheduler.isLoopqueue()) {
+            scheduler.setLoopqueue(true);
             return send(success(event.translate("command.queueloop.enabled.title"), event.translate("command.queueloop.enabled.description")));
         }
-        scheduler.setQueueRepeating(false);
+
+        scheduler.setLoopqueue(false);
         return send(success(event.translate("command.queueloop.disabled.title"), event.translate("command.queueloop.disabled.description")));
     }
 }

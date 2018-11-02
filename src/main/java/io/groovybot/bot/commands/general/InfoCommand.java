@@ -9,7 +9,7 @@ import io.groovybot.bot.core.entity.EntityProvider;
 
 public class InfoCommand extends Command {
     public InfoCommand() {
-        super(new String[]{"info"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you some useful information", "");
+        super(new String[]{"info", "i", "about"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you useful information about Groovy", "");
     }
 
     @Override

@@ -8,7 +8,7 @@ import io.groovybot.bot.core.command.permission.Permissions;
 
 public class DonateCommand extends Command {
     public DonateCommand() {
-        super(new String[]{"donate"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you some information about donating", "");
+        super(new String[]{"donate", "patreon"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you a link to Groovy's Patreon", "");
     }
 
     @Override

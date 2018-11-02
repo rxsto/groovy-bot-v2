@@ -28,7 +28,6 @@ public class SeekCommand extends SameChannelCommand {
         try {
             position = FormatUtil.convertTimestamp(event.getArguments());
         } catch (ParseException e) {
-            log.error("[SeekCommand] Error while parsing timestamp", e);
             return send(error(event.translate("command.seek.invalidinput.title"), event.translate("command.seek.invalidinput.description")));
         }
         player.seekTo(position);

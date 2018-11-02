@@ -31,7 +31,7 @@ public class ControlCommand extends SameChannelCommand {
     private final String[] EMOTES = {"⏯", "⏭", "🔂", "🔁", "🔀", "🔄", "🔉", "🔊"};
 
     public ControlCommand() {
-        super(new String[]{"control", "panel", "cp"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you control the bot with reactions", "");
+        super(new String[]{"control", "panel", "cp"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you control Groovy with reactions", "");
     }
 
     @Override
@@ -123,15 +123,15 @@ public class ControlCommand extends SameChannelCommand {
                     sendMessage(translate(author, "command.control.skipped.title"), translate(author, "command.control.skipped.description"));
                     break;
                 case "\uD83D\uDD02":
-                    if (playerScheduler.isQueueRepeating() || playerScheduler.isShuffle()) {
-                        sendMessage(translate(author, "command.control.disable.loopqueueshuffle.title"), translate(author, "command.control.disable.loopqueueshuffle.description"));
+                    if (playerScheduler.isLoopqueue()) {
+                        sendMessage(translate(author, "command.control.disable.loopqueue.title"), translate(author, "command.control.disable.loopqueue.description"));
                         break;
                     }
-                    if (!playerScheduler.isRepeating()) {
-                        playerScheduler.setRepeating(true);
+                    if (!playerScheduler.isLoop()) {
+                        playerScheduler.setLoop(true);
                         sendMessage(translate(author, "command.control.repeating.enabled.title"), translate(author, "command.control.repeating.enabled.description"));
                     } else {
-                        playerScheduler.setRepeating(false);
+                        playerScheduler.setLoop(false);
                         sendMessage(translate(author, "command.control.repeating.disabled.title"), translate(author, "command.control.repeating.disabled.description"));
                     }
                     break;
@@ -140,25 +140,21 @@ public class ControlCommand extends SameChannelCommand {
                         sendMessageError(this.commandEvent.translate("phrases.nopermission.title"), this.commandEvent.translate("phrases.nopermission.tierone"));
                         break;
                     }
-                    if (playerScheduler.isRepeating() || playerScheduler.isShuffle()) {
-                        sendMessage(translate(author, "command.control.disable.loopshuffle.title"), translate(author, "command.control.disable.loopshuffle.description"));
+                    if (playerScheduler.isLoop()) {
+                        sendMessage(translate(author, "command.control.disable.loop.title"), translate(author, "command.control.disable.loop.description"));
                         break;
                     }
-                    if (!playerScheduler.isQueueRepeating()) {
-                        playerScheduler.setQueueRepeating(true);
+                    if (!playerScheduler.isLoopqueue()) {
+                        playerScheduler.setLoopqueue(true);
                         sendMessage(translate(author, "command.control.queuerepeating.enabled.title"), translate(author, "command.control.queuerepeating.enabled.description"));
                     } else {
-                        playerScheduler.setQueueRepeating(false);
+                        playerScheduler.setLoopqueue(false);
                         sendMessage(translate(author, "command.control.queuerepeating.disabled.title"), translate(author, "command.control.queuerepeating.disabled.description"));
                     }
                     break;
                 case "\uD83D\uDD00":
                     if (!Permissions.tierTwo().isCovered(EntityProvider.getUser(author.getIdLong()).getPermissions(), this.commandEvent)) {
                         sendMessageError(this.commandEvent.translate("phrases.nopermission.title"), this.commandEvent.translate("phrases.nopermission.tiertwo"));
-                        break;
-                    }
-                    if (playerScheduler.isRepeating() || playerScheduler.isQueueRepeating()) {
-                        sendMessage(translate(author, "command.control.disable.loopqueueloop.title"), translate(author, "command.control.disable.loopqueueloop.description"));
                         break;
                     }
                     if (!playerScheduler.isShuffle()) {
