@@ -3,9 +3,9 @@ package io.groovybot.bot.core.audio;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.*;
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.wrapper.spotify.model_objects.specification.Track;
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.CommandEvent;
@@ -30,7 +30,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -79,7 +82,8 @@ public class MusicPlayer extends Player {
     public void leave() {
         trackQueue.clear();
         if (!this.getGuild().getId().equals("403882830225997825"))
-            link.disconnect();
+            if (link != null)
+                link.disconnect();
     }
 
     @Override
@@ -120,19 +124,43 @@ public class MusicPlayer extends Player {
         return this.player;
     }
 
-    public void queueSongs(CommandEvent event, boolean force, boolean playtop) {
+    public void queueSongs(CommandEvent event) {
         UserPermissions userPermissions = EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions();
         Permissions tierTwo = Permissions.tierTwo();
+
         if (trackQueue.size() >= 25 && !tierTwo.isCovered(userPermissions, event)) {
             SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.fullqueue.title"), event.translate("phrases.fullqueue.description")));
             return;
         }
+
         String keyword = event.getArguments();
+
         boolean isUrl = true;
-        Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), event.getArguments())));
+
+        final boolean isSoundcloud;
+        final boolean isPlaySkip;
+        final boolean isPlayTop;
+
+        if (keyword.contains("-soundcloud") || keyword.contains("-sc")) {
+            isSoundcloud = true;
+            keyword = keyword.replaceAll("-soundcloud", "").replaceAll("-sc", "");
+        } else isSoundcloud = false;
+
+        if (keyword.contains("-forceplay") || keyword.contains("-fp") || keyword.contains("-skip")) {
+            isPlaySkip = true;
+            keyword = keyword.replaceAll("-forceplay", "").replaceAll("-fp", "").replaceAll("-skip", "");
+        } else isPlaySkip = false;
+
+        if (keyword.contains("-playtop") || keyword.contains("-pt") || keyword.contains("-top")) {
+            isPlayTop = true;
+            keyword = keyword.replaceAll("-playtop", "").replaceAll("-pt", "").replaceAll("-top", "");
+        } else isPlayTop = false;
+
+        Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), keyword)));
 
         if (!keyword.startsWith("http://") && !keyword.startsWith("https://")) {
-            keyword = "ytsearch: " + keyword;
+            if (isSoundcloud) keyword = "scsearch: " + keyword;
+            else keyword = "ytsearch: " + keyword;
             isUrl = false;
         }
 
@@ -140,12 +168,8 @@ public class MusicPlayer extends Player {
             if (keyword.contains("track")) {
                 Track track = event.getBot().getSpotifyClient().getTrack(keyword);
                 if (track != null) {
-                    SafeMessage.sendMessageBlocking(
-                            event.getChannel(),
-                            EmbedUtil.info("Spotify Search Query", track.getArtists()[0].getName() + " - " + track.getName())
-                    );
+                    SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info("Spotify Search Query", track.getArtists()[0].getName() + " - " + track.getName()));
                     keyword = "ytsearch: " + track.getArtists()[0].getName() + " - " + track.getName();
-                    log.debug(keyword);
                     isUrl = false;
                 }
             } else if (keyword.contains("playlist")) {
@@ -153,21 +177,45 @@ public class MusicPlayer extends Player {
                 Queue<String> queue = new LinkedList<>(trackList);
                 queue.forEach(s -> getAudioPlayerManager().loadItem("ytsearch: " + s, new AudioLoadResultHandler() {
                     @Override
-                    public void trackLoaded(AudioTrack track) {
+                    public void trackLoaded(AudioTrack audioTrack) {
+                        if (!checkSong(audioTrack)) return;
+                        queueTrack(audioTrack, isPlaySkip, isPlayTop);
                     }
 
                     @Override
-                    public void playlistLoaded(AudioPlaylist playlist) {
-                        AudioTrack track = playlist.getTracks().get(0);
-                        queueTrack(track, force, playtop, event.getAuthor());
+                    public void playlistLoaded(AudioPlaylist audioPlaylist) {
+                        List<AudioTrack> tracks = audioPlaylist.getTracks();
+                        if (!tierTwo.isCovered(userPermissions, event))
+                            tracks = tracks.stream()
+                                    .limit(25 - getQueueSize())
+                                    .filter(track -> track.getDuration() < 3600000)
+                                    .collect(Collectors.toList());
+
+                        if (tracks.isEmpty()) {
+                            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event));
+                            return;
+                        }
+
+                        final AudioTrack track = tracks.get(0);
+
+                        if (!checkSong(track))
+                            return;
+
+                        queueTrack(track, isPlaySkip, isPlayTop);
                     }
 
                     @Override
                     public void noMatches() {
+                        SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
                     }
 
                     @Override
-                    public void loadFailed(FriendlyException exception) {
+                    public void loadFailed(FriendlyException e) {
+                        handleFailedLoads(e, infoMessage, event);
+                    }
+
+                    private boolean checkSong(AudioTrack track) {
+                        return !MusicPlayer.this.checkSong(track, userPermissions, event, infoMessage);
                     }
                 }));
             }
@@ -179,7 +227,7 @@ public class MusicPlayer extends Player {
             public void trackLoaded(AudioTrack audioTrack) {
                 if (!checkSong(audioTrack))
                     return;
-                queueTrack(audioTrack, force, playtop, event.getAuthor());
+                queueTrack(audioTrack, isPlaySkip, isPlayTop);
                 queuedTrack(audioTrack, infoMessage, event);
             }
 
@@ -198,7 +246,7 @@ public class MusicPlayer extends Player {
                 }
 
                 if (isURL) {
-                    queueTracks(event.getAuthor(), tracks.toArray(new AudioTrack[0]));
+                    queueTracks(tracks.toArray(new AudioTrack[0]));
                     SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), audioPlaylist.getName())));
                     return;
                 }
@@ -208,7 +256,7 @@ public class MusicPlayer extends Player {
                 if (!checkSong(track))
                     return;
 
-                queueTrack(track, force, playtop, event.getAuthor());
+                queueTrack(track, isPlaySkip, isPlayTop);
                 queuedTrack(track, infoMessage, event);
             }
 
@@ -219,47 +267,55 @@ public class MusicPlayer extends Player {
 
             @Override
             public void loadFailed(FriendlyException e) {
-                final String message = e.getMessage().toLowerCase();
-
-                if (message.contains("unknown file format")) {
-                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unknownformat.title"), event.translate("phrases.searching.unknownformat.description")));
-                    return;
-                }
-
-                if (message.contains("the playlist is private")) {
-                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.private.title"), event.translate("phrases.searching.private.description")));
-                    return;
-                }
-
-                if (message.contains("this video is not available")) {
-                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unavailable.title"), event.translate("phrases.searching.unavailable.description")));
-                    return;
-                }
-
-                if (message.contains("the uploader has not made this video available in your country")) {
-                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.country.title"), event.translate("phrases.searching.country.description")));
-                    return;
-                }
-
-                if (message.contains("this video contains content from umg, who has blocked it in your country on copyright grounds")) {
-                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.copyright.title"), event.translate("phrases.searching.copyright.description")));
-                    return;
-                }
-
-                SafeMessage.editMessage(infoMessage, EmbedUtil.error(event));
-                log.error("[PlayCommand] Error while loading track!", e);
+                handleFailedLoads(e, infoMessage, event);
             }
 
             private boolean checkSong(AudioTrack track) {
-                if (track.getDuration() > 3600000 && !Permissions.tierTwo().isCovered(userPermissions, event)) {
-                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.patreon.songduration.title"), event.translate("phrases.patreon.songduration.description")));
-                    if (trackQueue.isEmpty())
-                        leave();
-                    return false;
-                }
-                return true;
+                return !MusicPlayer.this.checkSong(track, userPermissions, event, infoMessage);
             }
         });
+    }
+
+    private boolean checkSong(AudioTrack track, UserPermissions userPermissions, CommandEvent event, Message infoMessage) {
+        if (track.getDuration() > 3600000 && !Permissions.tierTwo().isCovered(userPermissions, event)) {
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.patreon.songduration.title"), event.translate("phrases.patreon.songduration.description")));
+            if (trackQueue.isEmpty())
+                leave();
+            return true;
+        }
+        return false;
+    }
+
+    private void handleFailedLoads(FriendlyException e, Message infoMessage, CommandEvent event) {
+        final String message = e.getMessage().toLowerCase();
+
+        if (message.contains("unknown file format")) {
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unknownformat.title"), event.translate("phrases.searching.unknownformat.description")));
+            return;
+        }
+
+        if (message.contains("the playlist is private")) {
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.private.title"), event.translate("phrases.searching.private.description")));
+            return;
+        }
+
+        if (message.contains("this video is not available")) {
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unavailable.title"), event.translate("phrases.searching.unavailable.description")));
+            return;
+        }
+
+        if (message.contains("the uploader has not made this video available in your country")) {
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.country.title"), event.translate("phrases.searching.country.description")));
+            return;
+        }
+
+        if (message.contains("this video contains content from umg, who has blocked it in your country on copyright grounds")) {
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.copyright.title"), event.translate("phrases.searching.copyright.description")));
+            return;
+        }
+
+        SafeMessage.editMessage(infoMessage, EmbedUtil.error(event));
+        log.error("[PlayCommand] Error while loading track!", e);
     }
 
     private void queuedTrack(AudioTrack track, Message infoMessage, CommandEvent event) {
@@ -270,6 +326,9 @@ public class MusicPlayer extends Player {
     }
 
     public void update() throws SQLException, IOException {
+        if (channel != null)
+            channel.sendMessage(":warning: Update initialized! Groovy should be back soon!");
+
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             // Initialize preparedstatement
             PreparedStatement ps = connection.prepareStatement("INSERT INTO queues (guild_id, current_track, current_position, queue, channel_id, text_channel_id, volume) VALUES (?,?,?,?,?,?,?)");
@@ -290,8 +349,8 @@ public class MusicPlayer extends Player {
 
             this.clearQueue();
             getScheduler().setShuffle(false);
-            getScheduler().setQueueRepeating(false);
-            getScheduler().setRepeating(false);
+            getScheduler().setLoopqueue(false);
+            getScheduler().setLoop(false);
             setVolume(100);
 
             if (isPaused())
@@ -305,14 +364,19 @@ public class MusicPlayer extends Player {
 
                 @Override
                 public void playlistLoaded(AudioPlaylist playlist) {
+                    queueTrack(playlist.getTracks().get(0), true, false);
                 }
 
                 @Override
                 public void noMatches() {
+                    if (channel != null)
+                        channel.sendMessage(":x: An error occurred! Please contact the developers!");
                 }
 
                 @Override
                 public void loadFailed(FriendlyException exception) {
+                    if (channel != null)
+                        channel.sendMessage(":x: An error occurred! Please contact the developers!");
                 }
             });
         }
