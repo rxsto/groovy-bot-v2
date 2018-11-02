@@ -25,10 +25,9 @@ public class SpotifyManager {
     private final OkHttpClient httpClient;
     private final String clientId, clientSecret;
     @Getter
-    private SpotifyApi spotifyApi;
-    @Getter
     private final SpotifyPlaylistImporter playlistImporter;
-
+    @Getter
+    private SpotifyApi spotifyApi;
     private volatile long accessTokenExpires = 0;
     private volatile String accessToken = "";
 
