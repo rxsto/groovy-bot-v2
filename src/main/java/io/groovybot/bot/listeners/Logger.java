@@ -71,6 +71,7 @@ public class Logger {
     }
 
     private void sendMessage(String type, Event event, WebhookClient client) {
+        if (GroovyBot.getInstance().isDebugMode()) return;
         WebhookMessageBuilder webhookMessageBuilder = new WebhookMessageBuilder();
         webhookMessageBuilder.addEmbeds(Objects.requireNonNull(FormatUtil.formatWebhookMessage(type, event)).build());
         client.send(webhookMessageBuilder.build());
