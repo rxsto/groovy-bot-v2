@@ -108,7 +108,7 @@ public class GroovyBot {
 
     private GroovyBot(String[] args) throws IOException {
 
-        System.out.println("now dis is running in a new job!!!");
+        System.out.println("now dis is running in a new stage!!!");
 
         // Setting startuptime
         startupTime = System.currentTimeMillis();
