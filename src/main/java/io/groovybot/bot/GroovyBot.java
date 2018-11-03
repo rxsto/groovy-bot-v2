@@ -108,8 +108,6 @@ public class GroovyBot {
 
     private GroovyBot(String[] args) throws IOException {
 
-        System.out.println("Testing");
-
         // Setting startuptime
         startupTime = System.currentTimeMillis();
 
