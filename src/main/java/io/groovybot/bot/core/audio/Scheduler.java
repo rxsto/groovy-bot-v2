@@ -14,17 +14,22 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Log4j2
 @RequiredArgsConstructor
 public class Scheduler extends AudioEventAdapterWrapped {
+
+    private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.youtube\\.com/watch\\?v=([^?/&]*)");
 
     private final Player player;
     @Getter
@@ -117,6 +122,14 @@ public class Scheduler extends AudioEventAdapterWrapped {
 
     public void runAutoplay(AudioTrack track) {
         Message infoMessage = player.announceAutoplay();
+
+        final Matcher matcher = TRACK_PATTERN.matcher(track.getInfo().uri);
+
+        if (!matcher.find()) {
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error("Not a YouTube-Track!", "We **couldn't search** for a AutoPlay-Track as the **previos** track was **not a YouTube-Track**!"));
+            return;
+        }
+
         try {
             SearchResult result = player.youtubeClient.retrieveRelatedVideos(track.getIdentifier());
             SafeMessage.editMessage(infoMessage, EmbedUtil.success("Loaded video", String.format("Successfully loaded video `%s`", result.getSnippet().getTitle())));
