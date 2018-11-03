@@ -65,6 +65,9 @@ public class Scheduler extends AudioEventAdapterWrapped {
             case FINISHED:
                 Guild guild = ((MusicPlayer) player).getGuild();
 
+                if (guild.getSelfMember().getVoiceState().getChannel() == null)
+                    return;
+
                 // Leave if bot alone
                 if (guild.getSelfMember().getVoiceState().getChannel().getMembers().size() == 1) {
                     player.stop();
