@@ -17,34 +17,30 @@ public class JoinGuildListener {
     }
 
     private void joinMessage(Guild guild) {
-        List channels = guild.getTextChannels();
+        List<TextChannel> channels = guild.getTextChannels();
 
         Map<String, TextChannel> sortedChannels = new HashMap<>();
         Set<TextChannel> preferredChannels = new HashSet<>();
 
-        for (Object channel : channels) {
-            TextChannel textChannel = ((TextChannel) channel);
-            sortedChannels.put(textChannel.getName(), textChannel);
-        }
+        for (TextChannel channel : channels) sortedChannels.put(channel.getName(), channel);
 
         sortedChannels.forEach((name, channel) -> {
-            if (name.contains("music") || name.contains("bot") || name.contains("command") || name.contains("talk") || name.contains("chat") || name.contains("general"))
-                preferredChannels.add(channel);
+            if (name.contains("music") || name.contains("bot") || name.contains("command") || name.contains("talk") || name.contains("chat") || name.contains("general")) preferredChannels.add(channel);
         });
 
         boolean found = false;
 
-        for (Object channel : preferredChannels)
-            if (((TextChannel) channel).canTalk()) {
-                EmbedUtil.sendMessageBlocking(((TextChannel) channel), EmbedUtil.welcome(guild));
+        for (TextChannel channel : preferredChannels)
+            if (channel.canTalk()) {
+                EmbedUtil.sendMessageBlocking(channel, EmbedUtil.welcome(guild));
                 found = true;
                 break;
             }
 
         if (!found)
-            for (Object channel : channels)
-                if (((TextChannel) channel).canTalk()) {
-                    EmbedUtil.sendMessageBlocking(((TextChannel) channel), EmbedUtil.welcome(guild));
+            for (TextChannel channel : channels)
+                if (channel.canTalk()) {
+                    EmbedUtil.sendMessageBlocking(channel, EmbedUtil.welcome(guild));
                     break;
                 }
     }
