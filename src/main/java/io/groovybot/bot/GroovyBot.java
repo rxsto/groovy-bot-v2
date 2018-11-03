@@ -38,12 +38,9 @@ import net.dv8tion.jda.core.hooks.IEventManager;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 import net.dv8tion.jda.core.requests.RestAction;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
@@ -92,7 +89,7 @@ public class GroovyBot {
     @Getter
     private PostgreSQL postgreSQL;
     @Getter
-    private WebsocketConnection websocket;
+    private WebsocketConnection webSocket;
     @Getter
     private ShardManager shardManager;
     @Getter
@@ -123,8 +120,8 @@ public class GroovyBot {
         // Checking for debug-mode
         debugMode = String.join(" ", args).contains("debug");
 
-        // Checking for websocket-mode
-        enableWebsocket = !String.join(" ", args).contains("--no-websocket");
+        // Checking for webSocket-mode
+        enableWebsocket = !String.join(" ", args).contains("--no-webSocket");
 
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
@@ -173,26 +170,6 @@ public class GroovyBot {
         new GroovyBot(args);
     }
 
-    private Integer retrieveShards() {
-        log.info("[ShardManager] Trying to retrieve ShardCount ...");
-        Request request = new Request.Builder()
-                .url("https://discordapp.com/api/gateway/bot")
-                .addHeader("Authorization", config.getJSONObject("bot").getString("token"))
-                .get()
-                .build();
-
-        try (Response response = httpClient.newCall(request).execute()) {
-            assert response.body() != null;
-            int shardCount = new JSONObject(response.body().string()).getInt("shards");
-            log.info(String.format("[ShardManager] Launching with %s %s ...", shardCount, shardCount == 1 ? "Shard" : "Shards"));
-            return shardCount;
-        } catch (IOException e) {
-            int shardCount = config.getJSONObject("settings").getInt("shards");
-            log.error(String.format("[ShardManager] Error while retrieving ShardsCount, launching with default value (%s %s)", shardCount, shardCount == 1 ? "Shard" : "Shards"), e);
-            return shardCount;
-        }
-    }
-
     private void initShardManager() {
         eventManager = new AnnotatedEventManager();
 
@@ -201,7 +178,7 @@ public class GroovyBot {
                 .setHttpClient(httpClient)
                 .setEventManagerProvider((id) -> eventManager)
                 .setToken(config.getJSONObject("bot").getString("token"))
-                .setShardsTotal(retrieveShards())
+                .setShardsTotal(-1)
                 .setGame(Game.playing("Starting ..."))
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
                 .addEventListeners(
@@ -264,11 +241,11 @@ public class GroovyBot {
             log.error("[MusicPlayerManager] Error while initializing MusicPlayers!", e);
         }
 
-        // Initializing websocket
+        // Initializing webSocket
         if (enableWebsocket)
             try {
                 log.info("[WebSocket] Initializing WebSocket ...");
-                websocket = new WebsocketConnection();
+                webSocket = new WebsocketConnection();
             } catch (URISyntaxException e) {
                 log.error("[WebSocket] Error while initializing WebSocket!", e);
             }
