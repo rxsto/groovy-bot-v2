@@ -74,9 +74,9 @@ public class FormatUtil {
     }
 
     private static StringBuilder addUsages(StringBuilder stringBuilder, Command command) {
-        stringBuilder.append("Command aliases: `").append(Arrays.toString(command.getAliases()).replace("[", "").replace("]", "")).append("`\n");
-        stringBuilder.append("Description: `").append(command.getDescription()).append("`").append("\n");
         stringBuilder.append("Usage: `").append(buildUsage(command)).append("`\n");
+        stringBuilder.append("Aliases: `").append(Arrays.toString(command.getAliases()).replace("[", "").replace("]", "")).append("`\n");
+        stringBuilder.append("Description: `").append(command.getDescription()).append("`").append("\n");
 
         if (!command.getSubCommandAssociations().isEmpty()) {
             stringBuilder.append("Subcommands:").append("\n");
@@ -89,7 +89,7 @@ public class FormatUtil {
     private static String buildUsage(Command command) {
         if (command instanceof SubCommand) {
             SubCommand subCommand = ((SubCommand) command);
-            return String.format(":white_check_mark: `g!%s %s %s` `%s`", subCommand.getMainCommand().getName(), subCommand.getName(), subCommand.getUsage(), subCommand.getDescription());
+            return String.format("▫ `g!%s %s %s` `%s`", subCommand.getMainCommand().getName(), subCommand.getName(), subCommand.getUsage(), subCommand.getDescription());
         }
         return String.format("g!%s %s", command.getName(), command.getUsage());
     }
