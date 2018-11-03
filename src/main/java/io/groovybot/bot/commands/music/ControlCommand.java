@@ -159,7 +159,7 @@ public class ControlCommand extends SameChannelCommand {
                     }
                     if (!playerScheduler.isShuffle()) {
                         playerScheduler.setShuffle(true);
-                        sendMessage(translate(author, "command.control.disable.enabled.title"), translate(author, "command.control.shuffle.enabled.description"));
+                        sendMessage(translate(author, "command.control.shuffle.enabled.title"), translate(author, "command.control.shuffle.enabled.description"));
                     } else {
                         playerScheduler.setShuffle(false);
                         sendMessage(translate(author, "command.control.shuffle.disabled.title"), translate(author, "command.control.shuffle.disabled.description"));
