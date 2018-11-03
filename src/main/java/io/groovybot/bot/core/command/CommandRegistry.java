@@ -16,7 +16,6 @@ public class CommandRegistry {
                 new InfoCommand(),
                 new InviteCommand(),
                 new SupportCommand(),
-                new SponsorCommand(),
                 new DonateCommand(),
                 new VoteCommand(),
                 new StatsCommand(),
@@ -58,9 +57,7 @@ public class CommandRegistry {
                 new BlackListCommand(),
                 new BotChannelCommand(),
                 new SwitchCommand(),
-                new PartnerCommand(),
-                new SettingsCommand(),
-                new UserSettingsCommand()
+                new PartnerCommand()
         );
     }
 }
