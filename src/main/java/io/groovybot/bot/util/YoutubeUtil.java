@@ -74,5 +74,4 @@ public class YoutubeUtil {
             youTubeRequest.setKey(bot.getConfig().getJSONObject("youtube").getString("apikey"));
         }
     }
-
 }
