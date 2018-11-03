@@ -145,20 +145,6 @@ public class FormatUtil {
         return edit;
     }
 
-    public static EmbedBuilder parseShardsMessage(CommandEvent event) {
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        StringBuilder stringBuilder = new StringBuilder();
-
-        Lists.reverse(event.getBot().getShardManager().getShards()).forEach(shard -> {
-            stringBuilder.append(String.format("**%s Shard %s %s » %sms**", event.getBot().getShardManager().getStatus(shard.getShardInfo().getShardId()).toString().equals("CONNECTED") ? "<:online:449207830105554964>" : "<:dnd:449207827660013568>", shard.getShardInfo().getShardId() + 1, event.getBot().getShardManager().getStatus(shard.getShardInfo().getShardId()).toString().equals("CONNECTED") ? "online" : event.getBot().getShardManager().getStatus(shard.getShardInfo().getShardId()).toString(), shard.getPing()));
-            if (event.getBot().getShardManager().getShardsTotal() > 1) stringBuilder.append("\n");
-        });
-
-        embedBuilder.setDescription(stringBuilder.toString());
-        embedBuilder.setColor(Colors.DARK_BUT_NOT_BLACK);
-        return embedBuilder;
-    }
-
     public static EmbedBuilder formatWebhookMessage(String type, Event event) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setFooter(event.getJDA().getSelfUser().getName(), event.getJDA().getSelfUser().getAvatarUrl());
