@@ -43,6 +43,7 @@ public class EvalCommand extends Command {
             return send(error(event));
         }
 
+        scriptEngine.put("bot", event.getBot());
         scriptEngine.put("jda", event.getJDA());
         scriptEngine.put("guild", event.getGuild());
         scriptEngine.put("channel", event.getChannel());
