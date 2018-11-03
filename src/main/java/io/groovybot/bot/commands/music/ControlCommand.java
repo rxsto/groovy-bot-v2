@@ -218,7 +218,7 @@ public class ControlCommand extends SameChannelCommand {
         private CharSequence buildDescription(MusicPlayer player) {
             final AudioTrack playingTrack = player.getPlayer().getPlayingTrack();
             final long trackPosition = player.getPlayer().getTrackPosition();
-            return String.format("%s %s %s %s %s **[%s/%s]** 🔊 **%s**", player.isPaused() ? "\u23F8" : "\u25B6", player.loopEnabled() ? "\uD83D\uDD02" : "", player.queueLoopEnabled() ? "\uD83D\uDD01" : "", player.shuffleEnabled() ? "\uD83D\uDD00" : "", getProgressBar(trackPosition, playingTrack.getDuration()), FormatUtil.formatTimestamp(trackPosition), FormatUtil.formatTimestamp(playingTrack.getDuration()), player.getPlayer().getVolume() + "%");
+            return String.format("%s %s %s %s %s **[%s]** 🔊 **%s**", player.isPaused() ? "\u23F8" : "\u25B6", player.loopEnabled() ? "\uD83D\uDD02" : "", player.queueLoopEnabled() ? "\uD83D\uDD01" : "", player.shuffleEnabled() ? "\uD83D\uDD00" : "", getProgressBar(trackPosition, playingTrack.getDuration()), playingTrack.getInfo().isStream ? commandEvent.translate("phrases.stream") : String.format("%s/%s", FormatUtil.formatTimestamp(trackPosition), FormatUtil.formatTimestamp(playingTrack.getDuration())), player.getPlayer().getVolume() + "%");
         }
 
         private void delete() {
