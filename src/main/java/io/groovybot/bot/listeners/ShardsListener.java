@@ -19,10 +19,10 @@ public class ShardsListener {
 
         tempLoadedShards++;
 
-        log.info(String.format("[ShardManager] Successfully launched Shard %s! (%s/%s)", event.getJDA().getShardInfo().getShardId(), tempLoadedShards, shardManager.getShardsTotal()));
+        log.info(String.format("[ShardManager] Successfully launched Shard %s! (%s/%s)", event.getJDA().getShardInfo().getShardId() + 1, tempLoadedShards, shardManager.getShardsTotal()));
 
         if (tempLoadedShards == shardManager.getShardsTotal()) {
-            log.info(String.format("[ShardManager] Successfully launched %s Shards! Finishing Startup ...", tempLoadedShards));
+            log.info(String.format("[ShardManager] Successfully launched %s %s! Finishing Startup ...", tempLoadedShards, tempLoadedShards == 1 ? "Shards" : "Shard"));
 
             GroovyBot.getInstance().getEventManager().handle(new AllShardsLoadedEvent(event.getJDA(), event.getResponseNumber()));
         }
