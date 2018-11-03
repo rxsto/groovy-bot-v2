@@ -98,3 +98,6 @@ buildNumber.properties
 /logs/
 /.flooignore
 /.floo
+/update.mp3
+/lavalink.env
+/groovy.sh
