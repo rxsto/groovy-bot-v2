@@ -35,8 +35,8 @@ public class WebsiteStatsListener {
     }
 
     private void updateStats() {
-        if (GroovyBot.getInstance().getWebsocket() == null || GroovyBot.getInstance().getWebsocket().isClosed() || !GroovyBot.getInstance().getWebsocket().isOpen())
+        if (GroovyBot.getInstance().getWebSocket() == null || GroovyBot.getInstance().getWebSocket().isClosed() || !GroovyBot.getInstance().getWebSocket().isOpen())
             return;
-        GroovyBot.getInstance().getWebsocket().send(WebsocketConnection.parseMessage("bot", "poststats", WebsocketConnection.parseStats(LavalinkManager.countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
+        GroovyBot.getInstance().getWebSocket().send(WebsocketConnection.parseMessage("bot", "poststats", WebsocketConnection.parseStats(LavalinkManager.countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
     }
 }
