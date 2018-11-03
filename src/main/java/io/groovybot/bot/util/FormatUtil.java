@@ -219,7 +219,7 @@ public class FormatUtil {
     }
 
     public static String formatGuildLog(Guild guild) {
-        return String.format("**Owner:** %s\n**Created:** %s\n**Members:** `%s`\n**Identifier:** `%s`", guild.getMembers().size(), guild.getCreationTime().format(DateTimeFormatter.ISO_LOCAL_DATE).replaceAll("-", "."), guild.getOwner().getAsMention(), guild.getId());
+        return String.format("**Owner:** %s\n**Created:** %s\n**Members:** `%s`\n**Identifier:** `%s`", guild.getOwner().getAsMention(), guild.getCreationTime().format(DateTimeFormatter.ISO_LOCAL_DATE).replaceAll("-", "."), guild.getMembers().size(), guild.getId());
     }
 
     public static String formatMemberLog(Member member) {
