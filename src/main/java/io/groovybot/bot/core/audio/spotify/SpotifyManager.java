@@ -49,7 +49,7 @@ public class SpotifyManager {
         if (System.currentTimeMillis() > this.accessTokenExpires) try {
             retrieveAccessToken();
         } catch (Exception e) {
-            log.error("The access token could not be refreshed", e);
+            log.error("[SpotifyManager] The access token could not be refreshed!", e);
         }
     }
 
