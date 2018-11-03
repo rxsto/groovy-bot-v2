@@ -4,9 +4,9 @@ set -e
 cmd="$@"
 
 until curl http://localhost:8080; do
-  >&2 echo "Lavalink isn't running"
+  >&2 echo "[Core] Lavalink isn't running!"
   sleep 1
  done
-echo "Starting"
+echo "[Core] Starting ..."
 
 exec ${cmd}
