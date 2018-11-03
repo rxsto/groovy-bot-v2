@@ -108,6 +108,8 @@ public class GroovyBot {
 
     private GroovyBot(String[] args) throws IOException {
 
+        System.out.println("Dis is da most latest build man!");
+
         // Setting startuptime
         startupTime = System.currentTimeMillis();
 
