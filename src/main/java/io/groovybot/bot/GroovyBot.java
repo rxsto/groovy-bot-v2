@@ -108,7 +108,7 @@ public class GroovyBot {
 
     private GroovyBot(String[] args) throws IOException {
 
-        System.out.println("Is dis da most latest version or from before?!");
+        System.out.println("now dis is running in a new job!!!");
 
         // Setting startuptime
         startupTime = System.currentTimeMillis();
