@@ -8,7 +8,7 @@ import io.groovybot.bot.core.command.permission.Permissions;
 
 public class PartnerCommand extends Command {
     public PartnerCommand() {
-        super(new String[]{"partner", "partners"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you Groovy's partnes", "");
+        super(new String[]{"partner"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you Groovy's partne", "");
     }
 
     @Override
