@@ -123,7 +123,7 @@ public class GroovyBot {
         debugMode = String.join(" ", args).contains("debug");
 
         // Checking for webSocket-mode
-        enableWebsocket = !String.join(" ", args).contains("--no-webSocket");
+        enableWebsocket = !String.join(" ", args).contains("--no-websocket");
 
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
