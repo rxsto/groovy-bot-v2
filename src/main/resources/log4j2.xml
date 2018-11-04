@@ -27,11 +27,7 @@
         <Async name="Async">
             <AppenderRef ref="Log"/>
             <AppenderRef ref="LatestLog"/>
-            <AppenderRef ref="WebhookAppender"/>
         </Async>
-        <WebhookAppender name="WebhookAppender">
-            <JDAFilter/>
-        </WebhookAppender>
     </Appenders>
     <Loggers>
         <Root>
