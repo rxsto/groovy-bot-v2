@@ -98,7 +98,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
                 }
 
                 // Check for autoplay (only use it if queue empty)
-                if (autoPlay == player.trackQueue.isEmpty()) {
+                if (autoPlay || player.trackQueue.isEmpty()) {
                     runAutoplay(track);
                     return;
                 }

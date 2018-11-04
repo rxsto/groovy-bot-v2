@@ -16,7 +16,7 @@ import java.util.List;
 public class Guild extends DatabaseEntitiy {
 
     private Integer volume = 100;
-    private String prefix = "g!";
+    private String prefix = GroovyBot.getInstance().getConfig().getJSONObject("settings").getString("prefix");
     private boolean djMode = false;
     private boolean announceSongs = true;
     private JSONArray blacklistedChannels = new JSONArray();
