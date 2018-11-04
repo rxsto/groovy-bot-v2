@@ -41,10 +41,9 @@ public class CommandManager implements Closeable {
     @SuppressWarnings("unused")
     private void onMessageRecieved(GuildMessageReceivedEvent event) {
 
-        // Check if all shards are running
-        if (!event.getGuild().getId().equals("403882830225997825"))
-            if (!bot.isAllShardsInitialized())
-                return;
+        // Do not execute if bot is not ready
+        if (!bot.isAllShardsInitialized())
+            return;
 
         // Check if event is not a CommandEvent
         if (event instanceof CommandEvent) return;

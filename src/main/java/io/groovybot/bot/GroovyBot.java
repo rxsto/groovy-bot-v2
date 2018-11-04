@@ -224,8 +224,6 @@ public class GroovyBot {
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onReady(AllShardsLoadedEvent event) {
-        allShardsInitialized = true;
-
         // Initializing gameanimator
         new GameAnimator(this);
 
@@ -255,6 +253,9 @@ public class GroovyBot {
             statusPage.start();
             serverCountStatistics.start();
         }
+
+        // Now bot is ready
+        allShardsInitialized = true;
     }
 
     public void close() {
