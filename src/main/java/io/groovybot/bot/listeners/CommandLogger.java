@@ -16,7 +16,7 @@ public class CommandLogger {
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onCommandExecution(CommandExecutedEvent executedEvent) {
-        log.info(String.format("[Command] %s - %s#%s | %s (%s)", executedEvent.getCommand().getName(), executedEvent.getAuthor().getName(), executedEvent.getAuthor().getDiscriminator(), executedEvent.getGuild().getName(), executedEvent.getGuild().getIdLong()));
+        log.debug(String.format("[Command] %s - %s#%s | %s (%s)", executedEvent.getCommand().getName(), executedEvent.getAuthor().getName(), executedEvent.getAuthor().getDiscriminator(), executedEvent.getGuild().getName(), executedEvent.getGuild().getIdLong()));
     }
 
     @SubscribeEvent
