@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -65,8 +64,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
             case FINISHED:
                 Guild guild = ((MusicPlayer) player).getGuild();
 
-                if (guild.getSelfMember().getVoiceState().getChannel() == null)
-                    return;
+                if (guild.getSelfMember().getVoiceState().getChannel() == null) return;
 
                 // Leave if bot alone
                 if (guild.getSelfMember().getVoiceState().getChannel().getMembers().size() == 1) {
@@ -77,16 +75,22 @@ public class Scheduler extends AudioEventAdapterWrapped {
 
                 AudioTrack nextTrack = null;
 
-                // Loop-mode (repeat ended song)
+                // Check for Loop-mode (repeat ended song)
                 if (loop) {
                     player.play(track);
                     return;
                 }
 
-                // Loopqueue-mode (add track to end of queue)
+                // Check for Loopqueue-mode (add track to end of queue)
                 if (loopqueue) player.trackQueue.add(track);
 
-                // Shuffle-mode
+                // Check for autoplay (only use it if queue empty)
+                if (autoPlay && player.trackQueue.isEmpty()) {
+                    runAutoplay(track);
+                    return;
+                }
+
+                // Check for Shuffle-mode
                 if (shuffle) {
                     if (player.trackQueue.isEmpty())
                         player.onEnd(true);
@@ -95,12 +99,6 @@ public class Scheduler extends AudioEventAdapterWrapped {
                         nextTrack = ((LinkedList<AudioTrack>) player.trackQueue).get(index);
                         ((LinkedList<AudioTrack>) player.trackQueue).remove(index);
                     }
-                }
-
-                // Check for autoplay (only use it if queue empty)
-                if (autoPlay || player.trackQueue.isEmpty()) {
-                    runAutoplay(track);
-                    return;
                 }
 
                 // If not loop and not shuffle get next track and remove it from queue
