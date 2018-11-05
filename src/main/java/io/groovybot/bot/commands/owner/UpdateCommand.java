@@ -7,6 +7,8 @@ import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
 import lombok.extern.log4j.Log4j2;
+import net.dv8tion.jda.core.OnlineStatus;
+import net.dv8tion.jda.core.entities.Game;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -34,6 +36,10 @@ public class UpdateCommand extends Command {
                 log.error("Error while updating the bot!", e);
             }
         });
+
+        event.getBot().getShardManager().setStatus(OnlineStatus.DO_NOT_DISTURB);
+        event.getBot().getShardManager().setGame(Game.playing("Updating ..."));
+        event.getBot().setAllShardsInitialized(false);
 
         return send(success("Announcing update!", "The bot should be **ready** for being **updated** in a few seconds!"));
     }

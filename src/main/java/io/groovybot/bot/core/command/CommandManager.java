@@ -60,19 +60,6 @@ public class CommandManager implements Closeable {
         String lowerCasedContent = content.toLowerCase();
         Guild guild = bot.getGuildCache().get(event.getGuild().getIdLong());
 
-        // Check if channel is not commandschannel
-        if (guild.hasCommandsChannel())
-            if (event.getChannel() != guild.getBotChannel()) {
-                EmbedUtil.sendMessage(event.getChannel(), EmbedUtil.error("Not allowed!", String.format("It is **not allowed** to use me in **this channel** as %s is the **only** channel for **commands**!", guild.getBotChannel().getAsMention())), 5);
-                return;
-            }
-
-        // Check if channel is blacklisted
-        if (guild.isChannelBlacklisted(event.getChannel().getIdLong())) {
-            EmbedUtil.sendMessage(event.getChannel(), EmbedUtil.error("Not allowed!", "It is **not allowed** to use me in **this channel** as this channel is **blacklisted**!"), 5);
-            return;
-        }
-
         // Check prefix
         if (lowerCasedContent.startsWith(defaultPrefix))
             prefix = defaultPrefix;
@@ -89,8 +76,21 @@ public class CommandManager implements Closeable {
             }
         }
 
-        //Abort if message don't start with the right prefix
+        // Abort if message don't start with the right prefix
         if (prefix == null) return;
+
+        // Check if channel is not commandschannel
+        if (guild.hasCommandsChannel())
+            if (event.getChannel() != guild.getBotChannel()) {
+                EmbedUtil.sendMessage(event.getChannel(), EmbedUtil.error("Not allowed!", String.format("It is **not allowed** to use me in **this channel** as %s is the **only** channel for **commands**!", guild.getBotChannel().getAsMention())), 5);
+                return;
+            }
+
+        // Check if channel is blacklisted
+        if (guild.isChannelBlacklisted(event.getChannel().getIdLong())) {
+            EmbedUtil.sendMessage(event.getChannel(), EmbedUtil.error("Not allowed!", "It is **not allowed** to use me in **this channel** as this channel is **blacklisted**!"), 5);
+            return;
+        }
 
         //Remove prefix
         String beheaded = content.substring(prefix.length()).trim();
