@@ -7,26 +7,35 @@ import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.command.voice.SameChannelCommand;
+import io.groovybot.bot.core.entity.EntityProvider;
 
 public class LoopCommand extends SameChannelCommand {
 
     public LoopCommand() {
-        super(new String[]{"loop", "lp"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you toggle the loop-mode", "");
+        super(new String[]{"loop", "lp"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you toggle the loop-modes", "");
     }
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         Scheduler scheduler = player.getScheduler();
 
-        if (scheduler.isLoopqueue())
-            return send(error(event.translate("command.control.disable.loopqueue.title"), event.translate("command.control.disable.loopqueue.description")));
-
-        if (scheduler.isLoop()) {
-            scheduler.setLoop(false);
-            return send(success(event.translate("command.loop.disabled.title"), event.translate("command.loop.disabled.description")));
+        if (!scheduler.isLoop() && !scheduler.isLoopqueue()) {
+            scheduler.setLoop(true);
+            return send(info(event.translate("command.loop.loop.title"), event.translate("command.loop.loop.description")));
+        } else if (scheduler.isLoop()) {
+            if (!Permissions.tierOne().isCovered(EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions(), event)) {
+                send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.tierone")));
+                return send(info(event.translate("command.loop.none.title"), event.translate("command.loop.none.description")));
+            } else {
+                scheduler.setLoop(false);
+                scheduler.setLoopqueue(true);
+                return send(info(event.translate("command.loop.loopqueue.title"), event.translate("command.loop.loopqueue.description")));
+            }
+        } else if (scheduler.isLoopqueue()) {
+            scheduler.setLoopqueue(false);
+            return send(info(event.translate("command.loop.none.title"), event.translate("command.loop.none.description")));
+        } else {
+            return send(error(event));
         }
-
-        scheduler.setLoop(true);
-        return send(success(event.translate("command.loop.enabled.title"), event.translate("command.loop.enabled.description")));
     }
 }

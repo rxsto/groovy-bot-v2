@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 public class ControlCommand extends SameChannelCommand {
 
-    private final String[] EMOTES = {"⏯", "⏭", "🔂", "🔁", "🔀", "🔄", "🔉", "🔊"};
+    private final String[] EMOTES = {"⏯", "⏭", "🔁", "🔀", "🔄", "🔉", "🔊"};
 
     public ControlCommand() {
         super(new String[]{"control", "panel", "cp"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you control Groovy with reactions", "");
@@ -123,33 +123,23 @@ public class ControlCommand extends SameChannelCommand {
                     sendMessage(translate(author, "command.control.skipped.title"), translate(author, "command.control.skipped.description"));
                     break;
                 case "\uD83D\uDD02":
-                    if (playerScheduler.isLoopqueue()) {
-                        sendMessage(translate(author, "command.control.disable.loopqueue.title"), translate(author, "command.control.disable.loopqueue.description"));
-                        break;
-                    }
-                    if (!playerScheduler.isLoop()) {
+                    if (!playerScheduler.isLoop() && !playerScheduler.isLoopqueue()) {
                         playerScheduler.setLoop(true);
-                        sendMessage(translate(author, "command.control.repeating.enabled.title"), translate(author, "command.control.repeating.enabled.description"));
-                    } else {
-                        playerScheduler.setLoop(false);
-                        sendMessage(translate(author, "command.control.repeating.disabled.title"), translate(author, "command.control.repeating.disabled.description"));
-                    }
-                    break;
-                case "\uD83D\uDD01":
-                    if (!Permissions.tierOne().isCovered(EntityProvider.getUser(author.getIdLong()).getPermissions(), this.commandEvent)) {
-                        sendMessageError(this.commandEvent.translate("phrases.nopermission.title"), this.commandEvent.translate("phrases.nopermission.tierone"));
-                        break;
-                    }
-                    if (playerScheduler.isLoop()) {
-                        sendMessage(translate(author, "command.control.disable.loop.title"), translate(author, "command.control.disable.loop.description"));
-                        break;
-                    }
-                    if (!playerScheduler.isLoopqueue()) {
-                        playerScheduler.setLoopqueue(true);
-                        sendMessage(translate(author, "command.control.queuerepeating.enabled.title"), translate(author, "command.control.queuerepeating.enabled.description"));
-                    } else {
+                        sendMessage(this.commandEvent.translate("command.loop.loop.title"), this.commandEvent.translate("command.loop.loop.description"));
+                    } else if (playerScheduler.isLoop()) {
+                        if (!Permissions.tierOne().isCovered(EntityProvider.getUser(this.commandEvent.getAuthor().getIdLong()).getPermissions(), this.commandEvent)) {
+                            sendMessageError(this.commandEvent.translate("phrases.nopermission.title"), this.commandEvent.translate("phrases.nopermission.tierone"));
+                            sendMessage(this.commandEvent.translate("command.loop.none.title"), this.commandEvent.translate("command.loop.none.description"));
+                        } else {
+                            playerScheduler.setLoop(false);
+                            playerScheduler.setLoopqueue(true);
+                            sendMessage(this.commandEvent.translate("command.loop.loopqueue.title"), this.commandEvent.translate("command.loop.loopqueue.description"));
+                        }
+                    } else if (playerScheduler.isLoopqueue()) {
                         playerScheduler.setLoopqueue(false);
-                        sendMessage(translate(author, "command.control.queuerepeating.disabled.title"), translate(author, "command.control.queuerepeating.disabled.description"));
+                        sendMessage(this.commandEvent.translate("command.loop.none.title"), this.commandEvent.translate("command.loop.none.description"));
+                    } else {
+                        send(error(this.commandEvent));
                     }
                     break;
                 case "\uD83D\uDD00":
@@ -255,6 +245,5 @@ public class ControlCommand extends SameChannelCommand {
             if (!scheduler.isShutdown())
                 scheduler.shutdownNow();
         }
-
     }
 }
