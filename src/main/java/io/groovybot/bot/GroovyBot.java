@@ -28,6 +28,7 @@ import io.groovybot.bot.io.database.PostgreSQL;
 import io.groovybot.bot.listeners.*;
 import io.groovybot.bot.util.YoutubeUtil;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.bot.sharding.ShardManager;
@@ -101,6 +102,7 @@ public class GroovyBot {
     @Getter
     private PlaylistManager playlistManager;
     @Getter
+    @Setter
     private boolean allShardsInitialized = false;
 
     private GroovyBot(String[] args) throws IOException {
