@@ -21,19 +21,19 @@ public class LoopCommand extends SameChannelCommand {
 
         if (!scheduler.isLoop() && !scheduler.isLoopqueue()) {
             scheduler.setLoop(true);
-            return send(info(event.translate("command.loop.loop.title"), event.translate("command.loop.loop.description")));
+            return send(info(event.translate("command.loop.title"), event.translate("command.loop.loop.description")));
         } else if (scheduler.isLoop()) {
             if (!Permissions.tierOne().isCovered(EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions(), event)) {
-                send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.tierone")));
-                return send(info(event.translate("command.loop.none.title"), event.translate("command.loop.none.description")));
+                scheduler.setLoop(false);
+                return send(info(event.translate("command.loop.none.title"), event.translate("command.loop.none.description")).addField(event.translate("phrases.text.information"), "▫ " + event.translate("command.loop.nopremium.info"), false));
             } else {
                 scheduler.setLoop(false);
                 scheduler.setLoopqueue(true);
-                return send(info(event.translate("command.loop.loopqueue.title"), event.translate("command.loop.loopqueue.description")));
+                return send(info(event.translate("command.loop.title"), event.translate("command.loop.loopqueue.description")));
             }
         } else if (scheduler.isLoopqueue()) {
             scheduler.setLoopqueue(false);
-            return send(info(event.translate("command.loop.none.title"), event.translate("command.loop.none.description")));
+            return send(info(event.translate("command.loop.title"), event.translate("command.loop.none.description")));
         } else {
             return send(error(event));
         }
