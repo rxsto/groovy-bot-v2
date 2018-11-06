@@ -18,7 +18,6 @@ public class JoinCommand extends InChannelCommand {
         if (player.checkConnect(event)) {
             player.connect(event.getMember().getVoiceState().getChannel());
             return send(success(event.translate("command.join.joined.title"), event.translate("command.join.joined.description")));
-        }
-        return null;
+        } else return null;
     }
 }
