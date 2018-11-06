@@ -122,7 +122,6 @@ public class MusicPlayer extends Player implements Runnable {
             SafeMessage.sendMessage(channel, EmbedUtil.play("Now Playing", FormatUtil.formatTrack(track)));
     }
 
-
     @Override
     public IPlayer getPlayer() {
         this.player = this.player == null ? new LavaplayerPlayerWrapper(getAudioPlayerManager().createPlayer()) : this.player;
@@ -339,6 +338,13 @@ public class MusicPlayer extends Player implements Runnable {
             SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.copyright.title"), event.translate("phrases.searching.copyright.description")));
             return;
         }
+
+        if (message.contains("this content is not available on this country domain")) {
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.country.title"), event.translate("phrases.searching.country.description")));
+            return;
+        }
+
+
 
         if (message.contains("something went wrong when looking up the track")) {
             if (e.getCause() != null) {
