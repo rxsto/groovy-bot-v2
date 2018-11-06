@@ -25,7 +25,7 @@ public class LoopCommand extends SameChannelCommand {
         } else if (scheduler.isLoop()) {
             if (!Permissions.tierOne().isCovered(EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions(), event)) {
                 scheduler.setLoop(false);
-                return send(info(event.translate("command.loop.none.title"), event.translate("command.loop.none.description")).addField(event.translate("phrases.text.information"), "▫ " + event.translate("command.loop.nopremium.info"), false));
+                return send(info(event.translate("command.loop.title"), event.translate("command.loop.none.description")).addField(event.translate("phrases.text.information"), "▫ " + event.translate("command.loop.nopremium.info"), false));
             } else {
                 scheduler.setLoop(false);
                 scheduler.setLoopqueue(true);
