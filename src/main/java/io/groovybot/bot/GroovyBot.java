@@ -136,6 +136,10 @@ public class GroovyBot {
         // Initializing config
         initConfig();
 
+        // Creating cache
+        guildCache = new Cache<>(Guild.class);
+        userCache = new Cache<>(User.class);
+
         // Initializing database
         log.info("[Database] Initializing Database ...");
         postgreSQL = new PostgreSQL();
@@ -228,10 +232,6 @@ public class GroovyBot {
     private void onReady(AllShardsLoadedEvent event) {
         // Initializing gameanimator
         new GameAnimator(this);
-
-        // Creating cache
-        guildCache = new Cache<>(Guild.class);
-        userCache = new Cache<>(User.class);
 
         // Initializing players
         try {
