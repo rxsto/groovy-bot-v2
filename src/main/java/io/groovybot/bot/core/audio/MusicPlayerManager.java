@@ -49,7 +49,6 @@ public class MusicPlayerManager {
         int initializedPlayersCount = 0;
 
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
-
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM queues");
             ResultSet rs = ps.executeQuery();
 
@@ -69,12 +68,18 @@ public class MusicPlayerManager {
                 for (Object track : new JSONArray(rs.getString("queue"))) {
                     player.queueTrack(LavalinkUtil.toAudioTrack(track.toString()), false, false);
                 }
-
                 initializedPlayersCount++;
             }
 
             PreparedStatement delPs = connection.prepareStatement("DELETE FROM queues");
             delPs.execute();
+        }
+
+        if (!GroovyBot.getInstance().isDebugMode()) {
+            MusicPlayer groovyPlayer = getPlayer(GroovyBot.getInstance().getShardManager().getGuildById(403882830225997825L), GroovyBot.getInstance().getShardManager().getTextChannelById(486765014976561159L));
+
+            if (!groovyPlayer.isConnected())
+                groovyPlayer.connect(GroovyBot.getInstance().getShardManager().getVoiceChannelById(GroovyBot.getInstance().getConfig().getJSONObject("settings").getString("voice")));
         }
 
         log.info(String.format("[MusicPlayerManager] Successfully initialized %s %s!", initializedPlayersCount, initializedPlayersCount == 1 ? "MusicPlayer" : "MusicPlayers"));
