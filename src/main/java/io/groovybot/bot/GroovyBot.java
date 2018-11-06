@@ -233,7 +233,7 @@ public class GroovyBot {
         guildCache = new Cache<>(Guild.class);
         userCache = new Cache<>(User.class);
 
-        // Initializing players - CURRENTLY NONFUNCTIONAL
+        // Initializing players
         try {
             log.info("[MusicPlayerManager] Initializing MusicPlayers ...");
             musicPlayerManager.initPlayers();
@@ -256,7 +256,7 @@ public class GroovyBot {
             serverCountStatistics.start();
         }
 
-        // Now bot is ready
+        // Now Groovy is ready
         allShardsInitialized = true;
     }
 
