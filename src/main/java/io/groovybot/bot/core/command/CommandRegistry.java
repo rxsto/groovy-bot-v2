@@ -32,7 +32,6 @@ public class CommandRegistry {
                 new NowPlayingCommand(),
                 new QueueCommand(),
                 new ControlCommand(),
-                new LoopQueueCommand(),
                 new SearchCommand(),
                 new ResetCommand(),
                 new ClearCommand(),
