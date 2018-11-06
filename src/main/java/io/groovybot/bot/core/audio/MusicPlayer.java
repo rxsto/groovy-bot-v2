@@ -12,10 +12,7 @@ import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.command.permission.UserPermissions;
 import io.groovybot.bot.core.entity.EntityProvider;
-import io.groovybot.bot.util.EmbedUtil;
-import io.groovybot.bot.util.FormatUtil;
-import io.groovybot.bot.util.SafeMessage;
-import io.groovybot.bot.util.YoutubeUtil;
+import io.groovybot.bot.util.*;
 import lavalink.client.LavalinkUtil;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavaplayerPlayerWrapper;
@@ -32,10 +29,13 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Log4j2
-public class MusicPlayer extends Player {
+public class MusicPlayer extends Player implements Runnable {
 
     @Getter
     private final Guild guild;
@@ -47,6 +47,7 @@ public class MusicPlayer extends Player {
     @Getter
     @Setter
     private AudioTrack previousTrack;
+    private final ScheduledExecutorService scheduler;
 
     protected MusicPlayer(Guild guild, TextChannel channel, YoutubeUtil youtubeClient) {
         super(youtubeClient);
@@ -57,11 +58,17 @@ public class MusicPlayer extends Player {
         instanciatePlayer(LavalinkManager.getLavalink().getLink(guild));
         getPlayer().addListener(getScheduler());
         audioPlayerManager = lavalinkManager.getAudioPlayerManager();
+        scheduler = Executors.newSingleThreadScheduledExecutor(new NameThreadFactory("LeaveListener"));
+        scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.MINUTES);
     }
 
     public void connect(VoiceChannel channel) {
         link.connect(channel);
         Objects.requireNonNull(link.getGuild()).getAudioManager().setSelfDeafened(true);
+    }
+
+    public boolean isConnected() {
+        return link != null;
     }
 
     public boolean checkConnect(CommandEvent event) {
@@ -420,5 +427,10 @@ public class MusicPlayer extends Player {
             jsonArray.put(LavalinkUtil.toMessage(audioTrack));
         }
         return jsonArray.toString();
+    }
+
+    @Override
+    public void run() {
+        if (!isPlaying()) leave();
     }
 }
