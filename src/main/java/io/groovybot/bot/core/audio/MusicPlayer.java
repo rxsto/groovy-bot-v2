@@ -67,10 +67,6 @@ public class MusicPlayer extends Player implements Runnable {
         Objects.requireNonNull(link.getGuild()).getAudioManager().setSelfDeafened(true);
     }
 
-    public boolean isConnected() {
-        return link != null;
-    }
-
     public boolean checkConnect(CommandEvent event) {
         if (!event.getGuild().getSelfMember().hasPermission(event.getMember().getVoiceState().getChannel(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
             SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.join.nopermission.description")));
