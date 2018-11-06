@@ -14,8 +14,7 @@ public class BlacklistWatcher {
 
     @SubscribeEvent
     private void onTextChannelDelete(TextChannelDeleteEvent event) {
-        if (event.getGuild() == null) return;
-        final Guild guild = guildCache.get(event.getGuild().getIdLong()); // TODO: CHECK NULLPOINTER FIX
+        final Guild guild = guildCache.get(event.getGuild().getIdLong());
         final long channelId = event.getChannel().getIdLong();
         if (guild.isChannelBlacklisted(channelId))
             guild.unBlacklistChannel(channelId);
