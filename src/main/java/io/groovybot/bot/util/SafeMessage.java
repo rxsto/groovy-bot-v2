@@ -88,13 +88,11 @@ public class SafeMessage extends JDAUtil {
         }
     }
 
-    private static boolean hasWritePermissions(Channel channel) {
-        if (channel.getGuild() == null)
-            return false;
+    private static boolean hasWritePermissions(TextChannel channel) {
         return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE);
     }
 
-    private static boolean hasEmbedPermissions(Channel channel) {
+    private static boolean hasEmbedPermissions(TextChannel channel) {
         return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_EMBED_LINKS);
     }
 
