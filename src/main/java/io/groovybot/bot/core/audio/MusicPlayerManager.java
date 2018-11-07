@@ -76,7 +76,6 @@ public class MusicPlayerManager {
         }
 
         MusicPlayer groovyPlayer = getPlayer(GroovyBot.getInstance().getShardManager().getGuildById(403882830225997825L), GroovyBot.getInstance().getShardManager().getTextChannelById(486765014976561159L));
-
         groovyPlayer.connect(GroovyBot.getInstance().getShardManager().getVoiceChannelById(GroovyBot.getInstance().getConfig().getJSONObject("settings").getString("voice")));
 
         log.info(String.format("[MusicPlayerManager] Successfully initialized %s %s!", initializedPlayersCount, initializedPlayersCount == 1 ? "MusicPlayer" : "MusicPlayers"));
