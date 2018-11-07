@@ -94,7 +94,7 @@ public class PlaylistCommand extends Command {
             if (args.length < 2)
                 return sendHelp();
             if (!Helpers.isNumeric(args[1]))
-                return send(error(event.translate(""), event.translate("")));
+                return send(error(event.translate("phrases.invalidargument.title"), event.translate("phrases.invalidargument.description")));
             int index = Integer.parseInt(args[1]) - 1;
             User user = EntityProvider.getUser(event.getAuthor().getIdLong());
             if (!user.getPlaylists().containsKey(args[0]))
