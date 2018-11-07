@@ -13,6 +13,7 @@ services:
     build: .
     depends_on:
     - "lavalink"
+    restart: always
     networks:
     - backend
     volumes:
