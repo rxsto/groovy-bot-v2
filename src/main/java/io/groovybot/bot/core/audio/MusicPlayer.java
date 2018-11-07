@@ -83,18 +83,15 @@ public class MusicPlayer extends Player implements Runnable {
     public void leave() {
         trackQueue.clear();
         if (!this.getGuild().getId().equals("403882830225997825"))
-            if (link != null)
-                link.disconnect();
+            if (link.getPlayer() != null) LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
     }
 
     @Override
     public void onEnd(boolean announce) {
-        if (announce)
-            SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not **queue** more songs?"));
-        if (!this.getGuild().getId().equals("403882830225997825"))
-            if (link != null)
-                link.disconnect();
+        if (announce) SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not **queue** more songs?"));
         stop();
+        if (!this.getGuild().getId().equals("403882830225997825"))
+            if (link.getPlayer() != null) LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
     }
 
     @Override
@@ -339,7 +336,6 @@ public class MusicPlayer extends Player implements Runnable {
             SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.country.title"), event.translate("phrases.searching.country.description")));
             return;
         }
-
 
 
         if (message.contains("something went wrong when looking up the track")) {
