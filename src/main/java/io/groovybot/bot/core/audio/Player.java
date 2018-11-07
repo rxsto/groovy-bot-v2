@@ -75,8 +75,7 @@ public abstract class Player {
     }
 
     public AudioTrack pollTrack() {
-        if (trackQueue.isEmpty())
-            return null;
+        if (trackQueue.isEmpty()) return null;
         AudioTrack track = trackQueue.poll();
         save();
         return track;
@@ -98,8 +97,7 @@ public abstract class Player {
         List<AudioTrack> trackList = new ArrayList<>();
         Collections.addAll(trackList, tracks);
         trackQueue.addAll(trackList);
-        if (!isPlaying())
-            play(pollTrack(), false);
+        if (!isPlaying()) play(pollTrack(), false);
     }
 
     public void skipTo(int delimiter) {
@@ -107,9 +105,8 @@ public abstract class Player {
             play(pollTrack(), false);
             return;
         }
-        for (int i = 1; i < delimiter; i++) {
-            pollTrack();
-        }
+
+        for (int i = 1; i < delimiter; i++) pollTrack();
         play(pollTrack(), false);
     }
 
