@@ -20,6 +20,7 @@ import java.sql.SQLException;
 public class WebsocketConnection extends WebSocketClient {
 
     private HikariDataSource dataSource;
+    private long reconnectingTimeout = 2000L;
 
     public WebsocketConnection() throws URISyntaxException {
         super(new URI(String.format("%s:%s", GroovyBot.getInstance().getConfig().getJSONObject("websocket").getString("host"), GroovyBot.getInstance().getConfig().getJSONObject("websocket").getInt("port"))));
@@ -33,7 +34,6 @@ public class WebsocketConnection extends WebSocketClient {
         object.put("playing", playing);
         object.put("guilds", guilds);
         object.put("users", users);
-
         return object;
     }
 
@@ -42,7 +42,6 @@ public class WebsocketConnection extends WebSocketClient {
         object.put("client", client);
         object.put("type", type);
         object.put("data", data);
-
         return object;
     }
 
@@ -50,6 +49,7 @@ public class WebsocketConnection extends WebSocketClient {
     public void onOpen(ServerHandshake serverHandshake) {
         log.info("[WebSocket] WebSocketConnection opened!");
         authorize();
+        reconnectingTimeout = 2000L;
         this.send(WebsocketConnection.parseMessage("bot", "poststats", WebsocketConnection.parseStats(LavalinkManager.countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
     }
 
@@ -72,10 +72,11 @@ public class WebsocketConnection extends WebSocketClient {
 
     @Override
     public void onClose(int i, String s, boolean b) {
-        log.info("[WebSocket] WebSocketConnection closed! Trying to reconnect in 5 seconds ...");
+        log.info(String.format("[WebSocket] WebSocketConnection closed! Trying to reconnect in %s seconds ...", reconnectingTimeout));
         try {
-            Thread.sleep(5000L);
+            Thread.sleep(reconnectingTimeout);
             new Thread(this::reconnect, "WebSocketThread").start();
+            reconnectingTimeout = reconnectingTimeout + 2000L;
         } catch (InterruptedException e) {
             log.error("[WebSocket] Error while reconnecting!");
         }
@@ -92,9 +93,8 @@ public class WebsocketConnection extends WebSocketClient {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement getToken = connection.prepareStatement("SELECT * FROM websocket");
             ResultSet rs = getToken.executeQuery();
-            while (rs.next()) {
+            while (rs.next())
                 token = rs.getString("token");
-            }
         } catch (SQLException e) {
             log.error("[WebSocket] Error while authorizing!", e);
         }
