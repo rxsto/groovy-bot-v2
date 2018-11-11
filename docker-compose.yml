@@ -8,16 +8,16 @@ services:
     env_file:
     - lavalink.env
     networks:
-    - backend
+    - core
   bot:
     build: .
     depends_on:
     - "lavalink"
     restart: always
     networks:
-    - backend
+    - core
     volumes:
     - "$PWD:/opt/groovy/bot"
     command: ./wait-for-lavalink.sh java -jar groovybot.jar
 networks:
-  backend:
+  core:
