@@ -14,12 +14,12 @@ public class SwitchCommand extends InChannelCommand {
 
     @Override
     public Result execute(String[] args, CommandEvent event, MusicPlayer player) {
-        if (player.getChannel().getIdLong() == event.getChannel().getIdLong())
+        if (player.getChannel() == event.getChannel())
             return send(error(event.translate("command.switch.already.title"), event.translate("command.switch.already.description")));
 
         player.setChannel(event.getChannel());
 
-        if (event.getMember().getVoiceState().getChannel().getIdLong() != event.getGuild().getSelfMember().getVoiceState().getChannel().getIdLong()) {
+        if (event.getMember().getVoiceState().getChannel() != event.getGuild().getSelfMember().getVoiceState().getChannel()) {
             player.connect(event.getMember().getVoiceState().getChannel());
             return send(success(event.translate("command.switch.voice.title"), event.translate("command.switch.voice.description")));
         }
