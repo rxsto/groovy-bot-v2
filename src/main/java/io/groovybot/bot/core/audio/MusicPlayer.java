@@ -41,13 +41,13 @@ public class MusicPlayer extends Player implements Runnable {
     private final Guild guild;
     @Getter
     private final AudioPlayerManager audioPlayerManager;
+    private final ScheduledExecutorService scheduler;
     @Getter
     @Setter
     private TextChannel channel;
     @Getter
     @Setter
     private AudioTrack previousTrack;
-    private final ScheduledExecutorService scheduler;
 
     protected MusicPlayer(Guild guild, TextChannel channel, YoutubeUtil youtubeClient) {
         super(youtubeClient);
@@ -68,6 +68,7 @@ public class MusicPlayer extends Player implements Runnable {
     }
 
     public boolean checkConnect(CommandEvent event) {
+        if (event.getMember().getVoiceState().getChannel() == null) return false;
         if (!event.getGuild().getSelfMember().hasPermission(event.getMember().getVoiceState().getChannel(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
             SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.join.nopermission.description")));
             return false;
@@ -88,7 +89,8 @@ public class MusicPlayer extends Player implements Runnable {
 
     @Override
     public void onEnd(boolean announce) {
-        if (announce) SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not **queue** more songs?"));
+        if (announce)
+            SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not **queue** more songs?"));
         stop();
         if (!this.getGuild().getId().equals("403882830225997825"))
             if (link.getPlayer() != null) LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
@@ -143,9 +145,9 @@ public class MusicPlayer extends Player implements Runnable {
             keyword = keyword.replaceAll("-soundcloud", "").replaceAll("-sc", "");
         } else isSoundcloud = false;
 
-        if (keyword.contains("-forceplay") || keyword.contains("-fp") || keyword.contains("-skip")) {
+        if (keyword.contains("-forceplay") || keyword.contains("-fp") || keyword.contains("-skip") || keyword.contains("-force")) {
             isPlaySkip = true;
-            keyword = keyword.replaceAll("-forceplay", "").replaceAll("-fp", "").replaceAll("-skip", "");
+            keyword = keyword.replaceAll("-forceplay", "").replaceAll("-fp", "").replaceAll("-skip", "").replaceAll("-force", "");
         } else isPlaySkip = false;
 
         if (keyword.contains("-playtop") || keyword.contains("-pt") || keyword.contains("-top")) {
@@ -305,54 +307,8 @@ public class MusicPlayer extends Player implements Runnable {
     }
 
     private void handleFailedLoads(FriendlyException e, Message infoMessage, CommandEvent event) {
-        final String message = e.getMessage().toLowerCase();
-
-        if (message.contains("unknown file format")) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unknownformat.title"), event.translate("phrases.searching.unknownformat.description")));
-            return;
-        }
-
-        if (message.contains("the playlist is private")) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.private.title"), event.translate("phrases.searching.private.description")));
-            return;
-        }
-
-        if (message.contains("this video is not available")) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.unavailable.title"), event.translate("phrases.searching.unavailable.description")));
-            return;
-        }
-
-        if (message.contains("the uploader has not made this video available in your country")) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.country.title"), event.translate("phrases.searching.country.description")));
-            return;
-        }
-
-        if (message.contains("this video contains content from umg, who has blocked it in your country on copyright grounds")) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.copyright.title"), event.translate("phrases.searching.copyright.description")));
-            return;
-        }
-
-        if (message.contains("this content is not available on this country domain")) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.country.title"), event.translate("phrases.searching.country.description")));
-            return;
-        }
-
-
-        if (message.contains("something went wrong when looking up the track")) {
-            if (e.getCause() != null) {
-                String cause = e.getCause().getMessage().toLowerCase();
-
-                if (cause.contains("invalid status code for search response")) {
-                    if (cause.contains("503")) {
-                        SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.slowdown.title"), event.translate("phrases.searching.slowdown.description")));
-                        return;
-                    }
-                }
-            }
-        }
-
-        SafeMessage.editMessage(infoMessage, EmbedUtil.error(event));
-        log.error("[MusicPlayer] Error while loading track!", e);
+        SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.error.title"), e.getCause() != null ? String.format("**%s**\n**%s**", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));
+        if (e.getCause() != null) log.error("[MusicPlayer] Error while loading track!", e);
     }
 
     private void queuedTrack(AudioTrack track, Message infoMessage, CommandEvent event) {
