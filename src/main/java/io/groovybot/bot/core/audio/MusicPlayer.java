@@ -320,7 +320,7 @@ public class MusicPlayer extends Player implements Runnable {
 
     public void update() throws SQLException, IOException {
         if (channel != null)
-            channel.sendMessage(":warning: Update initialized! Groovy should be back soon!");
+            channel.sendMessage(":warning: Update initialized! Groovy should be back soon!").queue();
 
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             // Initialize preparedstatement
@@ -363,13 +363,13 @@ public class MusicPlayer extends Player implements Runnable {
                 @Override
                 public void noMatches() {
                     if (channel != null)
-                        channel.sendMessage(":x: An error occurred! Please contact the developers!");
+                        channel.sendMessage(":x: An error occurred! Please contact the developers!").queue();
                 }
 
                 @Override
                 public void loadFailed(FriendlyException exception) {
                     if (channel != null)
-                        channel.sendMessage(":x: An error occurred! Please contact the developers!");
+                        channel.sendMessage(":x: An error occurred! Please contact the developers!").queue();
                 }
             });
         }
