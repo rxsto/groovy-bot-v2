@@ -4,7 +4,6 @@ import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -89,6 +88,7 @@ public class SafeMessage extends JDAUtil {
     }
 
     private static boolean hasWritePermissions(TextChannel channel) {
+        if (channel == null) return false;
         return channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE);
     }
 
