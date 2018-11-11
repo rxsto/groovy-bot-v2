@@ -25,7 +25,8 @@ public class JoinGuildListener {
         for (TextChannel channel : channels) sortedChannels.put(channel.getName(), channel);
 
         sortedChannels.forEach((name, channel) -> {
-            if (name.contains("music") || name.contains("bot") || name.contains("command") || name.contains("talk") || name.contains("chat") || name.contains("general")) preferredChannels.add(channel);
+            if (name.contains("music") || name.contains("bot") || name.contains("command") || name.contains("talk") || name.contains("chat") || name.contains("general"))
+                preferredChannels.add(channel);
         });
 
         boolean found = false;

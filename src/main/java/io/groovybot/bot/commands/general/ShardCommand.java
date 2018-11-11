@@ -1,13 +1,12 @@
 package io.groovybot.bot.commands.general;
 
-import io.groovybot.bot.core.command.*;
+import io.groovybot.bot.core.command.Command;
+import io.groovybot.bot.core.command.CommandCategory;
+import io.groovybot.bot.core.command.CommandEvent;
+import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.util.Colors;
-import io.groovybot.bot.util.FormatUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ShardCommand extends Command {
 
