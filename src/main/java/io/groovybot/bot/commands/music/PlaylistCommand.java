@@ -100,7 +100,7 @@ public class PlaylistCommand extends Command {
             if (!user.getPlaylists().containsKey(args[0]))
                 return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
             Playlist playlist = user.getPlaylists().get(args[0]);
-            if (index > playlist.getSongs().size())
+            if (index > playlist.getSongs().size() - 1)
                 return send(error(event.translate("command.playlist.notinlist.title"), event.translate("command.playlist.notinlist.description")));
             AudioTrack track = playlist.getSongs().get(index);
             playlist.removeTrack(index);
