@@ -1,9 +1,7 @@
 package io.groovybot.bot.util;
 
-import com.google.common.collect.Lists;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.core.command.Command;
-import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.SubCommand;
 import io.groovybot.bot.core.events.command.CommandFailEvent;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -77,6 +75,7 @@ public class FormatUtil {
         stringBuilder.append("Usage: `").append(buildUsage(command)).append("`\n");
         stringBuilder.append("Aliases: `").append(Arrays.toString(command.getAliases()).replace("[", "").replace("]", "")).append("`\n");
         stringBuilder.append("Description: `").append(command.getDescription()).append("`").append("\n");
+        stringBuilder.append("Executable by: `").append(command.getPermissions().getIdentifier()).append("`").append("\n");
 
         if (!command.getSubCommandAssociations().isEmpty()) {
             stringBuilder.append("Subcommands:").append("\n");
@@ -205,10 +204,10 @@ public class FormatUtil {
     }
 
     public static String formatGuildLog(Guild guild) {
-        return String.format("**Owner:** %s\n**Created:** %s\n**Members:** `%s`\n**Identifier:** `%s`", guild.getOwner().getAsMention(), guild.getCreationTime().format(DateTimeFormatter.ISO_LOCAL_DATE).replaceAll("-", "."), guild.getMembers().size(), guild.getId());
+        return String.format("**Owner:** %s\n**Created:** %s\n**Members:** `%s`\n**Identifier:** `%s`", formatUserName(guild.getOwner().getUser()), guild.getCreationTime().format(DateTimeFormatter.ISO_LOCAL_DATE).replaceAll("-", "."), guild.getMembers().size(), guild.getId());
     }
 
     public static String formatMemberLog(Member member) {
-        return String.format("**Mention:** %s\n**Joined:** %s\n**Count:** `#%s`\n**Identifier:** `%s`", member.getAsMention(), member.getJoinDate().format(DateTimeFormatter.ISO_LOCAL_DATE).replaceAll("-", "."), member.getGuild().getMembers().size(), member.getUser().getId());
+        return String.format("**User:** %s\n**Joined:** %s\n**Count:** `#%s`\n**Identifier:** `%s`", formatUserName(member.getUser()), member.getJoinDate().format(DateTimeFormatter.ISO_LOCAL_DATE).replaceAll("-", "."), member.getGuild().getMembers().size(), member.getUser().getId());
     }
 }
