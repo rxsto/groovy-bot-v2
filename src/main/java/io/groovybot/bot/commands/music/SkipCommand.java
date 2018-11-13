@@ -19,11 +19,6 @@ public class SkipCommand extends SameChannelCommand {
 
         player.setPreviousTrack(player.getPlayer().getPlayingTrack());
 
-        if (player.getScheduler().isAutoPlay()) {
-            player.getScheduler().runAutoplay(player.getPlayer().getPlayingTrack());
-            return null;
-        }
-
         int skipTo;
 
         if (args.length == 0)

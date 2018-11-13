@@ -116,6 +116,15 @@ public class Scheduler extends AudioEventAdapterWrapped {
                 player.play(player.pollTrack(), true);
                 break;
 
+            case REPLACED:
+                // Check for autoplay (only use it if queue empty)
+                if (autoPlay && player.trackQueue.isEmpty()) {
+                    runAutoplay(track);
+                    return;
+                }
+
+                break;
+
             default:
                 break;
         }
