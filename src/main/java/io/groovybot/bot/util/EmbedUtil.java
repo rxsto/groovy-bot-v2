@@ -61,6 +61,16 @@ public class EmbedUtil extends SafeMessage {
     }
 
     /**
+     * Creates an noTitle embed
+     *
+     * @param description The description of the embed
+     * @return an EmbedBuiler
+     */
+    public static EmbedBuilder noTitle(String description) {
+        return new EmbedBuilder().setDescription(description).setColor(Colors.DARK_BUT_NOT_BLACK);
+    }
+
+    /**
      * Creates an welcome embed
      *
      * @param guild The guild Groovy joined
