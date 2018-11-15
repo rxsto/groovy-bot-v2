@@ -6,7 +6,6 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.wrapper.spotify.model_objects.specification.Track;
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.permission.Permissions;
@@ -163,9 +162,9 @@ public class MusicPlayer extends Player implements Runnable {
             isUrl = false;
         }
 
-        if ((keyword.startsWith("http://") || keyword.startsWith("https://")) && keyword.contains("spotify")) {
+        /*if ((keyword.startsWith("http://") || keyword.startsWith("https://")) && keyword.contains("spotify")) {
             if (keyword.contains("track")) {
-                Track track = event.getBot().getSpotifyClient().getTrack(keyword);
+                Track track = event.getBot().getSpotifyClient().get(keyword);
                 if (track != null) {
                     SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info("Spotify Search Query", track.getArtists()[0].getName() + " - " + track.getName()));
                     keyword = "ytsearch: " + track.getArtists()[0].getName() + " - " + track.getName();
@@ -175,7 +174,7 @@ public class MusicPlayer extends Player implements Runnable {
                 SafeMessage.editMessage(infoMessage, EmbedUtil.info("Currently disabled!", "**Spotify-Playlists** are currently **disabled** as we are trying to **improve performance**!"));
                 return;
 
-                /*
+
                 RateLimiter rateLimiter = RateLimiter.create(2);
 
                 List<String> trackList = event.getBot().getSpotifyClient().getPlaylistImporter().getPlaylistItems(keyword);
@@ -237,11 +236,11 @@ public class MusicPlayer extends Player implements Runnable {
                     });
                 });
                 return;
-                */
             }
-        }
+        }*/
 
         final boolean isURL = isUrl;
+
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {

@@ -1,18 +1,10 @@
-package io.groovybot.bot.core.audio.spotify;
+package io.groovybot.bot.core.audio.spotify.outdated;
 
+import io.groovybot.bot.core.audio.spotify.SpotifyManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @Log4j2
 public class SpotifyPlaylistImporter {
@@ -28,7 +20,7 @@ public class SpotifyPlaylistImporter {
         this.accessToken = accessToken;
     }
 
-    public SpotifyPlaylistInfo getPlaylistInfo(String url) {
+    /*public SpotifyPlaylistInfo getPlaylistInfo(String url) {
         spotifyManager.refreshAccessToken();
         String playlistId = spotifyManager.parsePlaylistPattern(url);
         String playlistName = "Spotify Playlist";
@@ -82,7 +74,7 @@ public class SpotifyPlaylistImporter {
             }
         });
         return playlistItems;
-    }
+    }*/
 
     public static class SpotifyPlaylistInfo {
 

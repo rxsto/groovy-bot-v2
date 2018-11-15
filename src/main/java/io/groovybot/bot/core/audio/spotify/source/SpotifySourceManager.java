@@ -1,15 +1,13 @@
-package io.groovybot.bot.core.audio.spotify;
+package io.groovybot.bot.core.audio.spotify.source;
 
 import com.google.common.collect.Lists;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.*;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
-import com.wrapper.spotify.model_objects.specification.Paging;
-import com.wrapper.spotify.model_objects.specification.Playlist;
-import com.wrapper.spotify.model_objects.specification.PlaylistTrack;
-import com.wrapper.spotify.model_objects.specification.Track;
+import com.wrapper.spotify.model_objects.specification.*;
 import io.groovybot.bot.core.audio.AudioTrackFactory;
+import io.groovybot.bot.core.audio.spotify.SpotifyManager;
 import io.groovybot.bot.core.audio.spotify.entities.PlaylistKey;
 import io.groovybot.bot.core.audio.spotify.entities.TrackData;
 import io.groovybot.bot.core.audio.spotify.entities.UserPlaylistKey;
@@ -31,7 +29,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -64,12 +61,11 @@ public class SpotifySourceManager implements AudioSourceManager {
     public AudioItem loadItem(DefaultAudioPlayerManager manager, AudioReference reference) {
         try {
             URL url = new URL(reference.identifier);
-            if (url.getHost().equalsIgnoreCase("open.spotify.com"))
+            if (!url.getHost().equalsIgnoreCase("open.spotify.com"))
                 return null;
-            AudioItem audioItem = buildPlaylist(url.toString());
-            if (audioItem == null)
-                audioItem = buildTrack(url.toString());
-            return audioItem;
+//            AudioItem audioItem = buildPlaylist(url.toString());
+//            if (audioItem == null)
+            return buildTrack(url.toString());
         } catch (MalformedURLException e) {
             log.error(e);
         }
@@ -100,8 +96,8 @@ public class SpotifySourceManager implements AudioSourceManager {
             log.error(e);
             return null;
         }
-        List<TrackData> trackDatas = getTrackDatas(getPlaylistTracks(Objects.requireNonNull(playlist)));
-        List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDatas);
+        List<TrackData> trackDataList = getTrackDataList(getPlaylistTracks(Objects.requireNonNull(playlist)));
+        List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
         return new BasicAudioPlaylist(playlist.getName(), audioTracks, null, false);
     }
 
@@ -134,7 +130,7 @@ public class SpotifySourceManager implements AudioSourceManager {
         return playlistTracks;
     }
 
-    private List<TrackData> getTrackDatas(@NotNull List<PlaylistTrack> playlistTracks) {
+    private List<TrackData> getTrackDataList(@NotNull List<PlaylistTrack> playlistTracks) {
         return playlistTracks.stream()
                 .map(PlaylistTrack::getTrack)
                 .map(this::getTrackData)
@@ -142,14 +138,9 @@ public class SpotifySourceManager implements AudioSourceManager {
     }
 
     private TrackData getTrackData(@NotNull Track track) {
-        if (track.getArtists().length <= 1) {
-            return new TrackData(track.getName(), Collections.singletonList(track.getArtists()[0].getName()), track.getDurationMs());
-        }
-        List<String> artists = Lists.newArrayList();
-        for (int i = 0; i < track.getArtists().length; i++) {
-            artists.add(track.getArtists()[i].getName());
-        }
-        return new TrackData(track.getName(), artists, track.getDurationMs());
+        return new TrackData(track.getName(), Arrays.stream(track.getArtists())
+                .map(ArtistSimplified::getName)
+                .collect(Collectors.toList()), track.getDurationMs());
     }
 
     private String parseTrackPattern(String identifier) {
@@ -161,6 +152,7 @@ public class SpotifySourceManager implements AudioSourceManager {
         return matcher.group(1);
     }
 
+    //TODO: public playlist
     private PlaylistKey parsePlaylistPattern(String identifier) {
         final Matcher matcher = PLAYLIST_PATTERN.matcher(identifier);
 
@@ -171,6 +163,7 @@ public class SpotifySourceManager implements AudioSourceManager {
         return new PlaylistKey(playlistId);
     }
 
+    //TODO: user playlist
     private UserPlaylistKey parseUserPlaylistPattern(String identifier) {
         final Matcher matcher = PLAYLIST_PATTERN.matcher(identifier);
 
