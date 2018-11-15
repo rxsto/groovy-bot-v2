@@ -1,4 +1,4 @@
-package io.groovybot.bot.core.audio.spotify.request;
+package io.groovybot.bot.core.audio.spotify.outdated.request;
 
 import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
