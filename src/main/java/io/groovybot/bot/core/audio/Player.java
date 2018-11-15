@@ -101,6 +101,8 @@ public abstract class Player {
     }
 
     public void skipTo(int delimiter) {
+        if (scheduler.isLoopqueue()) trackQueue.add(player.getPlayingTrack());
+
         if (delimiter == 1) {
             play(pollTrack(), false);
             return;
