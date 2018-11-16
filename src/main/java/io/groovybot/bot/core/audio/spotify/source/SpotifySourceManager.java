@@ -63,9 +63,10 @@ public class SpotifySourceManager implements AudioSourceManager {
             URL url = new URL(reference.identifier);
             if (!url.getHost().equalsIgnoreCase("open.spotify.com"))
                 return null;
-//            AudioItem audioItem = buildPlaylist(url.toString());
-//            if (audioItem == null)
-            return buildTrack(url.toString());
+            AudioItem audioItem = buildPlaylist(url.toString());
+            if (audioItem == null)
+                audioItem = buildTrack(url.toString());
+            return audioItem;
         } catch (MalformedURLException e) {
             log.error(e);
         }
