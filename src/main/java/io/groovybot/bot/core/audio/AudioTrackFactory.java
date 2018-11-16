@@ -10,6 +10,7 @@ import io.groovybot.bot.util.YoutubeUtil;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class AudioTrackFactory {
@@ -24,7 +25,7 @@ public class AudioTrackFactory {
 
     public AudioTrack getAudioTrack(TrackData trackData) {
         try {
-            String identifier = YoutubeUtil.create(GroovyBot.getInstance()).getVideoId(trackData.getArtists().get(0) + " " + trackData.getTitle());
+            String identifier = Objects.requireNonNull(YoutubeUtil.create(GroovyBot.getInstance())).getVideoId(trackData.getArtists().get(0) + " " + trackData.getTitle());
             AudioTrackInfo audioTrackInfo = new AudioTrackInfo(trackData.getTitle(), trackData.getArtists().get(0), trackData.getDuration(), identifier, false, "");
             return new YoutubeAudioTrack(audioTrackInfo, youtubeAudioSourceManager);
         } catch (IOException e) {

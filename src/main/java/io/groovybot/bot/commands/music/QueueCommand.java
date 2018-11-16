@@ -32,7 +32,8 @@ public class QueueCommand extends Command {
     public static EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, AudioTrack currentTrack, int currentPage, int totalPages) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("🎶 " + String.format(event.translate("command.queue.title"), event.getBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size()))
-                .setDescription(generateQueueDescription(tracks, startNumber, currentTrack)).setColor(Colors.DARK_BUT_NOT_BLACK);
+                .setDescription(generateQueueDescription(tracks, startNumber, currentTrack))
+                .setColor(Colors.DARK_BUT_NOT_BLACK);
         if (currentPage != 0 && totalPages != 0)
             builder.setFooter(String.format("%s %s", event.translate("phrases.text.site"), String.format("%s/%s", currentPage, totalPages)), null);
         return builder;
@@ -42,9 +43,8 @@ public class QueueCommand extends Command {
         StringBuilder queueMessage = new StringBuilder();
         AtomicInteger trackCount = new AtomicInteger(startNumber);
         if (currentTrack != null)
-            queueMessage.append(String.format("**[Now]** [%s](%s)\n\n", currentTrack.getInfo().title, currentTrack.getInfo().uri));
-        tracks.forEach(track -> queueMessage.append(String.format("▫ `%s.` [%s](%s)\n", trackCount.addAndGet(1), track.getInfo().title, track.getInfo().uri)));
-
+            queueMessage.append(String.format("**[Now]** [%s](%s) - %s\n\n", currentTrack.getInfo().title, currentTrack.getInfo().uri, currentTrack.getInfo().author));
+        tracks.forEach(track -> queueMessage.append(String.format("▫ `%s.` [%s](%s) - %s\n", trackCount.addAndGet(1), track.getInfo().title, track.getInfo().uri, track.getInfo().author)));
         return queueMessage.toString();
     }
 
@@ -54,7 +54,7 @@ public class QueueCommand extends Command {
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
         if (player.getQueueSize() <= PAGE_SIZE)
-            return send(formatQueue((LinkedList<AudioTrack>) player.getTrackQueue(), event, 0, player.getPlayer().getPlayingTrack(), 1, 1));
+            return new Result(formatQueue((LinkedList<AudioTrack>) player.getTrackQueue(), event, 0, player.getPlayer().getPlayingTrack(), 1, 1));
         if (!event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE))
             return send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
         Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.queue.loading.title"), event.translate("command.queue.loading.description")));

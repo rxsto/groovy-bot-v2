@@ -6,6 +6,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.*;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.specification.*;
+import com.wrapper.spotify.requests.data.playlists.GetPlaylistRequest;
 import io.groovybot.bot.core.audio.AudioTrackFactory;
 import io.groovybot.bot.core.audio.spotify.SpotifyManager;
 import io.groovybot.bot.core.audio.spotify.entities.PlaylistKey;
@@ -64,8 +65,11 @@ public class SpotifySourceManager implements AudioSourceManager {
             if (!url.getHost().equalsIgnoreCase("open.spotify.com"))
                 return null;
             AudioItem audioItem = buildPlaylist(url.toString());
-            if (audioItem == null)
-                audioItem = buildTrack(url.toString());
+            if (audioItem == null) {
+                audioItem = buildUserPlaylist(url.toString());
+                if (audioItem == null)
+                    audioItem = buildTrack(url.toString());
+            }
             return audioItem;
         } catch (MalformedURLException e) {
             log.error(e);
@@ -75,11 +79,15 @@ public class SpotifySourceManager implements AudioSourceManager {
 
     private AudioTrack buildTrack(String url) {
         String trackId = parseTrackPattern(url);
-        Track track = null;
+        Track track;
         try {
-            track = this.spotifyManager.getSpotifyApi().getTrack(trackId).build().execute();
+            track = this.spotifyManager.getSpotifyApi()
+                    .getTrack(trackId)
+                    .build()
+                    .execute();
         } catch (SpotifyWebApiException | IOException e) {
             log.error("Unable to fetch track with the given track id!", e);
+            return null;
         }
         TrackData trackData = this.getTrackData(Objects.requireNonNull(track));
         return this.audioTrackFactory.getAudioTrack(trackData);
@@ -94,7 +102,23 @@ public class SpotifySourceManager implements AudioSourceManager {
         try {
             playlist = normalPlaylistRequest.execute();
         } catch (IOException | SpotifyWebApiException e) {
-            log.error(e);
+            log.error("Unable to fetch playlist with the given playlist id!", e);
+            return null;
+        }
+        List<TrackData> trackDataList = getTrackDataList(getPlaylistTracks(Objects.requireNonNull(playlist)));
+        List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
+        return new BasicAudioPlaylist(playlist.getName(), audioTracks, null, false);
+    }
+
+    private AudioPlaylist buildUserPlaylist(String url) {
+        UserPlaylistKey userPlaylistKey = parseUserPlaylistPattern(url);
+        GetPlaylistRequest getPlaylistRequest = this.spotifyManager.getSpotifyApi().getPlaylist(userPlaylistKey.getUserId(), userPlaylistKey.getPlaylistId())
+                .build();
+        Playlist playlist;
+        try {
+            playlist = getPlaylistRequest.execute();
+        } catch (IOException | SpotifyWebApiException e) {
+            log.error("Unable to fetch user playlist with the given user id and playlist id!", e);
             return null;
         }
         List<TrackData> trackDataList = getTrackDataList(getPlaylistTracks(Objects.requireNonNull(playlist)));
@@ -139,37 +163,36 @@ public class SpotifySourceManager implements AudioSourceManager {
     }
 
     private TrackData getTrackData(@NotNull Track track) {
-        return new TrackData(track.getName(), Arrays.stream(track.getArtists())
-                .map(ArtistSimplified::getName)
-                .collect(Collectors.toList()), track.getDurationMs());
+        return new TrackData(
+                track.getName(),
+                Arrays.stream(track.getArtists())
+                        .map(ArtistSimplified::getName)
+                        .collect(Collectors.toList()),
+                track.getDurationMs()
+        );
     }
 
     private String parseTrackPattern(String identifier) {
         final Matcher matcher = TRACK_PATTERN.matcher(identifier);
 
         if (!matcher.find())
-            return null;
-        //gives the trackId
+            return "noTrackId";
         return matcher.group(1);
     }
 
-    //TODO: public playlist
     private PlaylistKey parsePlaylistPattern(String identifier) {
         final Matcher matcher = PLAYLIST_PATTERN.matcher(identifier);
 
         if (!matcher.find())
-            return null;
-        //saves the playlistId
-        String playlistId = matcher.group(1);
-        return new PlaylistKey(playlistId);
+            return new PlaylistKey("noPlaylistId");
+        return new PlaylistKey(matcher.group(1));
     }
 
-    //TODO: user playlist
     private UserPlaylistKey parseUserPlaylistPattern(String identifier) {
-        final Matcher matcher = PLAYLIST_PATTERN.matcher(identifier);
+        final Matcher matcher = USER_PLAYLIST_PATTERN.matcher(identifier);
 
         if (!matcher.find())
-            return null;
+            return new UserPlaylistKey("noUserId", "noPlaylistId");
         //saves the userId
         String userId = matcher.group(1);
         //saves the playlistId
