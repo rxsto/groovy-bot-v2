@@ -20,7 +20,7 @@ public class LeaveCommand extends SameChannelCommand {
         player.setPreviousTrack(player.getPlayer().getPlayingTrack());
         player.stop();
         player.clearQueue();
-        player.getLink().disconnect();
+        player.leave();
         return send(success(event.translate("command.leave.left.title"), event.translate("command.leave.left.description")));
     }
 }
