@@ -62,7 +62,7 @@ public class MusicPlayer extends Player implements Runnable {
     }
 
     public void connect(VoiceChannel channel) {
-        link.connect(channel);
+        link.connect(channel); // TODO: CHECK IF FIX POSSIBLE!
         Objects.requireNonNull(link.getGuild()).getAudioManager().setSelfDeafened(true);
     }
 
@@ -82,8 +82,14 @@ public class MusicPlayer extends Player implements Runnable {
 
     public void leave() {
         trackQueue.clear();
-        if (!this.getGuild().getId().equals("403882830225997825"))
+        if (!this.getGuild().getId().equals("403882830225997825") || GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave())
             if (link.getPlayer() != null) LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
+    }
+
+    public void leave(String cause) {
+        if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
+        if (channel != null) EmbedUtil.sendMessage(channel, EmbedUtil.noTitle(cause));
+        leave();
     }
 
     @Override
@@ -136,8 +142,8 @@ public class MusicPlayer extends Player implements Runnable {
         boolean isUrl = true;
 
         final boolean isSoundcloud;
-        final boolean isPlaySkip;
-        final boolean isPlayTop;
+        final boolean isForce;
+        final boolean isTop;
 
         if (keyword.contains("-soundcloud") || keyword.contains("-sc")) {
             isSoundcloud = true;
@@ -145,14 +151,14 @@ public class MusicPlayer extends Player implements Runnable {
         } else isSoundcloud = false;
 
         if (keyword.contains("-forceplay") || keyword.contains("-fp") || keyword.contains("-skip") || keyword.contains("-force")) {
-            isPlaySkip = true;
+            isForce = true;
             keyword = keyword.replaceAll("-forceplay", "").replaceAll("-fp", "").replaceAll("-skip", "").replaceAll("-force", "");
-        } else isPlaySkip = false;
+        } else isForce = false;
 
         if (keyword.contains("-playtop") || keyword.contains("-pt") || keyword.contains("-top")) {
-            isPlayTop = true;
+            isTop = true;
             keyword = keyword.replaceAll("-playtop", "").replaceAll("-pt", "").replaceAll("-top", "");
-        } else isPlayTop = false;
+        } else isTop = false;
 
         Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), keyword)));
 
@@ -167,42 +173,63 @@ public class MusicPlayer extends Player implements Runnable {
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
-                if (!checkSong(audioTrack))
-                    return;
-
-                queueTrack(audioTrack, isPlaySkip, isPlayTop);
+                if (!checkSong(audioTrack)) return;
+                queueTrack(audioTrack, isForce, isTop);
                 queuedTrack(audioTrack, infoMessage, event);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist audioPlaylist) {
                 List<AudioTrack> tracks = audioPlaylist.getTracks();
-                if (!tierTwo.isCovered(userPermissions, event))
-                    tracks = tracks.stream()
-                            .limit(25 - getQueueSize())
-                            .filter(track -> track.getDuration() < 3600000)
-                            .collect(Collectors.toList());
 
                 if (tracks.isEmpty()) {
                     SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event));
                     return;
                 }
 
+                boolean noPremium = false;
+
+                boolean tooLong = false;
+                int tooLongSongs = 0;
+
+                if (!tierTwo.isCovered(userPermissions, event)) {
+                    tracks = tracks.stream()
+                            .limit(25 - getQueueSize())
+                            .filter(track -> track.getDuration() < 3600000)
+                            .collect(Collectors.toList());
+                    noPremium = true;
+                }
+
+                if (tracks.isEmpty()) {
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.fullqueue.title"), event.translate("phrases.fullqueue.description")));
+                    return;
+                }
+
                 if (isURL) {
                     for (AudioTrack track : tracks)
-                        if (!checkSong(track)) tracks.remove(track);
+                        if (!checkSong(track)) {
+                            tracks.remove(track);
+                            tooLong = true;
+                            tooLongSongs++;
+                        }
 
                     queueTracks(tracks.toArray(new AudioTrack[0]));
-                    SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), audioPlaylist.getName())));
+
+                    if (noPremium)
+                        if (tooLong)
+                            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.nopremium.toolong.title"), String.format(event.translate("phrases.searching.playlistloaded.nopremium.toolong.description"), tracks.size() - tooLongSongs, audioPlaylist.getName(), tooLongSongs)));
+                        else
+                            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.nopremium.title"), String.format(event.translate("phrases.searching.playlistloaded.nopremium.description"), tracks.size(), audioPlaylist.getName())));
+                    else
+                        SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), tracks.size(), audioPlaylist.getName())));
                     return;
                 }
 
                 final AudioTrack track = tracks.get(0);
 
-                if (!checkSong(track))
-                    return;
+                if (!checkSong(track)) return;
 
-                queueTrack(track, isPlaySkip, isPlayTop);
+                queueTrack(track, isForce, isTop);
                 queuedTrack(track, infoMessage, event);
             }
 
@@ -225,15 +252,14 @@ public class MusicPlayer extends Player implements Runnable {
     private boolean checkSong(AudioTrack track, UserPermissions userPermissions, CommandEvent event, Message infoMessage) {
         if (track.getDuration() > 3600000 && !Permissions.tierTwo().isCovered(userPermissions, event)) {
             SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.patreon.songduration.title"), event.translate("phrases.patreon.songduration.description")));
-            if (trackQueue.isEmpty())
-                leave();
+            if (trackQueue.isEmpty()) leave();
             return true;
         }
         return false;
     }
 
     private void handleFailedLoads(FriendlyException e, Message infoMessage, CommandEvent event) {
-        SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.error.title"), e.getCause() != null ? String.format("**%s**\n**%s**", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));
+        SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.error.title"), e.getCause() != null ? String.format("**%s**\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));
         if (e.getCause() != null) log.error("[MusicPlayer] Error while loading track!", e);
     }
 
@@ -311,6 +337,6 @@ public class MusicPlayer extends Player implements Runnable {
 
     @Override
     public void run() {
-        if (!isPlaying()) leave();
+        if (!isPlaying()) leave("I **left** the voicechannel because I was **inactive** for **too long**!");
     }
 }

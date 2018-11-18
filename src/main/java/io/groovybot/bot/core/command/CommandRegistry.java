@@ -56,7 +56,8 @@ public class CommandRegistry {
                 new BotChannelCommand(),
                 new SwitchCommand(),
                 new PartnerCommand(),
-                new EvalCommand()
+                new EvalCommand(),
+                new AutoLeaveCommand()
         );
     }
 }
