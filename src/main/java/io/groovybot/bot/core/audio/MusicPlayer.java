@@ -6,7 +6,6 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.wrapper.spotify.model_objects.specification.Track;
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.permission.Permissions;
@@ -163,85 +162,6 @@ public class MusicPlayer extends Player implements Runnable {
             isUrl = false;
         }
 
-        /*if ((keyword.startsWith("http://") || keyword.startsWith("https://")) && keyword.contains("spotify")) {
-            if (keyword.contains("track")) {
-                Track track = event.getBot().getSpotifyClient().get(keyword);
-                if (track != null) {
-                    SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info("Spotify Search Query", track.getArtists()[0].getName() + " - " + track.getName()));
-                    keyword = "ytsearch: " + track.getArtists()[0].getName() + " - " + track.getName();
-                    isUrl = false;
-                }
-            } else if (keyword.contains("playlist")) {
-                SafeMessage.editMessage(infoMessage, EmbedUtil.info("Currently disabled!", "**Spotify-Playlists** are currently **disabled** as we are trying to **improve performance**!"));
-                return;
-
-                /*
-                RateLimiter rateLimiter = RateLimiter.create(2);
-
-                RateLimiter rateLimiter = RateLimiter.create(2);
-
-                List<String> trackList = event.getBot().getSpotifyClient().getPlaylistImporter().getPlaylistItems(keyword);
-                PriorityQueue<String> queue = new PriorityQueue<>(trackList);
-
-                AtomicInteger count = new AtomicInteger();
-
-                AtomicReference<Boolean> failed = new AtomicReference<>(false);
-
-                queue.forEach(s -> {
-                    if (!failed.get())
-                        return;
-
-                    count.getAndIncrement();
-                    rateLimiter.acquire();
-                    getAudioPlayerManager().loadItem("ytsearch: " + s, new AudioLoadResultHandler() {
-                        @Override
-                        public void trackLoaded(AudioTrack audioTrack) {
-                            if (!checkSong(audioTrack)) return;
-                            queueTrack(audioTrack, isPlaySkip, isPlayTop);
-                        }
-
-                        @Override
-                        public void playlistLoaded(AudioPlaylist audioPlaylist) {
-                            List<AudioTrack> tracks = audioPlaylist.getTracks();
-                            if (!tierTwo.isCovered(userPermissions, event))
-                                tracks = tracks.stream()
-                                        .limit(25 - getQueueSize())
-                                        .filter(track -> track.getDuration() < 3600000)
-                                        .collect(Collectors.toList());
-
-                            if (tracks.isEmpty()) {
-                                SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event));
-                                return;
-                            }
-
-                            final AudioTrack track = tracks.get(0);
-
-                            if (!checkSong(track))
-                                return;
-
-                            queueTrack(track, isPlaySkip, isPlayTop);
-                        }
-
-                        @Override
-                        public void noMatches() {
-                            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
-                        }
-
-                        @Override
-                        public void loadFailed(FriendlyException e) {
-                            handleFailedLoads(e, infoMessage, event);
-                            failed.getAndSet(true);
-                        }
-
-                        private boolean checkSong(AudioTrack track) {
-                            return !MusicPlayer.this.checkSong(track, userPermissions, event, infoMessage);
-                        }
-                    });
-                });
-                return;
-            }
-        }*/
-
         final boolean isURL = isUrl;
 
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
@@ -249,6 +169,7 @@ public class MusicPlayer extends Player implements Runnable {
             public void trackLoaded(AudioTrack audioTrack) {
                 if (!checkSong(audioTrack))
                     return;
+
                 queueTrack(audioTrack, isPlaySkip, isPlayTop);
                 queuedTrack(audioTrack, infoMessage, event);
             }
@@ -268,6 +189,9 @@ public class MusicPlayer extends Player implements Runnable {
                 }
 
                 if (isURL) {
+                    for (AudioTrack track : tracks)
+                        if (!checkSong(track)) tracks.remove(track);
+
                     queueTracks(tracks.toArray(new AudioTrack[0]));
                     SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), audioPlaylist.getName())));
                     return;
