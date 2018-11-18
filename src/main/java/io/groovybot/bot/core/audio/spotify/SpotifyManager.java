@@ -1,7 +1,6 @@
 package io.groovybot.bot.core.audio.spotify;
 
 import com.wrapper.spotify.SpotifyApi;
-import io.groovybot.bot.core.audio.spotify.outdated.SpotifyPlaylistImporter;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import okhttp3.*;
@@ -15,8 +14,6 @@ public class SpotifyManager {
     private final OkHttpClient httpClient;
     private final String clientId, clientSecret;
     @Getter
-    private final SpotifyPlaylistImporter playlistImporter;
-    @Getter
     private SpotifyApi spotifyApi;
     private volatile long accessTokenExpires = 0;
     @Getter
@@ -28,7 +25,6 @@ public class SpotifyManager {
         this.httpClient = new OkHttpClient.Builder().build();
 
         refreshAccessToken();
-        this.playlistImporter = new SpotifyPlaylistImporter(this, httpClient, accessToken);
         if (accessToken.isEmpty() || accessToken.equals(""))
             return;
         this.spotifyApi = SpotifyApi.builder()
@@ -75,55 +71,4 @@ public class SpotifyManager {
             log.error("The access token couldn't be retrieved", e);
         }
     }
-
-    /*
-    public Track getTrack(String url) {
-        refreshAccessToken();
-        final String trackId = parseTrackPattern(url);
-        if (trackId == null)
-            return null;
-        GetTrackRequest getTrackRequest = this.spotifyApi.getTrack(trackId)
-                .build();
-        Track track = null;
-        try {
-            track = getTrackRequest.execute();
-        } catch (IOException | SpotifyWebApiException e) {
-            log.error("The track could not be retrieved", e);
-        }
-        return track;
-    }
-
-    public Playlist getNormalPlaylist(String url) {
-        refreshAccessToken(); //refreshing access token on every call of this method
-        String playlistId = parsePlaylistPattern(url);
-        GetNormalPlaylistRequest getNormalPlaylistRequest = new GetNormalPlaylistRequest.Builder(accessToken)
-                .playlistId(Objects.requireNonNull(playlistId))
-                .build();
-        Playlist playlist = null;
-        try {
-            playlist = getNormalPlaylistRequest.execute();
-        } catch (IOException | SpotifyWebApiException e) {
-            log.error("The playlist could not be retrieved", e);
-        }
-        return playlist;
-    }
-
-//    public Playlist getUserPlaylist(String url) {
-//        refreshAccessToken();
-//        String[] data = parseUserPlaylistPattern(url);
-//        if (data == null)
-//            return null;
-//        final String userId = data[0];
-//        final String playlistId = data[1];
-//        GetPlaylistRequest getPlaylistRequest = this.spotifyApi.getPlaylist(userId, playlistId)
-//                .build();
-//        Playlist playlist = null;
-//        try {
-//            playlist = getPlaylistRequest.execute();
-//        } catch (IOException | SpotifyWebApiException e) {
-//            log.error("The playlist could not be retrieved", e);
-//        }
-//        return playlist;
-//    }
-      */
 }
