@@ -39,12 +39,15 @@ public abstract class Player {
     public void play(AudioTrack track, boolean fail) {
         if (fail)
             announceRequeue(track);
+
         if (track == null) {
             onEnd(false);
             return;
         }
+
         if (player.isPaused())
             resume();
+
         player.playTrack(track);
     }
 
