@@ -16,7 +16,6 @@ public abstract class SemiInChannelCommand extends SameChannelCommand {
     public Result execute(String[] args, CommandEvent event, MusicPlayer player) {
         if (event.getGuild().getSelfMember().getVoiceState().inVoiceChannel())
             return super.execute(args, event, player);
-
         if (player.checkConnect(event)) {
             player.connect(event.getMember().getVoiceState().getChannel());
             return executeCommand(args, event, player);

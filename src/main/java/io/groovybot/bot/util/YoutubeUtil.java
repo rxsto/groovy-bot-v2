@@ -68,6 +68,17 @@ public class YoutubeUtil {
         return searchResults.getItems().get(0);
     }
 
+    public String getVideoId(String query) throws IOException {
+        YouTube.Search.List search = client.search().list("id,snippet")
+                .setType("video")
+                .setFields("items(id/videoId)")
+                .setQ(query);
+        SearchListResponse response = search.execute();
+        if (response.getItems().isEmpty())
+            throw new NullPointerException("No videos were found");
+        return response.getItems().get(0).getId().getVideoId();
+    }
+
     private class RequestInitializer extends YouTubeRequestInitializer {
         @Override
         protected void initializeYouTubeRequest(YouTubeRequest<?> youTubeRequest) {

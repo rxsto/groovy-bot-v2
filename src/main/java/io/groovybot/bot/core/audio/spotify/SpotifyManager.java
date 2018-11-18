@@ -1,27 +1,17 @@
 package io.groovybot.bot.core.audio.spotify;
 
 import com.wrapper.spotify.SpotifyApi;
-import com.wrapper.spotify.exceptions.SpotifyWebApiException;
-import com.wrapper.spotify.model_objects.specification.Playlist;
-import com.wrapper.spotify.model_objects.specification.Track;
-import com.wrapper.spotify.requests.data.tracks.GetTrackRequest;
-import io.groovybot.bot.core.audio.spotify.request.GetNormalPlaylistRequest;
+import io.groovybot.bot.core.audio.spotify.outdated.SpotifyPlaylistImporter;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import okhttp3.*;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Log4j2
 public class SpotifyManager {
 
-    private static final Pattern USER_PLAYLIST_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/user/(.*)/playlist/([^?/\\s]*)");
-    private static final Pattern PLAYLIST_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/playlists?/([^?/\\s]*)");
-    private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/track/([^?/\\s]*)");
     private final OkHttpClient httpClient;
     private final String clientId, clientSecret;
     @Getter
@@ -29,6 +19,7 @@ public class SpotifyManager {
     @Getter
     private SpotifyApi spotifyApi;
     private volatile long accessTokenExpires = 0;
+    @Getter
     private volatile String accessToken = "";
 
     public SpotifyManager(String clientId, String clientSecret) {
@@ -85,6 +76,7 @@ public class SpotifyManager {
         }
     }
 
+    /*
     public Track getTrack(String url) {
         refreshAccessToken();
         final String trackId = parseTrackPattern(url);
@@ -133,22 +125,5 @@ public class SpotifyManager {
 //        }
 //        return playlist;
 //    }
-
-    String parseTrackPattern(String identifier) {
-        final Matcher matcher = TRACK_PATTERN.matcher(identifier);
-
-        if (!matcher.find())
-            return null;
-        //returns the id of the track
-        return matcher.group(1);
-    }
-
-    String parsePlaylistPattern(String identifier) {
-        final Matcher matcher = PLAYLIST_PATTERN.matcher(identifier);
-
-        if (!matcher.find())
-            return null;
-        //saves the username
-        return matcher.group(1);
-    }
+      */
 }

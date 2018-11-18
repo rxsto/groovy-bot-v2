@@ -145,6 +145,7 @@ public class GroovyBot {
         postgreSQL = new PostgreSQL();
 
         httpClient = new OkHttpClient();
+        spotifyClient = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
         lavalinkManager = new LavalinkManager(this);
         statusPage = new StatusPage(httpClient, config.getJSONObject("statuspage"));
 
@@ -164,7 +165,6 @@ public class GroovyBot {
         translationManager = new TranslationManager();
         playlistManager = new PlaylistManager(postgreSQL.getDataSource());
         youtubeClient = YoutubeUtil.create(this);
-        spotifyClient = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
         geniusClient = new GeniusClient(config.getJSONObject("genius").getString("token"));
         premiumManager = new PremiumManager();
         new CommandRegistry(commandManager);
