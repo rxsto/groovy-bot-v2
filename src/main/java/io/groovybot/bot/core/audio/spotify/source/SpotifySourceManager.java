@@ -78,6 +78,7 @@ public class SpotifySourceManager implements AudioSourceManager {
     }
 
     private AudioTrack buildTrack(String url) {
+        this.spotifyManager.refreshAccessToken();
         String trackId = parseTrackPattern(url);
         Track track;
         try {
@@ -94,6 +95,7 @@ public class SpotifySourceManager implements AudioSourceManager {
     }
 
     private AudioPlaylist buildPlaylist(String url) {
+        this.spotifyManager.refreshAccessToken();
         PlaylistKey playlistKey = parsePlaylistPattern(url);
         GetNormalPlaylistRequest normalPlaylistRequest = new GetNormalPlaylistRequest.Builder(this.spotifyManager.getAccessToken())
                 .playlistId(Objects.requireNonNull(playlistKey).getPlaylistId())
@@ -111,6 +113,7 @@ public class SpotifySourceManager implements AudioSourceManager {
     }
 
     private AudioPlaylist buildUserPlaylist(String url) {
+        this.spotifyManager.refreshAccessToken();
         UserPlaylistKey userPlaylistKey = parseUserPlaylistPattern(url);
         GetPlaylistRequest getPlaylistRequest = this.spotifyManager.getSpotifyApi().getPlaylist(userPlaylistKey.getUserId(), userPlaylistKey.getPlaylistId())
                 .build();
@@ -127,6 +130,7 @@ public class SpotifySourceManager implements AudioSourceManager {
     }
 
     private List<PlaylistTrack> getPlaylistTracks(Playlist playlist) {
+        this.spotifyManager.refreshAccessToken();
         List<PlaylistTrack> playlistTracks = Lists.newArrayList();
         Paging<PlaylistTrack> currentPage = playlist.getTracks();
 
