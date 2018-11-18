@@ -3,6 +3,7 @@ package io.groovybot.bot.core.command;
 import io.groovybot.bot.commands.general.*;
 import io.groovybot.bot.commands.music.*;
 import io.groovybot.bot.commands.owner.CloseCommand;
+import io.groovybot.bot.commands.owner.EvalCommand;
 import io.groovybot.bot.commands.owner.UpdateCommand;
 import io.groovybot.bot.commands.settings.*;
 
@@ -54,7 +55,8 @@ public class CommandRegistry {
                 new BlackListCommand(),
                 new BotChannelCommand(),
                 new SwitchCommand(),
-                new PartnerCommand()
+                new PartnerCommand(),
+                new EvalCommand()
         );
     }
 }
