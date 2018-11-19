@@ -330,6 +330,7 @@ public class MusicPlayer extends Player implements Runnable {
     @Override
     public void run() {
         if (guild.getSelfMember().getVoiceState().getChannel() != null)
-            if (!isPlaying()) leave("I've **left** the voice-channel because I've been **inactive** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://patreon.com/rxsto)**!");
+            if (!isPlaying())
+                leave("I've **left** the voice-channel because I've been **inactive** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://patreon.com/rxsto)**!");
     }
 }
