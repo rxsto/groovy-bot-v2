@@ -47,6 +47,7 @@ public class MusicPlayer extends Player implements Runnable {
     @Getter
     @Setter
     private AudioTrack previousTrack;
+    private boolean inProgress;
 
     protected MusicPlayer(Guild guild, TextChannel channel, YoutubeUtil youtubeClient) {
         super(youtubeClient);
@@ -54,11 +55,12 @@ public class MusicPlayer extends Player implements Runnable {
         this.guild = guild;
         this.channel = channel;
         this.previousTrack = null;
+        this.inProgress = false;
         instanciatePlayer(LavalinkManager.getLavalink().getLink(guild));
         getPlayer().addListener(getScheduler());
         audioPlayerManager = lavalinkManager.getAudioPlayerManager();
         scheduler = Executors.newSingleThreadScheduledExecutor(new NameThreadFactory("LeaveListener"));
-        scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS);
     }
 
     public void connect(VoiceChannel channel) {
@@ -81,14 +83,16 @@ public class MusicPlayer extends Player implements Runnable {
     }
 
     public void leave() {
+        if (inProgress) return;
         trackQueue.clear();
         if (!this.getGuild().getId().equals("403882830225997825") || GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave())
             if (link.getPlayer() != null) LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
     }
 
     public void leave(String cause) {
+        if (inProgress) return;
         if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
-        if (channel != null) EmbedUtil.sendMessage(channel, EmbedUtil.noTitle(cause));
+        if (channel != null) SafeMessage.sendMessage(channel, EmbedUtil.noTitle(cause));
         leave();
     }
 
@@ -97,8 +101,7 @@ public class MusicPlayer extends Player implements Runnable {
         if (announce)
             SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not **queue** more songs?"));
         stop();
-        if (!this.getGuild().getId().equals("403882830225997825"))
-            if (link.getPlayer() != null) LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
+        leave();
     }
 
     @Override
@@ -170,12 +173,15 @@ public class MusicPlayer extends Player implements Runnable {
 
         final boolean isURL = isUrl;
 
+        inProgress = true;
+
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
                 if (!checkSong(audioTrack)) return;
                 queueTrack(audioTrack, isForce, isTop);
                 queuedTrack(audioTrack, infoMessage, event);
+                inProgress = false;
             }
 
             @Override
@@ -187,18 +193,11 @@ public class MusicPlayer extends Player implements Runnable {
                     return;
                 }
 
-                boolean noPremium = false;
-
-                boolean tooLong = false;
-                int tooLongSongs = 0;
-
-                if (!tierTwo.isCovered(userPermissions, event)) {
+                if (!tierTwo.isCovered(userPermissions, event))
                     tracks = tracks.stream()
-                            .limit(25 - getQueueSize())
+                            .limit(50 - getQueueSize())
                             .filter(track -> track.getDuration() < 3600000)
                             .collect(Collectors.toList());
-                    noPremium = true;
-                }
 
                 if (tracks.isEmpty()) {
                     SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.fullqueue.title"), event.translate("phrases.fullqueue.description")));
@@ -206,20 +205,10 @@ public class MusicPlayer extends Player implements Runnable {
                 }
 
                 if (isURL) {
-                    for (AudioTrack track : tracks)
-                        if (!checkSong(track)) {
-                            tracks.remove(track);
-                            tooLong = true;
-                            tooLongSongs++;
-                        }
-
                     queueTracks(tracks.toArray(new AudioTrack[0]));
-
-                    if (noPremium)
-                        if (tooLong)
-                            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.nopremium.toolong.title"), String.format(event.translate("phrases.searching.playlistloaded.nopremium.toolong.description"), tracks.size() - tooLongSongs, audioPlaylist.getName(), tooLongSongs)));
-                        else
-                            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.nopremium.title"), String.format(event.translate("phrases.searching.playlistloaded.nopremium.description"), tracks.size(), audioPlaylist.getName())));
+                    inProgress = false;
+                    if (!tierTwo.isCovered(userPermissions, event))
+                        SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.nopremium.title"), String.format(event.translate("phrases.searching.playlistloaded.nopremium.description"), tracks.size(), audioPlaylist.getName())));
                     else
                         SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), tracks.size(), audioPlaylist.getName())));
                     return;
@@ -231,16 +220,19 @@ public class MusicPlayer extends Player implements Runnable {
 
                 queueTrack(track, isForce, isTop);
                 queuedTrack(track, infoMessage, event);
+                inProgress = false;
             }
 
             @Override
             public void noMatches() {
                 SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
+                inProgress = false;
             }
 
             @Override
             public void loadFailed(FriendlyException e) {
                 handleFailedLoads(e, infoMessage, event);
+                inProgress = false;
             }
 
             private boolean checkSong(AudioTrack track) {
@@ -337,6 +329,7 @@ public class MusicPlayer extends Player implements Runnable {
 
     @Override
     public void run() {
-        if (!isPlaying()) leave("I **left** the voicechannel because I was **inactive** for **too long**!");
+        if (guild.getSelfMember().getVoiceState().getChannel() != null)
+            if (!isPlaying()) leave("I've **left** the voice-channel because I've been **inactive** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://patreon.com/rxsto)**!");
     }
 }

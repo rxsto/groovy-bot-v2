@@ -12,6 +12,7 @@ public class DatabaseGenerator {
                 "  volume               integer,\n" +
                 "  dj_mode              boolean default false not null,\n" +
                 "  announce_songs       boolean default true,\n" +
+                "  auto_leave           boolean default true,\n" +
                 "  blacklisted_channels varchar default '[]' :: character varying,\n" +
                 "  commands_channel     bigint\n" +
                 ");");

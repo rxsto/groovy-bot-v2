@@ -19,10 +19,10 @@ public class AutoLeaveCommand extends Command {
         else {
             if (event.getGroovyGuild().isAutoLeave()) {
                 event.getGroovyGuild().setAutoLeave(false);
-                return send(success(event.translate("command.autoleave.disabled.title"), event.translate("command.autoleave.disabled.title")));
+                return send(success(event.translate("command.autoleave.disabled.title"), event.translate("command.autoleave.disabled.description")));
             } else {
                 event.getGroovyGuild().setAutoLeave(true);
-                return send(success(event.translate("command.autoleave.enabled.title"), event.translate("command.autoleave.enabled.title")));
+                return send(success(event.translate("command.autoleave.enabled.title"), event.translate("command.autoleave.enabled.description")));
             }
         }
     }
