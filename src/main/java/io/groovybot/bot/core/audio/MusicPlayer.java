@@ -60,7 +60,7 @@ public class MusicPlayer extends Player implements Runnable {
         getPlayer().addListener(getScheduler());
         audioPlayerManager = lavalinkManager.getAudioPlayerManager();
         scheduler = Executors.newSingleThreadScheduledExecutor(new NameThreadFactory("LeaveListener"));
-        scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this, 0, 5, TimeUnit.MINUTES);
     }
 
     public void connect(VoiceChannel channel) {
