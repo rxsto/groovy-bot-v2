@@ -9,7 +9,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 
 public class SkipCommand extends SameChannelCommand {
     public SkipCommand() {
-        super(new String[]{"skip", "s"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you skip the current/to a specific track", "[position]");
+        super(new String[]{"skip", "s", "next"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you skip the current/to a specific track", "[position]");
     }
 
     @Override
