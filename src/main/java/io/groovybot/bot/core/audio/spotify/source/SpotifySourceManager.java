@@ -87,7 +87,6 @@ public class SpotifySourceManager implements AudioSourceManager {
                     .build()
                     .execute();
         } catch (SpotifyWebApiException | IOException e) {
-            log.error("Unable to fetch track with the given track id!", e);
             return null;
         }
         TrackData trackData = this.getTrackData(Objects.requireNonNull(track));
@@ -104,7 +103,6 @@ public class SpotifySourceManager implements AudioSourceManager {
         try {
             playlist = normalPlaylistRequest.execute();
         } catch (IOException | SpotifyWebApiException e) {
-            log.error("Unable to fetch playlist with the given playlist id!", e);
             return null;
         }
         List<TrackData> trackDataList = getTrackDataList(getPlaylistTracks(Objects.requireNonNull(playlist)));
@@ -121,7 +119,6 @@ public class SpotifySourceManager implements AudioSourceManager {
         try {
             playlist = getPlaylistRequest.execute();
         } catch (IOException | SpotifyWebApiException e) {
-            log.error("Unable to fetch user playlist with the given user id and playlist id!", e);
             return null;
         }
         List<TrackData> trackDataList = getTrackDataList(getPlaylistTracks(Objects.requireNonNull(playlist)));
