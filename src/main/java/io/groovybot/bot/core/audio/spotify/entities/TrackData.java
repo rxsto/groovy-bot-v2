@@ -10,6 +10,7 @@ import java.util.List;
 public class TrackData {
 
     private final String title;
+    private final String uri;
     private final List<String> artists;
     private final long duration;
 }

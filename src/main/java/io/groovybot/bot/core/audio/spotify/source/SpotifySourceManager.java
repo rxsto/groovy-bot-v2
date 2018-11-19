@@ -169,6 +169,7 @@ public class SpotifySourceManager implements AudioSourceManager {
     private TrackData getTrackData(@NotNull Track track) {
         return new TrackData(
                 track.getName(),
+                track.getExternalUrls().get("spotify"),
                 Arrays.stream(track.getArtists())
                         .map(ArtistSimplified::getName)
                         .collect(Collectors.toList()),

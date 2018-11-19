@@ -26,7 +26,7 @@ public class AudioTrackFactory {
     public AudioTrack getAudioTrack(TrackData trackData) {
         try {
             String identifier = Objects.requireNonNull(YoutubeUtil.create(GroovyBot.getInstance())).getVideoId(trackData.getArtists().get(0) + " " + trackData.getTitle());
-            AudioTrackInfo audioTrackInfo = new AudioTrackInfo(trackData.getTitle(), trackData.getArtists().get(0), trackData.getDuration(), identifier, false, "");
+            AudioTrackInfo audioTrackInfo = new AudioTrackInfo(trackData.getTitle(), trackData.getArtists().get(0), trackData.getDuration(), identifier, false, trackData.getUri());
             return new YoutubeAudioTrack(audioTrackInfo, youtubeAudioSourceManager);
         } catch (IOException e) {
             e.printStackTrace();
