@@ -4,6 +4,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.core.command.Command;
 import io.groovybot.bot.core.command.SubCommand;
 import io.groovybot.bot.core.events.command.CommandFailEvent;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -21,10 +22,12 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static io.groovybot.bot.util.EmbedUtil.info;
 
+@Log4j2
 public class FormatUtil {
 
     public static String formatTrack(AudioTrack audioTrack) {
@@ -133,15 +136,26 @@ public class FormatUtil {
         return dateFormat.parse(timestamp).getTime() + TimeUnit.HOURS.toMillis(1);
     }
 
-    public static String formatLyrics(String lyrics) {
-        String edit = lyrics.replaceAll("\\[(.*?)]", "**[$1]**");
-        if (edit.length() > 2000) {
-            String pre = edit.substring(0, 2000);
+    public static String[] formatLyrics(String lyrics) {
+        String pre = lyrics.replaceAll("\\[(.*?)]", "%split%t:[$1]%split%");
+        if (pre.length() > 6000) {
+            pre = pre.substring(0, 6000);
             if (pre.substring(pre.lastIndexOf(' ') + 1).contains("**"))
                 pre = pre.substring(0, pre.lastIndexOf(" "));
-            return pre + " ...";
+            pre += " ...";
         }
-        return edit;
+
+        String[] comps = pre.split("%split%");
+
+        int count = 0;
+        for (String comp : comps) {
+            if (comp.length() > 1024)
+                comps[count] = comp.substring(0, 1020) + " ...";
+            count++;
+        }
+
+        if (Pattern.compile("\\w+").matcher(comps[0]).find()) return comps;
+        return Arrays.copyOfRange(comps, 1, comps.length);
     }
 
     public static EmbedBuilder formatWebhookMessage(String type, Event event) {

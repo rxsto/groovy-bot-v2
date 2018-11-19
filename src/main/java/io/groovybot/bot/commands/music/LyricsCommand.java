@@ -7,8 +7,10 @@ import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.Result;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.lyrics.GeniusClient;
+import io.groovybot.bot.util.Colors;
 import io.groovybot.bot.util.FormatUtil;
 import lombok.extern.log4j.Log4j2;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
 @Log4j2
@@ -33,7 +35,34 @@ public class LyricsCommand extends Command {
                 if (lyricsUrl == null)
                     editMessage(infoMessage, error(event.translate("command.lyrics.notfound.title"), event.translate("command.lyrics.notfound.description")));
                 else {
-                    editMessage(infoMessage, info(event.translate("command.lyrics.found.title"), getLyrics(lyricsUrl, geniusClient)).setTitle("\uD83D\uDCC4 " + geniusClient.getTitle(lyricsUrl), lyricsUrl));
+                    EmbedBuilder embedBuilder = new EmbedBuilder().setTitle("\uD83D\uDCC4 " + geniusClient.getTitle(lyricsUrl), lyricsUrl).setColor(Colors.DARK_BUT_NOT_BLACK);
+
+                    String[] comps = getLyrics(lyricsUrl, geniusClient);
+                    String[] tempLine = new String[2];
+                    tempLine[0] = null;
+                    tempLine[1] = null;
+
+                    int count = 0;
+                    for (String comp : comps) {
+                        if (count == 0 && !comp.startsWith("t:"))
+                            embedBuilder.setDescription(comp);
+                        else {
+                            if (comp.startsWith("t:")) {
+                                comp = comp.replace("t:", "");
+                                tempLine[0] = comp;
+                            } else {
+                                if (count == 0) tempLine[0] = "\u200b";
+                                tempLine[1] = comp;
+                            }
+                            if (tempLine[0] != null && tempLine[1] != null) {
+                                embedBuilder.addField(tempLine[0], tempLine[1], false);
+                                tempLine[0] = null;
+                                tempLine[1] = null;
+                            }
+                        }
+                        count++;
+                    }
+                    editMessage(infoMessage, embedBuilder);
                 }
             }
         else {
@@ -44,7 +73,11 @@ public class LyricsCommand extends Command {
                 if (lyricsUrl == null)
                     editMessage(infoMessage, error(event.translate("command.lyrics.notfound.title"), event.translate("command.lyrics.notfound.description")));
                 else {
-                    editMessage(infoMessage, info(event.translate("command.lyrics.found.title"), getLyrics(lyricsUrl, geniusClient)).setTitle("\uD83D\uDCC4 " + player.getPlayer().getPlayingTrack().getInfo().title, lyricsUrl));
+                    String[] comps = getLyrics(lyricsUrl, geniusClient);
+                    EmbedBuilder embedBuilder = info(event.translate("command.lyrics.found.title"), comps[0]).setTitle("\uD83D\uDCC4 " + player.getPlayer().getPlayingTrack().getInfo().title, lyricsUrl);
+                    for (String comp : comps)
+                        embedBuilder.addField("\u200b", comp, false);
+                    editMessage(infoMessage, embedBuilder);
                 }
             } else {
                 Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.lyrics.searching.title"), event.translate("command.lyrics.searching.description")));
@@ -53,7 +86,11 @@ public class LyricsCommand extends Command {
                 if (lyricsUrl == null)
                     editMessage(infoMessage, error(event.translate("command.lyrics.notfound.title"), event.translate("command.lyrics.notfound.description")));
                 else {
-                    editMessage(infoMessage, info(event.translate("command.lyrics.found.title"), getLyrics(lyricsUrl, geniusClient)).setTitle("\uD83D\uDCC4 " + geniusClient.getTitle(lyricsUrl), lyricsUrl));
+                    String[] comps = getLyrics(lyricsUrl, geniusClient);
+                    EmbedBuilder embedBuilder = info(event.translate("command.lyrics.found.title"), comps[0]).setTitle("\uD83D\uDCC4 " + geniusClient.getTitle(lyricsUrl), lyricsUrl);
+                    for (String comp : comps)
+                        embedBuilder.addField("\u200B", comp, false);
+                    editMessage(infoMessage, embedBuilder);
                 }
             }
         }
@@ -64,7 +101,7 @@ public class LyricsCommand extends Command {
         return geniusClient.searchSong(query);
     }
 
-    public String getLyrics(String lyricsUrl, GeniusClient geniusClient) {
+    public String[] getLyrics(String lyricsUrl, GeniusClient geniusClient) {
         return FormatUtil.formatLyrics(geniusClient.getLyrics(lyricsUrl));
     }
 }
