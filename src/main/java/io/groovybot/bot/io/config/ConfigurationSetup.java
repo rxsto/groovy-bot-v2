@@ -37,8 +37,7 @@ public class ConfigurationSetup {
         // Create object for settings
         final JSONObject settings = new JSONObject();
         settings.put("prefix", "g!");
-        settings.put("debug", "gt!");
-        settings.put("shards", 6);
+        settings.put("shards", 10);
         settings.put("voice", "default");
         configuration.addDefault("settings", settings);
 

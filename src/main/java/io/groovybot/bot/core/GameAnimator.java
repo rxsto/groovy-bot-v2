@@ -17,11 +17,13 @@ import java.util.concurrent.TimeUnit;
 public class GameAnimator implements Runnable {
 
     private final ShardManager shardManager;
+    private final GroovyBot groovyBot;
     private Game[] games;
 
     public GameAnimator(GroovyBot groovyBot) {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new NameThreadFactory("GameAnimator"));
         List<Game> gameList = new ArrayList<>();
+        this.groovyBot = groovyBot;
         this.shardManager = groovyBot.getShardManager();
         groovyBot.getConfig().getJSONArray("games").forEach(game -> gameList.add(parseGame(String.valueOf(game))));
         this.games = gameList.toArray(new Game[0]);
@@ -48,6 +50,6 @@ public class GameAnimator implements Runnable {
     }
 
     private String parsePlaceholders(String game) {
-        return game.replace("%channels%", String.valueOf(LavalinkManager.countPlayers())).replace("%guilds%", String.valueOf(shardManager.getGuilds().size())).replace("%users%", String.valueOf(shardManager.getUsers().size())).replace("%shards%", String.valueOf(shardManager.getShardsTotal()));
+        return game.replace("%channels%", String.valueOf(LavalinkManager.countPlayers())).replace("%guilds%", String.valueOf(shardManager.getGuilds().size())).replace("%users%", String.valueOf(shardManager.getUsers().size())).replace("%shards%", String.valueOf(shardManager.getShardsTotal())).replace("%prefix%", groovyBot.getConfig().getJSONObject("settings").getString("prefix"));
     }
 }

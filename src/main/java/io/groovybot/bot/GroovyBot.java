@@ -152,7 +152,7 @@ public class GroovyBot {
         // Generating tables
         new DatabaseGenerator(postgreSQL);
 
-        commandManager = new CommandManager(debugMode ? config.getJSONObject("settings").getString("debug") : config.getJSONObject("settings").getString("prefix"), this);
+        commandManager = new CommandManager(config.getJSONObject("settings").getString("prefix"), this);
         serverCountStatistics = new ServerCountStatistics(config.getJSONObject("botlists"));
         keyManager = new KeyManager(postgreSQL.getDataSource());
         interactionManager = new InteractionManager();
