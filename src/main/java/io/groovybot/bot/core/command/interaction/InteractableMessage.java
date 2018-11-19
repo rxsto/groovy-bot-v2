@@ -52,6 +52,4 @@ public abstract class InteractableMessage {
     public void onDelete() {
         //Empty method
     }
-
-
 }
