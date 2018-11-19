@@ -50,6 +50,6 @@ public class GameAnimator implements Runnable {
     }
 
     private String parsePlaceholders(String game) {
-        return game.replace("%channels%", String.valueOf(LavalinkManager.countPlayers())).replace("%guilds%", String.valueOf(shardManager.getGuilds().size())).replace("%users%", String.valueOf(shardManager.getUsers().size())).replace("%shards%", String.valueOf(shardManager.getShardsTotal())).replace("%prefix%", groovyBot.getConfig().getJSONObject("settings").getString("prefix"));
+        return game.replace("%channels%", String.valueOf(LavalinkManager.countPlayers())).replace("%guilds%", String.valueOf(shardManager.getGuilds().size())).replace("%users%", String.valueOf(shardManager.getUsers().size())).replace("%shards%", String.valueOf(shardManager.getShardsTotal())).replace("%prefix%", groovyBot.getConfig().getJSONObject("settings").getString("prefix")).replace("%name%", groovyBot.getShardManager().getApplicationInfo().getJDA().getSelfUser().getName());
     }
 }
