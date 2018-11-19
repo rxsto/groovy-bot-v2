@@ -63,6 +63,7 @@ public class SpotifyManager {
                 if (jsonObject.has("access_token")) {
                     //declaring the access token and the time after the access token expires
                     this.accessToken = jsonObject.getString("access_token");
+                    //this.spotifyApi.setAccessToken(this.accessToken);
                     this.accessTokenExpires = System.currentTimeMillis() + (jsonObject.getInt("expires_in") * 100);
                     log.debug("Received access token: " + accessToken + " which expires in: " + jsonObject.getInt("expires_in") + " seconds.");
                 }
