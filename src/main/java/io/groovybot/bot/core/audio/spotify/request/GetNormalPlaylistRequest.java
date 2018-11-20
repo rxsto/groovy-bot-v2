@@ -1,6 +1,5 @@
 package io.groovybot.bot.core.audio.spotify.request;
 
-import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.specification.Playlist;
 import com.wrapper.spotify.requests.data.AbstractDataRequest;
@@ -28,11 +27,6 @@ public class GetNormalPlaylistRequest extends AbstractDataRequest {
             assert (playlistId != null);
             assert (!playlistId.equals(""));
             return setPathParameter("playlist_id", playlistId);
-        }
-
-        public Builder market(final CountryCode market) {
-            assert (market != null);
-            return setQueryParameter("market", market);
         }
 
         @Override
