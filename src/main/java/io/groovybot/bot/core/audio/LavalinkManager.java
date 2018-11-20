@@ -68,7 +68,7 @@ public class LavalinkManager {
         );
 
         try (Connection connection = groovyBot.getPostgreSQL().getDataSource().getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM lavalink_nodes");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM lavalink");
             ResultSet rs = ps.executeQuery();
             while (rs.next())
                 lavalink.addNode(URI.create(rs.getString("uri")), rs.getString("password"));
