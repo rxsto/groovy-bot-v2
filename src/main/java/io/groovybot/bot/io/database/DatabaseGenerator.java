@@ -12,9 +12,9 @@ public class DatabaseGenerator {
                 "  volume               integer,\n" +
                 "  dj_mode              boolean default false not null,\n" +
                 "  announce_songs       boolean default true,\n" +
-                "  auto_leave           boolean default true,\n" +
                 "  blacklisted_channels varchar default '[]' :: character varying,\n" +
-                "  commands_channel     bigint\n" +
+                "  commands_channel     bigint,\n" +
+                "  auto_leave           boolean default true  not null\n" +
                 ");");
 
         postgreSQL.addDefault(() -> "create table if not exists keys\n" +
@@ -26,7 +26,7 @@ public class DatabaseGenerator {
                 "  key  varchar\n" +
                 ");");
 
-        postgreSQL.addDefault(() -> "create table if not exists lavalink_nodes\n" +
+        postgreSQL.addDefault(() -> "create table if not exists lavalink\n" +
                 "(\n" +
                 "  uri      varchar not null\n" +
                 "    constraint lavalink_nodes_pkey\n" +
@@ -46,12 +46,12 @@ public class DatabaseGenerator {
 
         postgreSQL.addDefault(() -> "create table if not exists premium\n" +
                 "(\n" +
-                "  user_id       bigint               not null\n" +
+                "  user_id       bigint                                      not null\n" +
                 "    constraint premium_pkey\n" +
                 "    primary key,\n" +
                 "  patreon_token varchar,\n" +
-                "  type          integer              not null,\n" +
-                "  \"check\"       boolean default true not null,\n" +
+                "  type          varchar default 'NONE' :: character varying not null,\n" +
+                "  \"check\"       boolean default true                        not null,\n" +
                 "  refresh_token varchar,\n" +
                 "  patreon_id    varchar\n" +
                 ");");
@@ -71,10 +71,18 @@ public class DatabaseGenerator {
 
         postgreSQL.addDefault(() -> "create table if not exists users\n" +
                 "(\n" +
-                "  id     bigint not null\n" +
+                "  user_id bigint                not null\n" +
                 "    constraint users_pkey\n" +
                 "    primary key,\n" +
-                "  locale varchar(50)\n" +
+                "  locale  varchar(50),\n" +
+                "  friend  boolean default false not null\n" +
+                ");");
+
+        postgreSQL.addDefault(() -> "create table if not exists voted\n" +
+                "(\n" +
+                "  user_id    bigint           not null,\n" +
+                "  expiration bigint default 0 not null,\n" +
+                "  again      bigint default 0 not null\n" +
                 ");");
 
         postgreSQL.addDefault(() -> "create table if not exists websocket\n" +

@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum CommandCategory {
 
-    PREMIUM_ONLY("Premium only"),
+    PREMIUM("Premium"),
     MUSIC("Music"),
     DEVELOPER("Developer"),
     SETTINGS("Settings"),

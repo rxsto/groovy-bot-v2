@@ -3,6 +3,7 @@ package io.groovybot.bot.core.command.permission;
 import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.core.entity.User;
+import io.groovybot.bot.core.premium.Tier;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.Permission;
@@ -31,30 +32,45 @@ public class UserPermissions {
         this.isOwner = bot.getConfig().getJSONArray("owners").toString().contains(user.getEntityId().toString());
     }
 
-    public boolean getAdminOnly(Guild guild) {
-        return guild.getMemberById(user.getEntityId()).hasPermission(Permission.MANAGE_SERVER);
+    public boolean isAdmin(Guild guild) {
+        return guild.getMemberById(user.getEntityId()).hasPermission(Permission.MANAGE_SERVER, Permission.ADMINISTRATOR);
     }
 
     public boolean isTierOne() {
-        return retrievePatreonTier() >= 1;
+        return retrievePatreonTier() == Tier.ONE || retrievePatreonTier() == Tier.TWO;
     }
 
     public boolean isTierTwo() {
-        return retrievePatreonTier() == 2;
+        return retrievePatreonTier() == Tier.TWO;
     }
 
-    private int retrievePatreonTier() {
+    private Tier retrievePatreonTier() {
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("SELECT type FROM premium WHERE user_id = ?");
-            ps.setLong(1, user.getEntityId());
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("type");
-            }
+            PreparedStatement premium = connection.prepareStatement("SELECT type FROM premium WHERE user_id = ?");
+            premium.setLong(1, user.getEntityId());
+            ResultSet premiumSet = premium.executeQuery();
+            if (premiumSet.next())
+                if (Tier.valueOf(premiumSet.getString("type")) != Tier.NONE)
+                    return Tier.valueOf(premiumSet.getString("type"));
+
+            PreparedStatement friend = connection.prepareStatement("SELECT friend FROM users WHERE user_id = ?");
+            friend.setLong(1, user.getEntityId());
+            ResultSet friendSet = friend.executeQuery();
+            if (friendSet.next())
+                if (friendSet.getBoolean("friend"))
+                    return Tier.TWO;
+
+            PreparedStatement voted = connection.prepareStatement("SELECT expiration FROM bot.public.voted WHERE user_id = ?");
+            voted.setLong(1, user.getEntityId());
+            ResultSet votedSet = voted.executeQuery();
+            if (votedSet.next())
+                if (votedSet.getLong("expiration") > System.currentTimeMillis())
+                    return Tier.TWO;
         } catch (SQLException e) {
             log.error("[PermissionProvider] Error while retrieving permissions!", e);
         }
-        return 0;
+
+        return Tier.NONE;
     }
 
     public boolean isDj(Guild guild) {

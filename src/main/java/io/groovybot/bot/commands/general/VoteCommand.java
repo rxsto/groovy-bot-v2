@@ -1,11 +1,9 @@
 package io.groovybot.bot.commands.general;
 
-import io.groovybot.bot.core.PremiumManager;
+import io.groovybot.bot.core.premium.PremiumManager;
 import io.groovybot.bot.core.command.*;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.entity.User;
-
-import java.util.concurrent.TimeUnit;
 
 public class VoteCommand extends Command {
     public VoteCommand() {
@@ -21,17 +19,20 @@ public class VoteCommand extends Command {
     private class CheckCommand extends SubCommand {
 
         public CheckCommand() {
-            super(new String[]{"check", "activate"}, Permissions.votedOnly(), "Lets you activate your premium trial", "");
+            super(new String[]{"check", "activate"}, Permissions.everyone(), "Lets you activate your premium trial", "");
         }
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            final PremiumManager premiumManager = event.getBot().getPremiumManager();
             final User groovyUser = event.getGroovyUser();
-            if (!premiumManager.isAllowed(groovyUser))
-                return send(error(event.translate("command.voted.notpermitted.title"), event.translate("command.voted.notpermitted.description")));
-            event.getBot().getPremiumManager().givePremium(groovyUser, 1, TimeUnit.HOURS);
-            return send(info(event.translate("command.voted.title"), event.translate("command.voted.description")));
+            if (!PremiumManager.hasVoted(groovyUser))
+                return send(error(event.translate("command.voted.not.title"), event.translate("command.voted.not.description")));
+            if (PremiumManager.hasAlreadyVoted(groovyUser))
+                return send(error(event.translate("command.voted.already.title"), event.translate("command.voted.already.description")));
+            if (!PremiumManager.isAbleToVote(groovyUser))
+                return send(error(event.translate("command.voted.forbidden.title"), event.translate("command.voted.forbidden.description")));
+            PremiumManager.givePremium(groovyUser);
+            return send(success(event.translate("command.voted.title"), event.translate("command.voted.description")));
         }
     }
 }

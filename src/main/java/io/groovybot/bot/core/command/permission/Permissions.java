@@ -8,13 +8,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class Permissions {
 
-    private final Boolean publicCommand;
-    private final Boolean ownerOnly;
-    private final Boolean tierOneOnly;
-    private final Boolean tierTwoOnly;
-    private final Boolean adminOnly;
-    private final Boolean djOnly;
-    private final Boolean votedOnly;
+    private final Boolean everyone;
+    private final Boolean owner;
+    private final Boolean tierone;
+    private final Boolean tiertwo;
+    private final Boolean admin;
+    private final Boolean dj;
+    private final Boolean voted;
     @Getter
     private final String identifier;
 
@@ -84,19 +84,19 @@ public class Permissions {
     public Boolean isCovered(UserPermissions permissions, CommandEvent event) {
         if (permissions.getIsOwner())
             return true;
-        if (publicCommand)
+        if (everyone)
             return true;
-        if (ownerOnly)
+        if (owner)
             return permissions.getIsOwner();
-        if (adminOnly)
-            return permissions.getAdminOnly(event.getGuild());
-        if (votedOnly)
+        if (admin)
+            return permissions.isAdmin(event.getGuild());
+        if (voted)
             return permissions.hasVoted();
-        if (tierOneOnly)
+        if (tierone)
             return permissions.isTierOne();
-        if (tierTwoOnly)
+        if (tiertwo)
             return permissions.isTierTwo();
-        if (djOnly)
+        if (dj)
             return permissions.isDj(event.getGuild());
         return false;
     }

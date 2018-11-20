@@ -3,7 +3,6 @@ package io.groovybot.bot;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.groovybot.bot.core.GameAnimator;
 import io.groovybot.bot.core.KeyManager;
-import io.groovybot.bot.core.PremiumManager;
 import io.groovybot.bot.core.audio.LavalinkManager;
 import io.groovybot.bot.core.audio.MusicPlayerManager;
 import io.groovybot.bot.core.audio.PlaylistManager;
@@ -83,8 +82,6 @@ public class GroovyBot {
     private final SpotifyManager spotifyClient;
     @Getter
     private final boolean enableWebsocket;
-    @Getter
-    private final PremiumManager premiumManager;
     @Getter
     private Configuration config;
     @Getter
@@ -166,7 +163,6 @@ public class GroovyBot {
         playlistManager = new PlaylistManager(postgreSQL.getDataSource());
         youtubeClient = YoutubeUtil.create(this);
         geniusClient = new GeniusClient(config.getJSONObject("genius").getString("token"));
-        premiumManager = new PremiumManager();
         new CommandRegistry(commandManager);
     }
 
