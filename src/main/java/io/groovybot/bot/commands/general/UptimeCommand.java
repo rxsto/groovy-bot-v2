@@ -9,11 +9,11 @@ import io.groovybot.bot.util.FormatUtil;
 
 public class UptimeCommand extends Command {
     public UptimeCommand() {
-        super(new String[]{"uptime", "up"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you some Groovy's uptime", "");
+        super(new String[]{"uptime", "up"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you Groovy's uptime", "");
     }
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return send(info(event.translate("command.uptime.title"), String.format(event.translate("command.uptime.description"), FormatUtil.parseUptime(System.currentTimeMillis() - event.getBot().getStartupTime()))));
+        return send(noTitle(String.format("<:online:449207830105554964> " + event.translate("command.uptime.description"), FormatUtil.parseUptime(System.currentTimeMillis() - event.getBot().getStartupTime()))));
     }
 }
