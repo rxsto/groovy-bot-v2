@@ -8,60 +8,121 @@ import io.groovybot.bot.core.audio.MusicPlayer;
 import io.groovybot.bot.core.command.*;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.command.voice.SemiInChannelSubCommand;
-import io.groovybot.bot.core.entity.EntityProvider;
 import io.groovybot.bot.core.entity.Playlist;
 import io.groovybot.bot.core.entity.User;
-import io.groovybot.bot.util.EmbedUtil;
+import io.groovybot.bot.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.utils.Helpers;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("duplicated")
 public class PlaylistCommand extends Command {
 
     public PlaylistCommand() {
-        super(new String[]{"playlist", "playlists"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you create own playlists", "");
-        registerSubCommand(new SaveCommand());
-        registerSubCommand(new AddCommand());
+        super(new String[]{"playlist", "playlists", "pl"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you create own playlists", "");
         registerSubCommand(new LoadCommand());
-        registerSubCommand(new RemoveCommand());
+        registerSubCommand(new SaveCommand());
         registerSubCommand(new DeleteCommand());
-        registerSubCommand(new ShowCommand());
+        registerSubCommand(new AddCommand());
+        registerSubCommand(new RemoveCommand());
         registerSubCommand(new ListCommand());
+        registerSubCommand(new SongsCommand());
+        registerSubCommand(new ToggleVisibilityCommand());
     }
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        if (args.length == 0 || !getSubCommandAssociations().containsKey(args[0]))
-            return sendHelp();
-        return null;
+        return sendHelp();
     }
 
-    private class ListCommand extends SubCommand {
+    private class LoadCommand extends SemiInChannelSubCommand {
 
-        public ListCommand() {
-            super(new String[]{"list"}, Permissions.everyone(), "Lists all your playlists", "");
+        public LoadCommand() {
+            super(new String[]{"load", "play"}, Permissions.everyone(), "Loads a playlist", "[user] <name>/<id>");
         }
 
         @Override
-        public Result run(String[] args, CommandEvent event) {
-            User user = EntityProvider.getUser(event.getAuthor().getIdLong());
-            if (user.getPlaylists().isEmpty())
-                return send(error(event.translate("command.playlists.noplaylists.title"), event.translate("command.playlists.noplaylists.description")));
-            return send(buildPlaylists(user.getPlaylists().values(), event));
+        protected Result executeCommand(String[] args, CommandEvent event, MusicPlayer player) {
+            if (args.length == 0)
+                return sendHelp();
+
+            if (event.getMessage().getMentionedMembers().size() != 0) {
+                if (args.length < 2)
+                    return sendHelp();
+
+                User user = event.getBot().getUserCache().get(event.getMessage().getMentionedMembers().get(0).getUser().getIdLong());
+                String name = args[1];
+
+                if (!user.getPlaylists().containsKey(name.toLowerCase()))
+                    return send(error(event.translate("command.playlist.not.exists.title"), event.translate("command.playlist.not.exists.description")));
+
+                if (!user.getPlaylists().get(name.toLowerCase()).isPublic())
+                    return send(error(event.translate("command.playlist.not.public.title"), event.translate("command.playlist.not.public.description")));
+
+                Playlist playlist = user.getPlaylists().get(name.toLowerCase());
+                player.queueTracks(playlist.getSongs().toArray(new AudioTrack[0]));
+                playlist.increaseCount();
+                return send(success(event.translate("command.playlist.loaded.title"), String.format(event.translate("command.playlist.loaded.description"), playlist.getName())));
+            } else {
+                if (Helpers.isNumeric(args[0]))
+                    if (event.getBot().getPlaylistManager().getPlaylistById(Long.parseLong(args[0])) != null)
+                        if (event.getBot().getPlaylistManager().getPlaylistById(Long.parseLong(args[0])).isPublic()) {
+                            Playlist playlist = event.getBot().getPlaylistManager().getPlaylistById(Long.parseLong(args[0]));
+                            player.queueTracks(playlist.getSongs().toArray(new AudioTrack[0]));
+                            playlist.increaseCount();
+                            return send(success(event.translate("command.playlist.loaded.title"), String.format(event.translate("command.playlist.loaded.description"), playlist.getName())));
+                        }
+
+                User user = event.getGroovyUser();
+                String name = args[0];
+
+                if (!user.getPlaylists().containsKey(name.toLowerCase()))
+                    return send(error(event.translate("command.playlist.not.exists.title"), event.translate("command.playlist.not.exists.description")));
+
+                Playlist playlist = user.getPlaylists().get(name.toLowerCase());
+                player.queueTracks(playlist.getSongs().toArray(new AudioTrack[0]));
+                playlist.increaseCount();
+                return send(success(event.translate("command.playlist.loaded.title"), String.format(event.translate("command.playlist.loaded.description"), playlist.getName())));
+            }
+        }
+    }
+
+    private class SaveCommand extends SemiInChannelSubCommand {
+
+        public SaveCommand() {
+            super(new String[]{"save"}, Permissions.everyone(), "Saves the queue to a playlist", "<name>");
         }
 
-        private EmbedBuilder buildPlaylists(Collection<Playlist> playlistCollection, CommandEvent event) {
-            StringBuilder list = new StringBuilder();
-            playlistCollection.forEach(playlist ->
-                    list.append("- ").append(playlist.getName()).append("\n")
-            );
-            return info(event.translate("command.playlists.title"), list.toString());
+        @Override
+        protected Result executeCommand(String[] args, CommandEvent event, MusicPlayer player) {
+            if (args.length == 0)
+                return sendHelp();
+
+            if (args.length > 1)
+                return send(error(event.translate("command.playlist.invalidname.title"), event.translate("command.playlist.invalidname.title")));
+
+            if (!player.isPlaying())
+                return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
+
+            User user = event.getGroovyUser();
+            String name = args[0];
+
+            if (user.getPlaylists().size() >= 5 && !Permissions.tierTwo().isCovered(event.getPermissions(), event))
+                return send(error(event.translate("command.playlist.tomanyplaylists.title"), event.translate("command.playlist.tomanyplaylists.description")));
+
+            if (user.getPlaylists().containsKey(name))
+                return send(error(event.translate("command.playlist.exists.title"), event.translate("command.playlist.exists.description")));
+
+            List<AudioTrack> tracks = new ArrayList<>();
+            tracks.add(player.getPlayer().getPlayingTrack());
+            tracks.addAll(player.trackQueue);
+            tracks = tracks.stream()
+                    .limit(10)
+                    .collect(Collectors.toList());
+            Playlist playlist = event.getBot().getPlaylistManager().createPlaylist(name, user.getEntityId(), tracks);
+            return send(success(event.translate("command.playlist.created.title"), String.format(event.translate("command.playlist.created.description"), playlist.getName())));
         }
     }
 
@@ -75,160 +136,217 @@ public class PlaylistCommand extends Command {
         public Result run(String[] args, CommandEvent event) {
             if (args.length == 0)
                 return sendHelp();
-            User user = EntityProvider.getUser(event.getAuthor().getIdLong());
-            if (!user.getPlaylists().containsKey(args[0]))
-                return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
-            event.getBot().getPlaylistManager().deletePlaylist(args[0], event.getAuthor().getIdLong());
-            return send(success(event.translate("command.playlist.deleted.title"), String.format(event.translate("command.playlist.deleted.description"), args[0])));
+
+            User user = event.getGroovyUser();
+            String name = args[0];
+
+            if (!user.getPlaylists().containsKey(name.toLowerCase()))
+                return send(error(event.translate("command.playlist.not.exists.title"), event.translate("command.playlist.not.exists.description")));
+
+            event.getBot().getPlaylistManager().deletePlaylist(name, user.getEntityId());
+            return send(success(event.translate("command.playlist.deleted.title"), event.translate("command.playlist.deleted.title")));
         }
     }
 
-    private class RemoveCommand extends SubCommand {
+    private class AddCommand extends SemiInChannelSubCommand {
 
-        public RemoveCommand() {
-            super(new String[]{"remove", "rm"}, Permissions.everyone(), "Removes a track from a playlist", "<name> <index>");
-        }
-
-        @Override
-        public Result run(String[] args, CommandEvent event) {
-            if (args.length < 2)
-                return sendHelp();
-            if (!Helpers.isNumeric(args[1]))
-                return send(error(event.translate("phrases.invalidargument.title"), event.translate("phrases.invalidargument.description")));
-            int index = Integer.parseInt(args[1]) - 1;
-            User user = EntityProvider.getUser(event.getAuthor().getIdLong());
-            if (!user.getPlaylists().containsKey(args[0]))
-                return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
-            Playlist playlist = user.getPlaylists().get(args[0]);
-            if (index > playlist.getSongs().size() - 1)
-                return send(error(event.translate("command.playlist.notinlist.title"), event.translate("command.playlist.notinlist.description")));
-            AudioTrack track = playlist.getSongs().get(index);
-            playlist.removeTrack(index);
-            return send(success(event.translate("command.playlist.removed.title"), String.format(event.translate("command.playlist.removed.description"), track.getInfo().title)));
-        }
-    }
-
-    public class LoadCommand extends SemiInChannelSubCommand {
-
-        public LoadCommand() {
-            super(new String[]{"load"}, Permissions.everyone(), "Loads a playlist", "<name>");
+        public AddCommand() {
+            super(new String[]{"add"}, Permissions.everyone(), "Adds a track to a playlist", "<name> <url>");
         }
 
         @Override
         protected Result executeCommand(String[] args, CommandEvent event, MusicPlayer player) {
-            if (args.length == 0)
-                return sendHelp();
-            User user = EntityProvider.getUser(event.getAuthor().getIdLong());
-            if (!user.getPlaylists().containsKey(args[0]))
-                return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
-            Playlist playlist = user.getPlaylists().get(args[0]);
-            List<AudioTrack> songs = playlist.getSongs();
-            if (!Permissions.tierTwo().isCovered(event.getPermissions(), event))
-                songs = songs.stream()
-                        .limit(25 - player.getQueueSize())
-                        .filter(track -> track.getDuration() < 3600000)
-                        .collect(Collectors.toList());
-            player.queueTracks(songs.toArray(new AudioTrack[0]));
-            return send(success(event.translate("command.playlist.load.title"), String.format(event.translate("command.playlist.load.description"), playlist.getName())));
-        }
-    }
-
-    private class AddCommand extends SubCommand {
-
-        public AddCommand() {
-            super(new String[]{"add", "addsong"}, Permissions.everyone(), "Adds a song to a playlist", "<name> <url>");
-        }
-
-        @Override
-        public Result run(String[] args, CommandEvent event) {
             if (args.length < 2)
                 return sendHelp();
-            MusicPlayer player = event.getBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
-            User user = EntityProvider.getUser(event.getAuthor().getIdLong());
-            if (!user.getPlaylists().containsKey(args[0]))
-                return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
-            String keyword = args[1];
-            if (!keyword.startsWith("http://") || !keyword.startsWith("https://"))
-                keyword = "ytsearch: " + keyword;
-            Playlist playlist = user.getPlaylists().get(args[0]);
-            if (playlist.getSongs().size() >= 25 && !Permissions.tierTwo().isCovered(event.getPermissions(), event))
+
+            User user = event.getGroovyUser();
+            String name = args[0];
+            String track = args[1];
+
+            if (!user.getPlaylists().containsKey(name.toLowerCase()))
+                return send(error(event.translate("command.playlist.not.exists.title"), event.translate("command.playlist.not.exists.description")));
+
+            if (user.getPlaylists().get(name).getSongs().size() >= 10)
                 return send(error(event.translate("command.playlist.tomanysongs.title"), event.translate("command.playlist.tomanysongs.description")));
-            Message infoMessage = sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), args[0])));
-            player.getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
+
+            player.getAudioPlayerManager().loadItem(track, new AudioLoadResultHandler() {
                 @Override
                 public void trackLoaded(AudioTrack track) {
-                    playlist.addTrack(track);
-                    addedTrack(track);
+                    user.getPlaylists().get(name).addTrack(track);
+                    send(success(event.translate("command.playlist.added.title"), event.translate("command.playlist.added.title")));
                 }
 
                 @Override
                 public void playlistLoaded(AudioPlaylist audioPlaylist) {
-                    final AudioTrack track = audioPlaylist.getSelectedTrack() == null ? audioPlaylist.getTracks().get(0) : audioPlaylist.getSelectedTrack();
-                    playlist.addTrack(track);
-                    addedTrack(track);
+                    if (audioPlaylist.getTracks().isEmpty())
+                        send(error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
+                    else {
+                        user.getPlaylists().get(name).addTrack(audioPlaylist.getTracks().get(0));
+                        send(success(event.translate("command.playlist.added.title"), event.translate("command.playlist.added.title")));
+                    }
                 }
 
                 @Override
                 public void noMatches() {
-                    editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
+                    send(error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
                 }
 
                 @Override
-                public void loadFailed(FriendlyException exception) {
-                    editMessage(infoMessage, error(event));
-                }
-
-                private void addedTrack(AudioTrack track) {
-                    editMessage(infoMessage, success(event.translate("command.playlist.added.title"), String.format(event.translate("command.playlist.added.description"), track.getInfo().title, playlist.getName())));
+                public void loadFailed(FriendlyException e) {
+                    send(error(event.translate("phrases.searching.error.title"), e.getCause() != null ? String.format("**%s**\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));
                 }
             });
             return null;
         }
     }
 
-    private class ShowCommand extends SubCommand {
+    private class RemoveCommand extends SubCommand {
 
-        public ShowCommand() {
-            super(new String[]{"show"}, Permissions.everyone(), "Shows you all songs of a playlist", "<name>");
+        public RemoveCommand() {
+            super(new String[]{"remove", "rm"}, Permissions.everyone(), "Removes a song from a playlist", "<name> <position>");
         }
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            if (args.length == 0)
+            if (args.length < 2)
                 return sendHelp();
-            User user = EntityProvider.getUser(event.getAuthor().getIdLong());
-            if (!user.getPlaylists().containsKey(args[0]))
-                return send(error(event.translate("command.playlist.invalid.title"), event.translate("command.playlist.invalid.description")));
-            Playlist playlist = user.getPlaylists().get(args[0]);
-            List<AudioTrack> queuedTracks = playlist.getSongs().stream().limit(10).collect(Collectors.toList());
-            return send(QueueCommand.formatQueue(queuedTracks, event, 1, null, 0, 0)
-                    .setTitle(playlist.getName() + " - " + playlist.getSongs().size() + " songs"));
+
+            User user = event.getGroovyUser();
+            String name = args[0];
+
+            if (!Helpers.isNumeric(args[1]))
+                return send(error(event.translate("phrases.invalidnumber.title"), event.translate("phrases.invalidnumber.description")));
+
+            int track = Integer.parseInt(args[1]);
+
+            if (!user.getPlaylists().containsKey(name.toLowerCase()))
+                return send(error(event.translate("command.playlist.not.exists.title"), event.translate("command.playlist.not.exists.description")));
+
+            if (user.getPlaylists().get(name).getSongs().size() < track)
+                return send(error(event.translate("phrases.invalidnumber.title"), event.translate("phrases.invalidnumber.description")));
+
+            user.getPlaylists().get(name).removeTrack(track - 1);
+            return send(success(event.translate("command.playlist.removed.title"), event.translate("command.playlist.removed.description")));
         }
     }
 
-    private class SaveCommand extends SubCommand {
+    private class ListCommand extends SubCommand {
 
-        public SaveCommand() {
-            super(new String[]{"save", "sv", "savequeue"}, Permissions.everyone(), "Saves the queue into a playlist", "<name>");
+        public ListCommand() {
+            super(new String[]{"list"}, Permissions.everyone(), "Shows all playlists of an user", "[user]");
+        }
+
+        @Override
+        public Result run(String[] args, CommandEvent event) {
+            if (event.getMessage().getMentionedMembers().size() != 0) {
+                User user = event.getBot().getUserCache().get(event.getMessage().getMentionedMembers().get(0).getUser().getIdLong());
+
+                if (user.getPlaylists().size() == 0)
+                    return send(error(event.translate("command.playlist.nolist.title"), event.translate("command.playlist.nolists.description")));
+
+                EmbedBuilder builder = new EmbedBuilder()
+                        .setDescription(String.format("**%s**", String.format(event.translate("command.playlist.list.title"), event.getMessage().getMentionedMembers().get(0).getUser().getName() + "'s")))
+                        .setColor(Colors.DARK_BUT_NOT_BLACK)
+                        .setFooter(String.format("%s Playlists", user.getPlaylists().size()), event.getAuthor().getAvatarUrl());
+
+                user.getPlaylists().forEach((name, playlist) -> {
+                    if (playlist.isPublic())
+                        builder.addField(String.format("%s **%s**", playlist.isPublic() ? "\uD83D\uDD13" : "\uD83D\uDD12", playlist.getName()), String.format(" - Includes **%s** songs\n - Loaded **%s** times\n - ID: `%s`", playlist.getSongs().size(), playlist.getCount(), playlist.getId()), false);
+                });
+                return send(builder);
+
+            } else {
+                User user = event.getGroovyUser();
+
+                if (user.getPlaylists().size() == 0)
+                    return send(error(event.translate("command.playlist.nolist.title"), event.translate("command.playlist.nolists.description")));
+
+                EmbedBuilder builder = new EmbedBuilder()
+                        .setDescription(String.format("**%s**", String.format(event.translate("command.playlist.list.title"), "your")))
+                        .setColor(Colors.DARK_BUT_NOT_BLACK)
+                        .setFooter(String.format("%s Playlists", user.getPlaylists().size()), event.getAuthor().getAvatarUrl());
+
+                user.getPlaylists().forEach((name, playlist) -> builder.addField(String.format("%s **%s**", playlist.isPublic() ? "\uD83D\uDD13" : "\uD83D\uDD12", playlist.getName()), String.format(" - Includes **%s** songs\n - Loaded **%s** times\n - ID: `%s`", playlist.getSongs().size(), playlist.getCount(), playlist.getId()), false));
+                return send(builder);
+            }
+        }
+    }
+
+    private class SongsCommand extends SubCommand {
+
+        public SongsCommand() {
+            super(new String[]{"songs"}, Permissions.everyone(), "Shows all songs of a playlist", "[user] <name>/<id>");
         }
 
         @Override
         public Result run(String[] args, CommandEvent event) {
             if (args.length == 0)
                 return sendHelp();
-            MusicPlayer player = event.getBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
-            if (!player.isPlaying())
-                return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
-            User user = EntityProvider.getUser(event.getAuthor().getIdLong());
-            if (user.getPlaylists().size() > 2 && !Permissions.tierTwo().isCovered(event.getPermissions(), event))
-                return send(error(event.translate("command.playlist.tomanyplaylists.title"), event.translate("command.playlist.tomanyplaylists.description")));
-            if (user.getPlaylists().containsKey(args[0]))
-                return send(error(event.translate("command.playlist.exists.title"), event.translate("command.playlist.exists.description")));
-            List<AudioTrack> tracks = new ArrayList<>();
-            tracks.add(player.getPlayer().getPlayingTrack());
-            tracks.addAll(player.trackQueue);
-            Playlist playlist = event.getBot().getPlaylistManager().createPlaylist(args[0], user.getEntityId(), tracks);
-            return send(success(event.translate("command.playlist.created.title"), String.format(event.translate("command.playlist.created.description"), playlist.getName())));
+
+            if (event.getMessage().getMentionedMembers().size() != 0) {
+                if (args.length < 2)
+                    return sendHelp();
+
+                User user = event.getBot().getUserCache().get(event.getMessage().getMentionedMembers().get(0).getUser().getIdLong());
+                String name = args[1];
+
+                if (!user.getPlaylists().containsKey(name.toLowerCase()))
+                    return send(error(event.translate("command.playlist.not.exists.title"), event.translate("command.playlist.not.exists.description")));
+
+                if (!user.getPlaylists().get(name.toLowerCase()).isPublic())
+                    return send(error(event.translate("command.playlist.not.public.title"), event.translate("command.playlist.not.public.description")));
+
+                StringBuilder tracks = new StringBuilder();
+                final List<AudioTrack> songs = user.getPlaylists().get(name.toLowerCase()).getSongs();
+                songs.forEach(track -> System.out.println(track.getInfo().title));
+                songs.forEach(track -> tracks.append(String.format("▫ `%s.` [%s](%s) - %s", songs.indexOf(track) + 1, track.getInfo().title, track.getInfo().uri, track.getInfo().author)).append("\n"));
+                return send(info(event.translate("command.playlist.songs.title"), tracks.toString()));
+            } else {
+                if (Helpers.isNumeric(args[0]))
+                    if (event.getBot().getPlaylistManager().getPlaylistById(Long.parseLong(args[0])) != null)
+                        if (event.getBot().getPlaylistManager().getPlaylistById(Long.parseLong(args[0])).isPublic()) {
+                            StringBuilder tracks = new StringBuilder();
+                            final List<AudioTrack> songs = event.getBot().getPlaylistManager().getPlaylistById(Long.parseLong(args[0])).getSongs();
+                            songs.forEach(track -> tracks.append(String.format("▫ `%s.` [%s](%s) - %s", songs.indexOf(track) + 1, track.getInfo().title, track.getInfo().uri, track.getInfo().author)).append("\n"));
+                            return send(info(event.translate("command.playlist.songs.title"), tracks.toString()));
+                        }
+
+                User user = event.getGroovyUser();
+                String name = args[0];
+
+                if (!user.getPlaylists().containsKey(name.toLowerCase()))
+                    return send(error(event.translate("command.playlist.not.exists.title"), event.translate("command.playlist.not.exists.description")));
+
+                StringBuilder tracks = new StringBuilder();
+                final List<AudioTrack> songs = user.getPlaylists().get(name.toLowerCase()).getSongs();
+                songs.forEach(track -> tracks.append(String.format("▫ `%s.` [%s](%s) - %s", songs.indexOf(track) + 1, track.getInfo().title, track.getInfo().uri, track.getInfo().author)).append("\n"));
+                return send(info(event.translate("command.playlist.songs.title"), tracks.toString()));
+            }
+        }
+    }
+
+    private class ToggleVisibilityCommand extends SubCommand {
+
+        public ToggleVisibilityCommand() {
+            super(new String[]{"toggle", "togglevisibility", "tv"}, Permissions.everyone(), "Toggles the visibility of a playlist", "<name>");
+        }
+
+        @Override
+        public Result run(String[] args, CommandEvent event) {
+            if (args.length == 0)
+                return sendHelp();
+
+            User user = event.getGroovyUser();
+            String name = args[0];
+
+            if (user.getPlaylists().size() == 0)
+                return send(error(event.translate("command.playlist.nolist.title"), event.translate("command.playlist.nolists.description")));
+
+            if (!user.getPlaylists().containsKey(name.toLowerCase()))
+                return send(error(event.translate("command.playlist.not.exists.title"), event.translate("command.playlist.not.exists.description")));
+
+            user.getPlaylists().get(name.toLowerCase()).setPublic(!user.getPlaylists().get(name.toLowerCase()).isPublic());
+            return send(success(event.translate("command.playlist.setpublic.title"), String.format(event.translate("command.playlist.setpublic.description"), user.getPlaylists().get(name.toLowerCase()).getName(), user.getPlaylists().get(name.toLowerCase()).isPublic() ? "public" : "private")));
         }
     }
 }

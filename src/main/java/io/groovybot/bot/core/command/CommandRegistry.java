@@ -59,7 +59,8 @@ public class CommandRegistry {
                 new PartnerCommand(),
                 new EvalCommand(),
                 new AutoLeaveCommand(),
-                new FriendsCommand()
+                //new FriendsCommand(),
+                new TrendsCommand()
         );
     }
 }

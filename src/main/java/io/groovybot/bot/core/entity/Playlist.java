@@ -1,5 +1,6 @@
 package io.groovybot.bot.core.entity;
 
+import com.relops.snowflake.Snowflake;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.GroovyBot;
 import lavalink.client.LavalinkUtil;
@@ -21,57 +22,53 @@ import java.util.List;
 @Getter
 public class Playlist {
 
-    private int id;
+    private Long id;
+    private Long authorId;
     private String name;
-    private Long ownerId;
+    private boolean isPublic;
+    private int count;
     private List<AudioTrack> songs;
 
     public Playlist(ResultSet rs) {
         try {
-            this.ownerId = rs.getLong("owner_id");
+            this.authorId = rs.getLong("author_id");
             this.songs = decodeTracks(new JSONArray(rs.getString("tracks")));
             this.name = rs.getString("name");
-            this.id = rs.getInt("id");
+            this.id = rs.getLong("id");
+            this.count = rs.getInt("count");
+            this.isPublic = rs.getBoolean("public");
         } catch (SQLException e) {
             log.error("[Playlist] Error while retrieving playlist", e);
         }
     }
 
-    public Playlist(String name, Long ownerId, List<AudioTrack> songs) {
+    public Playlist(String name, Long id, Long authorId, List<AudioTrack> songs) {
         this.name = name;
-        this.ownerId = ownerId;
+        this.authorId = authorId;
+        this.id = id;
         this.songs = songs;
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO playlists (owner_id, tracks, name) VALUES (?, ?, ?)");
-            ps.setLong(1, ownerId);
+                    "INSERT INTO playlists (author_id, tracks, name, id) VALUES (?, ?, ?, ?)");
+            ps.setLong(1, this.authorId);
             ps.setString(2, convertTracks().toString());
-            ps.setString(3, name);
+            ps.setString(3, this.name);
+            ps.setLong(4, this.id);
             ps.execute();
         } catch (SQLException e) {
             log.error("[Playlist] Error while saving playlist", e);
         }
     }
 
-    private JSONArray convertTracks() {
-        JSONArray tracks = new JSONArray();
-        songs.forEach(track -> {
-            try {
-                tracks.put(LavalinkUtil.toMessage(track));
-            } catch (IOException e) {
-                log.warn("[Playlist] Error while decoding song", e);
-            }
-        });
-        return tracks;
-    }
-
     private void update() {
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement(
-                    "UPDATE playlists SET tracks = ? WHERE id = ?"
+                    "UPDATE playlists SET tracks = ?, public = ?, count = ? WHERE id = ?"
             );
             ps.setString(1, convertTracks().toString());
-            ps.setInt(2, id);
+            ps.setBoolean(2, isPublic);
+            ps.setInt(3, count);
+            ps.setLong(4, id);
             ps.execute();
         } catch (SQLException e) {
             log.error("[Playlist] Error while saving playlist", e);
@@ -88,15 +85,37 @@ public class Playlist {
         update();
     }
 
+    public void setPublic(boolean bool) {
+        isPublic = bool;
+        update();
+    }
+
+    public void increaseCount() {
+        count++;
+        update();
+    }
+
+    private JSONArray convertTracks() {
+        JSONArray tracks = new JSONArray();
+        songs.forEach(track -> {
+            try {
+                tracks.put(LavalinkUtil.toMessage(track));
+            } catch (IOException e) {
+                log.warn("[Playlist] Error while encoding song", e);
+            }
+        });
+        return tracks;
+    }
+
     private List<AudioTrack> decodeTracks(JSONArray identifiers) {
-        List<AudioTrack> out = new ArrayList<>();
+        List<AudioTrack> tracks = new ArrayList<>();
         for (Object identifier : identifiers) {
             try {
-                out.add(LavalinkUtil.toAudioTrack((String) identifier));
+                tracks.add(LavalinkUtil.toAudioTrack((String) identifier));
             } catch (IOException e) {
                 log.warn("[Playlist] Error while decoding song", e);
             }
         }
-        return out;
+        return tracks;
     }
 }

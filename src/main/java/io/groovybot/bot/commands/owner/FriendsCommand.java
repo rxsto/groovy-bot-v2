@@ -15,7 +15,7 @@ import java.util.List;
 @Log4j2
 public class FriendsCommand extends Command {
     public FriendsCommand() {
-        super(new String[]{"friends"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Lets you add some friends!", "");
+        super(new String[]{"friends", "friend"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Lets you add some friends!", "");
         registerSubCommand(new AddCommand());
         registerSubCommand(new RemoveCommand());
     }

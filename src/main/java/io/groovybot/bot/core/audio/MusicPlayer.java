@@ -64,7 +64,7 @@ public class MusicPlayer extends Player implements Runnable {
     }
 
     public void connect(VoiceChannel channel) {
-        link.connect(channel); // TODO: CHECK IF FIX POSSIBLE!
+        link.connect(channel);
         Objects.requireNonNull(link.getGuild()).getAudioManager().setSelfDeafened(true);
     }
 

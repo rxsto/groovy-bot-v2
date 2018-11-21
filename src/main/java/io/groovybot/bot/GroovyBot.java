@@ -5,7 +5,7 @@ import io.groovybot.bot.core.GameAnimator;
 import io.groovybot.bot.core.KeyManager;
 import io.groovybot.bot.core.audio.LavalinkManager;
 import io.groovybot.bot.core.audio.MusicPlayerManager;
-import io.groovybot.bot.core.audio.PlaylistManager;
+import io.groovybot.bot.core.audio.playlists.PlaylistManager;
 import io.groovybot.bot.core.audio.spotify.SpotifyManager;
 import io.groovybot.bot.core.cache.Cache;
 import io.groovybot.bot.core.command.CommandManager;
