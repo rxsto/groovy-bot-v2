@@ -18,7 +18,7 @@ public class ShardCommand extends Command {
     public Result run(String[] args, CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Colors.DARK_BUT_NOT_BLACK);
-        builder.setDescription(String.format("<:online:449207830105554964> **Shard %s online » %sms**", event.getJDA().getShardInfo().getShardId() + 1, event.getJDA().getPing()));
+        builder.setDescription(String.format("<:online:449207830105554964> Shard **%s** online » **%s**ms", event.getJDA().getShardInfo().getShardId() + 1, event.getJDA().getPing()));
         return send(builder);
     }
 }
