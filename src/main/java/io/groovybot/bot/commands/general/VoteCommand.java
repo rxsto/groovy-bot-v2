@@ -26,13 +26,13 @@ public class VoteCommand extends Command {
         public Result run(String[] args, CommandEvent event) {
             final User groovyUser = event.getGroovyUser();
             if (!PremiumManager.hasVoted(groovyUser))
-                return send(error(event.translate("command.voted.not.title"), event.translate("command.voted.not.description")));
+                return send(error(event.translate("command.vote.not.title"), event.translate("command.vote.not.description")));
             if (PremiumManager.hasAlreadyVoted(groovyUser))
-                return send(error(event.translate("command.voted.already.title"), event.translate("command.voted.already.description")));
+                return send(error(event.translate("command.vote.already.title"), event.translate("command.vote.already.description")));
             if (!PremiumManager.isAbleToVote(groovyUser))
-                return send(error(event.translate("command.voted.forbidden.title"), event.translate("command.voted.forbidden.description")));
+                return send(error(event.translate("command.vote.forbidden.title"), event.translate("command.vote.forbidden.description")));
             PremiumManager.givePremium(groovyUser);
-            return send(success(event.translate("command.voted.title"), event.translate("command.voted.description")));
+            return send(success(event.translate("command.vote.success.title"), event.translate("command.vote.success.description")));
         }
     }
 }
