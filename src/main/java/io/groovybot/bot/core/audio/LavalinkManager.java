@@ -15,6 +15,8 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.net.URI;
 import java.sql.Connection;
@@ -67,14 +69,22 @@ public class LavalinkManager {
                 groovyBot.getShardManager()::getShardById
         );
 
-        try (Connection connection = groovyBot.getPostgreSQL().getDataSource().getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM lavalink");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next())
-                lavalink.addNode(URI.create(rs.getString("uri")), rs.getString("password"));
-        } catch (SQLException e) {
-            log.error("[LavalinkManager] Error while loading Lavalink!");
-            return;
+        if (GroovyBot.getInstance().isConfigNodes()) {
+            JSONArray rootArray = GroovyBot.getInstance().getConfig().getJSONArray("lavalink_nodes");
+            for(int i = 0; i < rootArray.length(); i++) {
+                String[] array = rootArray.getString(i).split("&&");
+                lavalink.addNode(array[0], URI.create(array[1]), array[2]);
+            }
+        } else {
+            try (Connection connection = groovyBot.getPostgreSQL().getDataSource().getConnection()) {
+                PreparedStatement ps = connection.prepareStatement("SELECT * FROM lavalink");
+                ResultSet rs = ps.executeQuery();
+                while (rs.next())
+                    lavalink.addNode(URI.create(rs.getString("uri")), rs.getString("password"));
+            } catch (SQLException e) {
+                log.error("[LavalinkManager] Error while loading Lavalink!");
+                return;
+            }
         }
 
         log.info(String.format("[LavalinkManager] Successfully initialized Lavalink with %s %s!", lavalink.getNodes().size(), lavalink.getNodes().size() == 1 ? "Node" : "Nodes"));
