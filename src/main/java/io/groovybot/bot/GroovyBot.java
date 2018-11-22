@@ -61,6 +61,8 @@ public class GroovyBot {
     @Getter
     private final boolean debugMode;
     @Getter
+    private final boolean configNodes;
+    @Getter
     private final TranslationManager translationManager;
     @Getter
     private final LavalinkManager lavalinkManager;
@@ -121,6 +123,8 @@ public class GroovyBot {
 
         // Checking for webSocket-mode
         enableWebsocket = !String.join(" ", args).contains("--no-websocket");
+
+        configNodes = String.join(" ", args).contains("--config-nodes");
 
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));

@@ -3,6 +3,9 @@ package io.groovybot.bot.io.config;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ConfigurationSetup {
 
     public static Configuration setupConfig() {
@@ -28,6 +31,9 @@ public class ConfigurationSetup {
         ws.put("host", "defaultvalue");
         ws.put("port", "defaultvalue");
         configuration.addDefault("websocket", ws);
+
+        // Create array for lavalink nodes (f*ck schlabbbi)
+        configuration.addDefault("lavalink_nodes", new JSONArray().put("name&&ws://host:2333&&passwort"));
 
         // Create array for games
         final JSONArray games = new JSONArray();

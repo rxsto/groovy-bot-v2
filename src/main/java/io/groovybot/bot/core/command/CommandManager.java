@@ -39,8 +39,7 @@ public class CommandManager implements Closeable {
 
     @SubscribeEvent
     @SuppressWarnings("unused")
-    private void onMessageRecieved(GuildMessageReceivedEvent event) {
-
+    private void onMessageReceived(GuildMessageReceivedEvent event) {
         // Do not execute if bot is not ready
         if (!bot.isAllShardsInitialized())
             return;
