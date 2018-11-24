@@ -23,6 +23,9 @@ public class InfoCommand extends Command {
                         .addField(event.translate("command.info.translate"), "**[i18n.groovybot.gq](http://i18n.groovybot.gq)**", true)
                         .addField(event.translate("command.info.sourcecode"), "**[github.com/GroovyDevs](http://github.com/GroovyDevs)**", true)
                         .addField(event.translate("command.info.sponsor"), "**[deinserverhost.de](https://deinserverhost.de/aff.php?aff=2892)**", true)
+                        .addField(event.translate("command.info.youtube"), "**[youtube.com/groovy](https://www.youtube.com/channel/UCINfOUGimNIL-8A2BAG0jaw)**", true)
+                        .addField(event.translate("command.info.twitter"), "**[twitter.com/groovydevs](https://twitter.com/groovydevs)**", true)
+                        .addField(event.translate("command.info.twitch"), "**[twitch.tv/groovydevs](https://twitch.tv/groovydevs)**", true)
         );
     }
 }
