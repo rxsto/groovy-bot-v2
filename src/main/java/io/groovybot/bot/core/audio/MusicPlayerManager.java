@@ -65,9 +65,8 @@ public class MusicPlayerManager {
                 player.setVolume(rs.getInt("volume"));
                 player.play(LavalinkUtil.toAudioTrack(rs.getString("current_track")));
                 player.seekTo(rs.getLong("current_position"));
-                for (Object track : new JSONArray(rs.getString("queue"))) {
+                for (Object track : new JSONArray(rs.getString("queue")))
                     player.queueTrack(LavalinkUtil.toAudioTrack(track.toString()), false, false);
-                }
                 initializedPlayersCount++;
             }
 
