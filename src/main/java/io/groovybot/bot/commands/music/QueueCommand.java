@@ -44,7 +44,7 @@ public class QueueCommand extends Command {
         AtomicInteger trackCount = new AtomicInteger(startNumber);
         if (currentTrack != null)
             queueMessage.append(String.format("**[Now]** [%s](%s) - %s\n\n", currentTrack.getInfo().title, currentTrack.getInfo().uri, currentTrack.getInfo().author));
-        tracks.forEach(track -> queueMessage.append(String.format("▫ `%s.` [%s](%s) - %s\n", trackCount.addAndGet(1), track.getInfo().title, track.getInfo().uri, track.getInfo().author)));
+        tracks.forEach(track -> queueMessage.append(String.format("▫ `%s.` [%s](%s) - %s\n", trackCount.addAndGet(1), track.getInfo().title != null ? track.getInfo().title : "none", track.getInfo().uri != null ? track.getInfo().uri : "none", track.getInfo().author != null ? track.getInfo().author : "none")));
         return queueMessage.toString();
     }
 
@@ -57,7 +57,7 @@ public class QueueCommand extends Command {
             return new Result(formatQueue((LinkedList<AudioTrack>) player.getTrackQueue(), event, 0, player.getPlayer().getPlayingTrack(), 1, 1));
         if (!event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE))
             return send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
-        Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.queue.loading.title"), event.translate("command.queue.loading.description")));
+        Message infoMessage = sendMessageBlocking(event.getChannel(), noTitle(event.translate("phrases.loading")));
         new QueueMessage(infoMessage, event.getChannel(), event.getMember(), player.getTrackQueue(), event, player.getPlayer().getPlayingTrack());
         return null;
     }
