@@ -48,9 +48,9 @@ public class User extends DatabaseEntitiy {
         try (Connection connection = getConnection()) {
             PreparedStatement user = connection.prepareStatement("UPDATE users SET locale = ?, expiration = ?, again = ? WHERE user_id = ?");
             user.setString(1, locale.toLanguageTag().replace("-", "_"));
-            user.setLong(2, entityId);
-            user.setLong(3, expiration);
-            user.setLong(4, again);
+            user.setLong(2, expiration);
+            user.setLong(3, again);
+            user.setLong(4, entityId);
             user.execute();
         }
     }
