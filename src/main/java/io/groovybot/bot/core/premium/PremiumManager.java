@@ -10,7 +10,7 @@ public class PremiumManager {
      * @param user The user
      */
     public static void givePremium(User user) {
-        user.setVoted(System.currentTimeMillis() + Constants.premiumTime, System.currentTimeMillis() + Constants.voteAgain);
+        user.setVoted(System.currentTimeMillis() + Constants.PREMIUM_TIME, System.currentTimeMillis() + Constants.VOTE_AGAIN);
     }
 
     /**
