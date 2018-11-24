@@ -82,7 +82,6 @@ public class PlaylistManager {
         } catch (SQLException e) {
             log.error("[Playlist] Error while retrieving playlist", e);
         }
-        topPlaylists.forEach((integer, playlist) -> System.out.println(integer + " - " + playlist.getCount()));
         return topPlaylists;
     }
 }
