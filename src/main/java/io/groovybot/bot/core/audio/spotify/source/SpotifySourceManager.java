@@ -69,6 +69,7 @@ public class SpotifySourceManager implements AudioSourceManager {
 
     @Override
     public AudioItem loadItem(DefaultAudioPlayerManager manager, AudioReference reference) {
+        if (reference.identifier.startsWith("ytsearch:") || reference.identifier.startsWith("scsearch:")) return null;
         try {
             URL url = new URL(reference.identifier);
             if (!url.getHost().equalsIgnoreCase("open.spotify.com"))
@@ -235,7 +236,7 @@ public class SpotifySourceManager implements AudioSourceManager {
 
     private List<Track> getTopTenSongs(Artist artist) {
         List<Track> albumTracks = Lists.newArrayList();
-        GetArtistsTopTracksRequest getArtistsTopTracksRequest = this.spotifyManager.getSpotifyApi().getArtistsTopTracks(artist.getId(), CountryCode.DE)
+        GetArtistsTopTracksRequest getArtistsTopTracksRequest = this.spotifyManager.getSpotifyApi().getArtistsTopTracks(artist.getId(), CountryCode.US)
                 .build();
         try {
             albumTracks.addAll(Arrays.asList(getArtistsTopTracksRequest.execute()));
