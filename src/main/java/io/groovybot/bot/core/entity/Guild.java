@@ -3,7 +3,6 @@ package io.groovybot.bot.core.entity;
 import io.groovybot.bot.GroovyBot;
 import lombok.Getter;
 import lombok.ToString;
-import net.dv8tion.jda.core.entities.TextChannel;
 import org.json.JSONArray;
 
 import java.sql.Connection;
@@ -22,7 +21,7 @@ public class Guild extends DatabaseEntitiy {
     private boolean autoLeave = true;
     private JSONArray blacklistedChannels = new JSONArray();
     @Getter
-    private TextChannel botChannel = null;
+    private long botChannel = 0;
 
     public Guild(Long entityId) throws Exception {
         super(entityId);
@@ -37,12 +36,10 @@ public class Guild extends DatabaseEntitiy {
                 djMode = rs.getBoolean("dj_mode");
                 announceSongs = rs.getBoolean("announce_songs");
                 autoLeave = rs.getBoolean("auto_leave");
-                if (rs.getObject("commands_channel") != null)
-                    botChannel = GroovyBot.getInstance().getShardManager().getTextChannelById(rs.getLong("commands_channel"));
-                else botChannel = null;
+                botChannel = rs.getLong("commands_channel");
                 blacklistedChannels = new JSONArray(rs.getString("blacklisted_channels"));
             } else {
-                PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO guilds (id, prefix, volume, dj_mode, announce_songs, auto_leave, blacklisted_channels) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO guilds (id, prefix, volume, dj_mode, announce_songs, auto_leave, blacklisted_channels, commands_channel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                 insertStatement.setLong(1, entityId);
                 insertStatement.setString(2, prefix);
                 insertStatement.setInt(3, volume);
@@ -50,6 +47,7 @@ public class Guild extends DatabaseEntitiy {
                 insertStatement.setBoolean(5, announceSongs);
                 insertStatement.setBoolean(6, autoLeave);
                 insertStatement.setString(7, blacklistedChannels.toString());
+                insertStatement.setLong(8, botChannel);
                 insertStatement.execute();
             }
         }
@@ -64,8 +62,7 @@ public class Guild extends DatabaseEntitiy {
             ps.setBoolean(3, djMode);
             ps.setBoolean(4, announceSongs);
             ps.setBoolean(5, autoLeave);
-            if (hasCommandsChannel()) ps.setLong(6, botChannel.getIdLong());
-            else ps.setObject(6, null);
+            ps.setLong(6, botChannel);
             ps.setString(7, blacklistedChannels.toString());
             ps.setLong(8, entityId);
             ps.execute();
@@ -102,7 +99,7 @@ public class Guild extends DatabaseEntitiy {
         update();
     }
 
-    public void setBotChannel(TextChannel botChannel) {
+    public void setBotChannel(long botChannel) {
         this.botChannel = botChannel;
         update();
     }
@@ -121,7 +118,7 @@ public class Guild extends DatabaseEntitiy {
     }
 
     public boolean hasCommandsChannel() {
-        return botChannel != null;
+        return botChannel != 0;
     }
 
     public List<Object> getBlacklistedChannels() {
