@@ -60,7 +60,7 @@ public class CommandRegistry {
                 new EvalCommand(),
                 new AutoLeaveCommand(),
                 new BassBoostCommand(),
-                //new FriendsCommand(),
+                new FriendsCommand(),
                 new TrendsCommand()
         );
     }
