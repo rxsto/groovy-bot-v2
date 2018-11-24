@@ -28,25 +28,17 @@ public class User extends DatabaseEntitiy {
             user.setLong(1, entityId);
 
             ResultSet userResult = user.executeQuery();
-            if (userResult.next())
+            if (userResult.next()) {
                 locale = Locale.forLanguageTag(userResult.getString("locale").replace("_", "-"));
-            else {
-                PreparedStatement insertUser = connection.prepareStatement("INSERT INTO users (user_id, locale) VALUES (?, ?)");
+                expiration = userResult.getLong("expiration");
+                again = userResult.getLong("again");
+            } else {
+                PreparedStatement insertUser = connection.prepareStatement("INSERT INTO users (user_id, locale, expiration, again) VALUES (?, ?, ?, ?)");
                 insertUser.setLong(1, entityId);
                 insertUser.setString(2, locale.toLanguageTag().replace("-", "_"));
+                insertUser.setLong(3, expiration);
+                insertUser.setLong(4, again);
                 insertUser.execute();
-            }
-
-            PreparedStatement voted = connection.prepareStatement("SELECT * FROM voted WHERE user_id = ?");
-            voted.setLong(1, entityId);
-
-            ResultSet votedResult = voted.executeQuery();
-            if (!votedResult.next()) {
-                PreparedStatement insertVoted = connection.prepareStatement("INSERT INTO voted (user_id, expiration, again) VALUES (?, ?, ?)");
-                insertVoted.setLong(1, entityId);
-                insertVoted.setLong(2, expiration);
-                insertVoted.setLong(3, again);
-                insertVoted.execute();
             }
         }
     }
@@ -54,16 +46,12 @@ public class User extends DatabaseEntitiy {
     @Override
     public void updateInDatabase() throws Exception {
         try (Connection connection = getConnection()) {
-            PreparedStatement user = connection.prepareStatement("UPDATE users SET locale = ? WHERE user_id = ?");
+            PreparedStatement user = connection.prepareStatement("UPDATE users SET locale = ?, expiration = ?, again = ? WHERE user_id = ?");
             user.setString(1, locale.toLanguageTag().replace("-", "_"));
             user.setLong(2, entityId);
+            user.setLong(3, expiration);
+            user.setLong(4, again);
             user.execute();
-
-            PreparedStatement voted = connection.prepareStatement("UPDATE voted SET expiration = ?, again = ? WHERE user_id = ?");
-            voted.setLong(1, expiration);
-            voted.setLong(2, again);
-            voted.setLong(3, entityId);
-            voted.execute();
         }
     }
 
@@ -85,7 +73,7 @@ public class User extends DatabaseEntitiy {
     public boolean hasAlreadyVoted() {
         try {
             Connection connection = this.getConnection();
-            PreparedStatement voted = connection.prepareStatement("SELECT expiration FROM voted WHERE user_id = ?");
+            PreparedStatement voted = connection.prepareStatement("SELECT expiration FROM users WHERE user_id = ?");
             voted.setLong(1, entityId);
 
             ResultSet votedResult = voted.executeQuery();
@@ -100,7 +88,7 @@ public class User extends DatabaseEntitiy {
     public boolean isAbleToVote() {
         try {
             Connection connection = this.getConnection();
-            PreparedStatement voted = connection.prepareStatement("SELECT again FROM voted WHERE user_id = ?");
+            PreparedStatement voted = connection.prepareStatement("SELECT again FROM users WHERE user_id = ?");
             voted.setLong(1, entityId);
 
             ResultSet votedResult = voted.executeQuery();
