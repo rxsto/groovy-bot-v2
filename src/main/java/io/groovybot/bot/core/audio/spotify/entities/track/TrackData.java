@@ -1,4 +1,4 @@
-package io.groovybot.bot.core.audio.spotify.entities;
+package io.groovybot.bot.core.audio.spotify.entities.track;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
