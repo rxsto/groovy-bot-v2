@@ -48,6 +48,9 @@ public class MusicPlayer extends Player implements Runnable {
     @Setter
     private AudioTrack previousTrack;
     private boolean inProgress;
+    @Getter
+    @Setter
+    private String bassboost = "off";
 
     protected MusicPlayer(Guild guild, TextChannel channel, YoutubeUtil youtubeClient) {
         super(youtubeClient);
