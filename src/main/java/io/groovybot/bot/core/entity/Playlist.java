@@ -1,6 +1,5 @@
 package io.groovybot.bot.core.entity;
 
-import com.relops.snowflake.Snowflake;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import io.groovybot.bot.GroovyBot;
 import lavalink.client.LavalinkUtil;
@@ -63,12 +62,13 @@ public class Playlist {
     private void update() {
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement(
-                    "UPDATE playlists SET tracks = ?, public = ?, count = ? WHERE id = ?"
+                    "UPDATE playlists SET tracks = ?, public = ?, count = ?, name = ? WHERE id = ?"
             );
             ps.setString(1, convertTracks().toString());
             ps.setBoolean(2, isPublic);
             ps.setInt(3, count);
-            ps.setLong(4, id);
+            ps.setString(4, name);
+            ps.setLong(5, id);
             ps.execute();
         } catch (SQLException e) {
             log.error("[Playlist] Error while saving playlist", e);
@@ -92,6 +92,11 @@ public class Playlist {
 
     public void increaseCount() {
         count++;
+        update();
+    }
+
+    public void setName(String name) {
+        this.name = name;
         update();
     }
 

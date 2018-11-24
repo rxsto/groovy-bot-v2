@@ -11,6 +11,7 @@ import io.groovybot.bot.core.command.voice.SemiInChannelSubCommand;
 import io.groovybot.bot.core.entity.Playlist;
 import io.groovybot.bot.core.entity.User;
 import io.groovybot.bot.util.Colors;
+import io.groovybot.bot.util.SafeMessage;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.utils.Helpers;
 
@@ -25,6 +26,7 @@ public class PlaylistCommand extends Command {
         registerSubCommand(new LoadCommand());
         registerSubCommand(new SaveCommand());
         registerSubCommand(new DeleteCommand());
+        registerSubCommand(new RenameCommand());
         registerSubCommand(new AddCommand());
         registerSubCommand(new RemoveCommand());
         registerSubCommand(new ListCommand());
@@ -144,7 +146,33 @@ public class PlaylistCommand extends Command {
                 return send(error(event.translate("command.playlist.not.exists.title"), event.translate("command.playlist.not.exists.description")));
 
             event.getBot().getPlaylistManager().deletePlaylist(name, user.getEntityId());
-            return send(success(event.translate("command.playlist.deleted.title"), event.translate("command.playlist.deleted.title")));
+            return send(success(event.translate("command.playlist.deleted.title"), event.translate("command.playlist.deleted.description")));
+        }
+    }
+
+    private class RenameCommand extends SubCommand {
+
+        public RenameCommand() {
+            super(new String[]{"rename", "rn"}, Permissions.everyone(), "Renames a playlist", "<name> <new name>");
+        }
+
+        @Override
+        public Result run(String[] args, CommandEvent event) {
+            if (args.length < 2)
+                return sendHelp();
+
+            if (args.length > 2)
+                return send(error(event.translate("command.playlist.invalidname.title"), event.translate("command.playlist.invalidname.title")));
+
+            User user = event.getGroovyUser();
+            String name = args[0].toLowerCase();
+            String newName = args[1].toLowerCase();
+
+            if (!user.getPlaylists().containsKey(name))
+                return send(error(event.translate("command.playlist.not.exists.title"), event.translate("command.playlist.not.exists.description")));
+
+            user.getPlaylists().get(name).setName(newName);
+            return send(success(event.translate("command.playlist.renamed.title"), String.format(event.translate("command.playlist.renamed.description"), name, newName)));
         }
     }
 
@@ -160,10 +188,10 @@ public class PlaylistCommand extends Command {
                 return sendHelp();
 
             User user = event.getGroovyUser();
-            String name = args[0];
+            String name = args[0].toLowerCase();
             String track = args[1];
 
-            if (!user.getPlaylists().containsKey(name.toLowerCase()))
+            if (!user.getPlaylists().containsKey(name))
                 return send(error(event.translate("command.playlist.not.exists.title"), event.translate("command.playlist.not.exists.description")));
 
             if (user.getPlaylists().get(name).getSongs().size() >= 10)
@@ -173,27 +201,27 @@ public class PlaylistCommand extends Command {
                 @Override
                 public void trackLoaded(AudioTrack track) {
                     user.getPlaylists().get(name).addTrack(track);
-                    send(success(event.translate("command.playlist.added.title"), event.translate("command.playlist.added.title")));
+                    SafeMessage.sendMessage(event.getChannel(), success(event.translate("command.playlist.added.title"), String.format(event.translate("command.playlist.added.description"), track.getInfo().title, user.getPlaylists().get(name).getName())));
                 }
 
                 @Override
                 public void playlistLoaded(AudioPlaylist audioPlaylist) {
                     if (audioPlaylist.getTracks().isEmpty())
-                        send(error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
+                        SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
                     else {
                         user.getPlaylists().get(name).addTrack(audioPlaylist.getTracks().get(0));
-                        send(success(event.translate("command.playlist.added.title"), event.translate("command.playlist.added.title")));
+                        SafeMessage.sendMessage(event.getChannel(), success(event.translate("command.playlist.added.title"), String.format(event.translate("command.playlist.added.description"), audioPlaylist.getTracks().get(0).getInfo().title, user.getPlaylists().get(name).getName())));
                     }
                 }
 
                 @Override
                 public void noMatches() {
-                    send(error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
+                    SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
                 }
 
                 @Override
                 public void loadFailed(FriendlyException e) {
-                    send(error(event.translate("phrases.searching.error.title"), e.getCause() != null ? String.format("**%s**\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));
+                    SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.searching.error.title"), e.getCause() != null ? String.format("**%s**\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));
                 }
             });
             return null;
@@ -225,8 +253,11 @@ public class PlaylistCommand extends Command {
             if (user.getPlaylists().get(name).getSongs().size() < track)
                 return send(error(event.translate("phrases.invalidnumber.title"), event.translate("phrases.invalidnumber.description")));
 
+            String trackName = user.getPlaylists().get(name).getSongs().get(track - 1).getInfo().title;
+            String playlistName = user.getPlaylists().get(name).getName();
+
             user.getPlaylists().get(name).removeTrack(track - 1);
-            return send(success(event.translate("command.playlist.removed.title"), event.translate("command.playlist.removed.description")));
+            return send(success(event.translate("command.playlist.removed.title"), String.format(event.translate("command.playlist.removed.description"), trackName, playlistName)));
         }
     }
 
@@ -300,7 +331,7 @@ public class PlaylistCommand extends Command {
                 final List<AudioTrack> songs = user.getPlaylists().get(name.toLowerCase()).getSongs();
                 songs.forEach(track -> System.out.println(track.getInfo().title));
                 songs.forEach(track -> tracks.append(String.format("▫ `%s.` [%s](%s) - %s", songs.indexOf(track) + 1, track.getInfo().title, track.getInfo().uri, track.getInfo().author)).append("\n"));
-                return send(info(event.translate("command.playlist.songs.title"), tracks.toString()));
+                return send(info(String.format(event.translate("command.playlist.songs.title"), user.getPlaylists().get(name.toLowerCase()).getName()), tracks.toString()));
             } else {
                 if (Helpers.isNumeric(args[0]))
                     if (event.getBot().getPlaylistManager().getPlaylistById(Long.parseLong(args[0])) != null)
@@ -308,7 +339,7 @@ public class PlaylistCommand extends Command {
                             StringBuilder tracks = new StringBuilder();
                             final List<AudioTrack> songs = event.getBot().getPlaylistManager().getPlaylistById(Long.parseLong(args[0])).getSongs();
                             songs.forEach(track -> tracks.append(String.format("▫ `%s.` [%s](%s) - %s", songs.indexOf(track) + 1, track.getInfo().title, track.getInfo().uri, track.getInfo().author)).append("\n"));
-                            return send(info(event.translate("command.playlist.songs.title"), tracks.toString()));
+                            return send(info(String.format(event.translate("command.playlist.songs.title"), event.getBot().getPlaylistManager().getPlaylistById(Long.parseLong(args[0])).getName()), tracks.toString()));
                         }
 
                 User user = event.getGroovyUser();
@@ -320,7 +351,7 @@ public class PlaylistCommand extends Command {
                 StringBuilder tracks = new StringBuilder();
                 final List<AudioTrack> songs = user.getPlaylists().get(name.toLowerCase()).getSongs();
                 songs.forEach(track -> tracks.append(String.format("▫ `%s.` [%s](%s) - %s", songs.indexOf(track) + 1, track.getInfo().title, track.getInfo().uri, track.getInfo().author)).append("\n"));
-                return send(info(event.translate("command.playlist.songs.title"), tracks.toString()));
+                return send(info(String.format(event.translate("command.playlist.songs.title"), user.getPlaylists().get(name.toLowerCase()).getName()), tracks.toString()));
             }
         }
     }
