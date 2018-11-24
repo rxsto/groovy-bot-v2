@@ -9,38 +9,34 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Log4j2
 public class FriendsCommand extends Command {
     public FriendsCommand() {
-        super(new String[]{"friends", "friend"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Lets you add some friends!", "");
+        super(new String[]{"friends", "friend", "f"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Lets you add some friends!", "");
         registerSubCommand(new AddCommand());
         registerSubCommand(new RemoveCommand());
     }
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        List<Long> friends = new ArrayList<>();
-
         try {
             Connection connection = event.getBot().getPostgreSQL().getDataSource().getConnection();
 
             PreparedStatement friendsStatement = connection.prepareStatement("SELECT user_id FROM users WHERE friend = TRUE");
             ResultSet friendsResult = friendsStatement.executeQuery();
 
-            if (!friendsResult.next())
-                return send(error(event.translate("command.friends.nofriends.title"), event.translate("command.friends.nofriends.description")));
-
             StringBuilder friendsNames = new StringBuilder();
 
             while (friendsResult.next()) {
                 net.dv8tion.jda.core.entities.User friend = event.getBot().getShardManager().getUserById(friendsResult.getLong("user_id"));
-                friendsNames.append(friend.getAsMention()).append(",");
+                friendsNames.append(friend.getAsMention()).append(", ");
             }
 
-            friendsNames.replace(friendsNames.lastIndexOf(","), friendsNames.lastIndexOf(",") + 1, "");
+            if (friendsNames.toString().equals(""))
+                return send(error(event.translate("command.friends.nofriends.title"), event.translate("command.friends.nofriends.description")));
+
+            friendsNames.replace(friendsNames.lastIndexOf(", "), friendsNames.lastIndexOf(", ") + 1, "");
             return send(info(event.translate("command.friends.list.title"), friendsNames.toString()));
         } catch (SQLException e) {
             log.error("[FriendsCommand] Error while querying all friends!", e);
