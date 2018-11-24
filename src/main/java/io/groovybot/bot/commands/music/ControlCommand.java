@@ -62,7 +62,7 @@ public class ControlCommand extends SameChannelCommand {
     }
 
     private Message sendInfoMessage(CommandEvent event) {
-        return sendMessageBlocking(event.getChannel(), info(event.translate("command.control.loading.title"), event.translate("command.control.loading.description")));
+        return sendMessageBlocking(event.getChannel(), noTitle( event.translate("phrases.loading")));
     }
 
     private List<InteractableMessage> getControlPanels() {
