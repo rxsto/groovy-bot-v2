@@ -60,7 +60,7 @@ public class UserPermissions {
                 if (friendSet.getBoolean("friend"))
                     return Tier.TWO;
 
-            PreparedStatement voted = connection.prepareStatement("SELECT expiration FROM bot.public.voted WHERE user_id = ?");
+            PreparedStatement voted = connection.prepareStatement("SELECT expiration FROM users WHERE user_id = ?");
             voted.setLong(1, user.getEntityId());
             ResultSet votedSet = voted.executeQuery();
             if (votedSet.next())
