@@ -16,9 +16,9 @@ public class BotChannelCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-            if (event.getGroovyGuild().hasCommandsChannel())
-                return send(info(event.translate("command.botchannel.current.title"), String.format(event.translate("command.botchannel.current.description"), event.getBot().getShardManager().getTextChannelById(event.getGroovyGuild().getBotChannel()).getAsMention())));
-            return sendHelp();
+        if (event.getGroovyGuild().hasCommandsChannel())
+            return send(info(event.translate("command.botchannel.current.title"), String.format(event.translate("command.botchannel.current.description"), event.getBot().getShardManager().getTextChannelById(event.getGroovyGuild().getBotChannel()).getAsMention())));
+        return sendHelp();
     }
 
     private class SetCommand extends SubCommand {

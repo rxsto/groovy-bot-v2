@@ -3,7 +3,6 @@ package io.groovybot.bot.core.audio.playlists;
 import com.relops.snowflake.Snowflake;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.zaxxer.hikari.HikariDataSource;
-import io.groovybot.bot.core.audio.Player;
 import io.groovybot.bot.core.entity.Playlist;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -12,11 +11,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Log4j2
 @RequiredArgsConstructor

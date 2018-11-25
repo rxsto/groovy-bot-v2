@@ -15,7 +15,7 @@ public class BassBoostCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
-        if(args.length == 0)
+        if (args.length == 0)
             return send(success(event.translate("command.bassboost.info.title"), String.format(event.translate("command.bassboost.info.description"), player.getBassboost())));
         float[] bands = new float[15];
         switch (args[0]) {

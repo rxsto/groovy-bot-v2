@@ -1,9 +1,9 @@
 package io.groovybot.bot.commands.general;
 
-import io.groovybot.bot.core.premium.PremiumManager;
 import io.groovybot.bot.core.command.*;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.entity.User;
+import io.groovybot.bot.core.premium.PremiumManager;
 
 public class VoteCommand extends Command {
     public VoteCommand() {

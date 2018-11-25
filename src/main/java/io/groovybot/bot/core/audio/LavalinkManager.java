@@ -16,7 +16,6 @@ import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.net.URI;
 import java.sql.Connection;
@@ -71,7 +70,7 @@ public class LavalinkManager {
 
         if (GroovyBot.getInstance().isConfigNodes()) {
             JSONArray rootArray = GroovyBot.getInstance().getConfig().getJSONArray("lavalink_nodes");
-            for(int i = 0; i < rootArray.length(); i++) {
+            for (int i = 0; i < rootArray.length(); i++) {
                 String[] array = rootArray.getString(i).split("&&");
                 lavalink.addNode(array[0], URI.create(array[1]), array[2]);
             }
