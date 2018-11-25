@@ -42,7 +42,7 @@ public class PlaylistCommand extends Command {
     private class LoadCommand extends SemiInChannelSubCommand {
 
         public LoadCommand() {
-            super(new String[]{"load", "play"}, Permissions.everyone(), "Loads a playlist", "[user] <name>/<id>");
+            super(new String[]{"load", "l", "play"}, Permissions.everyone(), "Loads a playlist", "[user] <name>/<id>");
         }
 
         @Override
@@ -273,7 +273,7 @@ public class PlaylistCommand extends Command {
                 User user = event.getBot().getUserCache().get(event.getMessage().getMentionedMembers().get(0).getUser().getIdLong());
 
                 if (user.getPlaylists().size() == 0)
-                    return send(error(event.translate("command.playlist.nolist.title"), event.translate("command.playlist.nolists.description")));
+                    return send(error(event.translate("command.playlist.nolist.title"), event.translate("command.playlist.nolist.description")));
 
                 EmbedBuilder builder = new EmbedBuilder()
                         .setDescription(String.format("**%s**", String.format(event.translate("command.playlist.list.title"), event.getMessage().getMentionedMembers().get(0).getUser().getName() + "'s")))
@@ -290,7 +290,7 @@ public class PlaylistCommand extends Command {
                 User user = event.getGroovyUser();
 
                 if (user.getPlaylists().size() == 0)
-                    return send(error(event.translate("command.playlist.nolist.title"), event.translate("command.playlist.nolists.description")));
+                    return send(error(event.translate("command.playlist.nolist.title"), event.translate("command.playlist.nolist.description")));
 
                 EmbedBuilder builder = new EmbedBuilder()
                         .setDescription(String.format("**%s**", String.format(event.translate("command.playlist.list.title"), "your")))
