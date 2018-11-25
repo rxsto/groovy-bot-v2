@@ -36,12 +36,14 @@ public class DatabaseGenerator {
 
         postgreSQL.addDefault(() -> "create table if not exists playlists\n" +
                 "(\n" +
-                "  id       serial not null\n" +
-                "    constraint playlists_pkey\n" +
-                "    primary key,\n" +
-                "  owner_id bigint,\n" +
-                "  tracks   varchar,\n" +
-                "  name     varchar\n" +
+                "  id        bigint\n" +
+                "    constraint playlists_pk\n" +
+                "    unique,\n" +
+                "  author_id bigint,\n" +
+                "  name      varchar,\n" +
+                "  public    boolean default false not null,\n" +
+                "  tracks    varchar,\n" +
+                "  count     integer default 0     not null\n" +
                 ");");
 
         postgreSQL.addDefault(() -> "create table if not exists premium\n" +
@@ -71,18 +73,13 @@ public class DatabaseGenerator {
 
         postgreSQL.addDefault(() -> "create table if not exists users\n" +
                 "(\n" +
-                "  user_id bigint                not null\n" +
+                "  user_id    bigint                not null\n" +
                 "    constraint users_pkey\n" +
                 "    primary key,\n" +
-                "  locale  varchar(50),\n" +
-                "  friend  boolean default false not null\n" +
-                ");");
-
-        postgreSQL.addDefault(() -> "create table if not exists voted\n" +
-                "(\n" +
-                "  user_id    bigint           not null,\n" +
-                "  expiration bigint default 0 not null,\n" +
-                "  again      bigint default 0 not null\n" +
+                "  locale     varchar(50),\n" +
+                "  friend     boolean default false not null,\n" +
+                "  expiration bigint default 0      not null,\n" +
+                "  again      bigint default 0      not null\n" +
                 ");");
 
         postgreSQL.addDefault(() -> "create table if not exists websocket\n" +
