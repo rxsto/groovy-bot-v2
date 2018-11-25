@@ -296,7 +296,7 @@ public class MusicPlayer extends Player implements Runnable {
             if (isPaused())
                 resume();
 
-            getAudioPlayerManager().loadItem("https://cdn.groovybot.gq/sounds/update.mp3", new AudioLoadResultHandler() {
+            getAudioPlayerManager().loadItem("https://cdn.groovybot.co/sounds/update.mp3", new AudioLoadResultHandler() {
                 @Override
                 public void trackLoaded(AudioTrack track) {
                     queueTrack(track, true, false);
