@@ -23,8 +23,8 @@ public class BlacklistWatcher {
         if (event.getChannel().getIdLong() == guild.getBotChannel())
             guild.setBotChannel(0);
         guild.getBlacklistedChannels().forEach(channel -> {
-            if (GroovyBot.getInstance().getShardManager().getTextChannelById(((TextChannel) channel).getIdLong()) == null)
-                guild.unBlacklistChannel(((TextChannel) channel).getIdLong());
+            if (GroovyBot.getInstance().getShardManager().getTextChannelById((long) channel) == null)
+                guild.unBlacklistChannel((long) channel);
         });
     }
 }
