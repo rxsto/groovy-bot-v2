@@ -43,6 +43,9 @@ public class TrendsCommand extends Command {
                     position = "None";
                     break;
             }
+
+            if (event.getBot().getShardManager().getUserById(playlist.getAuthorId()) == null) return;
+
             builder.addField(String.format("%s **%s** (%s)", position, playlist.getName(), FormatUtil.formatUserName(event.getBot().getShardManager().getUserById(playlist.getAuthorId()))), String.format(" - Includes **%s** songs\n - Loaded **%s** times\n - ID: `%s`", playlist.getSongs().size(), playlist.getCount(), playlist.getId()), false);
         });
         return send(builder);

@@ -9,6 +9,7 @@ import io.groovybot.bot.util.EmbedUtil;
 import io.groovybot.bot.util.NameThreadFactory;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Log4j2
 public class CommandManager implements Closeable {
@@ -142,6 +144,8 @@ public class CommandManager implements Closeable {
             if (result != null)
                 result.sendMessage(channel, 60);
             bot.getEventManager().handle(new CommandExecutedEvent(commandEvent, command));
+            if (ThreadLocalRandom.current().nextDouble() <= 0.05)
+                EmbedUtil.sendMessageBlocking(channel, new EmbedBuilder().setColor(0xFF0000).setTitle("<:youtube:505840951269392384> **We're doing a challenge!**").setDescription("Our **goal** is to reach **1000** subscribers on **[YouTube](https://www.youtube.com/channel/UCINfOUGimNIL-8A2BAG0jaw)** before **January 1, 2019**! We're publishing helpful videos on how to use the bot - but also **dope** music! **[Check it out!](https://www.youtube.com/channel/UCINfOUGimNIL-8A2BAG0jaw)**"));
         } catch (Exception e) {
             bot.getEventManager().handle(new CommandFailEvent(commandEvent, command, e));
         }
