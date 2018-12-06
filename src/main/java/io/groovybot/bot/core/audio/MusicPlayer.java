@@ -23,6 +23,9 @@ import net.dv8tion.jda.core.entities.*;
 import org.json.JSONArray;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -178,6 +181,9 @@ public class MusicPlayer extends Player implements Runnable {
 
         inProgress = true;
 
+        if (isUrl)
+            keyword = removeQueryFromUrl(keyword);
+
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
@@ -319,6 +325,15 @@ public class MusicPlayer extends Player implements Runnable {
                         channel.sendMessage(":x: An error occurred! Please contact the developers!").queue();
                 }
             });
+        }
+    }
+
+    private String removeQueryFromUrl(String url) {
+        try {
+            URI u = new URI(url);
+            return new URI(u.getScheme(), u.getAuthority(), u.getHost(), null, u.getFragment()).toString();
+        } catch (URISyntaxException e) {
+            return url;
         }
     }
 
