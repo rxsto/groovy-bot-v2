@@ -1,13 +1,12 @@
 package io.groovybot.bot.util;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.command.Command;
 import io.groovybot.bot.core.command.SubCommand;
 import io.groovybot.bot.core.events.command.CommandFailEvent;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
@@ -19,7 +18,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -160,33 +158,28 @@ public class FormatUtil {
 
     public static EmbedBuilder formatWebhookMessage(String type, Event event) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setFooter(event.getJDA().getSelfUser().getName(), event.getJDA().getSelfUser().getAvatarUrl());
         embedBuilder.setTimestamp(Instant.now());
 
         switch (type) {
             case "GUILDJOIN":
                 GuildJoinEvent guildJoinEvent = ((GuildJoinEvent) event);
-                embedBuilder.setTitle(String.format("✅ Joined Guild %s", guildJoinEvent.getGuild().getName()));
-                embedBuilder.setDescription(formatGuildLog(((GuildJoinEvent) event).getGuild()));
-                embedBuilder.setThumbnail(((GuildJoinEvent) event).getGuild().getIconUrl());
+                embedBuilder.setDescription(String.format("#%s **%s** `%s`", GroovyBot.getInstance().getShardManager().getGuilds().size(), guildJoinEvent.getGuild().getName(), guildJoinEvent.getGuild().getIdLong()));
+                embedBuilder.setColor(Colors.GREEN);
                 break;
             case "GUILDLEAVE":
                 GuildLeaveEvent guildLeaveEvent = ((GuildLeaveEvent) event);
-                embedBuilder.setTitle(String.format("❌ Left Guild %s", guildLeaveEvent.getGuild().getName()));
-                embedBuilder.setDescription(formatGuildLog(((GuildLeaveEvent) event).getGuild()));
-                embedBuilder.setThumbnail(((GuildLeaveEvent) event).getGuild().getIconUrl());
+                embedBuilder.setDescription(String.format("#%s **%s** `%s`", GroovyBot.getInstance().getShardManager().getGuilds().size(), guildLeaveEvent.getGuild().getName(), guildLeaveEvent.getGuild().getIdLong()));
+                embedBuilder.setColor(Colors.RED);
                 break;
             case "MEMBERJOIN":
                 GuildMemberJoinEvent guildMemberJoinEvent = ((GuildMemberJoinEvent) event);
-                embedBuilder.setTitle(String.format("✅ User %s Joined", formatUserName(guildMemberJoinEvent.getUser())));
-                embedBuilder.setDescription(formatMemberLog(((GuildMemberJoinEvent) event).getMember()));
-                embedBuilder.setThumbnail(((GuildMemberJoinEvent) event).getMember().getUser().getAvatarUrl());
+                embedBuilder.setDescription(String.format("#%s **%s** `%s`", GroovyBot.getInstance().getShardManager().getUsers().size(), formatUserName(guildMemberJoinEvent.getUser()), guildMemberJoinEvent.getUser().getIdLong()));
+                embedBuilder.setColor(Colors.GREEN);
                 break;
             case "MEMBERLEAVE":
                 GuildMemberLeaveEvent guildMemberLeaveEvent = ((GuildMemberLeaveEvent) event);
-                embedBuilder.setTitle(String.format("❌ User %s Left", formatUserName(guildMemberLeaveEvent.getUser())));
-                embedBuilder.setDescription(formatMemberLog(((GuildMemberLeaveEvent) event).getMember()));
-                embedBuilder.setThumbnail(((GuildMemberLeaveEvent) event).getMember().getUser().getAvatarUrl());
+                embedBuilder.setDescription(String.format("#%s **%s** `%s`", GroovyBot.getInstance().getShardManager().getUsers().size(), formatUserName(guildMemberLeaveEvent.getUser()), guildMemberLeaveEvent.getUser().getIdLong()));
+                embedBuilder.setColor(Colors.RED);
                 break;
             case "ERROR":
                 CommandFailEvent commandFailEvent = ((CommandFailEvent) event);
@@ -215,13 +208,5 @@ public class FormatUtil {
 
     public static String formatException(Throwable throwable) {
         return String.format("%s:%s", throwable.getClass().getCanonicalName(), throwable.getMessage());
-    }
-
-    public static String formatGuildLog(Guild guild) {
-        return String.format("**Owner:** %s\n**Created:** %s\n**Members:** `%s`\n**Identifier:** `%s`", formatUserName(guild.getOwner().getUser()), guild.getCreationTime().format(DateTimeFormatter.ISO_LOCAL_DATE).replaceAll("-", "."), guild.getMembers().size(), guild.getId());
-    }
-
-    public static String formatMemberLog(Member member) {
-        return String.format("**User:** %s\n**Joined:** %s\n**Count:** `#%s`\n**Identifier:** `%s`", formatUserName(member.getUser()), member.getJoinDate().format(DateTimeFormatter.ISO_LOCAL_DATE).replaceAll("-", "."), member.getGuild().getMembers().size(), member.getUser().getId());
     }
 }

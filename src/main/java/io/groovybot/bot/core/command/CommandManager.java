@@ -144,8 +144,6 @@ public class CommandManager implements Closeable {
             if (result != null)
                 result.sendMessage(channel, 60);
             bot.getEventManager().handle(new CommandExecutedEvent(commandEvent, command));
-            if (ThreadLocalRandom.current().nextDouble() <= 0.05)
-                EmbedUtil.sendMessageBlocking(channel, new EmbedBuilder().setColor(0xFF0000).setTitle("<:youtube:505840951269392384> **We're doing a challenge!**").setDescription("Our **goal** is to reach **1000** subscribers on **[YouTube](https://www.youtube.com/channel/UCINfOUGimNIL-8A2BAG0jaw)** before **January 1, 2019**! We're publishing helpful videos on how to use the bot - but also **dope** music! **[Check it out!](https://www.youtube.com/channel/UCINfOUGimNIL-8A2BAG0jaw)**"));
         } catch (Exception e) {
             bot.getEventManager().handle(new CommandFailEvent(commandEvent, command, e));
         }

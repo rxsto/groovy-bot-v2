@@ -146,7 +146,7 @@ public class PlaylistCommand extends Command {
                 return send(error(event.translate("command.playlist.not.exists.title"), event.translate("command.playlist.not.exists.description")));
 
             event.getBot().getPlaylistManager().deletePlaylist(name, user.getEntityId());
-            return send(success(event.translate("command.playlist.deleted.title"), event.translate("command.playlist.deleted.description")));
+            return send(success(event.translate("command.playlist.deleted.title"), String.format(event.translate("command.playlist.deleted.description"), name)));
         }
     }
 
