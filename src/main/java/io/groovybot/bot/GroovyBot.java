@@ -46,6 +46,7 @@ import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.Objects;
 
 @Log4j2
 public class GroovyBot {
@@ -224,7 +225,7 @@ public class GroovyBot {
         Configurator.setRootLevel(args.length == 0 ? Level.INFO : Level.toLevel(args[0], Level.INFO));
 
         // Initializing logger
-        Configurator.initialize(ClassLoader.getSystemClassLoader(), new ConfigurationSource(ClassLoader.getSystemResourceAsStream("log4j2.xml")));
+        Configurator.initialize(ClassLoader.getSystemClassLoader(), new ConfigurationSource(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("log4j2.xml"))));
     }
 
     @SubscribeEvent
