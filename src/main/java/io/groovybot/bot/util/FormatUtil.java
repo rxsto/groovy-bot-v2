@@ -173,12 +173,12 @@ public class FormatUtil {
                 break;
             case "MEMBERJOIN":
                 GuildMemberJoinEvent guildMemberJoinEvent = ((GuildMemberJoinEvent) event);
-                embedBuilder.setDescription(String.format("#%s **%s** `%s`", GroovyBot.getInstance().getShardManager().getUsers().size(), formatUserName(guildMemberJoinEvent.getUser()), guildMemberJoinEvent.getUser().getIdLong()));
+                embedBuilder.setDescription(String.format("#%s **%s** `%s`", GroovyBot.getInstance().getShardManager().getGuildById(403882830225997825L).getMembers().size(), formatUserName(guildMemberJoinEvent.getUser()), guildMemberJoinEvent.getUser().getIdLong()));
                 embedBuilder.setColor(Colors.GREEN);
                 break;
             case "MEMBERLEAVE":
                 GuildMemberLeaveEvent guildMemberLeaveEvent = ((GuildMemberLeaveEvent) event);
-                embedBuilder.setDescription(String.format("#%s **%s** `%s`", GroovyBot.getInstance().getShardManager().getUsers().size(), formatUserName(guildMemberLeaveEvent.getUser()), guildMemberLeaveEvent.getUser().getIdLong()));
+                embedBuilder.setDescription(String.format("#%s **%s** `%s`", GroovyBot.getInstance().getShardManager().getGuildById(403882830225997825L).getMembers().size(), formatUserName(guildMemberLeaveEvent.getUser()), guildMemberLeaveEvent.getUser().getIdLong()));
                 embedBuilder.setColor(Colors.RED);
                 break;
             case "ERROR":
