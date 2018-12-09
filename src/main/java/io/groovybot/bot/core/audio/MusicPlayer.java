@@ -93,24 +93,22 @@ public class MusicPlayer extends Player implements Runnable {
     }
 
     public void leave() {
-        if (inProgress) return;
-        trackQueue.clear();
-        if (!this.getGuild().getId().equals("403882830225997825") || GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave())
-            if (link.getPlayer() != null) LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
+        clearQueue();
+        stop();
+        if (link.getPlayer() != null) LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
     }
 
     public void leave(String cause) {
-        if (inProgress) return;
-        if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
         if (channel != null) SafeMessage.sendMessage(channel, EmbedUtil.noTitle(cause));
         leave();
     }
 
     @Override
     public void onEnd(boolean announce) {
+        if (inProgress) return;
         if (announce)
             SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not **queue** more songs?"));
-        stop();
+        if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
         leave();
     }
 
@@ -369,6 +367,8 @@ public class MusicPlayer extends Player implements Runnable {
 
     @Override
     public void run() {
+        if (inProgress) return;
+        if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
         if (guild.getSelfMember().getVoiceState().getChannel() != null)
             if (!isPlaying())
                 leave("I've **left** the voice-channel because I've been **inactive** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://patreon.com/rxsto)**!");

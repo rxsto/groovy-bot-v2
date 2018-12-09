@@ -7,6 +7,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.util.EmbedUtil;
 import io.groovybot.bot.util.SafeMessage;
 import lavalink.client.player.event.AudioEventAdapterWrapped;
@@ -67,9 +68,8 @@ public class Scheduler extends AudioEventAdapterWrapped {
                 if (guild.getSelfMember().getVoiceState().getChannel() == null) return;
 
                 // Leave if bot alone
-                if (guild.getSelfMember().getVoiceState().getChannel().getMembers().size() == 1) {
-                    player.stop();
-                    ((MusicPlayer) player).leave();
+                if (guild.getSelfMember().getVoiceState().getChannel().getMembers().size() == 1 && GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) {
+                    ((MusicPlayer) player).leave("I've **left** the voice-channel because I've been **alone** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://patreon.com/rxsto)**!");
                     return;
                 }
 

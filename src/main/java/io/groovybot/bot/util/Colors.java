@@ -13,6 +13,6 @@ public class Colors {
     public static final Color GREYPLE = new Color(0x99AAB5);
     public static final Color FULL_WHITE = new Color(0xFFFFFF);
     public static final Color NOT_QUITE_BLACK = new Color(0x23272A);
-    public static final Color RED = new Color(0xDF2D43);
-    public static final Color GREEN = new Color(0x77B254);
+    public static final Color RED = new Color(0xDF3A2A);
+    public static final Color GREEN = new Color(0x58B53B);
 }
