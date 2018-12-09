@@ -22,6 +22,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
+import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONArray;
 
 import java.io.IOException;
@@ -352,8 +353,7 @@ public class MusicPlayer extends Player implements Runnable {
 
     private String removeQueryFromUrl(String url) {
         try {
-            URI u = new URI(url);
-            return new URI(u.getScheme(), u.getAuthority(), u.getHost(), null, u.getFragment()).toString();
+            return new URIBuilder(url).removeQuery().toString();
         } catch (URISyntaxException e) {
             return url;
         }
