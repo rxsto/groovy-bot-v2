@@ -11,6 +11,7 @@ import io.groovybot.bot.core.command.CommandEvent;
 import io.groovybot.bot.core.command.permission.Permissions;
 import io.groovybot.bot.core.command.permission.UserPermissions;
 import io.groovybot.bot.core.entity.EntityProvider;
+import io.groovybot.bot.listeners.Logger;
 import io.groovybot.bot.util.*;
 import lavalink.client.LavalinkUtil;
 import lavalink.client.player.IPlayer;
@@ -26,7 +27,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONArray;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -95,7 +95,7 @@ public class MusicPlayer extends Player implements Runnable {
     public void leave() {
         clearQueue();
         stop();
-        if (link.getPlayer() != null) LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
+        LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
     }
 
     public void leave(String cause) {
@@ -281,7 +281,7 @@ public class MusicPlayer extends Player implements Runnable {
 
     private void handleFailedLoads(FriendlyException e, Message infoMessage, CommandEvent event) {
         SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.error.title"), e.getCause() != null ? String.format("**%s**\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));
-        if (e.getCause() != null) log.error("[MusicPlayer] Error while loading track!", e);
+        Logger.sendErrorMessage(e.getMessage(), e.getCause().getMessage());
     }
 
     private void queuedTrack(AudioTrack track, Message infoMessage, CommandEvent event) {

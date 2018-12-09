@@ -42,6 +42,7 @@ public class ConfigurationSetup {
         settings.put("prefix", "g!");
         settings.put("shards", 10);
         settings.put("voice", "default");
+        settings.put("premium", false);
         configuration.addDefault("settings", settings);
 
         // Create array for owners

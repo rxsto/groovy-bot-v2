@@ -183,7 +183,8 @@ public class FormatUtil {
                 break;
             case "ERROR":
                 CommandFailEvent commandFailEvent = ((CommandFailEvent) event);
-                embedBuilder.setTitle(String.format("⚠ Command '%s' Failed", commandFailEvent.getCommand().getAliases()[0]));
+                embedBuilder.setColor(Colors.DARK_BUT_NOT_BLACK);
+                embedBuilder.setTitle(String.format("⚠ Command '%s' failed on **%s** (%s)", commandFailEvent.getCommand().getAliases()[0], commandFailEvent.getGuild().getName(), commandFailEvent.getGuild().getIdLong()));
                 embedBuilder.addField("Message", "`" + formatException(commandFailEvent.getThrowable()) + "`", false);
                 embedBuilder.addField("Stacktrace", "```" + formatStacktrace(commandFailEvent.getThrowable()) + "```", false);
                 break;

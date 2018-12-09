@@ -110,10 +110,6 @@ public class GroovyBot {
         // Setting startuptime
         startupTime = System.currentTimeMillis();
 
-        // For debugging
-        RestAction.setPassContext(true);
-        RestAction.DEFAULT_FAILURE = Throwable::printStackTrace;
-
         instance = this;
 
         // Initializing logger
