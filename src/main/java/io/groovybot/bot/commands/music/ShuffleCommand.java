@@ -11,7 +11,7 @@ import io.groovybot.bot.core.command.voice.SameChannelCommand;
 public class ShuffleCommand extends SameChannelCommand {
 
     public ShuffleCommand() {
-        super(new String[]{"shuffle", "sh"}, CommandCategory.MUSIC, Permissions.tierTwo(), "Lets you toggle the shuffle-mode", "");
+        super(new String[]{"shuffle", "sh"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you toggle the shuffle-mode", "");
     }
 
     @Override

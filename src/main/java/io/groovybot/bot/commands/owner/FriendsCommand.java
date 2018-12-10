@@ -52,7 +52,7 @@ public class FriendsCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            if (event.getMessage().getMentionedMembers().get(0) == null)
+            if (event.getMessage().getMentionedMembers().size() == 0)
                 return send(error(event.translate("command.friends.nomention.title"), event.translate("command.friends.nomention.description")));
             User user = event.getBot().getUserCache().get(event.getMessage().getMentionedMembers().get(0).getUser().getIdLong());
             if (!user.isFriend()) {
@@ -71,7 +71,7 @@ public class FriendsCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            if (event.getMessage().getMentionedMembers().get(0) == null)
+            if (event.getMessage().getMentionedMembers().size() == 0)
                 return send(error(event.translate("command.friends.nomention.title"), event.translate("command.friends.nomention.description")));
             User user = event.getBot().getUserCache().get(event.getMessage().getMentionedMembers().get(0).getUser().getIdLong());
             if (user.isFriend()) {

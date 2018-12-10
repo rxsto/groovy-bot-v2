@@ -14,6 +14,6 @@ public class PingCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return send(info(event.translate("command.ping.title"), String.format(event.translate("command.ping.description"), event.getBot().getShardManager().getAveragePing())));
+        return send(noTitle(String.format("**%s** ms", Math.ceil(event.getBot().getShardManager().getAveragePing()))));
     }
 }
