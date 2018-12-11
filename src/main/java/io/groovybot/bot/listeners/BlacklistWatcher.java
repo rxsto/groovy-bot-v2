@@ -4,7 +4,6 @@ import io.groovybot.bot.GroovyBot;
 import io.groovybot.bot.core.cache.Cache;
 import io.groovybot.bot.core.entity.Guild;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.channel.text.TextChannelDeleteEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
