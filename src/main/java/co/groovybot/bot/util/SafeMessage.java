@@ -21,25 +21,17 @@ public class SafeMessage extends JDAUtil {
                 return channel.sendMessage(message);
             else
                 return channel.sendMessage(formatEmbed(message));
-        if (message.getAuthor().hasPrivateChannel())
-            return message.getAuthor().openPrivateChannel().complete().sendMessage(EmbedUtil.error("No permissions!", "I am unable to write in this channel!").build());
-        if (channel.getGuild().getOwner().getUser().hasPrivateChannel())
-            return channel.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage(EmbedUtil.error("No permissions!", "I am unable to write in this channel!").build());
-        return null;
+        return message.getAuthor().openPrivateChannel().complete().sendMessage(EmbedUtil.error("No permissions!", "I am unable to write in this channel!").build());
     }
 
     private static MessageAction getEditAction(Message previousMessage, Message newMessage) {
-        TextChannel channel = newMessage.getTextChannel();
+        TextChannel channel = previousMessage.getTextChannel();
         if (hasWritePermissions(channel))
             if (hasEmbedPermissions(channel))
                 return previousMessage.editMessage(newMessage);
             else
                 return previousMessage.editMessage(formatEmbed(newMessage));
-        if (newMessage.getAuthor().hasPrivateChannel())
-            return newMessage.getAuthor().openPrivateChannel().complete().sendMessage(EmbedUtil.error("No permissions!", "I am unable to write in this channel!").build());
-        if (channel.getGuild().getOwner().getUser().hasPrivateChannel())
-            return channel.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage(EmbedUtil.error("No permissions!", "I am unable to write in this channel!").build());
-        return null;
+        return newMessage.getAuthor().openPrivateChannel().complete().sendMessage(EmbedUtil.error("No permissions!", "I am unable to write in this channel!").build());
     }
 
     public static void editMessage(Message prevoiusMessage, EmbedBuilder builder) {
