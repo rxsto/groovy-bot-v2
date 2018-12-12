@@ -1,0 +1,15 @@
+image: maven:latest
+
+stages:
+  - clean
+  - package
+
+clean:
+  stage: clean
+  script:
+    - mvn $MAVEN_CLI_OPTS clean
+
+package:
+  stage: package
+  script:
+    - mvn $MAVEN_CLI_OPTS package
