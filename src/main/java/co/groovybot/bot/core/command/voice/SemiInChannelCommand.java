@@ -1,10 +1,10 @@
-package io.groovybot.bot.core.command.voice;
+package co.groovybot.bot.core.command.voice;
 
-import io.groovybot.bot.core.audio.MusicPlayer;
-import io.groovybot.bot.core.command.CommandCategory;
-import io.groovybot.bot.core.command.CommandEvent;
-import io.groovybot.bot.core.command.Result;
-import io.groovybot.bot.core.command.permission.Permissions;
+import co.groovybot.bot.core.audio.MusicPlayer;
+import co.groovybot.bot.core.command.CommandCategory;
+import co.groovybot.bot.core.command.CommandEvent;
+import co.groovybot.bot.core.command.Result;
+import co.groovybot.bot.core.command.permission.Permissions;
 
 public abstract class SemiInChannelCommand extends SameChannelCommand {
 

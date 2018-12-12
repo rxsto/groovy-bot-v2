@@ -1,12 +1,12 @@
-package io.groovybot.bot.core.audio;
+package co.groovybot.bot.core.audio;
 
+import co.groovybot.bot.GroovyBot;
+import co.groovybot.bot.core.audio.spotify.entities.track.TrackData;
+import co.groovybot.bot.util.YoutubeUtil;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
-import io.groovybot.bot.GroovyBot;
-import io.groovybot.bot.core.audio.spotify.entities.track.TrackData;
-import io.groovybot.bot.util.YoutubeUtil;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;

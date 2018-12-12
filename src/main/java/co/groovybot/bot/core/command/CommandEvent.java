@@ -2,9 +2,9 @@ package co.groovybot.bot.core.command;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.command.permission.UserPermissions;
+import co.groovybot.bot.core.entity.EntityProvider;
 import co.groovybot.bot.core.entity.Guild;
 import co.groovybot.bot.core.entity.User;
-import co.groovybot.bot.core.entity.EntityProvider;
 import lombok.Getter;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 

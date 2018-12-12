@@ -1,12 +1,12 @@
-package io.groovybot.bot.core.command;
+package co.groovybot.bot.core.command;
 
-import io.groovybot.bot.commands.general.*;
-import io.groovybot.bot.commands.music.*;
-import io.groovybot.bot.commands.owner.CloseCommand;
-import io.groovybot.bot.commands.owner.EvalCommand;
-import io.groovybot.bot.commands.owner.FriendsCommand;
-import io.groovybot.bot.commands.owner.UpdateCommand;
-import io.groovybot.bot.commands.settings.*;
+import co.groovybot.bot.commands.general.*;
+import co.groovybot.bot.commands.music.*;
+import co.groovybot.bot.commands.owner.CloseCommand;
+import co.groovybot.bot.commands.owner.EvalCommand;
+import co.groovybot.bot.commands.owner.FriendsCommand;
+import co.groovybot.bot.commands.owner.UpdateCommand;
+import co.groovybot.bot.commands.settings.*;
 
 public class CommandRegistry {
 

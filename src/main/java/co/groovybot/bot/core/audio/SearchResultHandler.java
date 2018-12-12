@@ -1,4 +1,4 @@
-package io.groovybot.bot.core.audio;
+package co.groovybot.bot.core.audio;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;

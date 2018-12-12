@@ -1,6 +1,6 @@
-package io.groovybot.bot.core.command.interaction;
+package co.groovybot.bot.core.command.interaction;
 
-import io.groovybot.bot.GroovyBot;
+import co.groovybot.bot.GroovyBot;
 import lombok.Getter;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;

@@ -1,6 +1,6 @@
-package io.groovybot.bot.core.command;
+package co.groovybot.bot.core.command;
 
-import io.groovybot.bot.util.SafeMessage;
+import co.groovybot.bot.util.SafeMessage;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;

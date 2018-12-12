@@ -1,4 +1,4 @@
-package io.groovybot.bot.core.command;
+package co.groovybot.bot.core.command;
 
 import lombok.Getter;
 

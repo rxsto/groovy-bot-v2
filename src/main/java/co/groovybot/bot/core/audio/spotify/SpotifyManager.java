@@ -1,4 +1,4 @@
-package io.groovybot.bot.core.audio.spotify;
+package co.groovybot.bot.core.audio.spotify;
 
 import com.wrapper.spotify.SpotifyApi;
 import lombok.Getter;

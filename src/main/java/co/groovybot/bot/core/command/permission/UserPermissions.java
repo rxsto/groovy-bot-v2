@@ -1,9 +1,9 @@
-package io.groovybot.bot.core.command.permission;
+package co.groovybot.bot.core.command.permission;
 
-import io.groovybot.bot.GroovyBot;
-import io.groovybot.bot.core.entity.EntityProvider;
-import io.groovybot.bot.core.entity.User;
-import io.groovybot.bot.core.premium.Tier;
+import co.groovybot.bot.GroovyBot;
+import co.groovybot.bot.core.entity.EntityProvider;
+import co.groovybot.bot.core.entity.User;
+import co.groovybot.bot.core.premium.Tier;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.Permission;

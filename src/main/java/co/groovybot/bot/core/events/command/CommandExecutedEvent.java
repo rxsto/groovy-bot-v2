@@ -1,7 +1,7 @@
-package io.groovybot.bot.core.events.command;
+package co.groovybot.bot.core.events.command;
 
-import io.groovybot.bot.core.command.Command;
-import io.groovybot.bot.core.command.CommandEvent;
+import co.groovybot.bot.core.command.Command;
+import co.groovybot.bot.core.command.CommandEvent;
 import lombok.Getter;
 
 public class CommandExecutedEvent extends CommandEvent {

@@ -1,7 +1,7 @@
-package io.groovybot.bot.core.command;
+package co.groovybot.bot.core.command;
 
-import io.groovybot.bot.core.command.permission.Permissions;
-import io.groovybot.bot.util.FormatUtil;
+import co.groovybot.bot.core.command.permission.Permissions;
+import co.groovybot.bot.util.FormatUtil;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,5 +1,7 @@
-package io.groovybot.bot.core.audio;
+package co.groovybot.bot.core.audio;
 
+import co.groovybot.bot.GroovyBot;
+import co.groovybot.bot.core.audio.spotify.source.SpotifySourceManager;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
@@ -8,8 +10,6 @@ import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceM
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
-import io.groovybot.bot.GroovyBot;
-import io.groovybot.bot.core.audio.spotify.source.SpotifySourceManager;
 import lavalink.client.io.jda.JdaLavalink;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;

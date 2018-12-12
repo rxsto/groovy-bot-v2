@@ -1,4 +1,4 @@
-package io.groovybot.bot.core.audio.playlists;
+package co.groovybot.bot.core.audio.playlists;
 
 import lombok.Getter;
 
