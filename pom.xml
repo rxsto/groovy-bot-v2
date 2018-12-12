@@ -12,12 +12,27 @@
         <developer>
             <name>Oskar Lang</name>
             <organization>Groovy</organization>
-            <organizationUrl>https://rxsto.me</organizationUrl>
+            <organizationUrl>https://groovybot.co</organizationUrl>
         </developer>
         <developer>
             <name>Michael Rittmeister</name>
             <organization>Groovy</organization>
-            <organizationUrl>https://schlaubi.me</organizationUrl>
+            <organizationUrl>https://groovybot.co</organizationUrl>
+        </developer>
+        <developer>
+            <name>Sergej Herdt</name>
+            <organization>Groovy</organization>
+            <organizationUrl>https://groovybot.co</organizationUrl>
+        </developer>
+        <developer>
+            <name>Yannick Seeger</name>
+            <organization>Groovy</organization>
+            <organizationUrl>https://groovybot.co</organizationUrl>
+        </developer>
+        <developer>
+            <name>Justus Kliem</name>
+            <organization>Groovy</organization>
+            <organizationUrl>https://groovybot.co</organizationUrl>
         </developer>
     </developers>
 
@@ -137,7 +152,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.8.0</version>
 
                 <configuration>
                     <source>1.8</source>
@@ -180,7 +195,6 @@
                         <version>2.1</version>
                     </dependency>
                 </dependencies>
-
             </plugin>
 
             <plugin>
@@ -195,7 +209,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>io.groovybot.bot.GroovyBot</mainClass>
+                            <mainClass>co.groovybot.bot.GroovyBot</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -208,5 +222,4 @@
             </resource>
         </resources>
     </build>
-
 </project>
