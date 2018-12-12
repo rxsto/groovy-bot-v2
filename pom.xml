@@ -46,10 +46,6 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
-        <repository>
-            <id>discordlist</id>
-            <url>https://nexus.discordlist.org/repository/public</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -101,9 +97,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.discordlist</groupId>
+            <groupId>com.github.GroovyDevs</groupId>
             <artifactId>Lavalink-Client</artifactId>
-            <version>3.1.0</version>
+            <version>3.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.jagrosh</groupId>
