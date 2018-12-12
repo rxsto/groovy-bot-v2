@@ -39,6 +39,7 @@ public class PostgreSQL implements Closeable {
         hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
         hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         hikariConfig.setMinimumIdle(15);
+
         try {
             dataSource = new HikariDataSource(hikariConfig);
         } catch (HikariPool.PoolInitializationException e) {
