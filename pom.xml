@@ -12,12 +12,27 @@
         <developer>
             <name>Oskar Lang</name>
             <organization>Groovy</organization>
-            <organizationUrl>https://rxsto.me</organizationUrl>
+            <organizationUrl>https://groovybot.co</organizationUrl>
         </developer>
         <developer>
             <name>Michael Rittmeister</name>
             <organization>Groovy</organization>
-            <organizationUrl>https://schlaubi.me</organizationUrl>
+            <organizationUrl>https://groovybot.co</organizationUrl>
+        </developer>
+        <developer>
+            <name>Sergej Herdt</name>
+            <organization>Groovy</organization>
+            <organizationUrl>https://groovybot.co</organizationUrl>
+        </developer>
+        <developer>
+            <name>Yannick Seeger</name>
+            <organization>Groovy</organization>
+            <organizationUrl>https://groovybot.co</organizationUrl>
+        </developer>
+        <developer>
+            <name>Justus Kliem</name>
+            <organization>Groovy</organization>
+            <organizationUrl>https://groovybot.co</organizationUrl>
         </developer>
     </developers>
 
@@ -30,10 +45,6 @@
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
-        </repository>
-        <repository>
-            <id>discordlist</id>
-            <url>https://nexus.discordlist.org/repository/public</url>
         </repository>
     </repositories>
 
@@ -85,15 +96,10 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!--<dependency>
-            <groupId>org.discordlist</groupId>
-            <artifactId>Lavalink-Client</artifactId>
-            <version>3.1.0</version>
-        </dependency>-->
         <dependency>
-            <groupId>com.github.FredBoat</groupId>
+            <groupId>com.github.GroovyDevs</groupId>
             <artifactId>Lavalink-Client</artifactId>
-            <version>3.0</version>
+            <version>master-3.0-g6fa112e-26</version>
         </dependency>
         <dependency>
             <groupId>com.jagrosh</groupId>
@@ -149,7 +155,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.8.0</version>
 
                 <configuration>
                     <source>1.8</source>
@@ -207,7 +213,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>io.groovybot.bot.GroovyBot</mainClass>
+                            <mainClass>co.groovybot.bot.GroovyBot</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -220,5 +226,4 @@
             </resource>
         </resources>
     </build>
-
 </project>
