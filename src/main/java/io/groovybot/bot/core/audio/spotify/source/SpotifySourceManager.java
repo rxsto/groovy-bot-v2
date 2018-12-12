@@ -64,7 +64,7 @@ public class SpotifySourceManager implements AudioSourceManager {
 
     @Override
     public String getSourceName() {
-        return "Spotify Playlist";
+        return "Spotify Source Manager";
     }
 
     @Override

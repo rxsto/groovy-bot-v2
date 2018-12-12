@@ -42,7 +42,7 @@ public class BassBoostCommand extends SameChannelCommand {
             default:
                 return sendHelp();
         }
-        player.getPlayer().getEqualizer().setGain(bands);
+//        player.getPlayer().getEqualizer().setGain(bands);
         player.setBassboost(args[0]);
         return send(success(event.translate("command.bassboost.title"), String.format(event.translate("command.bassboost.description"), args[0])));
     }

@@ -9,6 +9,7 @@ import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceMan
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import io.groovybot.bot.GroovyBot;
+import io.groovybot.bot.core.audio.deezer.source.DeezerSourceManager;
 import io.groovybot.bot.core.audio.spotify.source.SpotifySourceManager;
 import lavalink.client.io.jda.JdaLavalink;
 import lombok.Getter;
@@ -38,6 +39,7 @@ public class LavalinkManager {
         this.groovyBot = groovyBot;
         this.audioPlayerManager = new DefaultAudioPlayerManager();
         audioPlayerManager.registerSourceManager(new SpotifySourceManager(groovyBot.getSpotifyClient(), new AudioTrackFactory()));
+        audioPlayerManager.registerSourceManager(new DeezerSourceManager());
         audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());
         audioPlayerManager.registerSourceManager(new SoundCloudAudioSourceManager());
         audioPlayerManager.registerSourceManager(new VimeoAudioSourceManager());
