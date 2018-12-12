@@ -201,7 +201,7 @@ public class MusicPlayer extends Player implements Runnable {
 
         inProgress = true;
 
-        if (isUrl)
+        if (isUrl && keyword.matches("(https?://)?(.*)?spotify\\.com.*"))
             keyword = removeQueryFromUrl(keyword);
 
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {

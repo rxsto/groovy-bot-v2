@@ -1,122 +1,23 @@
-# Groovy
+![FredBoat](https://cdn.groovybot.co/images/readme.png)
 
-[![Build Status](https://travis-ci.org/Rxsto/Groovy.svg?branch=rewrite)](https://travis-ci.org/Rxsto/Groovy)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/99c34ae6ce2343649c246db82a50ea19)](https://www.codacy.com/app/Rxsto/Groovy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Rxsto/Groovy&amp;utm_campaign=Badge_Grade)
-[![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg?label=groovybot.gq)](https://groovybot.gq)
-[![Discord](https://img.shields.io/discord/403882830225997825.svg)](https://discord.gg/5s5TsW2)
+# Groovy [![Crowdin](https://d322cqt584bo4o.cloudfront.net/groovy/localized.svg)](https://i18n.groovybot.co/project/groovy) [![Discord Bots](https://discordbots.org/api/widget/status/402116404301660181.svg?noavatar=true)](https://discordbots.org/bot/402116404301660181)
 
-Groovy is a feature-rich, experienced and well maintained Discord-bot. His main function is to play high quality music.
+Groovy is a **feature-rich** and **experienced** music-bot for [Discord](https://discord.gg). Supports **YouTube**, **SoundCloud**, **Deezer** and **Spotify**!
 
----
+## Installation
 
-### Features
+In order to **use** Groovy you **need to invite** him first to your **personal** [Discord](https://discord.gg) **guild**! You can do that by **visiting** [invite.groovybot.co](https://invite.groovybot.co)! Just select **your server** and hit **authorize**!
 
-<table>
-    <thead>
-        <tr>
-        <th>Command</th>
-        <th>Function</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-        <td>play (Song)</td>
-        <td>Plays a specific song</td>
-        </tr>
-        <tr>
-        <td>pause</td>
-        <td>Pauses the bot</td>
-        </tr>
-        <tr>
-        <td>resume</td>
-        <td>Resumes the bot</td>
-        </tr>
-        <tr>
-        <td>loop</td>
-        <td>Loops the current song</td>
-        </tr>
-        <tr>
-        <td>shuffle</td>
-        <td>Activates the shuffle for the current queue</td>
-        </tr>
-        <tr>
-        <td>np</td>
-        <td>Shows information about the current song</td>
-        </tr>
-        <tr>
-        <td>queue</td>
-        <td>Shows the current queue</td>
-        </tr>
-        <tr>
-        <td>skip</td>
-        <td>Skips the current song</td>
-        </tr>
-        <tr>
-        <td>seek (hh:mm:ss)</td>
-        <td>Seeks to a specific position in the current song</td>
-        </tr>
-        <tr>
-        <td>restart</td>
-        <td>Restarts the current song</td>
-        </tr>
-        <tr>
-        <td>remove (position/user)</td>
-        <td>Removes a specific song from the queue</td>
-        </tr>
-        <tr>
-        <td>join</td>
-        <td>Lets the bot join</td>
-        </tr>
-        <tr>
-        <td>leave</td>
-        <td>Lets the bot disconnect</td>
-        </tr>
-        <tr>
-        <td>volume (1-100)</td>
-        <td>Sets the volume</td>
-        </tr>
-        <tr>
-        <td>settings</td>
-        <td>Shows the current settings and lets you change them</td>
-        </tr>
-        <tr>
-        <td>help</td>
-        <td>Redirects you to here!</td>
-        </tr>
-        <tr>
-        <td>info</td>
-        <td>Shows some information about the bot and his author</td>
-        </tr>
-        <tr>
-        <td>invite</td>
-        <td>Shows some links!</td>
-        </tr>
-        <tr>
-        <td>support</td>
-        <td>Shows the support message</td>
-        </tr>
-        <tr>
-        <td>shard</td>
-        <td>Shows the shard you are on and the total amount</td>
-        </tr>
-        <tr>
-        <td>stats</td>
-        <td>Shows the stats</td>
-        </tr>
-    </tbody>
-</table>
+## Usage
 
----
+Groovy is an **easy to use music-bot** as it delivers **plenty of simple features** to **increase your experience** on Discord! You'll get a **basic overview** at [groovybot.co](https://groovybot.co) and also by using the command `g!help` which displays you all commands **splitted in categories**! To get more **specific information** about a command type in `g!help command` where `command` is for example `play`. To play your first song use `g!play song` where `song` is a basic query (e.g. `high hopes panic at the disco` or a link to **YouTube**, **Spotify** etc).
 
-### Want to support?
+## Support
 
-We'd love to hear about that! You are able to support with money by donating on [patreon](https://patreon.com/rxsto), that would help us a lot, but you are able to support without money by voting for Groovy [here](https://groovybot.gq/vote)! Thank you so much <3
+There is **any problem** that you cannot solve? **Join our support-server** at [support.groovybot.co](https://support.groovybot.co) where **you'll definitely** get help!
 
----
+[![Join Groovy Support](https://discordapp.com/api/guilds/403882830225997825/embed.png?style=banner2)](https://support.groovybot.co)
 
-### [License]
-[GPL-3.0](https://github.com/GroovyDevs/Bot/blob/develop/LICENSE)
+## Donate
 
-## Vote for us!
-[![Discord Bots](https://discordbots.org/api/widget/status/402116404301660181.svg?noavatar=true)](https://discordbots.org/bot/402116404301660181)
-
+You **want to get all features** that Groovy **can offer**? You don't want to **be restricted** while using Groovy? Consider donating at [donate.groovybot.co](https://donate.groovybot.co) which will **enable you to increase your music-experience to unlimited**!
