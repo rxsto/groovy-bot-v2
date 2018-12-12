@@ -30,6 +30,9 @@ public class NowPlayingCommand extends Command {
         AudioTrack playingTrack = player.getPlayer().getPlayingTrack();
         final long trackPosition = player.getPlayer().getTrackPosition();
 
+        System.out.println(trackPosition);
+        System.out.println(FormatUtil.formatTimestamp(trackPosition));
+
         builder.setTitle(String.format("🎶 %s", playingTrack.getInfo().title), playingTrack.getInfo().uri);
         builder.setThumbnail(FormatUtil.getThumbnail(playingTrack));
         builder.addField(event.translate("command.now.title"), playingTrack.getInfo().isStream ? event.translate("phrases.text.stream") : String.format("**%s:** %s - **%s:** [%s/%s]", event.translate("phrases.text.author"), playingTrack.getInfo().author, event.translate("phrases.text.progress"), FormatUtil.formatTimestamp(trackPosition), FormatUtil.formatTimestamp(playingTrack.getDuration())), false);
