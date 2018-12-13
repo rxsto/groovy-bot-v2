@@ -119,7 +119,7 @@ public class MusicPlayer extends Player implements Runnable {
 
     @Override
     public void announceRequeue(AudioTrack track) {
-        SafeMessage.sendMessage(channel, EmbedUtil.success("An error occurred while queueing song!", "An unexpected error occurred while queueing song, trying to requeue now."));
+        SafeMessage.sendMessage(channel, EmbedUtil.info("An error occurred while queueing song!", "An unexpected error occurred while queueing song, trying to requeue now."));
     }
 
     @Override

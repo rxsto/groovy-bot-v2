@@ -25,7 +25,6 @@ public abstract class Player {
 
     public Player(YoutubeUtil youtubeClient) {
         this.trackQueue = new LinkedList<>();
-        this.trackQueue = new LinkedList<>();
         this.scheduler = new Scheduler(this);
         this.youtubeClient = youtubeClient;
     }
