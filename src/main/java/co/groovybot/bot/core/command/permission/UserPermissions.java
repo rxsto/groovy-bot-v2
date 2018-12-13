@@ -45,7 +45,6 @@ public class UserPermissions {
     }
 
     private Tier retrievePatreonTier() {
-        if (GroovyBot.getInstance().getConfig().getJSONObject("settings").getBoolean("premium")) return Tier.TWO;
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             PreparedStatement premium = connection.prepareStatement("SELECT type FROM premium WHERE user_id = ?");
             premium.setLong(1, user.getEntityId());
