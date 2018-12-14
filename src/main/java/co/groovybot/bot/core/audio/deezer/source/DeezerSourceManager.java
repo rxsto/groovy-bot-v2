@@ -2,12 +2,11 @@ package co.groovybot.bot.core.audio.deezer.source;
 
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.track.AudioItem;
-import com.sedmelluq.discord.lavaplayer.track.AudioReference;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import com.sedmelluq.discord.lavaplayer.track.*;
 import com.zeloon.deezer.client.DeezerClient;
+import com.zeloon.deezer.domain.Playlist;
 import com.zeloon.deezer.domain.Track;
+import com.zeloon.deezer.domain.internal.PlaylistId;
 import com.zeloon.deezer.domain.internal.TrackId;
 import com.zeloon.deezer.io.HttpResourceConnection;
 import co.groovybot.bot.core.audio.AudioTrackFactory;
@@ -20,8 +19,10 @@ import java.io.DataOutput;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class DeezerSourceManager implements AudioSourceManager {
@@ -32,6 +33,7 @@ public class DeezerSourceManager implements AudioSourceManager {
     private final AudioTrackFactory audioTrackFactory;
 
     private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.deezer\\.com/.*/track/([0-9]*)");
+    private static final Pattern PLAYLIST_PATTERN = Pattern.compile("https?://.*\\.deezer\\.com/.*/playlist/([0-9]*)");
 
     public DeezerSourceManager() {
         this.deezerClient = new DeezerClient(new HttpResourceConnection());
@@ -55,7 +57,8 @@ public class DeezerSourceManager implements AudioSourceManager {
 
             if (TRACK_PATTERN.matcher(rawUrl).matches())
                 audioItem = buildTrack(rawUrl);
-
+            if (PLAYLIST_PATTERN.matcher(rawUrl).matches())
+                audioItem = buildPlaylist(rawUrl);
             return audioItem;
         } catch (MalformedURLException e) {
             log.error("Failed to load the item!", e);
@@ -68,6 +71,21 @@ public class DeezerSourceManager implements AudioSourceManager {
         Track track = this.deezerClient.get(trackId);
         TrackData trackData = this.getTrackData(track);
         return this.audioTrackFactory.getAudioTrack(trackData);
+    }
+
+    private AudioPlaylist buildPlaylist(String url) {
+        PlaylistId playlistId = new PlaylistId(Long.valueOf(parsePlaylistPattern(url)));
+        Playlist playlist = this.deezerClient.get(playlistId);
+        List<Track> playlistTracks = playlist.getTracks().getData();
+        List<TrackData> trackDatas = this.getPlaylistTrackData(playlistTracks);
+        List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDatas);
+        return new BasicAudioPlaylist(playlist.getTitle(), audioTracks, null, false);
+    }
+
+    private List<TrackData> getPlaylistTrackData(List<Track> playlistTracks) {
+        return playlistTracks.stream()
+                .map(this::getTrackData)
+                .collect(Collectors.toList());
     }
 
     private TrackData getTrackData(Track track) {
@@ -84,6 +102,14 @@ public class DeezerSourceManager implements AudioSourceManager {
 
         if (!matcher.find())
             return "noTrackId";
+        return matcher.group(1);
+    }
+
+    private String parsePlaylistPattern(String identifier) {
+        final Matcher matcher = PLAYLIST_PATTERN.matcher(identifier);
+
+        if (!matcher.find())
+            return "noPlaylistId";
         return matcher.group(1);
     }
 
