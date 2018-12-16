@@ -43,6 +43,15 @@ public class FormatUtil {
     }
 
     /**
+     * Formats memory bytes to mb
+     * @param bytes the actual bytes
+     * @return amount of megabytes
+     */
+    public static long parseBytes(long bytes) {
+        return bytes / 1024 / 1024;
+    }
+
+    /**
      * Formats the milliseconds of a song duration to a readable timestamp
      *
      * @param millis The milliseconds

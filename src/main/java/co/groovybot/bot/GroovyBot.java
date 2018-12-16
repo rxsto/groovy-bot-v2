@@ -42,13 +42,14 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 
 import javax.security.auth.login.LoginException;
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Objects;
 
 @Log4j2
-public class GroovyBot {
+public class GroovyBot implements Closeable {
 
     @Getter
     private static GroovyBot instance;
@@ -141,6 +142,9 @@ public class GroovyBot {
         log.info("[Database] Initializing Database ...");
         postgreSQL = new PostgreSQL();
 
+        // Initializing InfluxDB
+        //influxDB = new InfluxDBManager(config).build();
+
         httpClient = new OkHttpClient();
         spotifyClient = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
         lavalinkManager = new LavalinkManager(this);
@@ -184,6 +188,7 @@ public class GroovyBot {
                 .setGame(Game.playing("Starting ..."))
                 .setStatus(OnlineStatus.DO_NOT_DISTURB)
                 .addEventListeners(
+                        new YanningListener(),
                         this,
                         new ShardsListener(),
                         new SelfMentionListener(),
@@ -252,10 +257,21 @@ public class GroovyBot {
             serverCountStatistics.start();
         }
 
+        // Register all monitors and start monitoring
+        /*if (influxDB == null) {
+            log.info("[MonitoringManager] Monitoring disabled, because there is no connection to InfluxDB");
+        } else {
+            monitorManager = new MonitorManager(influxDB);
+            monitorManager.register(new SystemMonitor());
+            monitorManager.start();
+            log.info("[MonitoringManager] Monitoring started.");
+        }*/
+
         // Now Groovy is ready
         allShardsInitialized = true;
     }
 
+    @Override
     public void close() {
         try {
             if (commandManager != null)
