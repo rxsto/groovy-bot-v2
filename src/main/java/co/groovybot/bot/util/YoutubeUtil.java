@@ -9,6 +9,8 @@ import com.google.api.services.youtube.YouTubeRequest;
 import com.google.api.services.youtube.YouTubeRequestInitializer;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Video;
+import com.google.api.services.youtube.model.VideoListResponse;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
@@ -77,6 +79,27 @@ public class YoutubeUtil {
         if (response.getItems().isEmpty())
             throw new NullPointerException("No videos were found");
         return response.getItems().get(0).getId().getVideoId();
+    }
+
+    /**
+     * Search for youtube Videos by it's ide
+     * @param videoId The id of the video
+     * @return an VideoListResponse {@link com.google.api.services.youtube.model.VideoListResponse}
+     * @throws IOException When YoutubeRequest returns an error
+     */
+    public VideoListResponse getVideoById(String videoId) throws IOException {
+        return client.videos().list("snippet,localizations,contentDetails").setId(videoId).execute();
+    }
+
+    /**
+     * Gets the first video from an VideoListResponse
+     * @param videoId The yotube video id
+     * @return The first Video {@link com.google.api.services.youtube.model.Video} of the {@link com.google.api.services.youtube.model.VideoListResponse}
+     * @throws IOException When YoutubeRequest returns an error
+     * @see YoutubeUtil#getVideoById(String)
+     */
+    public Video getFirstVideoById(String videoId) throws IOException {
+        return getVideoById(videoId).getItems().get(0);
     }
 
     private class RequestInitializer extends YouTubeRequestInitializer {

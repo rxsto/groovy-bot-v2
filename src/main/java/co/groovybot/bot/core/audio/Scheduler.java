@@ -3,13 +3,16 @@ package co.groovybot.bot.core.audio;
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.util.EmbedUtil;
 import co.groovybot.bot.util.SafeMessage;
-import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.*;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import lavalink.client.player.event.AudioEventAdapterWrapped;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
@@ -44,6 +48,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
     @Getter
     @Setter
     private boolean autoPlay = false;
+    private AudioTrackFactory trackFactory = new AudioTrackFactory();
 
     @Override
     public void onTrackStart(AudioPlayer audioPlayer, AudioTrack track) {
@@ -151,27 +156,16 @@ public class Scheduler extends AudioEventAdapterWrapped {
     }
 
     private void queueSearchResult(SearchResult result, Message infoMessage) {
-        player.getAudioPlayerManager().loadItem("https://youtube.com/watch?v=" + result.getId().getVideoId(), new AudioLoadResultHandler() {
-            @Override
-            public void trackLoaded(AudioTrack track) {
-                player.play(track, false);
-            }
-
-            @Override
-            public void playlistLoaded(AudioPlaylist playlist) {
-                player.play(playlist.getTracks().get(0), false);
-            }
-
-            @Override
-            public void noMatches() {
-                SafeMessage.editMessage(infoMessage, EmbedUtil.error("Couldn't find an AutoPlay-Track!", "We're sorry, but there **wasn't any result**! **Please try again**!"));
-            }
-
-            @Override
-            public void loadFailed(FriendlyException exception) {
-                SafeMessage.editMessage(infoMessage, EmbedUtil.error("Unknown error", "An **unknown error** occurred while **queueing** song!"));
-                log.error("[AutoPlay] Error while queueing song", exception);
-            }
-        });
+        String videoId = result.getId().getVideoId();
+        try {
+            Video video = player.youtubeClient.getFirstVideoById(videoId);
+            VideoSnippet info = video.getSnippet();
+            AudioTrackInfo trackInfo = new AudioTrackInfo(info.getTitle(), info.getChannelTitle(), Duration.parse(video.getContentDetails().getDuration()).toMillis(), videoId, false, String.format("https://youtu.be/%s", videoId));
+            AudioTrack track = new YoutubeAudioTrack(trackInfo, new YoutubeAudioSourceManager());
+            player.play(track);
+        } catch (IOException e) {
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error("Unknown error", "An **unknown error** occurred while **queueing** song!"));
+            log.error("[AutoPlay] Error while queueing song", e);
+        }
     }
 }
