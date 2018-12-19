@@ -3,13 +3,13 @@ package co.groovybot.bot.core.audio;
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.util.EmbedUtil;
 import co.groovybot.bot.util.SafeMessage;
-import com.google.api.services.youtube.model.*;
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
+import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Video;
+import com.google.api.services.youtube.model.VideoSnippet;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
@@ -48,7 +48,6 @@ public class Scheduler extends AudioEventAdapterWrapped {
     @Getter
     @Setter
     private boolean autoPlay = false;
-    private AudioTrackFactory trackFactory = new AudioTrackFactory();
 
     @Override
     public void onTrackStart(AudioPlayer audioPlayer, AudioTrack track) {
@@ -135,7 +134,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
         }
     }
 
-    public void runAutoplay(AudioTrack track) {
+    private void runAutoplay(AudioTrack track) {
         Message infoMessage = player.announceAutoplay();
 
         final Matcher matcher = TRACK_PATTERN.matcher(track.getInfo().uri);
