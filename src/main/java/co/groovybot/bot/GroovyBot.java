@@ -152,8 +152,12 @@ public class GroovyBot implements Closeable {
         log.info("[Database] Initializing Database ...");
         postgreSQL = new PostgreSQL();
 
-        // Initializing InfluxDB
-        influxDB = new InfluxDBManager(config).build();
+        // Check for --no-monitoring and initialize InfluxDB if not
+        if (arguments.contains("--no-monitoring")) {
+            influxDB = null;
+        } else {
+            influxDB = new InfluxDBManager(config).build();
+        }
 
         httpClient = new OkHttpClient();
         spotifyClient = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
