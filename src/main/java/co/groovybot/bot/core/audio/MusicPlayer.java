@@ -5,7 +5,6 @@ import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.permission.UserPermissions;
 import co.groovybot.bot.core.entity.EntityProvider;
-import co.groovybot.bot.listeners.Logger;
 import co.groovybot.bot.util.*;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -281,7 +280,6 @@ public class MusicPlayer extends Player implements Runnable {
 
     private void handleFailedLoads(FriendlyException e, Message infoMessage, CommandEvent event) {
         SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.error.title"), e.getCause() != null ? String.format("**%s**\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));
-        Logger.sendErrorMessage(e.getMessage(), e.getCause().getMessage());
     }
 
     private void queuedTrack(AudioTrack track, Message infoMessage, CommandEvent event) {
@@ -369,8 +367,11 @@ public class MusicPlayer extends Player implements Runnable {
     public void run() {
         if (inProgress) return;
         if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
-        if (guild.getSelfMember().getVoiceState().getChannel() != null)
+        if (guild.getSelfMember().getVoiceState().getChannel() != null) {
             if (!isPlaying())
-                leave("I've **left** the voice-channel because I've been **inactive** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://patreon.com/rxsto)**!");
+                leave("I've **left** the voice-channel because I've been **inactive** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://donate.groovybot.co)**!");
+            if (guild.getSelfMember().getVoiceState().getChannel().getMembers().size() == 1)
+                leave("I've **left** the voice-channel because I've been **alone** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://donate.groovybot.co)**!");
+        }
     }
 }

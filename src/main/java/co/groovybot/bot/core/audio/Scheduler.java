@@ -1,6 +1,5 @@
 package co.groovybot.bot.core.audio;
 
-import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.util.EmbedUtil;
 import co.groovybot.bot.util.SafeMessage;
 import com.google.api.services.youtube.model.SearchResult;
@@ -70,12 +69,6 @@ public class Scheduler extends AudioEventAdapterWrapped {
                 Guild guild = ((MusicPlayer) player).getGuild();
 
                 if (guild.getSelfMember().getVoiceState().getChannel() == null) return;
-
-                // Leave if bot alone
-                if (guild.getSelfMember().getVoiceState().getChannel().getMembers().size() == 1 && GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) {
-                    ((MusicPlayer) player).leave("I've **left** the voice-channel because I've been **alone** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://patreon.com/rxsto)**!");
-                    return;
-                }
 
                 AudioTrack nextTrack = null;
 

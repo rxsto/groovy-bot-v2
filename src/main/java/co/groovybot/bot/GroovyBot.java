@@ -103,7 +103,6 @@ public class GroovyBot {
     @Getter
     @Setter
     private boolean allShardsInitialized = false;
-    private boolean enableWebhooks = true;
 
     private GroovyBot(String[] args) throws IOException {
 
@@ -118,7 +117,6 @@ public class GroovyBot {
         // Checking for debug-mode
         final String arguments = String.join(" ", args);
         debugMode = arguments.contains("debug");
-        enableWebhooks = !arguments.contains("--disable-webhooks");
 
         // Checking for webSocket-mode
         enableWebsocket = !arguments.contains("--no-websocket");
@@ -198,8 +196,6 @@ public class GroovyBot {
                         interactionManager,
                         eventWaiter
                 );
-        if (enableWebhooks)
-            shardManagerBuilder.addEventListeners(new Logger());
 
         if (enableWebsocket)
             shardManagerBuilder.addEventListeners(new WebsiteStatsListener());
