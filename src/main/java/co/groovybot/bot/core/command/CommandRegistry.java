@@ -61,7 +61,8 @@ public class CommandRegistry {
                 new AutoLeaveCommand(),
                 new BassBoostCommand(),
                 new FriendsCommand(),
-                new TrendsCommand()
+                new TrendsCommand(),
+                new AutoPauseCommand()
         );
     }
 }
