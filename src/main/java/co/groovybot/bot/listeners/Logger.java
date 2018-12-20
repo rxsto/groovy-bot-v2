@@ -33,14 +33,12 @@ public class Logger {
     }
 
     public static void sendMessage(String type, Event event, WebhookClient client) {
-        if (GroovyBot.getInstance().isDebugMode()) return;
         WebhookMessageBuilder webhookMessageBuilder = new WebhookMessageBuilder();
         webhookMessageBuilder.addEmbeds(Objects.requireNonNull(FormatUtil.formatWebhookMessage(type, event)).build());
         client.send(webhookMessageBuilder.build());
     }
 
     public static void sendErrorMessage(String exception, String cause) {
-        if (GroovyBot.getInstance().isDebugMode()) return;
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTimestamp(Instant.now());
         embedBuilder.setTitle("⚠ An error occurred!");
