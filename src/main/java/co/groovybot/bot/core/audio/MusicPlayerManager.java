@@ -33,6 +33,12 @@ public class MusicPlayerManager {
         return player;
     }
 
+    public MusicPlayer getExistingPlayer(Guild guild) {
+        if (playerStorage.containsKey(guild.getIdLong()))
+            return playerStorage.get(guild.getIdLong());
+        return null;
+    }
+
     public MusicPlayer getPlayer(CommandEvent event) {
         return getPlayer(event.getGuild(), event.getChannel());
     }

@@ -1,5 +1,6 @@
 package co.groovybot.bot.core.influx;
 
+import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.io.config.Configuration;
 import lombok.extern.log4j.Log4j2;
 import org.influxdb.InfluxDB;
@@ -22,6 +23,8 @@ public class InfluxDBManager {
     }
 
     public InfluxDB build() {
+        if (GroovyBot.getInstance().isDebugMode())
+            return null;
         log.info("[InfluxDBManager] Connection to InfluxDB...");
         InfluxDB influxDB = InfluxDBFactory.connect(String.format("http://%s:8086", config.getString("host")),
                 config.getString("username"), config.getString("password"));

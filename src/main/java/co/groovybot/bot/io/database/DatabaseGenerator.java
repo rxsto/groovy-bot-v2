@@ -14,7 +14,8 @@ public class DatabaseGenerator {
                 "  announce_songs       boolean default true,\n" +
                 "  blacklisted_channels varchar default '[]' :: character varying,\n" +
                 "  commands_channel     bigint,\n" +
-                "  auto_leave           boolean default true  not null\n" +
+                "  auto_leave           boolean default true  not null,\n" +
+                "  auto_pause           boolean default false  not null\n" +
                 ");");
 
         postgreSQL.addDefault(() -> "create table if not exists keys\n" +
