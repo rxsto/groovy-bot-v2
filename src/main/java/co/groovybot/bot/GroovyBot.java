@@ -13,7 +13,11 @@ import co.groovybot.bot.core.command.interaction.InteractionManager;
 import co.groovybot.bot.core.entity.Guild;
 import co.groovybot.bot.core.entity.User;
 import co.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
+import co.groovybot.bot.core.influx.InfluxDBManager;
 import co.groovybot.bot.core.lyrics.GeniusClient;
+import co.groovybot.bot.core.monitoring.Monitor;
+import co.groovybot.bot.core.monitoring.MonitorManager;
+import co.groovybot.bot.core.monitoring.monitors.*;
 import co.groovybot.bot.core.statistics.ServerCountStatistics;
 import co.groovybot.bot.core.statistics.StatusPage;
 import co.groovybot.bot.core.translation.TranslationManager;
@@ -40,15 +44,17 @@ import okhttp3.OkHttpClient;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.influxdb.InfluxDB;
 
 import javax.security.auth.login.LoginException;
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Objects;
 
 @Log4j2
-public class GroovyBot {
+public class GroovyBot implements Closeable {
 
     @Getter
     private static GroovyBot instance;
@@ -88,6 +94,10 @@ public class GroovyBot {
     private Configuration config;
     @Getter
     private PostgreSQL postgreSQL;
+    @Getter
+    private MonitorManager monitorManager;
+    @Getter
+    private InfluxDB influxDB;
     @Getter
     private WebsocketConnection webSocket;
     @Getter
@@ -141,6 +151,9 @@ public class GroovyBot {
         // Initializing database
         log.info("[Database] Initializing Database ...");
         postgreSQL = new PostgreSQL();
+
+        // Initializing InfluxDB
+        influxDB = new InfluxDBManager(config).build();
 
         httpClient = new OkHttpClient();
         spotifyClient = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
@@ -252,10 +265,23 @@ public class GroovyBot {
             serverCountStatistics.start();
         }
 
+        // Register all monitors and start monitoring
+        if (influxDB == null) {
+            log.info("[MonitoringManager] Monitoring disabled, because there is no connection to InfluxDB");
+        } else {
+            monitorManager = new MonitorManager(influxDB);
+            Monitor msgMonitor = new MessageMonitor();
+            shardManager.addEventListener(msgMonitor);
+            monitorManager.register(new SystemMonitor(), new GuildMonitor(), new RequestMonitor(), msgMonitor, new UserMonitor());
+            monitorManager.start();
+            log.info("[MonitoringManager] Monitoring started.");
+        }
+
         // Now Groovy is ready
         allShardsInitialized = true;
     }
 
+    @Override
     public void close() {
         try {
             if (commandManager != null)
