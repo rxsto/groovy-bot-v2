@@ -34,7 +34,7 @@ public class MessageMonitor extends Monitor {
 
         lengths.clear();
         counter = 0;
-        return null;
+        return point;
     }
 
     private double average(List<Integer> list) {

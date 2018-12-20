@@ -21,8 +21,8 @@ public class SystemMonitor extends Monitor {
         Runtime runtime = Runtime.getRuntime();
         return Point.measurement("system_info")
                 //.addField("memory_used", FormatUtil.parseBytes(system.getTotalPhysicalMemorySize() - system.getFreePhysicalMemorySize()))
-                .addField("memory_used", FormatUtil.parseBytes(runtime.totalMemory() - runtime.freeMemory()))
-                .addField("memory_free", FormatUtil.parseBytes(system.getFreePhysicalMemorySize()))
+                .addField("memory_used", runtime.totalMemory() - runtime.freeMemory())
+                .addField("memory_free", system.getFreePhysicalMemorySize())
                 .addField("cpu_load", system.getSystemCpuLoad())
                 .build();
     }

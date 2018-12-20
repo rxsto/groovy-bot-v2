@@ -15,8 +15,9 @@ import co.groovybot.bot.core.entity.User;
 import co.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
 import co.groovybot.bot.core.influx.InfluxDBManager;
 import co.groovybot.bot.core.lyrics.GeniusClient;
+import co.groovybot.bot.core.monitoring.Monitor;
 import co.groovybot.bot.core.monitoring.MonitorManager;
-import co.groovybot.bot.core.monitoring.monitors.SystemMonitor;
+import co.groovybot.bot.core.monitoring.monitors.*;
 import co.groovybot.bot.core.statistics.ServerCountStatistics;
 import co.groovybot.bot.core.statistics.StatusPage;
 import co.groovybot.bot.core.translation.TranslationManager;
@@ -269,7 +270,9 @@ public class GroovyBot implements Closeable {
             log.info("[MonitoringManager] Monitoring disabled, because there is no connection to InfluxDB");
         } else {
             monitorManager = new MonitorManager(influxDB);
-            monitorManager.register(new SystemMonitor());
+            Monitor msgMonitor = new MessageMonitor();
+            shardManager.addEventListener(msgMonitor);
+            monitorManager.register(new SystemMonitor(), new GuildMonitor(), new RequestMonitor(), msgMonitor, new UserMonitor());
             monitorManager.start();
             log.info("[MonitoringManager] Monitoring started.");
         }

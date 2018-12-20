@@ -13,7 +13,6 @@ import org.influxdb.dto.Point;
  */
 public class RequestMonitor extends Monitor {
 
-
     // TODO: Implement request count for every shard separately
     //private Map<Integer, Integer> requests; // ShardId, RequestCount
     private int counter;
@@ -27,12 +26,6 @@ public class RequestMonitor extends Monitor {
     public Point save() {
         Point.Builder point = Point.measurement("requests")
                 .addField("count", counter);
-
-        /*System.out.println(requests);
-        requests.put(ThreadLocalRandom.current().nextInt(0, 5), ThreadLocalRandom.current().nextInt(0, 10));
-
-        requests.forEach((shard, count) -> point.addField("shard_" + shard, count));*/
-
         counter = 0;
 
         return point.build();
@@ -42,9 +35,5 @@ public class RequestMonitor extends Monitor {
     @SubscribeEvent
     private void onRequest(HttpRequestEvent event) {
         counter++;
-        //int shard = event.getJDA().getShardInfo().getShardId();
-        //Integer old = requests.get(shard);
-        //requests.put(shard, (old == null ? 1 : old));
-        //requests.put(ThreadLocalRandom.current().nextInt(0, 5), ThreadLocalRandom.current().nextInt(0, 10));
     }
 }

@@ -15,7 +15,7 @@ public class GuildMonitor extends Monitor {
     public Point save() {
         return Point.measurement("guilds")
                 .addField("guild_count", GroovyBot.getInstance().getShardManager().getGuildCache().size())
-                .addField("playing_guilds", LavalinkManager.countPlayers())
+                .addField("playing_guilds", GroovyBot.getInstance().getMusicPlayerManager().getPlayingServers())
                 .build();
     }
 }
