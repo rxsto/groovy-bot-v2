@@ -24,7 +24,7 @@ public class JoinGuildListener {
         Map<String, TextChannel> sortedChannels = new HashMap<>();
         Set<TextChannel> preferredChannels = new HashSet<>();
 
-        for (TextChannel channel : channels) sortedChannels.put(channel.getName(), channel);
+        channels.forEach(channel -> sortedChannels.put(channel.getName(), channel));
 
         sortedChannels.forEach((name, channel) -> {
             if (name.contains("music") || name.contains("bot") || name.contains("command") || name.contains("talk") || name.contains("chat") || name.contains("general"))
