@@ -62,7 +62,7 @@ public class CommandRegistry {
                 new BassBoostCommand(),
                 new FriendsCommand(),
                 new TrendsCommand(),
-                new AutoPauseCommand()
+                new AutoPauseCommand(),
                 new PremiumCommand()
         );
     }
