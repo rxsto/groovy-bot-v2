@@ -63,6 +63,7 @@ public class CommandRegistry {
                 new FriendsCommand(),
                 new TrendsCommand(),
                 new AutoPauseCommand()
+                new PremiumCommand()
         );
     }
 }

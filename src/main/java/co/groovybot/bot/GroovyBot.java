@@ -18,6 +18,7 @@ import co.groovybot.bot.core.lyrics.GeniusClient;
 import co.groovybot.bot.core.monitoring.Monitor;
 import co.groovybot.bot.core.monitoring.MonitorManager;
 import co.groovybot.bot.core.monitoring.monitors.*;
+import co.groovybot.bot.core.premium.PremiumHandler;
 import co.groovybot.bot.core.statistics.ServerCountStatistics;
 import co.groovybot.bot.core.statistics.StatusPage;
 import co.groovybot.bot.core.translation.TranslationManager;
@@ -113,6 +114,10 @@ public class GroovyBot implements Closeable {
     @Getter
     @Setter
     private boolean allShardsInitialized = false;
+    @Getter
+    private net.dv8tion.jda.core.entities.Guild supportGuild;
+    @Getter
+    private final PremiumHandler premiumHandler;
 
     private GroovyBot(String[] args) throws IOException {
 
@@ -124,11 +129,12 @@ public class GroovyBot implements Closeable {
         // Initializing logger
         initLogger(args);
 
-        // Checking for debug-mode
         final String arguments = String.join(" ", args);
+
+        // Checking for debug-mode
         debugMode = arguments.contains("debug");
 
-        // Checking for webSocket-mode
+        // Checking for websocket-mode
         enableWebsocket = !arguments.contains("--no-websocket");
 
         configNodes = arguments.contains("--config-nodes");
@@ -172,6 +178,7 @@ public class GroovyBot implements Closeable {
         keyManager = new KeyManager(postgreSQL.getDataSource());
         interactionManager = new InteractionManager();
         eventWaiter = new EventWaiter();
+        premiumHandler = new PremiumHandler();
 
         // Initializing shardmanager
         initShardManager();
@@ -207,6 +214,7 @@ public class GroovyBot implements Closeable {
                         new SelfMentionListener(),
                         new JoinGuildListener(),
                         new CommandLogger(),
+                        new PremiumListener(premiumHandler),
                         new BlacklistWatcher(guildCache),
                         new AutopauseListener(),
                         commandManager,
@@ -255,6 +263,16 @@ public class GroovyBot implements Closeable {
             log.error("[MusicPlayerManager] Error while initializing MusicPlayers!", e);
         }
 
+        supportGuild = shardManager.getGuildById(403882830225997825L);
+
+        // Register all Donators
+        try {
+            log.info("[PremiumHandler] Initializing Patrons ...");
+            premiumHandler.initializePatrons(supportGuild, postgreSQL.getDataSource().getConnection());
+        } catch (SQLException e) {
+            log.error("[PremiumHandler] Error while initializing Patrons!", e);
+        }
+
         // Initializing webSocket
         if (enableWebsocket)
             try {
@@ -266,7 +284,9 @@ public class GroovyBot implements Closeable {
 
         // Initializing statuspage and servercountstatistics
         if (!debugMode) {
+            log.info("[StatusPage] Initializing StatusPage ...");
             statusPage.start();
+            log.info("[ServerCountStatistics] Initializing ServerCountStatistics ...");
             serverCountStatistics.start();
         }
 
@@ -284,6 +304,7 @@ public class GroovyBot implements Closeable {
 
         // Now Groovy is ready
         allShardsInitialized = true;
+        log.info("[Core] Successfully launched Groovy!");
     }
 
     @Override

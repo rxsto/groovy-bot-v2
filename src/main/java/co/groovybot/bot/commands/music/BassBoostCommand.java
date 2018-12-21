@@ -11,7 +11,7 @@ import co.groovybot.bot.util.EmbedUtil;
 public class BassBoostCommand extends SameChannelCommand {
 
     public BassBoostCommand() {
-        super(new String[]{"bassboost", "bb"}, CommandCategory.MUSIC, Permissions.tierOne(), "Lets you toggle the bassboost", "[off/low/medium/high/extreme]");
+        super(new String[]{"bassboost", "bb"}, CommandCategory.MUSIC, Permissions.tierTwo(), "Lets you toggle the bassboost", "[off/low/medium/high/extreme]");
     }
 
     @Override

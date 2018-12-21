@@ -9,7 +9,7 @@ import net.dv8tion.jda.core.Permission;
 
 public class AutoLeaveCommand extends Command {
     public AutoLeaveCommand() {
-        super(new String[]{"autoleave", "al"}, CommandCategory.SETTINGS, Permissions.tierOne(), "Lets you deactivate the auto-leave mode", "");
+        super(new String[]{"autoleave", "al"}, CommandCategory.SETTINGS, Permissions.tierTwo(), "Lets you deactivate the auto-leave mode", "");
     }
 
     @Override

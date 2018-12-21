@@ -44,6 +44,10 @@ public class UserPermissions {
         return retrievePatreonTier() == Tier.TWO;
     }
 
+    public boolean isTierThree() {
+        return retrievePatreonTier() == Tier.THREE;
+    }
+
     private Tier retrievePatreonTier() {
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             PreparedStatement premium = connection.prepareStatement("SELECT type FROM premium WHERE user_id = ?");
