@@ -44,7 +44,6 @@ public class CommandRegistry {
                 new ShuffleCommand(),
                 new MoveCommand(),
                 new RemoveCommand(),
-                //new KeyCommand(),
                 new AnnounceCommand(),
                 new UpdateCommand(),
                 new PlaylistCommand(),
@@ -63,7 +62,7 @@ public class CommandRegistry {
                 new FriendsCommand(),
                 new TrendsCommand(),
                 new AutoPauseCommand(),
-                new PremiumCommand(),
+                new SettingsCommand,
                 new AutoJoinCommand()
         );
     }
