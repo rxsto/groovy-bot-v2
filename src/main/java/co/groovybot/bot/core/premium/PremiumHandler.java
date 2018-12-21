@@ -20,14 +20,15 @@ public class PremiumHandler {
         this.connection = connection;
         guild.getMembers().forEach(member -> {
             Tier tier = Tier.NONE;
-            if (member.getRoles().contains(guild.getRoleById(1234L)))
+            if (member.getRoles().contains(guild.getRoleById(487300055691296788L)))
                 tier = Tier.ONE;
-            if (member.getRoles().contains(guild.getRoleById(5678L)))
+            if (member.getRoles().contains(guild.getRoleById(487300104726904842L)))
                 tier = Tier.TWO;
-            if (member.getRoles().contains(guild.getRoleById(9101L)))
+            if (member.getRoles().contains(guild.getRoleById(1234L)))
                 tier = Tier.THREE;
             if (tier == Tier.NONE)
                 return;
+            log.debug(member.getUser().getName());
             patrons.put(member.getUser().getIdLong(), tier);
         });
 
