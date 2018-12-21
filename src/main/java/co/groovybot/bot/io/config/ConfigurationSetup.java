@@ -42,7 +42,6 @@ public class ConfigurationSetup {
         settings.put("prefix", "g!");
         settings.put("shards", 10);
         settings.put("voice", "default");
-        settings.put("premium", false);
         configuration.addDefault("settings", settings);
 
         // Create array for owners
@@ -50,6 +49,9 @@ public class ConfigurationSetup {
         owners.put(264048760580079616L);
         owners.put(254892085000405004L);
         owners.put(306480135832338432L);
+        owners.put(207500411907735552L);
+        owners.put(227817074976751616L);
+        owners.put(153507094933274624L);
         configuration.addDefault("owners", owners);
 
         // Create object for webhooks
@@ -81,6 +83,15 @@ public class ConfigurationSetup {
         statuspage.put("metric_id", "defaultvalue");
         statuspage.put("api_key", "defaultvalue");
         configuration.addDefault("statuspage", statuspage);
+
+        // Create object for influxdb
+        final JSONObject influxdb = new JSONObject();
+        influxdb.put("username", "defaultvalue");
+        influxdb.put("password", "defaultvalue");
+        influxdb.put("host", "defaultvalue");
+        influxdb.put("database", "defaultvalue");
+        configuration.addDefault("influxdb", influxdb);
+
 
         // Create object for botlists
         final JSONObject botlists = new JSONObject()

@@ -21,7 +21,7 @@ public class SafeMessage extends JDAUtil {
                 return channel.sendMessage(message);
             else
                 return channel.sendMessage(formatEmbed(message));
-        return message.getAuthor().openPrivateChannel().complete().sendMessage(EmbedUtil.error("No permissions!", "I am unable to write in this channel!").build());
+        return channel.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage(EmbedUtil.error("No permissions!", String.format("I am unable to write in %s on your guild!", channel.getAsMention())).build());
     }
 
     private static MessageAction getEditAction(Message previousMessage, Message newMessage) {
@@ -31,7 +31,7 @@ public class SafeMessage extends JDAUtil {
                 return previousMessage.editMessage(newMessage);
             else
                 return previousMessage.editMessage(formatEmbed(newMessage));
-        return newMessage.getAuthor().openPrivateChannel().complete().sendMessage(EmbedUtil.error("No permissions!", "I am unable to write in this channel!").build());
+        return channel.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage(EmbedUtil.error("No permissions!", String.format("I am unable to write in %s on your guild!", channel.getAsMention())).build());
     }
 
     public static void editMessage(Message prevoiusMessage, EmbedBuilder builder) {

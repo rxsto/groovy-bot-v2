@@ -15,6 +15,10 @@ public abstract class SubCommand extends Command {
         super(aliases, null, permissions, description, usage);
     }
 
+    public SubCommand(String[] aliases, Permissions permissions, String description) {
+        super(aliases, null, permissions, description, "");
+    }
+
     @Override
     public Result sendHelp() {
         return send(FormatUtil.formatCommand(mainCommand));

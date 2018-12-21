@@ -7,6 +7,7 @@ import co.groovybot.bot.core.events.command.CommandFailEvent;
 import co.groovybot.bot.core.events.command.NoPermissionEvent;
 import co.groovybot.bot.util.EmbedUtil;
 import co.groovybot.bot.util.NameThreadFactory;
+import co.groovybot.bot.util.SafeMessage;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.Permission;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Log4j2
 public class CommandManager implements Closeable {
@@ -103,12 +105,12 @@ public class CommandManager implements Closeable {
 
         Command command = commandAssociations.get(invocation);
 
-        //Remove invocation
+        // Remove invocation
         String[] commandArgs = new String[allArgs.length - 1];
         System.arraycopy(allArgs, 1, commandArgs, 0, commandArgs.length);
         String[] args;
 
-        //Check for sub commands
+        // Check for sub commands
         if (commandArgs.length > 0 && command.getSubCommandAssociations().containsKey(commandArgs[0])) {
             command = command.getSubCommandAssociations().get(commandArgs[0]);
             args = new String[commandArgs.length - 1];
@@ -120,24 +122,25 @@ public class CommandManager implements Closeable {
     }
 
     private void callCommand(Command command, CommandEvent commandEvent) {
-        //Check permission
+
+        // Check permission
         if (!command.getPermissions().isCovered(bot.getUserCache().get(commandEvent.getAuthor().getIdLong()).getPermissions(), commandEvent)) {
             bot.getEventManager().handle(new NoPermissionEvent(commandEvent, command));
             return;
         }
 
-        //Run command
+        // Run command
         try {
             TextChannel channel = commandEvent.getChannel();
 
-            //Send typing
+            // Send typing
             channel.sendTyping().queue();
 
-            //Delete invoke message
+            // Delete invoke message
             if (commandEvent.getGuild().getSelfMember().hasPermission(commandEvent.getChannel(), Permission.MESSAGE_MANAGE))
                 commandEvent.getMessage().delete().queue();
 
-            //Run the commands run() method
+            // Run the commands run() method
             Result result = command.run(commandEvent.getArgs(), commandEvent);
             if (result != null)
                 result.sendMessage(channel, 60);

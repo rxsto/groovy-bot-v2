@@ -1,4 +1,4 @@
-package co.groovybot.bot.commands.music;
+package co.groovybot.bot.commands.settings;
 
 import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.command.CommandCategory;
@@ -9,7 +9,7 @@ import co.groovybot.bot.core.command.voice.InChannelCommand;
 
 public class SwitchCommand extends InChannelCommand {
     public SwitchCommand() {
-        super(new String[]{"switch"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you to switch the text-channel or/and the voicechannel of Groovy", "");
+        super(new String[]{"switch"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Lets you to switch the text-channel or/and the voicechannel of Groovy", "");
     }
 
     @Override

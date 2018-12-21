@@ -12,7 +12,7 @@ import co.groovybot.bot.core.entity.EntityProvider;
 public class LoopCommand extends SameChannelCommand {
 
     public LoopCommand() {
-        super(new String[]{"loop", "lp"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you toggle the loop-modes", "");
+        super(new String[]{"loop", "lp"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you toggle through all loop-modes", "");
     }
 
     @Override
@@ -21,19 +21,20 @@ public class LoopCommand extends SameChannelCommand {
 
         if (!scheduler.isLoop() && !scheduler.isLoopqueue()) {
             scheduler.setLoop(true);
-            return send(info(event.translate("command.loop.title"), event.translate("command.loop.loop.description")));
+            return send(noTitle("\uD83D\uDD02 " + event.translate("command.loop.song")));
         } else if (scheduler.isLoop()) {
             if (!Permissions.tierOne().isCovered(EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions(), event)) {
                 scheduler.setLoop(false);
-                return send(info(event.translate("command.loop.title"), event.translate("command.loop.none.description")).addField(event.translate("phrases.text.information"), "▫ " + event.translate("command.loop.nopremium.info"), false));
+                send(noTitle("ℹ " + event.translate("command.loop.none")));
+                return send(info(event.translate("command.loop.premium.title"), event.translate("command.loop.premium.description")));
             } else {
                 scheduler.setLoop(false);
                 scheduler.setLoopqueue(true);
-                return send(info(event.translate("command.loop.title"), event.translate("command.loop.loopqueue.description")));
+                return send(noTitle("\uD83D\uDD01 " + event.translate("command.loop.queue")));
             }
         } else if (scheduler.isLoopqueue()) {
             scheduler.setLoopqueue(false);
-            return send(info(event.translate("command.loop.title"), event.translate("command.loop.none.description")));
+            return send(noTitle("ℹ " + event.translate("command.loop.none")));
         } else {
             return send(error(event));
         }

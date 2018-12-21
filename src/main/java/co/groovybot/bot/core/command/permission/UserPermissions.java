@@ -37,15 +37,19 @@ public class UserPermissions {
     }
 
     public boolean isTierOne() {
-        return retrievePatreonTier() == Tier.ONE || retrievePatreonTier() == Tier.TWO;
+        Tier tier = retrievePatreonTier();
+        return tier == Tier.ONE || tier == Tier.TWO || tier == Tier.THREE;
     }
 
     public boolean isTierTwo() {
         return retrievePatreonTier() == Tier.TWO;
     }
 
+    public boolean isTierThree() {
+        return retrievePatreonTier() == Tier.THREE;
+    }
+
     private Tier retrievePatreonTier() {
-        if (GroovyBot.getInstance().getConfig().getJSONObject("settings").getBoolean("premium")) return Tier.TWO;
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             PreparedStatement premium = connection.prepareStatement("SELECT type FROM premium WHERE user_id = ?");
             premium.setLong(1, user.getEntityId());

@@ -13,7 +13,12 @@ import co.groovybot.bot.core.command.interaction.InteractionManager;
 import co.groovybot.bot.core.entity.Guild;
 import co.groovybot.bot.core.entity.User;
 import co.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
+import co.groovybot.bot.core.influx.InfluxDBManager;
 import co.groovybot.bot.core.lyrics.GeniusClient;
+import co.groovybot.bot.core.monitoring.Monitor;
+import co.groovybot.bot.core.monitoring.MonitorManager;
+import co.groovybot.bot.core.monitoring.monitors.*;
+import co.groovybot.bot.core.premium.PremiumHandler;
 import co.groovybot.bot.core.statistics.ServerCountStatistics;
 import co.groovybot.bot.core.statistics.StatusPage;
 import co.groovybot.bot.core.translation.TranslationManager;
@@ -40,15 +45,17 @@ import okhttp3.OkHttpClient;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.influxdb.InfluxDB;
 
 import javax.security.auth.login.LoginException;
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Objects;
 
 @Log4j2
-public class GroovyBot {
+public class GroovyBot implements Closeable {
 
     @Getter
     private static GroovyBot instance;
@@ -62,6 +69,8 @@ public class GroovyBot {
     private final boolean debugMode;
     @Getter
     private final boolean configNodes;
+    @Getter
+    private final boolean premium;
     @Getter
     private final TranslationManager translationManager;
     @Getter
@@ -89,6 +98,10 @@ public class GroovyBot {
     @Getter
     private PostgreSQL postgreSQL;
     @Getter
+    private MonitorManager monitorManager;
+    @Getter
+    private InfluxDB influxDB;
+    @Getter
     private WebsocketConnection webSocket;
     @Getter
     private ShardManager shardManager;
@@ -103,6 +116,11 @@ public class GroovyBot {
     @Getter
     @Setter
     private boolean allShardsInitialized = false;
+    @Getter
+    private net.dv8tion.jda.core.entities.Guild supportGuild;
+    @Getter
+    private final PremiumHandler premiumHandler;
+    private final boolean noJoin;
 
     private GroovyBot(String[] args) throws IOException {
 
@@ -114,13 +132,21 @@ public class GroovyBot {
         // Initializing logger
         initLogger(args);
 
+        final String arguments = String.join(" ", args);
+
         // Checking for debug-mode
-        debugMode = String.join(" ", args).contains("debug");
+        debugMode = arguments.contains("debug");
 
-        // Checking for webSocket-mode
-        enableWebsocket = !String.join(" ", args).contains("--no-websocket");
+        // Checking for websocket-mode
+        enableWebsocket = !arguments.contains("--no-websocket");
 
-        configNodes = String.join(" ", args).contains("--config-nodes");
+        //Checking for premium
+        premium = arguments.contains("--premium");
+
+        //Checking for voice join
+        noJoin = arguments.contains("--no-voice-join");
+
+        configNodes = arguments.contains("--config-nodes");
 
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
@@ -141,6 +167,12 @@ public class GroovyBot {
         log.info("[Database] Initializing Database ...");
         postgreSQL = new PostgreSQL();
 
+        // Check for --no-monitoring and initialize InfluxDB if not
+        if (arguments.contains("--no-monitoring"))
+            influxDB = null;
+        else
+            influxDB = new InfluxDBManager(config).build();
+
         httpClient = new OkHttpClient();
         spotifyClient = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
         lavalinkManager = new LavalinkManager(this);
@@ -154,6 +186,7 @@ public class GroovyBot {
         keyManager = new KeyManager(postgreSQL.getDataSource());
         interactionManager = new InteractionManager();
         eventWaiter = new EventWaiter();
+        premiumHandler = new PremiumHandler();
 
         // Initializing shardmanager
         initShardManager();
@@ -189,8 +222,11 @@ public class GroovyBot {
                         new SelfMentionListener(),
                         new JoinGuildListener(),
                         new CommandLogger(),
-                        new Logger(),
+                        new PremiumListener(premiumHandler),
                         new BlacklistWatcher(guildCache),
+                        new AutopauseListener(),
+                        new GuildLeaveListener(),
+                        new AutoJoinExecutor(this),
                         commandManager,
                         lavalinkManager,
                         interactionManager,
@@ -199,7 +235,8 @@ public class GroovyBot {
 
         if (enableWebsocket)
             shardManagerBuilder.addEventListeners(new WebsiteStatsListener());
-
+        if (premium)
+            shardManagerBuilder.addEventListeners(new PremiumExecutor(this));
         try {
             shardManager = shardManagerBuilder.build();
             log.info("[LavalinkManager] Initializing LavalinkManager ...");
@@ -232,9 +269,19 @@ public class GroovyBot {
         // Initializing players
         try {
             log.info("[MusicPlayerManager] Initializing MusicPlayers ...");
-            musicPlayerManager.initPlayers();
+            musicPlayerManager.initPlayers(noJoin);
         } catch (SQLException | IOException e) {
             log.error("[MusicPlayerManager] Error while initializing MusicPlayers!", e);
+        }
+
+        supportGuild = shardManager.getGuildById(403882830225997825L);
+
+        // Register all Donators
+        try {
+            log.info("[PremiumHandler] Initializing Patrons ...");
+            premiumHandler.initializePatrons(supportGuild, postgreSQL.getDataSource().getConnection());
+        } catch (SQLException | NullPointerException e) {
+            log.error("[PremiumHandler] Error while initializing Patrons!", e);
         }
 
         // Initializing webSocket
@@ -248,14 +295,30 @@ public class GroovyBot {
 
         // Initializing statuspage and servercountstatistics
         if (!debugMode) {
+            log.info("[StatusPage] Initializing StatusPage ...");
             statusPage.start();
+            log.info("[ServerCountStatistics] Initializing ServerCountStatistics ...");
             serverCountStatistics.start();
+        }
+
+        // Register all monitors and start monitoring
+        if (influxDB == null) {
+            log.info("[MonitoringManager] Monitoring disabled, because there is no connection to InfluxDB!");
+        } else {
+            monitorManager = new MonitorManager(influxDB);
+            Monitor msgMonitor = new MessageMonitor();
+            shardManager.addEventListener(msgMonitor);
+            monitorManager.register(new SystemMonitor(), new GuildMonitor(), new RequestMonitor(), msgMonitor, new UserMonitor());
+            monitorManager.start();
+            log.info("[MonitoringManager] Monitoring started.");
         }
 
         // Now Groovy is ready
         allShardsInitialized = true;
+        log.info("[Core] Successfully launched Groovy!");
     }
 
+    @Override
     public void close() {
         try {
             if (commandManager != null)

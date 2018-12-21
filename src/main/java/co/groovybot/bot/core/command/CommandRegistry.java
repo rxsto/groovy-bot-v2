@@ -7,6 +7,7 @@ import co.groovybot.bot.commands.owner.EvalCommand;
 import co.groovybot.bot.commands.owner.FriendsCommand;
 import co.groovybot.bot.commands.owner.UpdateCommand;
 import co.groovybot.bot.commands.settings.*;
+import co.groovybot.bot.commands.settings.DuplicatesCommand;
 
 public class CommandRegistry {
 
@@ -44,7 +45,6 @@ public class CommandRegistry {
                 new ShuffleCommand(),
                 new MoveCommand(),
                 new RemoveCommand(),
-                //new KeyCommand(),
                 new AnnounceCommand(),
                 new UpdateCommand(),
                 new PlaylistCommand(),
@@ -61,7 +61,12 @@ public class CommandRegistry {
                 new AutoLeaveCommand(),
                 new BassBoostCommand(),
                 new FriendsCommand(),
-                new TrendsCommand()
+                new TrendsCommand(),
+                new AutoPauseCommand(),
+                new AutoJoinCommand(),
+                new SettingsCommand(),
+                new PremiumCommand(),
+                new DuplicatesCommand()
         );
     }
 }

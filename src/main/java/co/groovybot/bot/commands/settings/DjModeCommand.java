@@ -11,7 +11,7 @@ import co.groovybot.bot.core.entity.Guild;
 public class DjModeCommand extends Command {
 
     public DjModeCommand() {
-        super(new String[]{"setdj", "dj"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Lets you toggle the dj-mode", "");
+        super(new String[]{"setdj", "dj", "djmode"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Lets you toggle the dj-mode", "");
     }
 
     @Override

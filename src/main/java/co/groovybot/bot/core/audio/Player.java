@@ -1,5 +1,6 @@
 package co.groovybot.bot.core.audio;
 
+import co.groovybot.bot.util.SafeMessage;
 import co.groovybot.bot.util.YoutubeUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -24,7 +25,6 @@ public abstract class Player {
     protected YoutubeUtil youtubeClient;
 
     public Player(YoutubeUtil youtubeClient) {
-        this.trackQueue = new LinkedList<>();
         this.trackQueue = new LinkedList<>();
         this.scheduler = new Scheduler(this);
         this.youtubeClient = youtubeClient;

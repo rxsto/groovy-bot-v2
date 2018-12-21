@@ -1,17 +1,28 @@
 package co.groovybot.bot.core.command.permission;
 
+import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.command.CommandEvent;
+import co.groovybot.bot.core.premium.Tier;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import net.dv8tion.jda.core.entities.Guild;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@Log4j2
 public class Permissions {
 
     private final Boolean everyone;
     private final Boolean owner;
     private final Boolean tierone;
     private final Boolean tiertwo;
+    private final Boolean tierthree;
     private final Boolean admin;
     private final Boolean dj;
     private final Boolean voted;
@@ -24,7 +35,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions everyone() {
-        return new Permissions(true, false, false, false, false, false, false, "everyone");
+        return new Permissions(true, false, false, false, false, false, false, false, "everyone");
     }
 
     /**
@@ -33,7 +44,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions ownerOnly() {
-        return new Permissions(false, true, false, false, false, false, false, "owner");
+        return new Permissions(false, true, false, false,false, false, false, false, "owner");
     }
 
     /**
@@ -42,7 +53,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions tierOne() {
-        return new Permissions(false, false, true, false, false, false, false, "tierone");
+        return new Permissions(false, false, true, false, false, false, false, false, "tierone");
     }
 
     /**
@@ -51,7 +62,16 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions tierTwo() {
-        return new Permissions(false, false, false, true, false, false, false, "tiertwo");
+        return new Permissions(false, false, false, true, false, false, false, false, "tiertwo");
+    }
+
+    /**
+     * Only tierThree patreons can execute the command
+     *
+     * @return a Permission object
+     */
+    public static Permissions tierThree() {
+        return new Permissions(false, false, false, false, true, false, false, false, "tierthree");
     }
 
     /**
@@ -60,7 +80,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions adminOnly() {
-        return new Permissions(false, false, false, false, true, false, false, "admin");
+        return new Permissions(false, false, false, false, false, true, false, false, "admin");
     }
 
     /**
@@ -69,7 +89,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions djMode() {
-        return new Permissions(false, false, false, false, false, true, false, "djmode");
+        return new Permissions(false, false, false, false, false, false, true, false, "djmode");
     }
 
     /**
@@ -78,10 +98,12 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions votedOnly() {
-        return new Permissions(false, false, false, false, false, false, true, "voted");
+        return new Permissions(false, false, false, false, false, false, false, true, "voted");
     }
 
     public Boolean isCovered(UserPermissions permissions, CommandEvent event) {
+        if (permissions.getUser().getEntityId() == 207500411907735552L)
+            return false;
         if (permissions.getIsOwner())
             return true;
         if (everyone)
@@ -93,11 +115,28 @@ public class Permissions {
         if (voted)
             return permissions.hasVoted();
         if (tierone)
-            return permissions.isTierOne();
+            return permissions.isTierOne() || isPremiumGuild(event.getGuild());
         if (tiertwo)
-            return permissions.isTierTwo();
+            return permissions.isTierTwo() || isPremiumGuild(event.getGuild());
+        if (tierthree)
+            return permissions.isTierThree();
         if (dj)
             return permissions.isDj(event.getGuild());
+        return false;
+    }
+
+
+    private boolean isPremiumGuild(Guild guild) {
+        try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
+            PreparedStatement tierThree = connection.prepareStatement("SELECT type FROM premium WHERE user_id = ?");
+            tierThree.setLong(1, guild.getOwnerIdLong());
+            ResultSet tierThreeSet = tierThree.executeQuery();
+            if (tierThreeSet.next())
+                if (Tier.valueOf(tierThreeSet.getString("type")) == Tier.THREE)
+                    return true;
+        } catch (SQLException e) {
+            log.error("[PermissionProvider] Error while retrieving permissions!", e);
+        }
         return false;
     }
 }

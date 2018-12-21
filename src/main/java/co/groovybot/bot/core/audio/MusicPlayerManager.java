@@ -33,6 +33,12 @@ public class MusicPlayerManager {
         return player;
     }
 
+    public MusicPlayer getExistingPlayer(Guild guild) {
+        if (playerStorage.containsKey(guild.getIdLong()))
+            return playerStorage.get(guild.getIdLong());
+        return null;
+    }
+
     public MusicPlayer getPlayer(CommandEvent event) {
         return getPlayer(event.getGuild(), event.getChannel());
     }
@@ -45,7 +51,7 @@ public class MusicPlayerManager {
         playerStorage.replace(guild.getIdLong(), player);
     }
 
-    public void initPlayers() throws SQLException, IOException {
+    public void initPlayers(boolean noJoin) throws SQLException, IOException {
         int initializedPlayersCount = 0;
 
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
@@ -73,10 +79,10 @@ public class MusicPlayerManager {
             PreparedStatement delPs = connection.prepareStatement("DELETE FROM queues");
             delPs.execute();
         }
-
-        MusicPlayer groovyPlayer = getPlayer(GroovyBot.getInstance().getShardManager().getGuildById(403882830225997825L), GroovyBot.getInstance().getShardManager().getTextChannelById(486765014976561159L));
-        groovyPlayer.connect(GroovyBot.getInstance().getShardManager().getVoiceChannelById(GroovyBot.getInstance().getConfig().getJSONObject("settings").getString("voice")));
-
+        if (!noJoin) {
+            MusicPlayer groovyPlayer = getPlayer(GroovyBot.getInstance().getShardManager().getGuildById(403882830225997825L), GroovyBot.getInstance().getShardManager().getTextChannelById(486765014976561159L));
+            groovyPlayer.connect(GroovyBot.getInstance().getShardManager().getVoiceChannelById(GroovyBot.getInstance().getConfig().getJSONObject("settings").getString("voice")));
+        }
         log.info(String.format("[MusicPlayerManager] Successfully initialized %s %s!", initializedPlayersCount, initializedPlayersCount == 1 ? "MusicPlayer" : "MusicPlayers"));
     }
 }
