@@ -70,6 +70,8 @@ public class GroovyBot implements Closeable {
     @Getter
     private final boolean configNodes;
     @Getter
+    private final boolean premium;
+    @Getter
     private final TranslationManager translationManager;
     @Getter
     private final LavalinkManager lavalinkManager;
@@ -137,6 +139,9 @@ public class GroovyBot implements Closeable {
 
         // Checking for websocket-mode
         enableWebsocket = !arguments.contains("--no-websocket");
+
+        //Checking for premium
+        premium = arguments.contains("--premium");
 
         //Checking for voice join
         noJoin = arguments.contains("--no-voice-join");
@@ -230,7 +235,8 @@ public class GroovyBot implements Closeable {
 
         if (enableWebsocket)
             shardManagerBuilder.addEventListeners(new WebsiteStatsListener());
-
+        if (premium)
+            shardManagerBuilder.addEventListeners(new PremiumExecutor(this));
         try {
             shardManager = shardManagerBuilder.build();
             log.info("[LavalinkManager] Initializing LavalinkManager ...");
