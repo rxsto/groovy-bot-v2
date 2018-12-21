@@ -163,11 +163,10 @@ public class GroovyBot implements Closeable {
         postgreSQL = new PostgreSQL();
 
         // Check for --no-monitoring and initialize InfluxDB if not
-        if (arguments.contains("--no-monitoring")) {
+        if (arguments.contains("--no-monitoring"))
             influxDB = null;
-        } else {
+        else
             influxDB = new InfluxDBManager(config).build();
-        }
 
         httpClient = new OkHttpClient();
         spotifyClient = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
@@ -297,7 +296,7 @@ public class GroovyBot implements Closeable {
 
         // Register all monitors and start monitoring
         if (influxDB == null) {
-            log.info("[MonitoringManager] Monitoring disabled, because there is no connection to InfluxDB");
+            log.info("[MonitoringManager] Monitoring disabled, because there is no connection to InfluxDB!");
         } else {
             monitorManager = new MonitorManager(influxDB);
             Monitor msgMonitor = new MessageMonitor();
