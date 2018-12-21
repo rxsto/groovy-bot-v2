@@ -14,12 +14,12 @@ public class PremiumCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        if (event.getGroovyUser().getPermissions().isTierOne())
-            return send(info(event.translate("command.premium.tier.title"), String.format(event.translate("command.premium.tier.description"), "Tier One")));
-        if (event.getGroovyUser().getPermissions().isTierTwo())
-            return send(info(event.translate("command.premium.tier.title"), String.format(event.translate("command.premium.tier.description"), "Tier Two")));
-        if (event.getGroovyUser().getPermissions().isTierThree())
+        if (Permissions.tierThree().isCovered(event.getPermissions(), event))
             return send(info(event.translate("command.premium.tier.title"), String.format(event.translate("command.premium.tier.description"), "Tier Three")));
+        if (Permissions.tierTwo().isCovered(event.getPermissions(), event))
+            return send(info(event.translate("command.premium.tier.title"), String.format(event.translate("command.premium.tier.description"), "Tier Two")));
+        if (Permissions.tierOne().isCovered(event.getPermissions(), event))
+            return send(info(event.translate("command.premium.tier.title"), String.format(event.translate("command.premium.tier.description"), "Tier One")));
         return send(info(event.translate("command.premium.none.title"), event.translate("command.premium.none.description")));
     }
 }
