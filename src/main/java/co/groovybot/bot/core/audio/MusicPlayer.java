@@ -28,7 +28,6 @@ import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -228,7 +227,8 @@ public class MusicPlayer extends Player implements Runnable {
                         SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.nopremium.title"), String.format(event.translate("phrases.searching.playlistloaded.nopremium.description"), tracks.size(), audioPlaylist.getName())));
                     else {
                         SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), tracks.size(), audioPlaylist.getName())));
-                        if(!dups.isEmpty()) SafeMessage.sendMessage(event.getChannel(), EmbedUtil.info(String.format(event.translate("phrases.load.playlist.dups.title"), dups.size()), String.format(event.translate("phrases.load.playlist.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
+                        if (!dups.isEmpty())
+                            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.info(String.format(event.translate("phrases.load.playlist.dups.title"), dups.size()), String.format(event.translate("phrases.load.playlist.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
                     }
                     return;
                 }
@@ -373,11 +373,10 @@ public class MusicPlayer extends Player implements Runnable {
     public void run() {
         if (inProgress) return;
         if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
-        if (guild.getSelfMember().getVoiceState().getChannel() != null) {
-            if (!isPlaying())
-                leave("I've **left** the voice-channel because I've been **inactive** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://donate.groovybot.co)**!");
-            if (guild.getSelfMember().getVoiceState().getChannel().getMembers().size() == 1)
-                leave("I've **left** the voice-channel because I've been **alone** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://donate.groovybot.co)**!");
-        }
+        if (guild.getSelfMember().getVoiceState().getChannel() == null) return;
+        if (!isPlaying())
+            leave("I've **left** the voice-channel because I've been **inactive** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://donate.groovybot.co)**!");
+        else if (guild.getSelfMember().getVoiceState().getChannel().getMembers().size() == 1)
+            leave("I've **left** the voice-channel because I've been **alone** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://donate.groovybot.co)**!");
     }
 }
