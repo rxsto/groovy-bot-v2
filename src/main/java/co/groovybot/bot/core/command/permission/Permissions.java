@@ -12,6 +12,7 @@ public class Permissions {
     private final Boolean owner;
     private final Boolean tierone;
     private final Boolean tiertwo;
+    private final Boolean tierthree;
     private final Boolean admin;
     private final Boolean dj;
     private final Boolean voted;
@@ -24,7 +25,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions everyone() {
-        return new Permissions(true, false, false, false, false, false, false, "everyone");
+        return new Permissions(true, false, false, false, false, false, false, false, "everyone");
     }
 
     /**
@@ -33,7 +34,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions ownerOnly() {
-        return new Permissions(false, true, false, false, false, false, false, "owner");
+        return new Permissions(false, true, false, false,false, false, false, false, "owner");
     }
 
     /**
@@ -42,7 +43,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions tierOne() {
-        return new Permissions(false, false, true, false, false, false, false, "tierone");
+        return new Permissions(false, false, true, false, false, false, false, false, "tierone");
     }
 
     /**
@@ -51,7 +52,16 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions tierTwo() {
-        return new Permissions(false, false, false, true, false, false, false, "tiertwo");
+        return new Permissions(false, false, false, true, false, false, false, false, "tiertwo");
+    }
+
+    /**
+     * Only tierThree patreons can execute the command
+     *
+     * @return a Permission object
+     */
+    public static Permissions tierThree() {
+        return new Permissions(false, false, false, false, true, false, false, false, "tierthree");
     }
 
     /**
@@ -60,7 +70,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions adminOnly() {
-        return new Permissions(false, false, false, false, true, false, false, "admin");
+        return new Permissions(false, false, false, false, false, true, false, false, "admin");
     }
 
     /**
@@ -69,7 +79,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions djMode() {
-        return new Permissions(false, false, false, false, false, true, false, "djmode");
+        return new Permissions(false, false, false, false, false, false, true, false, "djmode");
     }
 
     /**
@@ -78,7 +88,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions votedOnly() {
-        return new Permissions(false, false, false, false, false, false, true, "voted");
+        return new Permissions(false, false, false, false, false, false, false, true, "voted");
     }
 
     public Boolean isCovered(UserPermissions permissions, CommandEvent event) {
@@ -98,6 +108,8 @@ public class Permissions {
             return permissions.isTierOne();
         if (tiertwo)
             return permissions.isTierTwo();
+        if (tierthree)
+            return permissions.isTierThree();
         if (dj)
             return permissions.isDj(event.getGuild());
         return false;
