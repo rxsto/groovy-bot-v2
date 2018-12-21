@@ -21,6 +21,7 @@ public class Guild extends DatabaseEntitiy {
     private boolean announceSongs = true;
     private boolean autoLeave = true;
     private boolean autoPause = false;
+    private boolean preventDups = false;
     private long autoJoinChannelId;
     private JSONArray blacklistedChannels = new JSONArray();
     @Getter
@@ -43,8 +44,9 @@ public class Guild extends DatabaseEntitiy {
                 autoJoinChannelId = rs.getLong("auto_join_channel");
                 botChannel = rs.getLong("commands_channel");
                 blacklistedChannels = new JSONArray(rs.getString("blacklisted_channels"));
+                preventDups = rs.getBoolean("prevent_dups");
             } else {
-                PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO guilds (id, prefix, volume, dj_mode, announce_songs, auto_leave, blacklisted_channels, commands_channel, auto_pause) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO guilds (id, prefix, volume, dj_mode, announce_songs, auto_leave, blacklisted_channels, commands_channel, auto_pause, prevent_dups) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 insertStatement.setLong(1, entityId);
                 insertStatement.setString(2, prefix);
                 insertStatement.setInt(3, volume);
@@ -54,6 +56,7 @@ public class Guild extends DatabaseEntitiy {
                 insertStatement.setString(7, blacklistedChannels.toString());
                 insertStatement.setLong(8, botChannel);
                 insertStatement.setBoolean(9, autoPause);
+                insertStatement.setBoolean(10, preventDups);
                 insertStatement.execute();
             }
         }
@@ -62,7 +65,7 @@ public class Guild extends DatabaseEntitiy {
     @Override
     public void updateInDatabase() throws Exception {
         try (Connection connection = getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET volume = ?, prefix = ?, dj_mode = ?, announce_songs = ?, auto_leave = ?, commands_channel = ?, blacklisted_channels = ?, auto_pause = ?, auto_join_channel = ? WHERE id = ?");
+            PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET volume = ?, prefix = ?, dj_mode = ?, announce_songs = ?, auto_leave = ?, commands_channel = ?, blacklisted_channels = ?, auto_pause = ?, auto_join_channel = ?, prevent_dups = ? WHERE id = ?");
             ps.setInt(1, volume);
             ps.setString(2, prefix);
             ps.setBoolean(3, djMode);
@@ -72,7 +75,8 @@ public class Guild extends DatabaseEntitiy {
             ps.setString(7, blacklistedChannels.toString());
             ps.setBoolean(8, autoPause);
             ps.setLong(9, autoJoinChannelId);
-            ps.setLong(10, entityId);
+            ps.setBoolean(10, preventDups);
+            ps.setLong(11, entityId);
             ps.execute();
         }
     }
@@ -141,6 +145,11 @@ public class Guild extends DatabaseEntitiy {
             blacklistedChannels = new JSONArray(channels);
             update();
         }
+    }
+
+    public void setPreventDups(boolean preventDups) {
+        this.preventDups = preventDups;
+        update();
     }
 
     public boolean hasBlacklistedChannels() {

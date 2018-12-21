@@ -1,5 +1,6 @@
 package co.groovybot.bot.core.audio;
 
+import co.groovybot.bot.util.SafeMessage;
 import co.groovybot.bot.util.YoutubeUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
