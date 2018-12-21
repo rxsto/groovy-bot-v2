@@ -19,7 +19,7 @@ public class PremiumListener {
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onRoleAdd(GuildMemberRoleAddEvent event) {
-        if (event.getGuild().getIdLong() != 19248102948L) return;
+        if (event.getGuild().getIdLong() != 403882830225997825L) return;
         Tier tier = PremiumUtil.getTier(event.getMember(), event.getGuild());
         if (tier == Tier.NONE) return;
         premiumHandler.addPatron(event.getUser().getIdLong(), tier);
@@ -28,7 +28,7 @@ public class PremiumListener {
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onRoleRemove(GuildMemberRoleRemoveEvent event) {
-        if (event.getGuild().getIdLong() != 19248102948L) return;
+        if (event.getGuild().getIdLong() != 403882830225997825L) return;
         if (PremiumUtil.hasPremiumRole(event.getRoles()))
             premiumHandler.removePatron(event.getUser().getIdLong());
     }
@@ -36,7 +36,7 @@ public class PremiumListener {
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onLeave(GuildMemberLeaveEvent event) {
-        if (event.getGuild().getIdLong() != 19248102948L) return;
+        if (event.getGuild().getIdLong() != 403882830225997825L) return;
         if (PremiumUtil.hasPremiumRole(event.getMember().getRoles()))
             premiumHandler.removePatron(event.getUser().getIdLong());
     }
