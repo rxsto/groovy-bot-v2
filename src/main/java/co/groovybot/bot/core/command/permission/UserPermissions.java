@@ -37,7 +37,8 @@ public class UserPermissions {
     }
 
     public boolean isTierOne() {
-        return retrievePatreonTier() == Tier.ONE || retrievePatreonTier() == Tier.TWO;
+        Tier tier = retrievePatreonTier();
+        return tier == Tier.ONE || tier == Tier.TWO || tier == Tier.THREE;
     }
 
     public boolean isTierTwo() {
