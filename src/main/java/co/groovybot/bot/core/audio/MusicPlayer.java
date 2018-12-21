@@ -18,10 +18,8 @@ import lavalink.client.player.LavaplayerPlayerWrapper;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONArray;
 
@@ -30,12 +28,10 @@ import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -128,26 +124,8 @@ public class MusicPlayer extends Player implements Runnable {
 
     @Override
     public void announceSong(AudioPlayer audioPlayer, AudioTrack track) {
-        if (EntityProvider.getGuild(guild.getIdLong()).isAnnounceSongs()) {
+        if (EntityProvider.getGuild(guild.getIdLong()).isAnnounceSongs())
             SafeMessage.sendMessage(channel, EmbedUtil.play("Now Playing", FormatUtil.formatTrack(track)));
-
-            if (ThreadLocalRandom.current().nextDouble() <= 0.10) {
-                String title = "<:youtube:505840951269392384> **We're doing a challenge!**";
-                String description = "Our **goal** is to reach **1000** subscribers on **[YouTube](https://www.youtube.com/channel/UCINfOUGimNIL-8A2BAG0jaw)** before **January 1, 2019**! We're publishing helpful videos on how to use the bot - but also **dope** music! **[Check it out!](https://www.youtube.com/channel/UCINfOUGimNIL-8A2BAG0jaw)**";
-                String footer = "React with ❌ to remove this message!";
-
-                EmbedBuilder builder = new EmbedBuilder()
-                        .setTitle(title)
-                        .setDescription(description)
-                        .setFooter(footer, null)
-                        .setColor(0xFF0000)
-                        .setTimestamp(OffsetDateTime.now());
-
-                Message message = SafeMessage.sendMessageBlocking(channel, builder);
-                message.addReaction("❌").queue();
-                GroovyBot.getInstance().getEventWaiter().waitForEvent(GuildMessageReactionAddEvent.class, e -> message.getIdLong() == e.getMessageIdLong() && e.getGuild().equals(guild) && !e.getUser().isBot(), e -> message.delete().queue());
-            }
-        }
     }
 
     @Override
