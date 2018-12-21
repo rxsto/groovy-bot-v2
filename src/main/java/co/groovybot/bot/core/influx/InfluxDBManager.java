@@ -1,6 +1,5 @@
 package co.groovybot.bot.core.influx;
 
-import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.io.config.Configuration;
 import lombok.extern.log4j.Log4j2;
 import org.influxdb.InfluxDB;

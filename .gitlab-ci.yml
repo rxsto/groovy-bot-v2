@@ -13,12 +13,14 @@ build:
     - mvn $MAVEN_CLI_OPTS clean package
   artifacts:
     paths:
-    - target/*.jar
+      - target/*.jar
     expire_in: 1 week
 
 
 deploy_stage:
   stage: deploy
+  only:
+    - develop
   script:
     - export SSHPASS=$USER_PASS
     - cd target/
