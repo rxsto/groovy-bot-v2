@@ -1,4 +1,4 @@
-package co.groovybot.bot.commands.music;
+package co.groovybot.bot.commands.settings;
 
 import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.audio.Scheduler;
@@ -11,7 +11,7 @@ import co.groovybot.bot.core.command.voice.SameChannelCommand;
 public class AutoPlayCommand extends SameChannelCommand {
 
     public AutoPlayCommand() {
-        super(new String[]{"autoplay", "auto", "ap"}, CommandCategory.MUSIC, Permissions.tierOne(), "Lets you toggle autoplay-mode", "");
+        super(new String[]{"autoplay", "auto", "ap"}, CommandCategory.SETTINGS, Permissions.tierOne(), "Lets you toggle autoplay-mode", "");
     }
 
     @Override
