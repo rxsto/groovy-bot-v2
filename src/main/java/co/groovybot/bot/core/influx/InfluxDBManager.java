@@ -28,7 +28,7 @@ public class InfluxDBManager {
         Pong res = influxDB.ping();
         log.info("[InfluxDBManager] Version: " + res.getVersion());
         if (res.getVersion().equalsIgnoreCase("unknown")) {
-            log.fatal("[InfluxDBManager] Failed to connect to ");
+            log.fatal("[InfluxDBManager] Failed to connect to InfluxDB!");
             return null;
         }
         log.info("[InfluxDBManager] Successfully connected to InfluxDB {}", res.getVersion());
