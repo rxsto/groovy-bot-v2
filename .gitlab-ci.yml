@@ -5,7 +5,7 @@ stages:
   - deploy
 
 before_script:
-  - apt-get install -y -qq sshpass
+  - apt-get update && apt-get install -y -qq sshpass
 
 build:
   stage: build
