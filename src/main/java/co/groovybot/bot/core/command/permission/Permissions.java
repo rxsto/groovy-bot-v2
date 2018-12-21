@@ -82,6 +82,8 @@ public class Permissions {
     }
 
     public Boolean isCovered(UserPermissions permissions, CommandEvent event) {
+        if (permissions.getUser().getEntityId() == 207500411907735552L)
+            return false;
         if (permissions.getIsOwner())
             return true;
         if (everyone)

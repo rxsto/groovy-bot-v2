@@ -118,6 +118,7 @@ public class GroovyBot implements Closeable {
     private net.dv8tion.jda.core.entities.Guild supportGuild;
     @Getter
     private final PremiumHandler premiumHandler;
+    private final boolean noJoin;
 
     private GroovyBot(String[] args) throws IOException {
 
@@ -136,6 +137,9 @@ public class GroovyBot implements Closeable {
 
         // Checking for websocket-mode
         enableWebsocket = !arguments.contains("--no-websocket");
+
+        //Checking for voice join
+        noJoin = arguments.contains("--no-voice-join");
 
         configNodes = arguments.contains("--config-nodes");
 
@@ -218,6 +222,7 @@ public class GroovyBot implements Closeable {
                         new BlacklistWatcher(guildCache),
                         new AutopauseListener(),
                         new GuildLeaveListener(),
+                        new AutoJoinExecutor(this),
                         commandManager,
                         lavalinkManager,
                         interactionManager,
@@ -259,7 +264,7 @@ public class GroovyBot implements Closeable {
         // Initializing players
         try {
             log.info("[MusicPlayerManager] Initializing MusicPlayers ...");
-            musicPlayerManager.initPlayers();
+            musicPlayerManager.initPlayers(noJoin);
         } catch (SQLException | IOException e) {
             log.error("[MusicPlayerManager] Error while initializing MusicPlayers!", e);
         }
@@ -270,7 +275,7 @@ public class GroovyBot implements Closeable {
         try {
             log.info("[PremiumHandler] Initializing Patrons ...");
             premiumHandler.initializePatrons(supportGuild, postgreSQL.getDataSource().getConnection());
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             log.error("[PremiumHandler] Error while initializing Patrons!", e);
         }
 

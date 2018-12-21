@@ -3,6 +3,7 @@ package co.groovybot.bot.core.entity;
 import co.groovybot.bot.GroovyBot;
 import lombok.Getter;
 import lombok.ToString;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 import org.json.JSONArray;
 
 import java.sql.Connection;
@@ -20,6 +21,7 @@ public class Guild extends DatabaseEntitiy {
     private boolean announceSongs = true;
     private boolean autoLeave = true;
     private boolean autoPause = false;
+    private long autoJoinChannelId;
     private JSONArray blacklistedChannels = new JSONArray();
     @Getter
     private long botChannel = 0;
@@ -38,6 +40,7 @@ public class Guild extends DatabaseEntitiy {
                 announceSongs = rs.getBoolean("announce_songs");
                 autoLeave = rs.getBoolean("auto_leave");
                 autoPause = rs.getBoolean("auto_pause");
+                autoJoinChannelId = rs.getLong("auto_join_channel");
                 botChannel = rs.getLong("commands_channel");
                 blacklistedChannels = new JSONArray(rs.getString("blacklisted_channels"));
             } else {
@@ -59,7 +62,7 @@ public class Guild extends DatabaseEntitiy {
     @Override
     public void updateInDatabase() throws Exception {
         try (Connection connection = getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET volume = ?, prefix = ?, dj_mode = ?, announce_songs = ?, auto_leave = ?, commands_channel = ?, blacklisted_channels = ?, auto_pause = ? WHERE id = ?");
+            PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET volume = ?, prefix = ?, dj_mode = ?, announce_songs = ?, auto_leave = ?, commands_channel = ?, blacklisted_channels = ?, auto_pause = ?, auto_join_channel = ? WHERE id = ?");
             ps.setInt(1, volume);
             ps.setString(2, prefix);
             ps.setBoolean(3, djMode);
@@ -68,7 +71,8 @@ public class Guild extends DatabaseEntitiy {
             ps.setLong(6, botChannel);
             ps.setString(7, blacklistedChannels.toString());
             ps.setBoolean(8, autoPause);
-            ps.setLong(9, entityId);
+            ps.setLong(9, autoJoinChannelId);
+            ps.setLong(10, entityId);
             ps.execute();
         }
     }
@@ -111,6 +115,23 @@ public class Guild extends DatabaseEntitiy {
     public void setBotChannel(long botChannel) {
         this.botChannel = botChannel;
         update();
+    }
+
+    public void setAutoJoinChannelId(long autoJoinChannelId) {
+        this.autoJoinChannelId = autoJoinChannelId;
+        update();
+    }
+
+    public void setAutoJoinChannel(VoiceChannel channel) {
+        setAutoJoinChannelId(channel.getIdLong());
+    }
+
+    public VoiceChannel getAutoJoinChannel() {
+        return GroovyBot.getInstance().getShardManager().getGuildById(entityId).getVoiceChannelById(autoJoinChannelId);
+    }
+
+    public boolean hasAutoJoinChannel() {
+        return autoJoinChannelId != 0L;
     }
 
     public void unBlacklistChannel(long channelId) {

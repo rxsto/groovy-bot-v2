@@ -52,4 +52,11 @@ public class CommandEvent extends GuildMessageReceivedEvent {
         return EntityProvider.getGuild(getGuild().getIdLong());
     }
 
+    /**
+     * @return Whether there are args or not
+     */
+    public boolean noArgs() {
+        return args.length == 0;
+    }
+
 }
