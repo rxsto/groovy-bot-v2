@@ -2,6 +2,10 @@ image: maven:latest
 
 stages:
   - build
+  - deploy
+
+before_script:
+  - apt-get install -y sshpass
 
 build:
   stage: build
@@ -11,3 +15,11 @@ build:
     paths:
     - target/*.jar
     expire_in: 1 week
+
+
+deploy_stage:
+  stage: deploy
+  script:
+    - export SSHPASS=$USER_PASS
+    - cd target/
+    - sshpass -e scp -o stricthostkeychecking=no -r . root@$IP_ADDRESS:/opt/groovy/deploy_test
