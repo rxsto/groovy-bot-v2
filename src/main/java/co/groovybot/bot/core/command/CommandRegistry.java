@@ -63,8 +63,8 @@ public class CommandRegistry {
                 new FriendsCommand(),
                 new TrendsCommand(),
                 new AutoPauseCommand(),
-                new AutoJoinCommand()
-                new SettingsCommand,
+                new AutoJoinCommand(),
+                new SettingsCommand(),
                 new PremiumCommand(),
                 new DuplicatesCommand()
         );

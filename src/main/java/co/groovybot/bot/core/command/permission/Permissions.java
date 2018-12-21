@@ -1,11 +1,21 @@
 package co.groovybot.bot.core.command.permission;
 
+import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.command.CommandEvent;
+import co.groovybot.bot.core.premium.Tier;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import net.dv8tion.jda.core.entities.Guild;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@Log4j2
 public class Permissions {
 
     private final Boolean everyone;
@@ -105,13 +115,28 @@ public class Permissions {
         if (voted)
             return permissions.hasVoted();
         if (tierone)
-            return permissions.isTierOne();
+            return permissions.isTierOne() || isPremiumGuild(event.getGuild());
         if (tiertwo)
-            return permissions.isTierTwo();
+            return permissions.isTierTwo() || isPremiumGuild(event.getGuild());
         if (tierthree)
             return permissions.isTierThree();
         if (dj)
             return permissions.isDj(event.getGuild());
+        return false;
+    }
+
+
+    private boolean isPremiumGuild(Guild guild) {
+        try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
+            PreparedStatement tierThree = connection.prepareStatement("SELECT type FROM premium WHERE user_id = ?");
+            tierThree.setLong(1, guild.getOwnerIdLong());
+            ResultSet tierThreeSet = tierThree.executeQuery();
+            if (tierThreeSet.next())
+                if (Tier.valueOf(tierThreeSet.getString("type")) == Tier.THREE)
+                    return true;
+        } catch (SQLException e) {
+            log.error("[PermissionProvider] Error while retrieving permissions!", e);
+        }
         return false;
     }
 }
