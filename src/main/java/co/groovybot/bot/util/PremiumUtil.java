@@ -11,16 +11,16 @@ import java.util.List;
 public class PremiumUtil {
 
     public static Tier getTier(Member member, Guild guild) {
-        if (member.getRoles().contains(guild.getRoleById(1234L)))
+        if (member.getRoles().contains(guild.getRoleById(487300055691296788L)))
             return Tier.ONE;
-        if (member.getRoles().contains(guild.getRoleById(5678L)))
+        if (member.getRoles().contains(guild.getRoleById(487300104726904842L)))
             return Tier.TWO;
-        if (member.getRoles().contains(guild.getRoleById(9101L)))
+        if (member.getRoles().contains(guild.getRoleById(1234L)))
             return Tier.THREE;
         return Tier.NONE;
     }
 
     public static boolean hasPremiumRole(List<Role> roles) {
-        return roles.contains(GroovyBot.getInstance().getSupportGuild().getRoleById(1234L)) || roles.contains(GroovyBot.getInstance().getSupportGuild().getRoleById(1234L)) || roles.contains(GroovyBot.getInstance().getSupportGuild().getRoleById(1234L));
+        return roles.contains(GroovyBot.getInstance().getSupportGuild().getRoleById(487300055691296788L)) || roles.contains(GroovyBot.getInstance().getSupportGuild().getRoleById(487300104726904842L)) || roles.contains(GroovyBot.getInstance().getSupportGuild().getRoleById(1234L));
     }
 }
