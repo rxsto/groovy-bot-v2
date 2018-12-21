@@ -22,4 +22,5 @@ deploy_stage:
   script:
     - export SSHPASS=$USER_PASS
     - cd target/
-    - sshpass -e scp -o stricthostkeychecking=no -r . root@$IP_ADDRESS:/opt/groovy/deploy_test
+    - sshpass -e scp -o stricthostkeychecking=no -r . root@$IP_ADDRESS:/opt/groovy/bots/canary/
+    - sshpass -e ssh -t root@$IP_ADDRESS "/opt/groovy/bots/canary/update.sh"

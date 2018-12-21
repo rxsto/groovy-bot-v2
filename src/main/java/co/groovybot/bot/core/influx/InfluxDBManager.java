@@ -23,8 +23,6 @@ public class InfluxDBManager {
     }
 
     public InfluxDB build() {
-        if (GroovyBot.getInstance().isDebugMode())
-            return null;
         log.info("[InfluxDBManager] Connection to InfluxDB...");
         InfluxDB influxDB = InfluxDBFactory.connect(String.format("http://%s:8086", config.getString("host")),
                 config.getString("username"), config.getString("password"));
