@@ -220,6 +220,7 @@ public class GroovyBot implements Closeable {
                         new PremiumListener(premiumHandler),
                         new BlacklistWatcher(guildCache),
                         new AutopauseListener(),
+                        new GuildLeaveListener(),
                         new AutoJoinExecutor(this),
                         commandManager,
                         lavalinkManager,
