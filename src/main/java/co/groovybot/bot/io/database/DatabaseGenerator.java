@@ -16,6 +16,7 @@ public class DatabaseGenerator {
                 "  commands_channel     bigint,\n" +
                 "  auto_leave           boolean default true  not null,\n" +
                 "  auto_pause           boolean default false  not null\n" +
+                "  auto_join_channel    bigint default null\n" +
                 ");");
 
         postgreSQL.addDefault(() -> "create table if not exists keys\n" +
