@@ -2,6 +2,7 @@ package co.groovybot.bot.core.cache;
 
 import co.groovybot.bot.core.entity.DatabaseEntitiy;
 import lombok.extern.log4j.Log4j2;
+import net.dv8tion.jda.core.entities.ISnowflake;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,10 @@ public class Cache<T extends DatabaseEntitiy> {
                 return null;
             }
         }
+    }
+
+    public T get(ISnowflake snowflake) {
+        return get(snowflake.getIdLong());
     }
 
     public void update(T instance) {

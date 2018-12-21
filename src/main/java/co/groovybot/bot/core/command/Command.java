@@ -22,6 +22,10 @@ public abstract class Command extends EmbedUtil {
     private final String usage;
     private final Map<String, SubCommand> subCommandAssociations = new HashMap<>();
 
+    public Command(String[] aliases, CommandCategory commandCategory, Permissions permissions, String description) {
+        this(aliases, commandCategory, permissions, description, "");
+    }
+
     /**
      * The methods that will be executed when the command gets invokes
      *
