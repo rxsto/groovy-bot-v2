@@ -7,6 +7,7 @@ import co.groovybot.bot.commands.owner.EvalCommand;
 import co.groovybot.bot.commands.owner.FriendsCommand;
 import co.groovybot.bot.commands.owner.UpdateCommand;
 import co.groovybot.bot.commands.settings.*;
+import co.groovybot.bot.commands.settings.dups.DuplicatesCommand;
 
 public class CommandRegistry {
 
@@ -64,7 +65,8 @@ public class CommandRegistry {
                 new TrendsCommand(),
                 new AutoPauseCommand(),
                 new PremiumCommand(),
-                new AutoJoinCommand()
+                new AutoJoinCommand(),
+                new DuplicatesCommand()
         );
     }
 }

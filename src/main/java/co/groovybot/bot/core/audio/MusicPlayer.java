@@ -31,6 +31,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -156,7 +157,7 @@ public class MusicPlayer extends Player implements Runnable {
         return this.player;
     }
 
-    public void queueSongs(CommandEvent event) {
+    public void queueSongs(final CommandEvent event) {
         UserPermissions userPermissions = EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions();
         Permissions tierTwo = Permissions.tierTwo();
 
@@ -206,10 +207,7 @@ public class MusicPlayer extends Player implements Runnable {
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
-                if (!checkSong(audioTrack)) return;
-                queueTrack(audioTrack, isForce, isTop);
-                queuedTrack(audioTrack, infoMessage, event);
-                inProgress = false;
+                queueWithChecks(audioTrack);
             }
 
             @Override
@@ -232,20 +230,43 @@ public class MusicPlayer extends Player implements Runnable {
                     return;
                 }
 
+                List<AudioTrack> dups = new ArrayList<>();
                 if (isURL) {
+                    if (EntityProvider.getGuild(guild.getIdLong()).isPreventDups()) {
+                        List<AudioTrack> playTracks = new ArrayList<>();
+                        tracks.forEach(t -> {
+                            if (!checkDups(t))
+                                playTracks.add(t);
+                            else
+                                dups.add(t);
+                        });
+                        tracks.clear();
+                        tracks.addAll(playTracks);
+                    }
                     queueTracks(tracks.toArray(new AudioTrack[0]));
                     inProgress = false;
                     if (!tierTwo.isCovered(userPermissions, event))
                         SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.nopremium.title"), String.format(event.translate("phrases.searching.playlistloaded.nopremium.description"), tracks.size(), audioPlaylist.getName())));
-                    else
+                    else {
                         SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), tracks.size(), audioPlaylist.getName())));
+                        if(!dups.isEmpty()) SafeMessage.sendMessage(event.getChannel(), EmbedUtil.info(String.format(event.translate("phrases.load.playlist.dups.title"), dups.size()), String.format(event.translate("phrases.load.playlist.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
+                    }
                     return;
                 }
 
                 final AudioTrack track = tracks.get(0);
 
+                queueWithChecks(track);
+            }
+
+            private void queueWithChecks(AudioTrack track) {
                 if (!checkSong(track)) return;
 
+
+                if (checkDups(track)) {
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.info(event.translate("phrases.load.single.dups.title"), String.format(event.translate("phrases.load.single.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
+                    return;
+                }
                 queueTrack(track, isForce, isTop);
                 queuedTrack(track, infoMessage, event);
                 inProgress = false;
@@ -361,6 +382,12 @@ public class MusicPlayer extends Player implements Runnable {
             jsonArray.put(LavalinkUtil.toMessage(audioTrack));
         }
         return jsonArray.toString();
+    }
+
+    private boolean checkDups(AudioTrack audioTrack) {
+        if (!EntityProvider.getGuild(guild.getIdLong()).isPreventDups())
+            return false;
+        return player.getPlayingTrack() != null && player.getPlayingTrack().getInfo().uri.equals(audioTrack.getInfo().uri) || trackQueue.stream().anyMatch(t -> t.getInfo().uri.equals(audioTrack.getInfo().uri));
     }
 
     @Override

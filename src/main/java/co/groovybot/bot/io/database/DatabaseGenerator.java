@@ -15,7 +15,9 @@ public class DatabaseGenerator {
                 "  blacklisted_channels varchar default '[]' :: character varying,\n" +
                 "  commands_channel     bigint,\n" +
                 "  auto_leave           boolean default true  not null,\n" +
-                "  auto_pause           boolean default false  not null\n" +
+                "  auto_pause           boolean default false  not null,\n" +
+                "  auto_join_channel    bigint,\n" +
+                "  prevent_dups         boolean default false  not null\n" +
                 ");");
 
         postgreSQL.addDefault(() -> "create table if not exists keys\n" +
