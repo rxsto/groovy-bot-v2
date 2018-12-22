@@ -74,6 +74,7 @@ public class GroovyBot implements Closeable {
     private final boolean premium;
     private final boolean noJoin;
     private final boolean noPatrons;
+    private final boolean noMonitoring;
     @Getter
     private final TranslationManager translationManager;
     @Getter
@@ -95,7 +96,7 @@ public class GroovyBot implements Closeable {
     @Getter
     private final SpotifyManager spotifyClient;
     @Getter
-    private final boolean enableWebsocket;
+    private final boolean noWebsocket;
     @Getter
     private Configuration config;
     @Getter
@@ -135,13 +136,14 @@ public class GroovyBot implements Closeable {
         initLogger(args);
 
         // Checking for args
-        debugMode = args.hasOption('D');
-        enableWebsocket = !args.hasOption("no-websocket");
+        debugMode = args.hasOption("debug");
         premium = args.hasOption("premium");
+        noWebsocket = args.hasOption("no-websocket");
         noJoin = args.hasOption("no-voice-join");
-        noPatrons = args.hasOption("NP");
+        noPatrons = args.hasOption("no-patrons");
+        noMonitoring = args.hasOption("no-monitoring");
         configNodes = args.hasOption("config-nodes");
-        
+
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
 
@@ -162,10 +164,7 @@ public class GroovyBot implements Closeable {
         postgreSQL = new PostgreSQL();
 
         // Check for --no-monitoring and initialize InfluxDB if not
-        if (args.hasOption("--no-monitoring"))
-            influxDB = null;
-        else
-            influxDB = new InfluxDBManager(config).build();
+        if (!noMonitoring) influxDB = new InfluxDBManager(config).build();
 
         httpClient = new OkHttpClient();
         spotifyClient = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
@@ -200,8 +199,8 @@ public class GroovyBot implements Closeable {
         options.addOption("L", "log-level", true, "Let's you set the loglevel of groovy");
         options.addOption("D", "debug", false, "Let's you enable debug mode");
         options.addOption("P", "premium", false, "Let's you enable premium mode");
-        options.addOption("WS", "no-websocket", false, "Disables connection to stats socket");
         options.addOption("CN", "config-nodes", false, "Let's you load nodes from config");
+        options.addOption("NW", "no-websocket", false, "Disables connection to stats socket");
         options.addOption("NV", "no-voice-join", false, "Disable automatic voice channel joining on Groovy support server");
         options.addOption("NM", "no-monitoring", false, "Disables InfluxDB monitoring");
         options.addOption("NP", "no-patrons", false, "Disable patrons feature");
@@ -243,7 +242,7 @@ public class GroovyBot implements Closeable {
                         eventWaiter
                 );
 
-        if (enableWebsocket)
+        if (!noWebsocket)
             shardManagerBuilder.addEventListeners(new WebsiteStatsListener());
         if (premium)
             shardManagerBuilder.addEventListeners(new PremiumExecutor(this));
@@ -297,7 +296,7 @@ public class GroovyBot implements Closeable {
         }
 
         // Initializing webSocket
-        if (enableWebsocket)
+        if (!noWebsocket)
             try {
                 log.info("[WebSocket] Initializing WebSocket ...");
                 webSocket = new WebsocketConnection();
