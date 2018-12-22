@@ -190,12 +190,6 @@ public class GroovyBot implements Closeable {
         log.info("[Database] Initializing Database ...");
         postgreSQL = new PostgreSQL();
 
-        try {
-            Integer.parseInt("dkojojidjiod");
-        } catch (Exception e) {
-            log.error("Ok, da ist ein fehler", e);
-        }
-
         // Check for --no-monitoring and initialize InfluxDB if not
         if (!noMonitoring) influxDB = new InfluxDBManager(config).build();
 
