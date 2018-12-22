@@ -146,6 +146,7 @@ public class MusicPlayer extends Player implements Runnable {
             else
                 fineTracks.add(t.getInfo().title);
         });
+        dups.forEach(t -> trackQueue.remove(t));
         return dups.size();
     }
 

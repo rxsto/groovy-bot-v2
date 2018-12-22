@@ -23,6 +23,6 @@ public class RemoveDuplicatesCommand extends SubCommand {
             return send(error(event.translate("phrases.notsamechannel.title"), event.translate("phrases.notsamechannel.description")));
         MusicPlayer musicPlayer = GroovyBot.getInstance().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
         int dups = musicPlayer.removeDups();
-        return send(success(event.translate("command.dups.removed.title"), event.translate(String.format("command.dups.removed.description", dups))));
+        return send(success(event.translate("command.dups.removed.title"), String.format(event.translate("command.dups.removed.description"), dups)));
     }
 }
