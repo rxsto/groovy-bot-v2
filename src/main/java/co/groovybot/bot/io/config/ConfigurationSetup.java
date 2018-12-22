@@ -111,6 +111,11 @@ public class ConfigurationSetup {
                 .put("discordbotindex.com", "defaultvalue");
         configuration.addDefault("botlists", botlists);
 
+        final JSONObject graylog = new JSONObject()
+                .put("host", "localhost")
+                .put("port", 12201);
+        configuration.addDefault("graylog", graylog);
+
         // Return config
         return configuration;
     }

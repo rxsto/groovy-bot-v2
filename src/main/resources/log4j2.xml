@@ -28,11 +28,13 @@
             <AppenderRef ref="Log"/>
             <AppenderRef ref="LatestLog"/>
         </Async>
+        <Graylog name="Graylog"/>
     </Appenders>
     <Loggers>
         <Root>
             <AppenderRef ref="Console"/>
             <AppenderRef ref="Async"/>
+            <AppenderRef ref="Graylog"/>
         </Root>
     </Loggers>
 </Configuration>

@@ -162,9 +162,9 @@
             <version>1.4</version>
         </dependency>
         <dependency>
-            <groupId>biz.paluch.logging</groupId>
-            <artifactId>logstash-gelf</artifactId>
-            <version>x.y.z</version>
+            <groupId>org.graylog2</groupId>
+            <artifactId>gelfclient</artifactId>
+            <version>1.4.0</version>
         </dependency>
     </dependencies>
 
