@@ -148,6 +148,7 @@ public class GroovyBot implements Closeable {
         noJoin = args.hasOption("no-voice-join");
 
         noPatrons = args.hasOption("NP");
+        configNodes = args.hasOption("--config-nodes");
 
         configNodes = args.hasOption("--config-nodes");
 
