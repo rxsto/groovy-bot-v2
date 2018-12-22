@@ -170,19 +170,14 @@ public class GroovyBot implements Closeable {
 
         if (!noCentralizedLogging) {
             final GelfConfiguration gelfConfiguration = new GelfConfiguration(new InetSocketAddress(config.getJSONObject("graylog").getString("host"), config.getJSONObject("graylog").getInt("port")));
-            gelfConfiguration.transport(GelfTransports.TCP);
-            gelfConfiguration.queueSize(512);
-            gelfConfiguration.connectTimeout(5000);
-            gelfConfiguration.reconnectDelay(1000);
-            gelfConfiguration.tcpNoDelay(true);
-            gelfConfiguration.sendBufferSize(32768);
+            gelfConfiguration.transport(GelfTransports.TCP).queueSize(512).connectTimeout(5000).reconnectDelay(1000).tcpNoDelay(true).sendBufferSize(32768);
             gelfTransport = GelfTransports.create(gelfConfiguration);
             try {
                 gelfTransport.send(new GelfMessage("HELLO"));
-                log.info("[Graylog] Connection success.");
+                log.info("[Graylog] Successfully connected to Graylog!");
             } catch (InterruptedException e) {
                 gelfTransport = null;
-                log.info("[Graylog] Connection failed.");
+                log.warn("[Graylog] Connection failed!");
             }
         }
 
