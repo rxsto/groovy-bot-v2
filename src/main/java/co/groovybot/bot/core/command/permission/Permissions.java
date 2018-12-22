@@ -13,6 +13,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Log4j2
@@ -102,8 +104,6 @@ public class Permissions {
     }
 
     public Boolean isCovered(UserPermissions permissions, CommandEvent event) {
-        if (permissions.getUser().getEntityId() == 207500411907735552L)
-            return false;
         if (permissions.getIsOwner())
             return true;
         if (everyone)
@@ -124,7 +124,6 @@ public class Permissions {
             return permissions.isDj(event.getGuild());
         return false;
     }
-
 
     private boolean isPremiumGuild(Guild guild) {
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
