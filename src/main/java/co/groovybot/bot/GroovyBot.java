@@ -46,11 +46,16 @@ import org.apache.commons.cli.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.graylog2.gelfclient.GelfConfiguration;
+import org.graylog2.gelfclient.GelfMessage;
+import org.graylog2.gelfclient.GelfTransports;
+import org.graylog2.gelfclient.transport.GelfTransport;
 import org.influxdb.InfluxDB;
 
 import javax.security.auth.login.LoginException;
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -75,6 +80,7 @@ public class GroovyBot implements Closeable {
     private final boolean noJoin;
     private final boolean noPatrons;
     private final boolean noMonitoring;
+    private final boolean noCentralizedLogging;
     @Getter
     private final TranslationManager translationManager;
     @Getter
@@ -124,6 +130,8 @@ public class GroovyBot implements Closeable {
     private net.dv8tion.jda.core.entities.Guild supportGuild;
     @Getter
     private final PremiumHandler premiumHandler;
+    @Getter
+    private GelfTransport gelfTransport;
 
     private GroovyBot(CommandLine args) throws IOException {
 
@@ -143,6 +151,7 @@ public class GroovyBot implements Closeable {
         noPatrons = args.hasOption("no-patrons");
         noMonitoring = args.hasOption("no-monitoring");
         configNodes = args.hasOption("config-nodes");
+        noCentralizedLogging = args.hasOption("no-centralized-logging");
 
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
@@ -159,9 +168,33 @@ public class GroovyBot implements Closeable {
         guildCache = new Cache<>(Guild.class);
         userCache = new Cache<>(User.class);
 
+        if (!noCentralizedLogging) {
+            final GelfConfiguration gelfConfiguration = new GelfConfiguration(new InetSocketAddress(config.getJSONObject("graylog").getString("host"), config.getJSONObject("graylog").getInt("port")));
+            gelfConfiguration.transport(GelfTransports.TCP);
+            gelfConfiguration.queueSize(512);
+            gelfConfiguration.connectTimeout(5000);
+            gelfConfiguration.reconnectDelay(1000);
+            gelfConfiguration.tcpNoDelay(true);
+            gelfConfiguration.sendBufferSize(32768);
+            gelfTransport = GelfTransports.create(gelfConfiguration);
+            try {
+                gelfTransport.send(new GelfMessage("HELLO"));
+                log.info("[Graylog] Connection success.");
+            } catch (InterruptedException e) {
+                gelfTransport = null;
+                log.info("[Graylog] Connection failed.");
+            }
+        }
+
         // Initializing database
         log.info("[Database] Initializing Database ...");
         postgreSQL = new PostgreSQL();
+
+        try {
+            Integer.parseInt("dkojojidjiod");
+        } catch (Exception e) {
+            log.error("Ok, da ist ein fehler", e);
+        }
 
         // Check for --no-monitoring and initialize InfluxDB if not
         if (!noMonitoring) influxDB = new InfluxDBManager(config).build();
@@ -204,6 +237,7 @@ public class GroovyBot implements Closeable {
         options.addOption("NV", "no-voice-join", false, "Disable automatic voice channel joining on Groovy support server");
         options.addOption("NM", "no-monitoring", false, "Disables InfluxDB monitoring");
         options.addOption("NP", "no-patrons", false, "Disable patrons feature");
+        options.addOption("NCL", "no-centralized-logging", false, "Disabled centralized logging");
         CommandLine cmd = null;
         try {
             cmd = new DefaultParser().parse(options, args);
