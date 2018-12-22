@@ -42,7 +42,8 @@ public class UserPermissions {
     }
 
     public boolean isTierTwo() {
-        return retrievePatreonTier() == Tier.TWO;
+        Tier tier = retrievePatreonTier();
+        return tier == Tier.TWO || tier == Tier.THREE;
     }
 
     public boolean isTierThree() {
@@ -50,6 +51,7 @@ public class UserPermissions {
     }
 
     private Tier retrievePatreonTier() {
+        if (isOwner) return Tier.THREE;
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             PreparedStatement premium = connection.prepareStatement("SELECT type FROM premium WHERE user_id = ?");
             premium.setLong(1, user.getEntityId());
@@ -78,7 +80,29 @@ public class UserPermissions {
         return Tier.NONE;
     }
 
+    public boolean isAbleToInvite() {
+        if (isOwner) return true;
+        try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
+            PreparedStatement premium = connection.prepareStatement("SELECT type FROM premium WHERE user_id = ?");
+            premium.setLong(1, user.getEntityId());
+            ResultSet premiumSet = premium.executeQuery();
+            if (premiumSet.next())
+                return Tier.valueOf(premiumSet.getString("type")) != Tier.NONE;
+
+            PreparedStatement friend = connection.prepareStatement("SELECT friend FROM users WHERE user_id = ?");
+            friend.setLong(1, user.getEntityId());
+            ResultSet friendSet = friend.executeQuery();
+            if (friendSet.next())
+                return friendSet.getBoolean("friend");
+        } catch (SQLException e) {
+            log.error("[PermissionProvider] Error while retrieving permissions!", e);
+        }
+
+        return false;
+    }
+
     public boolean isDj(Guild guild) {
+        if (isOwner) return true;
         if (!EntityProvider.getGuild(guild.getIdLong()).isDjMode())
             return true;
         if (guild.getMemberById(user.getEntityId()).getVoiceState().inVoiceChannel())
