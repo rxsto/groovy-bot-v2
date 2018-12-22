@@ -125,8 +125,6 @@
             <groupId>com.zeloon</groupId>
             <artifactId>deezer-api-client</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/deezer-api-client.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.java-websocket</groupId>
