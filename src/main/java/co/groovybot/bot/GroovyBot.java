@@ -72,6 +72,8 @@ public class GroovyBot implements Closeable {
     private final boolean configNodes;
     @Getter
     private final boolean premium;
+    private final boolean noJoin;
+    private final boolean noPatrons;
     @Getter
     private final TranslationManager translationManager;
     @Getter
@@ -121,7 +123,6 @@ public class GroovyBot implements Closeable {
     private net.dv8tion.jda.core.entities.Guild supportGuild;
     @Getter
     private final PremiumHandler premiumHandler;
-    private final boolean noJoin;
 
     private GroovyBot(CommandLine args) throws IOException {
 
@@ -145,6 +146,8 @@ public class GroovyBot implements Closeable {
 
         //Checking for voice join
         noJoin = args.hasOption("no-voice-join");
+
+        noPatrons = args.hasOption("NP");
 
         configNodes = args.hasOption("--config-nodes");
 
@@ -210,6 +213,7 @@ public class GroovyBot implements Closeable {
         options.addOption("CN", "config-nodes", false, "Let's you load nodes from config");
         options.addOption("NV", "no-voice-join", false, "Disable automatic voice channel joining on Groovy support server");
         options.addOption("NM", "no-monitoring", false, "Disables InfluxDB monitoring");
+        options.addOption("NP", "no-patrons", false, "Disable patrons feature");
         CommandLine cmd = null;
         try {
             cmd = new DefaultParser().parse(options, args);
@@ -292,11 +296,13 @@ public class GroovyBot implements Closeable {
         supportGuild = shardManager.getGuildById(403882830225997825L);
 
         // Register all Donators
-        try {
-            log.info("[PremiumHandler] Initializing Patrons ...");
-            premiumHandler.initializePatrons(supportGuild, postgreSQL.getDataSource().getConnection());
-        } catch (SQLException | NullPointerException e) {
-            log.error("[PremiumHandler] Error while initializing Patrons!", e);
+        if (!noPatrons) {
+            try {
+                log.info("[PremiumHandler] Initializing Patrons ...");
+                premiumHandler.initializePatrons(supportGuild, postgreSQL.getDataSource().getConnection());
+            } catch (SQLException e) {
+                log.error("[PremiumHandler] Error while initializing Patrons!", e);
+            }
         }
 
         // Initializing webSocket
