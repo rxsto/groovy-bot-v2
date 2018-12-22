@@ -122,11 +122,9 @@
             <version>2.0.5</version>
         </dependency>
         <dependency>
-            <groupId>com.zeloon</groupId>
+            <groupId>com.github.GroovyDevs</groupId>
             <artifactId>deezer-api-client</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/deezer-api-client.jar</systemPath>
+            <version>1b73f63356</version>
         </dependency>
         <dependency>
             <groupId>org.java-websocket</groupId>
