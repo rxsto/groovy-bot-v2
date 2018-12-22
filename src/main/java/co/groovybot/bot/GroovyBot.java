@@ -149,9 +149,7 @@ public class GroovyBot implements Closeable {
 
         noPatrons = args.hasOption("NP");
         configNodes = args.hasOption("--config-nodes");
-
-        configNodes = args.hasOption("--config-nodes");
-
+        
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
 
