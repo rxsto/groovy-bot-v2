@@ -2,6 +2,7 @@ package co.groovybot.bot.core.audio;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.command.CommandEvent;
+import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.permission.UserPermissions;
 import co.groovybot.bot.core.entity.EntityProvider;
@@ -133,6 +134,19 @@ public class MusicPlayer extends Player implements Runnable {
     public IPlayer getPlayer() {
         this.player = this.player == null ? new LavaplayerPlayerWrapper(getAudioPlayerManager().createPlayer()) : this.player;
         return this.player;
+    }
+
+    public int removeDups() {
+        List<String> fineTracks = new ArrayList<>();
+        List<AudioTrack> dups = new ArrayList<>();
+        trackQueue.forEach(t -> {
+            if (fineTracks.contains(t.getInfo().title))
+                dups.add(t);
+            else
+                fineTracks.add(t.getInfo().title);
+        });
+        dups.forEach(t -> trackQueue.remove(t));
+        return dups.size();
     }
 
     public void queueSongs(final CommandEvent event) {
@@ -366,7 +380,7 @@ public class MusicPlayer extends Player implements Runnable {
     private boolean checkDups(AudioTrack audioTrack) {
         if (!EntityProvider.getGuild(guild.getIdLong()).isPreventDups())
             return false;
-        return player.getPlayingTrack() != null && player.getPlayingTrack().getInfo().uri.equals(audioTrack.getInfo().uri) || trackQueue.stream().anyMatch(t -> t.getInfo().uri.equals(audioTrack.getInfo().uri));
+        return player.getPlayingTrack() != null && player.getPlayingTrack().getInfo().title.equals(audioTrack.getInfo().title) || trackQueue.stream().anyMatch(t -> t.getInfo().title.equals(audioTrack.getInfo().title));
     }
 
     @Override
