@@ -124,7 +124,7 @@
         <dependency>
             <groupId>com.github.GroovyDevs</groupId>
             <artifactId>deezer-api-client</artifactId>
-            <version>1b73f63356</version>
+            <version>296ea7da3c</version>
         </dependency>
         <dependency>
             <groupId>org.java-websocket</groupId>
