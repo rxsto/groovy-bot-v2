@@ -1,6 +1,5 @@
 package co.groovybot.bot.core.audio;
 
-import co.groovybot.bot.util.SafeMessage;
 import co.groovybot.bot.util.YoutubeUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -11,6 +10,7 @@ import lombok.Getter;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class Player {
 
@@ -139,7 +139,7 @@ public abstract class Player {
         return scheduler.isLoop();
     }
 
-    public boolean queueLoopEnabled() {
+    public boolean loopQueueEnabled() {
         return scheduler.isLoopqueue();
     }
 
@@ -159,5 +159,15 @@ public abstract class Player {
 
     public void play(AudioTrack track) {
         play(track, false);
+    }
+
+    public long getQueueLengthMillis() {
+        AtomicLong millis = new AtomicLong();
+        trackQueue.forEach(track -> millis.addAndGet(track.getDuration()));
+        if (trackQueue.toArray().length > 0) {
+            millis.addAndGet(getPlayer().getPlayingTrack().getDuration());
+            millis.getAndAdd(-((AudioTrack) trackQueue.toArray()[trackQueue.toArray().length - 1]).getDuration());
+        }
+        return millis.get();
     }
 }
