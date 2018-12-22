@@ -14,8 +14,7 @@ public class PremiumExecutor {
 
     @SubscribeEvent
     private void handleJoin(GuildJoinEvent event) {
-        if (!new UserPermissions(bot.getUserCache().get(event.getGuild().getOwner().getUser().getIdLong()), bot).isTierOne())
+        if (!new UserPermissions(bot.getUserCache().get(event.getGuild().getOwner().getUser().getIdLong()), bot).isAbleToInvite())
             event.getGuild().leave().queue();
     }
-
 }
