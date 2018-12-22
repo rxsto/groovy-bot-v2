@@ -11,6 +11,7 @@ import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
@@ -40,7 +41,7 @@ public class AutoJoinExecutor {
     private void handleVoiceChannelJoin(GuildVoiceJoinEvent event) {
         Guild guild = bot.getGuildCache().get(event.getGuild());
         VoiceChannel channel = event.getChannelJoined();
-        if (!event.getMember().getUser().isBot() && guild.hasAutoJoinChannel() && channel.getIdLong() == guild.getAutoJoinChannelId() && !guild.getAutoJoinChannel().getMembers().contains(event.getGuild().getSelfMember()))
+        if (!event.getMember().getUser().isBot() && guild.hasAutoJoinChannel() && channel.getIdLong() == guild.getAutoJoinChannelId() && !guild.getAutoJoinChannel().getMembers().contains(event.getGuild().getSelfMember()) && !(event.getChannelJoined().getMembers().stream().filter(m -> !m.getUser().isBot()).collect(Collectors.toList()).size() > 1))
             bot.getMusicPlayerManager().getPlayer(event.getGuild(), null).connect(channel);
     }
 
