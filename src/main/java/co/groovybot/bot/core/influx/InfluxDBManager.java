@@ -43,5 +43,4 @@ public class InfluxDBManager {
         influxDB.setRetentionPolicy(retentionPolicy);
         return influxDB;
     }
-
 }

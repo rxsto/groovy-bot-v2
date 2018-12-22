@@ -19,11 +19,11 @@ public class SettingsCommand extends Command {
         embedBuilder.setTitle("\uD83D\uDD27 " + event.translate("command.settings.title"));
         embedBuilder.setDescription(event.translate("command.settings.description"));
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.prefix")), String.format("**```%s```**", event.getGroovyGuild().getPrefix()), true);
-        embedBuilder.addField(event.translate("command.settings.djmode"), String.format("**```%s```**", event.getGroovyGuild().isDjMode()), true);
-        embedBuilder.addField(event.translate("command.settings.announce"), String.format("**```%s```**", event.getGroovyGuild().isAnnounceSongs()), true);
-        embedBuilder.addField(event.translate("command.settings.leave"), String.format("**```%s```**", event.getGroovyGuild().isAutoLeave()), true);
-        embedBuilder.addField(event.translate("command.settings.pause"), String.format("**```%s```**", event.getGroovyGuild().isAutoPause()), true);
-        embedBuilder.addField(event.translate("command.settings.play"), String.format("**```%s```**", event.getBot().getMusicPlayerManager().getPlayer(event).getScheduler().isAutoPlay()), true);
+        embedBuilder.addField(String.format("**%s**", event.translate("command.settings.djmode")), String.format("**```%s```**", event.getGroovyGuild().isDjMode()), true);
+        embedBuilder.addField(String.format("**%s**", event.translate("command.settings.announce")), String.format("**```%s```**", event.getGroovyGuild().isAnnounceSongs()), true);
+        embedBuilder.addField(String.format("**%s**", event.translate("command.settings.leave")), String.format("**```%s```**", event.getGroovyGuild().isAutoLeave()), true);
+        embedBuilder.addField(String.format("**%s**", event.translate("command.settings.pause")), String.format("**```%s```**", event.getGroovyGuild().isAutoPause()), true);
+        embedBuilder.addField(String.format("**%s**", event.translate("command.settings.play")), String.format("**```%s```**", event.getBot().getMusicPlayerManager().getPlayer(event).getScheduler().isAutoPlay()), true);
         return send(embedBuilder);
     }
 

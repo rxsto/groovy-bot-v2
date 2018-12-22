@@ -1,5 +1,6 @@
 package co.groovybot.bot.core.premium;
 
+import co.groovybot.bot.util.PremiumUtil;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.entities.Guild;
 
@@ -19,17 +20,9 @@ public class PremiumHandler {
     public void initializePatrons(Guild guild, Connection connection) {
         this.connection = connection;
         guild.getMembers().forEach(member -> {
-            Tier tier = Tier.NONE;
-            if (member.getRoles().contains(guild.getRoleById(487300055691296788L)))
-                tier = Tier.ONE;
-            if (member.getRoles().contains(guild.getRoleById(487300104726904842L)))
-                tier = Tier.TWO;
-            if (member.getRoles().contains(guild.getRoleById(1234L)))
-                tier = Tier.THREE;
-            if (tier == Tier.NONE)
-                return;
-            log.debug(member.getUser().getName());
-            patrons.put(member.getUser().getIdLong(), tier);
+            Tier tier = PremiumUtil.getTier(member, guild);
+            if (tier != Tier.NONE)
+                patrons.put(member.getUser().getIdLong(), tier);
         });
 
         try {
@@ -37,8 +30,13 @@ public class PremiumHandler {
             ResultSet premiumSet = premium.executeQuery();
 
             while (premiumSet.next()) {
+                Tier givenTier = patrons.get(premiumSet.getLong("user_id"));
+
                 if (!patrons.containsKey(premiumSet.getLong("user_id")))
-                    premiumSet.deleteRow();
+                    removePatron(premiumSet.getLong("user_id"));
+                else if (!givenTier.toString().equals(premiumSet.getString("type")))
+                    updatePatron(premiumSet.getLong("user_id"), givenTier);
+
                 patrons.remove(premiumSet.getLong("user_id"));
             }
 
@@ -58,6 +56,17 @@ public class PremiumHandler {
             insert.execute();
         } catch (SQLException e) {
             log.error("[PremiumHandler] Error while inserting patron!", e);
+        }
+    }
+
+    public void updatePatron(long id, Tier tier) {
+        try {
+            PreparedStatement insert = connection.prepareStatement("UPDATE premium SET type = ? WHERE user_id = ?");
+            insert.setString(1, tier.toString());
+            insert.setLong(2, id);
+            insert.execute();
+        } catch (SQLException e) {
+            log.error("[PremiumHandler] Error while updating patron!", e);
         }
     }
 
