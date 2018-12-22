@@ -42,6 +42,7 @@ import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 import net.dv8tion.jda.core.hooks.IEventManager;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 import okhttp3.OkHttpClient;
+import org.apache.commons.cli.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -71,6 +72,8 @@ public class GroovyBot implements Closeable {
     private final boolean configNodes;
     @Getter
     private final boolean premium;
+    private final boolean noJoin;
+    private final boolean noPatrons;
     @Getter
     private final TranslationManager translationManager;
     @Getter
@@ -120,9 +123,8 @@ public class GroovyBot implements Closeable {
     private net.dv8tion.jda.core.entities.Guild supportGuild;
     @Getter
     private final PremiumHandler premiumHandler;
-    private final boolean noJoin;
 
-    private GroovyBot(String[] args) throws IOException {
+    private GroovyBot(CommandLine args) throws IOException {
 
         // Setting startuptime
         startupTime = System.currentTimeMillis();
@@ -132,22 +134,14 @@ public class GroovyBot implements Closeable {
         // Initializing logger
         initLogger(args);
 
-        final String arguments = String.join(" ", args);
-
-        // Checking for debug-mode
-        debugMode = arguments.contains("debug");
-
-        // Checking for websocket-mode
-        enableWebsocket = !arguments.contains("--no-websocket");
-
-        //Checking for premium
-        premium = arguments.contains("--premium");
-
-        //Checking for voice join
-        noJoin = arguments.contains("--no-voice-join");
-
-        configNodes = arguments.contains("--config-nodes");
-
+        // Checking for args
+        debugMode = args.hasOption('D');
+        enableWebsocket = !args.hasOption("no-websocket");
+        premium = args.hasOption("premium");
+        noJoin = args.hasOption("no-voice-join");
+        noPatrons = args.hasOption("NP");
+        configNodes = args.hasOption("config-nodes");
+        
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
 
@@ -168,7 +162,7 @@ public class GroovyBot implements Closeable {
         postgreSQL = new PostgreSQL();
 
         // Check for --no-monitoring and initialize InfluxDB if not
-        if (arguments.contains("--no-monitoring"))
+        if (args.hasOption("--no-monitoring"))
             influxDB = null;
         else
             influxDB = new InfluxDBManager(config).build();
@@ -202,7 +196,23 @@ public class GroovyBot implements Closeable {
     public static void main(String[] args) throws IOException {
         if (instance != null)
             throw new RuntimeException("[Core] Groovy was already initialized in this VM!");
-        new GroovyBot(args);
+        Options options = new Options();
+        options.addOption("L", "log-level", true, "Let's you set the loglevel of groovy");
+        options.addOption("D", "debug", false, "Let's you enable debug mode");
+        options.addOption("P", "premium", false, "Let's you enable premium mode");
+        options.addOption("WS", "no-websocket", false, "Disables connection to stats socket");
+        options.addOption("CN", "config-nodes", false, "Let's you load nodes from config");
+        options.addOption("NV", "no-voice-join", false, "Disable automatic voice channel joining on Groovy support server");
+        options.addOption("NM", "no-monitoring", false, "Disables InfluxDB monitoring");
+        options.addOption("NP", "no-patrons", false, "Disable patrons feature");
+        CommandLine cmd = null;
+        try {
+            cmd = new DefaultParser().parse(options, args);
+        } catch (ParseException e) {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp(e.getMessage(), options);
+        }
+        new GroovyBot(cmd);
     }
 
     private void initShardManager() {
@@ -252,9 +262,9 @@ public class GroovyBot implements Closeable {
         this.config = ConfigurationSetup.setupConfig().init();
     }
 
-    private void initLogger(String[] args) throws IOException {
+    private void initLogger(CommandLine args) throws IOException {
         // Setting logging-level
-        Configurator.setRootLevel(args.length == 0 ? Level.INFO : Level.toLevel(args[0], Level.INFO));
+        Configurator.setRootLevel(Level.toLevel(args.getOptionValue("log-level", "INFO")));
 
         // Initializing logger
         Configurator.initialize(ClassLoader.getSystemClassLoader(), new ConfigurationSource(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("log4j2.xml"))));
@@ -277,11 +287,13 @@ public class GroovyBot implements Closeable {
         supportGuild = shardManager.getGuildById(403882830225997825L);
 
         // Register all Donators
-        try {
-            log.info("[PremiumHandler] Initializing Patrons ...");
-            premiumHandler.initializePatrons(supportGuild, postgreSQL.getDataSource().getConnection());
-        } catch (SQLException | NullPointerException e) {
-            log.error("[PremiumHandler] Error while initializing Patrons!", e);
+        if (!noPatrons) {
+            try {
+                log.info("[PremiumHandler] Initializing Patrons ...");
+                premiumHandler.initializePatrons(supportGuild, postgreSQL.getDataSource().getConnection());
+            } catch (SQLException | NullPointerException e) {
+                log.error("[PremiumHandler] Error while initializing Patrons!", e);
+            }
         }
 
         // Initializing webSocket

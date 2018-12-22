@@ -10,6 +10,7 @@ before_script:
 build:
   stage: build
   script:
+    - mvn install:install-file -Dfile=libs/deezer-api-client.jar -DgroupId=com.zeloon -DartifactId=deezer-api-client -Dversion=1.0-SNAPSHOT -Dpackaging=jar
     - mvn $MAVEN_CLI_OPTS clean package
   artifacts:
     paths:
