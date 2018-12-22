@@ -231,7 +231,6 @@ public class GroovyBot implements Closeable {
                         new SelfMentionListener(),
                         new JoinGuildListener(),
                         new CommandLogger(),
-                        new PremiumListener(premiumHandler),
                         new BlacklistWatcher(guildCache),
                         new AutopauseListener(),
                         new GuildLeaveListener(),
@@ -244,6 +243,8 @@ public class GroovyBot implements Closeable {
 
         if (!noWebsocket)
             shardManagerBuilder.addEventListeners(new WebsiteStatsListener());
+        if (!noPatrons)
+            shardManagerBuilder.addEventListeners(new PremiumListener(premiumHandler));
         if (premium)
             shardManagerBuilder.addEventListeners(new PremiumExecutor(this));
         try {
