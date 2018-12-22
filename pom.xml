@@ -161,6 +161,11 @@
             <artifactId>commons-cli</artifactId>
             <version>1.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.graylog2</groupId>
+            <artifactId>gelfclient</artifactId>
+            <version>1.4.0</version>
+        </dependency>
     </dependencies>
 
     <build>
