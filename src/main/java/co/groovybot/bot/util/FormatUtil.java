@@ -51,6 +51,17 @@ public class FormatUtil {
         return bytes / 1024 / 1024;
     }
 
+    public static String formatDuration(long milliseconds) {
+        int seconds = (int) (milliseconds / 1000) % 60 ;
+        int minutes = (int) ((milliseconds / (1000*60)) % 60);
+        int hours   = (int) ((milliseconds / (1000*60*60)) % 24);
+        StringBuilder stringBuilder = new StringBuilder();
+        if (hours > 0) stringBuilder.append(String.format("%dh", hours)).append(' ');
+        if (minutes >= 0) stringBuilder.append(String.format("%dm", minutes)).append(' ');
+        if (seconds >= 0) stringBuilder.append(String.format("%ds", seconds));
+        return stringBuilder.toString();
+    }
+
     /**
      * Formats the milliseconds of a song duration to a readable timestamp
      *
@@ -64,6 +75,18 @@ public class FormatUtil {
         long mins = Math.floorDiv(seconds, 60);
         seconds = seconds - (mins * 60);
         return (hours == 0 ? "" : hours + ":") + String.format("%02d", mins) + ":" + String.format("%02d", seconds);
+    }
+
+    public static String formatProgressBar(long progress, long full) {
+        double percentage = (double) progress / full;
+        StringBuilder progressBar = new StringBuilder();
+        for (int i = 0; i < 20; i++) {
+            if ((int) (percentage * 20) == i)
+                progressBar.append("\uD83D\uDD18");
+            else
+                progressBar.append("▬");
+        }
+        return progressBar.toString();
     }
 
     /**

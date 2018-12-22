@@ -16,7 +16,7 @@ public class SettingsCommand extends Command {
     public Result run(String[] args, CommandEvent event) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(Colors.DARK_BUT_NOT_BLACK);
-        embedBuilder.setTitle("\uD83D\uDD27 " + event.translate("command.settings.title"));
+        embedBuilder.setTitle("⚙ " + event.translate("command.settings.title"));
         embedBuilder.setDescription(event.translate("command.settings.description"));
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.prefix")), String.format("**```%s```**", event.getGroovyGuild().getPrefix()), true);
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.djmode")), String.format("**```%s```**", event.getGroovyGuild().isDjMode()), true);

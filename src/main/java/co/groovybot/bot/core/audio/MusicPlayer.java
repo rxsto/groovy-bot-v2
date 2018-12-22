@@ -127,7 +127,7 @@ public class MusicPlayer extends Player implements Runnable {
     @Override
     public void announceSong(AudioPlayer audioPlayer, AudioTrack track) {
         if (EntityProvider.getGuild(guild.getIdLong()).isAnnounceSongs())
-            SafeMessage.sendMessage(channel, EmbedUtil.play("Now Playing", FormatUtil.formatTrack(track)));
+            SafeMessage.sendMessage(channel, EmbedUtil.play("Now Playing", FormatUtil.formatTrack(track), track.getDuration()));
     }
 
     @Override
@@ -237,6 +237,7 @@ public class MusicPlayer extends Player implements Runnable {
                     }
                     queueTracks(tracks.toArray(new AudioTrack[0]));
                     inProgress = false;
+
                     if (!tierTwo.isCovered(userPermissions, event))
                         SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.nopremium.title"), String.format(event.translate("phrases.searching.playlistloaded.nopremium.description"), tracks.size(), audioPlaylist.getName())));
                     else {
@@ -254,8 +255,6 @@ public class MusicPlayer extends Player implements Runnable {
 
             private void queueWithChecks(AudioTrack track) {
                 if (!checkSong(track)) return;
-
-
                 if (checkDups(track)) {
                     SafeMessage.editMessage(infoMessage, EmbedUtil.info(event.translate("phrases.load.single.dups.title"), String.format(event.translate("phrases.load.single.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
                     return;
@@ -300,7 +299,7 @@ public class MusicPlayer extends Player implements Runnable {
         if (track.getInfo().isStream)
             SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.streamloaded.title"), String.format(event.translate("phrases.searching.streamloaded.description"), track.getInfo().title)));
         else
-            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)));
+            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)).setFooter(String.format("Estimated: %s", getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(getQueueLengthMillis())), null));
     }
 
     public void update() throws SQLException, IOException {

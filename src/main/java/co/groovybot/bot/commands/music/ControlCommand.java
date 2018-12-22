@@ -17,7 +17,10 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import lavalink.client.player.IPlayer;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.util.List;
@@ -31,7 +34,7 @@ public class ControlCommand extends SameChannelCommand {
     private final String[] EMOTES = {"⏯", "⏭", "🔁", "🔀", "🔄", "🔉", "🔊"};
 
     public ControlCommand() {
-        super(new String[]{"control", "panel", "cp"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you control Groovy with reactions", "");
+        super(new String[]{"control", "panel", "cp"}, CommandCategory.MUSIC, Permissions.tierOne(), "Lets you control Groovy with reactions", "");
     }
 
     @Override
@@ -101,85 +104,57 @@ public class ControlCommand extends SameChannelCommand {
 
         @Override
         protected void handleReaction(GuildMessageReactionAddEvent event) {
-            if (!ready)
-                return;
-            final User author = event.getUser();
-            if (!isWhitelisted(event.getMember()))
-                return;
+            if (!ready) return;
+            if (!isWhitelisted(event.getMember())) return;
             final IPlayer musicPlayer = this.player.getPlayer();
             final Scheduler playerScheduler = this.player.getScheduler();
             switch (event.getReaction().getReactionEmote().getName()) {
                 case "⏯":
-                    if (!player.isPaused()) {
+                    if (!player.isPaused())
                         musicPlayer.setPaused(true);
-                        sendMessage(translate(author, "command.control.paused.title"), translate(author, "command.control.paused.description"));
-                    } else {
+                    else
                         musicPlayer.setPaused(false);
-                        sendMessage(translate(author, "command.control.resumed.title"), translate(author, "command.control.resumed.description"));
-                    }
                     break;
                 case "⏭":
                     this.player.skip();
-                    sendMessage(translate(author, "command.control.skipped.title"), translate(author, "command.control.skipped.description"));
                     break;
-                case "\uD83D\uDD02":
-                    if (!playerScheduler.isLoop() && !playerScheduler.isLoopqueue()) {
+                case "\uD83D\uDD01":
+                    if (!playerScheduler.isLoop() && !playerScheduler.isLoopqueue())
                         playerScheduler.setLoop(true);
-                        sendMessage(this.commandEvent.translate("command.loop.loop.title"), this.commandEvent.translate("command.loop.loop.description"));
-                    } else if (playerScheduler.isLoop()) {
-                        if (!Permissions.tierOne().isCovered(EntityProvider.getUser(this.commandEvent.getAuthor().getIdLong()).getPermissions(), this.commandEvent)) {
-                            sendMessageError(this.commandEvent.translate("phrases.nopermission.title"), this.commandEvent.translate("phrases.nopermission.tierone"));
-                            sendMessage(this.commandEvent.translate("command.loop.none.title"), this.commandEvent.translate("command.loop.none.description"));
-                        } else {
-                            playerScheduler.setLoop(false);
+                    else if (playerScheduler.isLoop()) {
+                        if (Permissions.tierOne().isCovered(EntityProvider.getUser(this.commandEvent.getAuthor().getIdLong()).getPermissions(), this.commandEvent))
                             playerScheduler.setLoopqueue(true);
-                            sendMessage(this.commandEvent.translate("command.loop.loopqueue.title"), this.commandEvent.translate("command.loop.loopqueue.description"));
-                        }
-                    } else if (playerScheduler.isLoopqueue()) {
+                        playerScheduler.setLoop(false);
+                    } else if (playerScheduler.isLoopqueue())
                         playerScheduler.setLoopqueue(false);
-                        sendMessage(this.commandEvent.translate("command.loop.none.title"), this.commandEvent.translate("command.loop.none.description"));
-                    } else {
-                        send(EmbedUtil.error(this.commandEvent));
-                    }
                     break;
                 case "\uD83D\uDD00":
-                    if (!Permissions.tierTwo().isCovered(EntityProvider.getUser(author.getIdLong()).getPermissions(), this.commandEvent)) {
-                        sendMessageError(this.commandEvent.translate("phrases.nopermission.title"), this.commandEvent.translate("phrases.nopermission.tiertwo"));
-                        break;
-                    }
                     if (!playerScheduler.isShuffle()) {
                         playerScheduler.setShuffle(true);
-                        sendMessage(translate(author, "command.control.shuffle.enabled.title"), translate(author, "command.control.shuffle.enabled.description"));
                     } else {
                         playerScheduler.setShuffle(false);
-                        sendMessage(translate(author, "command.control.shuffle.disabled.title"), translate(author, "command.control.shuffle.disabled.description"));
                     }
                     break;
                 case "\uD83D\uDD0A":
                     if (musicPlayer.getVolume() == 200) {
-                        sendMessage(translate(author, "command.control.volume.tohigh.title"), translate(author, "command.control.volume.tohigh.description"));
                         return;
                     }
                     if (musicPlayer.getVolume() >= 190)
                         this.player.setVolume(200);
                     else
                         this.player.setVolume(musicPlayer.getVolume() + 10);
-                    sendMessage(translate(author, "command.control.volume.increased.title"), String.format(translate(author, "command.control.volume.increased.description"), musicPlayer.getVolume()));
                     break;
                 case "\uD83D\uDD09":
                     if (musicPlayer.getVolume() == 0) {
-                        sendMessage(translate(author, "command.control.volume.tolow.title"), translate(author, "command.control.volume.tolow.description"));
                         return;
                     }
                     if (musicPlayer.getVolume() <= 10)
                         this.player.setVolume(0);
                     else
                         this.player.setVolume(musicPlayer.getVolume() - 10);
-                    sendMessage(translate(author, "command.control.volume.decreased.title"), String.format(translate(author, "command.control.volume.decreased.description"), musicPlayer.getVolume()));
                     break;
                 case "\uD83D\uDD04":
                     player.seekTo(0);
-                    sendMessage(translate(author, "command.control.reset.title"), String.format(translate(author, "command.control.reset.description"), musicPlayer.getVolume()));
                     break;
                 default:
                     break;
@@ -193,22 +168,20 @@ public class ControlCommand extends SameChannelCommand {
 
         @Override
         public void run() {
-            if (!player.isPlaying())
-                delete();
-            if (player.getPlayer() == null || player.getPlayer().getPlayingTrack() == null)
-                return;
+            if (!player.isPlaying()) delete();
+            if (player.getPlayer() == null || player.getPlayer().getPlayingTrack() == null) return;
             AudioTrackInfo currentSong = player.getPlayer().getPlayingTrack().getInfo();
             EmbedBuilder controlPanelEmbed = new EmbedBuilder()
-                    .setTitle(String.format("🎶 %s (%s)", currentSong.title, currentSong.author))
+                    .setDescription(String.format("\uD83D\uDE80 [%s](%s) (%s)", currentSong.title, currentSong.uri, currentSong.author))
                     .setColor(Colors.DARK_BUT_NOT_BLACK)
-                    .setDescription(buildDescription(player));
+                    .setFooter(buildDescription(player).toString(), null);
             SafeMessage.editMessage(getInfoMessage(), controlPanelEmbed);
         }
 
         private CharSequence buildDescription(MusicPlayer player) {
             final AudioTrack playingTrack = player.getPlayer().getPlayingTrack();
             final long trackPosition = player.getPlayer().getTrackPosition();
-            return String.format("%s %s %s %s %s **[%s]** 🔊 **%s**", player.isPaused() ? "\u23F8" : "\u25B6", player.loopEnabled() ? "\uD83D\uDD02" : "", player.queueLoopEnabled() ? "\uD83D\uDD01" : "", player.shuffleEnabled() ? "\uD83D\uDD00" : "", getProgressBar(trackPosition, playingTrack.getDuration()), playingTrack.getInfo().isStream ? commandEvent.translate("phrases.text.stream") : String.format("%s/%s", FormatUtil.formatTimestamp(trackPosition), FormatUtil.formatTimestamp(playingTrack.getDuration())), player.getPlayer().getVolume() + "%");
+            return String.format("%s %s %s %s %s [%s] 🔊 %s", player.isPaused() ? "\u23F8" : "", player.loopEnabled() ? "\uD83D\uDD02" : "", player.loopQueueEnabled() ? "\uD83D\uDD01" : "", player.shuffleEnabled() ? "\uD83D\uDD00" : "", FormatUtil.formatProgressBar(trackPosition, playingTrack.getDuration()), playingTrack.getInfo().isStream ? commandEvent.translate("phrases.text.stream") : String.format("%s/%s", FormatUtil.formatTimestamp(trackPosition), FormatUtil.formatTimestamp(playingTrack.getDuration())), player.getPlayer().getVolume() + "%");
         }
 
         private void delete() {
@@ -216,26 +189,6 @@ public class ControlCommand extends SameChannelCommand {
             unregister();
             if (getInfoMessage() != null)
                 getInfoMessage().delete().queue();
-        }
-
-        private void sendMessage(String title, String message) {
-            SafeMessage.sendMessage(getChannel(), EmbedUtil.success(title, message), 3);
-        }
-
-        private void sendMessageError(String title, String message) {
-            SafeMessage.sendMessage(getChannel(), EmbedUtil.error(title, message), 3);
-        }
-
-        private String getProgressBar(long progress, long full) {
-            double percentage = (double) progress / full;
-            StringBuilder progressBar = new StringBuilder();
-            for (int i = 0; i < 15; i++) {
-                if ((int) (percentage * 15) == i)
-                    progressBar.append("\uD83D\uDD18");
-                else
-                    progressBar.append("▬");
-            }
-            return progressBar.toString();
         }
 
         @Override
