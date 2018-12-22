@@ -2,6 +2,7 @@ package co.groovybot.bot.core.audio;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.command.CommandEvent;
+import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.permission.UserPermissions;
 import co.groovybot.bot.core.entity.EntityProvider;
@@ -136,6 +137,18 @@ public class MusicPlayer extends Player implements Runnable {
         return this.player;
     }
 
+    public int removeDups() {
+        List<String> fineTracks = new ArrayList<>();
+        List<AudioTrack> dups = new ArrayList<>();
+        trackQueue.forEach(t -> {
+            if (fineTracks.contains(t.getInfo().title))
+                dups.add(t);
+            else
+                fineTracks.add(t.getInfo().title);
+        });
+        return dups.size();
+    }
+
     public void queueSongs(final CommandEvent event) {
         UserPermissions userPermissions = EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions();
         Permissions tierTwo = Permissions.tierTwo();
@@ -228,7 +241,8 @@ public class MusicPlayer extends Player implements Runnable {
                         SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.nopremium.title"), String.format(event.translate("phrases.searching.playlistloaded.nopremium.description"), tracks.size(), audioPlaylist.getName())));
                     else {
                         SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), tracks.size(), audioPlaylist.getName())));
-                        if(!dups.isEmpty()) SafeMessage.sendMessage(event.getChannel(), EmbedUtil.info(String.format(event.translate("phrases.load.playlist.dups.title"), dups.size()), String.format(event.translate("phrases.load.playlist.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
+                        if (!dups.isEmpty())
+                            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.info(String.format(event.translate("phrases.load.playlist.dups.title"), dups.size()), String.format(event.translate("phrases.load.playlist.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
                     }
                     return;
                 }
@@ -366,7 +380,7 @@ public class MusicPlayer extends Player implements Runnable {
     private boolean checkDups(AudioTrack audioTrack) {
         if (!EntityProvider.getGuild(guild.getIdLong()).isPreventDups())
             return false;
-        return player.getPlayingTrack() != null && player.getPlayingTrack().getInfo().uri.equals(audioTrack.getInfo().uri) || trackQueue.stream().anyMatch(t -> t.getInfo().uri.equals(audioTrack.getInfo().uri));
+        return player.getPlayingTrack() != null && player.getPlayingTrack().getInfo().title.equals(audioTrack.getInfo().title) || trackQueue.stream().anyMatch(t -> t.getInfo().title.equals(audioTrack.getInfo().title));
     }
 
     @Override
