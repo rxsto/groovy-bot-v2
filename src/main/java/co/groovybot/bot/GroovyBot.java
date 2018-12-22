@@ -134,21 +134,13 @@ public class GroovyBot implements Closeable {
         // Initializing logger
         initLogger(args);
 
-
-        // Checking for debug-mode
+        // Checking for args
         debugMode = args.hasOption('D');
-
-        // Checking for websocket-mode
         enableWebsocket = !args.hasOption("no-websocket");
-
-        //Checking for premium
         premium = args.hasOption("premium");
-
-        //Checking for voice join
         noJoin = args.hasOption("no-voice-join");
-
         noPatrons = args.hasOption("NP");
-        configNodes = args.hasOption("--config-nodes");
+        configNodes = args.hasOption("config-nodes");
         
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
