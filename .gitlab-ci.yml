@@ -4,25 +4,21 @@ stages:
   - build
   - deploy
 
-before_script:
-  - apt-get update && apt-get install -y -qq sshpass
-
 build:
   stage: build
   script:
-    - mvn install:install-file -Dfile=libs/deezer-api-client.jar -DgroupId=com.zeloon -DartifactId=deezer-api-client -Dversion=1.0-SNAPSHOT -Dpackaging=jar
     - mvn $MAVEN_CLI_OPTS clean package
   artifacts:
     paths:
       - target/*.jar
     expire_in: 1 week
 
-
 deploy_stage:
   stage: deploy
   only:
     - develop
   script:
+    - apt-get update && apt-get install -y -qq sshpass
     - export SSHPASS=$USER_PASS
     - cd target/
     - sshpass -e scp -o stricthostkeychecking=no -r . root@$IP_ADDRESS:/opt/groovy/bots/canary/
