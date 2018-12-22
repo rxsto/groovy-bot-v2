@@ -21,6 +21,7 @@ package co.groovybot.bot.core.audio;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.command.CommandEvent;
+import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.permission.UserPermissions;
 import co.groovybot.bot.core.entity.EntityProvider;
@@ -145,13 +146,26 @@ public class MusicPlayer extends Player implements Runnable {
     @Override
     public void announceSong(AudioPlayer audioPlayer, AudioTrack track) {
         if (EntityProvider.getGuild(guild.getIdLong()).isAnnounceSongs())
-            SafeMessage.sendMessage(channel, EmbedUtil.play("Now Playing", FormatUtil.formatTrack(track)));
+            SafeMessage.sendMessage(channel, EmbedUtil.play("Now Playing", FormatUtil.formatTrack(track), track.getDuration()));
     }
 
     @Override
     public IPlayer getPlayer() {
         this.player = this.player == null ? new LavaplayerPlayerWrapper(getAudioPlayerManager().createPlayer()) : this.player;
         return this.player;
+    }
+
+    public int removeDups() {
+        List<String> fineTracks = new ArrayList<>();
+        List<AudioTrack> dups = new ArrayList<>();
+        trackQueue.forEach(t -> {
+            if (fineTracks.contains(t.getInfo().title))
+                dups.add(t);
+            else
+                fineTracks.add(t.getInfo().title);
+        });
+        dups.forEach(t -> trackQueue.remove(t));
+        return dups.size();
     }
 
     public void queueSongs(final CommandEvent event) {
@@ -242,6 +256,7 @@ public class MusicPlayer extends Player implements Runnable {
                     }
                     queueTracks(tracks.toArray(new AudioTrack[0]));
                     inProgress = false;
+
                     if (!tierTwo.isCovered(userPermissions, event))
                         SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.nopremium.title"), String.format(event.translate("phrases.searching.playlistloaded.nopremium.description"), tracks.size(), audioPlaylist.getName())));
                     else {
@@ -259,8 +274,6 @@ public class MusicPlayer extends Player implements Runnable {
 
             private void queueWithChecks(AudioTrack track) {
                 if (!checkSong(track)) return;
-
-
                 if (checkDups(track)) {
                     SafeMessage.editMessage(infoMessage, EmbedUtil.info(event.translate("phrases.load.single.dups.title"), String.format(event.translate("phrases.load.single.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
                     return;
@@ -305,7 +318,7 @@ public class MusicPlayer extends Player implements Runnable {
         if (track.getInfo().isStream)
             SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.streamloaded.title"), String.format(event.translate("phrases.searching.streamloaded.description"), track.getInfo().title)));
         else
-            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)));
+            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)).setFooter(String.format("Estimated: %s", getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(getQueueLengthMillis())), null));
     }
 
     public void update() throws SQLException, IOException {
@@ -385,7 +398,7 @@ public class MusicPlayer extends Player implements Runnable {
     private boolean checkDups(AudioTrack audioTrack) {
         if (!EntityProvider.getGuild(guild.getIdLong()).isPreventDups())
             return false;
-        return player.getPlayingTrack() != null && player.getPlayingTrack().getInfo().uri.equals(audioTrack.getInfo().uri) || trackQueue.stream().anyMatch(t -> t.getInfo().uri.equals(audioTrack.getInfo().uri));
+        return player.getPlayingTrack() != null && player.getPlayingTrack().getInfo().title.equals(audioTrack.getInfo().title) || trackQueue.stream().anyMatch(t -> t.getInfo().title.equals(audioTrack.getInfo().title));
     }
 
     @Override

@@ -206,7 +206,7 @@ public class SpotifySourceManager implements AudioSourceManager {
             else {
                 try {
                     URI nextPageUri = new URI(currentPage.getNext());
-                    List<NameValuePair> queryPairs = URLEncodedUtils.parse(nextPageUri, StandardCharsets.UTF_8);
+                    List<NameValuePair> queryPairs = URLEncodedUtils.parse(nextPageUri.toString(), StandardCharsets.UTF_8);
                     GetNormalPlaylistsTracksRequest.Builder builder = new GetNormalPlaylistsTracksRequest.Builder(this.spotifyManager.getAccessToken())
                             .playlistId(playlist.getId());
                     for (NameValuePair nameValuePair : queryPairs) {
@@ -235,7 +235,7 @@ public class SpotifySourceManager implements AudioSourceManager {
             else {
                 try {
                     URI nextPageUri = new URI(currentPage.getNext());
-                    List<NameValuePair> queryPairs = URLEncodedUtils.parse(nextPageUri, StandardCharsets.UTF_8);
+                    List<NameValuePair> queryPairs = URLEncodedUtils.parse(nextPageUri.toString(), StandardCharsets.UTF_8);
                     GetAlbumsTracksRequest.Builder builder = this.spotifyManager.getSpotifyApi().getAlbumsTracks(album.getId());
                     for (NameValuePair nameValuePair : queryPairs) {
                         builder = builder.setQueryParameter(nameValuePair.getName(), nameValuePair.getValue());

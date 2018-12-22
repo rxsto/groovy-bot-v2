@@ -75,8 +75,8 @@ public class EmbedUtil extends SafeMessage {
      * @param description The description of the embed
      * @return an EmbedBuiler
      */
-    public static EmbedBuilder play(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle("🎶 " + title).setColor(Colors.DARK_BUT_NOT_BLACK);
+    public static EmbedBuilder play(String title, String description, long duration) {
+        return new EmbedBuilder().setDescription(description).setTitle("🎶 " + title).setColor(Colors.DARK_BUT_NOT_BLACK).setFooter("Duration: " + FormatUtil.formatDuration(duration), null);
     }
 
     /**
