@@ -442,7 +442,7 @@ public class MusicPlayer extends Player implements Runnable {
             return VoteSkipReason.ERROR;
         if (voiceChannel.getMembers().size() == 2)
             return VoteSkipReason.ALONE;
-        if (voiceChannel.getMembers().stream().noneMatch(member -> new UserPermissions(EntityProvider.getUser(member.getUser().getIdLong()), GroovyBot.getInstance()).isDj(guild)))
+        if (EntityProvider.getGuild(guild.getIdLong()).isDjMode() && voiceChannel.getMembers().stream().noneMatch(member -> new UserPermissions(EntityProvider.getUser(member.getUser().getIdLong()), GroovyBot.getInstance()).isDj(guild)))
             return VoteSkipReason.ALLOWED;
         return VoteSkipReason.DJ_IN_CHANNEL;
     }
