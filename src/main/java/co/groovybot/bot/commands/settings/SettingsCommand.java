@@ -40,9 +40,13 @@ public class SettingsCommand extends Command {
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.prefix")), String.format("**```%s```**", event.getGroovyGuild().getPrefix()), true);
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.djmode")), String.format("**```%s```**", event.getGroovyGuild().isDjMode()), true);
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.announce")), String.format("**```%s```**", event.getGroovyGuild().isAnnounceSongs()), true);
+        embedBuilder.addField(String.format("**%s**", event.translate("command.settings.join")), String.format("**```%s```**", event.getGroovyGuild().hasAutoJoinChannel()), true);
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.leave")), String.format("**```%s```**", event.getGroovyGuild().isAutoLeave()), true);
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.pause")), String.format("**```%s```**", event.getGroovyGuild().isAutoPause()), true);
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.play")), String.format("**```%s```**", event.getBot().getMusicPlayerManager().getPlayer(event).getScheduler().isAutoPlay()), true);
+        embedBuilder.addField(String.format("**%s**", event.translate("command.settings.dupes")), String.format("**```%s```**", event.getGroovyGuild().isPreventDups()), true);
+        embedBuilder.addField(String.format("**%s**", event.translate("command.settings.botchannel")), String.format("**```%s```**", event.getGroovyGuild().getBotChannel() == 0 ? "none" : event.getBot().getShardManager().getTextChannelById(event.getGroovyGuild().getBotChannel()).getAsMention()), true);
+        embedBuilder.addField(String.format("**%s**", event.translate("command.settings.channelblacklist")), String.format("**```%s```**", event.getGroovyGuild().getBlacklistedChannels().size()), true);
         return send(embedBuilder);
     }
 
