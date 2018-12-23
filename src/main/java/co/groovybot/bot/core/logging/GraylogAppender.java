@@ -40,10 +40,8 @@ public class GraylogAppender extends AbstractAppender {
         }
         builder.level(GelfMessageLevel.valueOf(event.getLevel().name()));
         builder.additionalField("source", event.getSource().toString());
-        if(GroovyBot.getInstance().isDebugMode())
-            builder.additionalField("app_mode", "debug");
-        else
-            builder.additionalField("app_mode", "production");
+        builder.additionalField("instance", GroovyBot.getInstance().getInstanceName());
+        builder.additionalField("level_name", event.getLevel().name());
         try {
             GroovyBot.getInstance().getGelfTransport().send(builder.build());
         } catch (InterruptedException e) {

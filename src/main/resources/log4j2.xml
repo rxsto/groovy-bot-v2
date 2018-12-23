@@ -28,6 +28,7 @@
                 <pattern>[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} » %msg%n</pattern>
             </PatternLayout>
             <JDAFilter/>
+            <GraylogFilter/>
         </Console>
         <File name="LatestLog" append="false">
             <FileName>logs/latest.log</FileName>
@@ -35,6 +36,7 @@
                 <pattern>[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} - %msg%n</pattern>
             </PatternLayout>
             <JDAFilter/>
+            <GraylogFilter/>
         </File>
         <File name="Log">
             <FileName>logs/bot-${fileDate}.log</FileName>
@@ -42,6 +44,7 @@
                 <pattern>[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} - %msg%n</pattern>
             </PatternLayout>
             <JDAFilter/>
+            <GraylogFilter/>
         </File>
         <Async name="Async">
             <AppenderRef ref="Log"/>

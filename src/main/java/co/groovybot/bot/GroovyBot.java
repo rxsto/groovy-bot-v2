@@ -85,6 +85,8 @@ public class GroovyBot implements Closeable {
     @Getter
     private static GroovyBot instance;
     @Getter
+    private final String instanceName;
+    @Getter
     private final long startupTime;
     @Getter
     private final OkHttpClient httpClient;
@@ -182,6 +184,7 @@ public class GroovyBot implements Closeable {
 
         // Initializing config
         initConfig();
+        instanceName = config.getJSONObject("bot").has("instance") ? config.getJSONObject("bot").getString("instance") : "dev";
 
         // Creating cache
         guildCache = new Cache<>(Guild.class);
@@ -190,6 +193,7 @@ public class GroovyBot implements Closeable {
         if (!noCentralizedLogging) {
             final GelfConfiguration gelfConfiguration = new GelfConfiguration(new InetSocketAddress(config.getJSONObject("graylog").getString("host"), config.getJSONObject("graylog").getInt("port")));
             gelfConfiguration.transport(GelfTransports.TCP).queueSize(512).connectTimeout(5000).reconnectDelay(1000).tcpNoDelay(true).sendBufferSize(32768);
+            gelfTransport = GelfTransports.create(gelfConfiguration);
             gelfTransport = GelfTransports.create(gelfConfiguration);
             try {
                 gelfTransport.send(new GelfMessage("HELLO"));
