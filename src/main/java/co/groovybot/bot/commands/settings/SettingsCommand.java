@@ -58,7 +58,8 @@ public class SettingsCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            return null;
+            event.getGroovyGuild().reset();
+            return send(success("command.settings.reset.title", "command.settings.reset.description"));
         }
     }
 }

@@ -190,4 +190,17 @@ public class Guild extends DatabaseEntitiy {
     private void update() {
         GroovyBot.getInstance().getGuildCache().update(this);
     }
+
+    public void reset() {
+        blacklistedChannels = new JSONArray();
+        autoJoinChannelId = 0;
+        botChannel = 0;
+        volume = 100;
+        prefix = GroovyBot.getInstance().getConfig().getJSONObject("settings").getString("prefix");
+        djMode = false;
+        announceSongs = true;
+        autoLeave = true;
+        autoPause = false;
+        preventDups = false;
+    }
 }
