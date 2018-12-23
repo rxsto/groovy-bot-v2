@@ -1,4 +1,4 @@
-![FredBoat](https://cdn.groovybot.co/images/readme.png)
+![Groovy](https://cdn.groovybot.co/images/readme.png)
 
 # Groovy [![Crowdin](https://d322cqt584bo4o.cloudfront.net/groovy/localized.svg)](https://i18n.groovybot.co/project/groovy) [![Discord Bots](https://discordbots.org/api/widget/status/402116404301660181.svg?noavatar=true)](https://discordbots.org/bot/402116404301660181)
 
