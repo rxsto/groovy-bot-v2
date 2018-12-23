@@ -23,7 +23,6 @@ import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.command.*;
 import co.groovybot.bot.core.command.permission.Permissions;
-import lombok.extern.log4j.Log4j2;
 
 public class DuplicatesCommand extends Command {
 
@@ -41,7 +40,7 @@ public class DuplicatesCommand extends Command {
     public class NoDuplicatesCommand extends SubCommand {
 
         public NoDuplicatesCommand() {
-            super(new String[]{"prevent", "no", "deny"}, Permissions.djMode(), "Toggles the option whether you want to queue duplicated songs or not.", "");
+            super(new String[]{"prevent", "no", "deny"}, Permissions.tierOne(), "Toggles the option whether you want to queue duplicated songs or not.", "");
         }
 
         @Override

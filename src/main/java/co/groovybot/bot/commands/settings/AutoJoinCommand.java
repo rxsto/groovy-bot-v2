@@ -29,7 +29,7 @@ import java.util.List;
 
 public class AutoJoinCommand extends Command {
     public AutoJoinCommand() {
-        super(new String[] {"autojoin", "aj"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Let's you define a channel in which the bot joins automatically when a user joins into it", "[channelId/name]");
+        super(new String[] {"autojoin", "aj"}, CommandCategory.SETTINGS, Permissions.tierThree(), "Let's you define a channel in which the bot joins automatically when a user joins into it", "[channelId/name]");
         registerSubCommand(new DisableCommand());
     }
 

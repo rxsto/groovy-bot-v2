@@ -93,20 +93,12 @@ public class GroovyBot implements Closeable {
     @Getter
     private final CommandManager commandManager;
     @Getter
-    private final boolean debugMode;
-    @Getter
-    private final boolean configNodes;
-    @Getter
-    private final boolean premium;
-    private final boolean noJoin;
-    private final boolean noPatrons;
-    private final boolean noMonitoring;
-    private final boolean noCentralizedLogging;
-    @Getter
     private final TranslationManager translationManager;
     @Getter
     private final LavalinkManager lavalinkManager;
+    @Getter
     private final StatusPage statusPage;
+    @Getter
     private final ServerCountStatistics serverCountStatistics;
     @Getter
     private final MusicPlayerManager musicPlayerManager;
@@ -123,9 +115,9 @@ public class GroovyBot implements Closeable {
     @Getter
     private final SpotifyManager spotifyClient;
     @Getter
-    private final boolean noWebsocket;
+    private final PremiumHandler premiumHandler;
     @Getter
-    private Configuration config;
+    private final Configuration config;
     @Getter
     private PostgreSQL postgreSQL;
     @Getter
@@ -139,20 +131,35 @@ public class GroovyBot implements Closeable {
     @Getter
     private IEventManager eventManager;
     @Getter
+    private PlaylistManager playlistManager;
+    @Getter
+    private GelfTransport gelfTransport;
+    @Getter
     private Cache<Guild> guildCache;
     @Getter
     private Cache<User> userCache;
     @Getter
-    private PlaylistManager playlistManager;
-    @Getter
-    @Setter
-    private boolean allShardsInitialized = false;
-    @Getter
     private net.dv8tion.jda.core.entities.Guild supportGuild;
     @Getter
-    private final PremiumHandler premiumHandler;
+    private final long startupTime;
     @Getter
-    private GelfTransport gelfTransport;
+    private boolean allShardsInitialized = false;
+    @Getter
+    private final boolean debugMode;
+    @Getter
+    private final boolean configNodes;
+    @Getter
+    private final boolean noWebsocket;
+    @Getter
+    private final boolean premium;
+    @Getter
+    private final boolean noJoin;
+    @Getter
+    private final boolean noPatrons;
+    @Getter
+    private final boolean noMonitoring;
+    @Getter
+    private final boolean noCentralizedLogging;
 
     private GroovyBot(CommandLine args) throws IOException {
 
@@ -303,16 +310,8 @@ public class GroovyBot implements Closeable {
         }
     }
 
-    private void initConfig() {
-        // Initializing config
-        this.config = ConfigurationSetup.setupConfig().init();
-    }
-
     private void initLogger(CommandLine args) throws IOException {
-        // Setting logging-level
         Configurator.setRootLevel(Level.toLevel(args.getOptionValue("log-level", "INFO")));
-
-        // Initializing logger
         Configurator.initialize(ClassLoader.getSystemClassLoader(), new ConfigurationSource(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("log4j2.xml"))));
     }
 
