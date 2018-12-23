@@ -85,6 +85,8 @@ public class GroovyBot implements Closeable {
     @Getter
     private static GroovyBot instance;
     @Getter
+    private final String instanceName;
+    @Getter
     private final OkHttpClient httpClient;
     @Getter
     private final CommandManager commandManager;
@@ -187,6 +189,7 @@ public class GroovyBot implements Closeable {
 
         // Initializing config
         config = ConfigurationSetup.setupConfig().init();
+        instanceName = config.getJSONObject("bot").has("instance") ? config.getJSONObject("bot").getString("instance") : "dev";
 
         // Creating cache
         guildCache = new Cache<>(Guild.class);

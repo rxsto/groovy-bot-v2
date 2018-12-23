@@ -31,6 +31,7 @@ public class ConfigurationSetup {
         // Create object for bot
         final JSONObject bot = new JSONObject();
         bot.put("token", "defaultvalue");
+        bot.put("instance", "dev");
         configuration.addDefault("bot", bot);
 
         // Create object for database

@@ -16,11 +16,8 @@ import org.graylog2.gelfclient.GelfMessageLevel;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-@Plugin(
-        name = "Graylog",
-        category = Core.CATEGORY_NAME,
-        elementType = Appender.ELEMENT_TYPE
-)
+@SuppressWarnings("unused")
+@Plugin(name = "Graylog", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE)
 public class GraylogAppender extends AbstractAppender {
 
     protected GraylogAppender(String name, Filter filter) {
@@ -29,22 +26,23 @@ public class GraylogAppender extends AbstractAppender {
 
     @Override
     public void append(LogEvent event) {
-        if(GroovyBot.getInstance().getGelfTransport() == null)
+        if (GroovyBot.getInstance().getGelfTransport() == null)
             return;
-        GelfMessageBuilder builder = new GelfMessageBuilder(event.getMessage().getFormattedMessage());
-        if(event.getThrown() != null) {
+        GelfMessageBuilder builder = new
+                GelfMessageBuilder(event.getMessage().getFormattedMessage());
+        if (event.getThrown() != null) {
             StringWriter stringWriter = new StringWriter();
             PrintWriter printWriter = new PrintWriter(stringWriter);
             event.getThrown().printStackTrace(printWriter);
             builder.fullMessage(stringWriter.toString());
         }
+
         builder.level(GelfMessageLevel.valueOf(event.getLevel().name()));
         builder.additionalField("source", event.getSource().toString());
-        if(GroovyBot.getInstance().isDebugMode())
-            builder.additionalField("app_mode", "debug");
-        else
-            builder.additionalField("app_mode", "production");
+        builder.additionalField("instance", GroovyBot.getInstance().getInstanceName());
+        builder.additionalField("level_name", event.getLevel().name());
         try {
+
             GroovyBot.getInstance().getGelfTransport().send(builder.build());
         } catch (InterruptedException e) {
             e.printStackTrace();
