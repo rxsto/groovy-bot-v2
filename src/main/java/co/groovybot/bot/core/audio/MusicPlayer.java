@@ -36,10 +36,14 @@ import lavalink.client.LavalinkUtil;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavaplayerPlayerWrapper;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
+import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.core.hooks.SubscribeEvent;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONArray;
 
@@ -74,6 +78,9 @@ public class MusicPlayer extends Player implements Runnable {
     @Getter
     @Setter
     private String bassboost = "off";
+    @Getter
+    private int skipVotes;
+    private VoiceChannel voiceChannel;
 
     protected MusicPlayer(Guild guild, TextChannel channel, YoutubeUtil youtubeClient) {
         super(youtubeClient);
@@ -82,11 +89,13 @@ public class MusicPlayer extends Player implements Runnable {
         this.channel = channel;
         this.previousTrack = null;
         this.inProgress = false;
+        this.voiceChannel = guild.getSelfMember().getVoiceState().getChannel();
         instanciatePlayer(LavalinkManager.getLavalink().getLink(guild));
         getPlayer().addListener(getScheduler());
         audioPlayerManager = lavalinkManager.getAudioPlayerManager();
         scheduler = Executors.newSingleThreadScheduledExecutor(new NameThreadFactory("LeaveListener"));
         scheduler.scheduleAtFixedRate(this, 0, 10, TimeUnit.MINUTES);
+        guild.getJDA().addEventListener(this);
     }
 
     public void connect(VoiceChannel channel) {
@@ -410,5 +419,62 @@ public class MusicPlayer extends Player implements Runnable {
             leave("I've **left** the voice-channel because I've been **inactive** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://donate.groovybot.co)**!");
         else if (guild.getSelfMember().getVoiceState().getChannel().getMembers().size() == 1)
             leave("I've **left** the voice-channel because I've been **alone** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://donate.groovybot.co)**!");
+    }
+
+    @SuppressWarnings("unused")
+    @SubscribeEvent
+    private void handleDisconnect(GuildVoiceLeaveEvent event) {
+        if (event.getMember().equals(event.getGuild().getSelfMember())) {
+            skipVotes = 0;
+            voiceChannel = null;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @SubscribeEvent
+    private void handleConnect(GuildVoiceJoinEvent event) {
+        if (event.getMember().equals(event.getGuild().getSelfMember()))
+            voiceChannel = event.getChannelJoined();
+    }
+
+    public VoteSkipReason voteSkipAvailable() {
+        if (voiceChannel == null)
+            return VoteSkipReason.ERROR;
+        if (voiceChannel.getMembers().size() == 2)
+            return VoteSkipReason.ALONE;
+        if (voiceChannel.getMembers().stream().noneMatch(member -> new UserPermissions(EntityProvider.getUser(member.getUser().getIdLong()), GroovyBot.getInstance()).isDj(guild)))
+            return VoteSkipReason.ALLOWED;
+        return VoteSkipReason.DJ_IN_CHANNEL;
+    }
+
+    public int getNeededSkipVotes() {
+        if (voiceChannel != null)
+            return voiceChannel.getMembers().size() / 2;
+        return 0;
+    }
+
+    public boolean incrementSkipVotes() {
+        int needed = getNeededSkipVotes();
+        skipVotes++;
+        return skipVotes >= needed;
+    }
+
+    @Override
+    public void resetSkipVotes() {
+        skipVotes = 0;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum VoteSkipReason {
+        ALLOWED(null, null),
+        ALONE("command.voteskip.deny.alone.title", "command.voteskip.deny.description"),
+        DJ_IN_CHANNEL("command.voteskip.deny.dj.title", "command.voteskip.deny.dj.description"),
+        ERROR("command.voteskip.deny.error", "command.voteskip.deny.description");
+
+        private final String titleTranslationKey;
+        private final String descriptionTranslationKey;
+
+
     }
 }

@@ -85,7 +85,8 @@ public class CommandRegistry {
                 new AutoJoinCommand(),
                 new SettingsCommand(),
                 new PremiumCommand(),
-                new DuplicatesCommand()
+                new DuplicatesCommand(),
+                new VoteSkipCommand()
         );
     }
 }
