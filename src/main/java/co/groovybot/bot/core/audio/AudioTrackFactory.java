@@ -39,6 +39,7 @@ public class AudioTrackFactory {
     public List<AudioTrack> getAudioTracks(List<TrackData> trackDataList) {
         return trackDataList.stream()
                 .map(this::getAudioTrack)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
@@ -49,6 +50,9 @@ public class AudioTrackFactory {
             return new YoutubeAudioTrack(audioTrackInfo, new YoutubeAudioSourceManager());
         } catch (IOException e) {
             log.error("[AudioTrackFactory] Failed to convert TrackData to AudioTrack!", e);
+        } catch (NullPointerException e) {
+            //TODO: Track not found message
+            return null;
         }
         return null;
     }
