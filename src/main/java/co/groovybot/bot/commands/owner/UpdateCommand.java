@@ -58,7 +58,6 @@ public class UpdateCommand extends Command {
 
         event.getBot().getShardManager().setStatus(OnlineStatus.DO_NOT_DISTURB);
         event.getBot().getShardManager().setGame(Game.playing("Updating ..."));
-        event.getBot().setAllShardsInitialized(false);
 
         return send(success("Announcing update!", "The bot should be **ready** for being **updated** in a few seconds!"));
     }
