@@ -161,8 +161,10 @@ public class CommandManager implements Closeable {
 
             // Run the commands run() method
             Result result = command.run(commandEvent.getArgs(), commandEvent);
-            if (result != null)
-                result.sendMessage(channel, 60);
+            if (result != null && commandEvent.getGroovyGuild().isDeleteMessage())
+                result.sendMessage(channel, 10);
+            else if (result != null && !commandEvent.getGroovyGuild().isDeleteMessage())
+                result.sendMessage(channel);
             bot.getEventManager().handle(new CommandExecutedEvent(commandEvent, command));
         } catch (Exception e) {
             bot.getEventManager().handle(new CommandFailEvent(commandEvent, command, e));
