@@ -184,7 +184,7 @@ public abstract class Player {
         AtomicLong millis = new AtomicLong();
         trackQueue.forEach(track -> millis.addAndGet(track.getDuration()));
         if (trackQueue.toArray().length > 0) {
-            millis.addAndGet(getPlayer().getPlayingTrack().getDuration());
+            millis.addAndGet(getPlayer().getPlayingTrack().getDuration() - getPlayer().getPlayingTrack().getPosition());
             millis.getAndAdd(-((AudioTrack) trackQueue.toArray()[trackQueue.toArray().length - 1]).getDuration());
         }
         return millis.get();
