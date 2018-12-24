@@ -34,11 +34,13 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.core.utils.Helpers;
 
 import java.util.List;
@@ -47,9 +49,11 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+@Log4j2
 public class SearchCommand extends SemiInChannelCommand {
 
     private final SearchCommand instance;
+    private final String[] EMOTES = {"\u0031\u20E3", "\u0032\u20E3", "\u0033\u20E3", "\u0034\u20E3", "\u0035\u20E3"};
 
     public SearchCommand() {
         super(new String[]{"search", "find"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you search for songs", "<song>");
@@ -74,6 +78,9 @@ public class SearchCommand extends SemiInChannelCommand {
                 final List<AudioTrack> tracks = playlist.getTracks();
                 List<AudioTrack> results = tracks.stream().limit(tracks.size() < 5 ? tracks.size() : 5).collect(Collectors.toList());
                 Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.search.results.title"), buildTrackDescription(results)).setFooter(event.translate("command.search.results.footer"), null));
+                for(int i=0;i<results.size();i++) {
+                    infoMessage.addReaction(EMOTES[i]).complete();
+                }
                 new MusicResult(infoMessage, event.getChannel(), event.getMember(), results, player);
             }
 
@@ -145,6 +152,40 @@ public class SearchCommand extends SemiInChannelCommand {
             AudioTrack track = searchResults.get(song - 1);
             player.queueTrack(track, false, false);
             sendMessage(event.getChannel(), EmbedUtil.success(translate(author, "phrases.searching.trackloaded.title"), String.format(translate(author, "phrases.searching.trackloaded.description"), track.getInfo().title)));
+            unregister();
+        }
+
+        @Override
+        protected void handleReaction(GuildMessageReactionAddEvent event) {
+            final String reactionRaw = event.getReactionEmote().getName();
+            int song = 0;
+            switch (reactionRaw) {
+                case "\u0031\u20E3":
+                    song=1;
+                    break;
+                case "\u0032\u20E3":
+                    song=2;
+                    break;
+                case "\u0033\u20E3":
+                    song=3;
+                    break;
+                case "\u0034\u20E3":
+                    song=4;
+                    break;
+                case "\u0035\u20E3":
+                    song=5;
+                    break;
+                default:
+                    sendMessage(event.getChannel(), error(translate(event.getUser(), "phrases.invalidnumber.title"), translate(event.getUser(), "phrases.invalidnumber.description")), 8);
+            }
+            if (song > 5 || (song - 1) > searchResults.size()) {
+                sendMessage(event.getChannel(), error(translate(event.getUser(), "phrases.invalidnumber.title"), translate(event.getUser(), "phrases.invalidnumber.description")), 8);
+                unregister();
+                return;
+            }
+            AudioTrack track = searchResults.get(song - 1);
+            player.queueTrack(track, false, false);
+            sendMessage(event.getChannel(), EmbedUtil.success(translate(event.getUser(), "phrases.searching.trackloaded.title"), String.format(translate(event.getUser(), "phrases.searching.trackloaded.description"), track.getInfo().title)));
             unregister();
         }
     }

@@ -20,6 +20,8 @@
 package co.groovybot.bot.core.command.interaction;
 
 import lombok.Getter;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
@@ -29,6 +31,7 @@ import net.dv8tion.jda.core.hooks.SubscribeEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+@Log4j2
 public class InteractionManager {
 
     @Getter
@@ -53,12 +56,18 @@ public class InteractionManager {
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onReaction(GuildMessageReactionAddEvent event) {
+        log.debug("REACTION");
         if (event.getUser().isBot())
             return;
-        if (!isInteractable(event.getMessageIdLong())) return;
-        InteractableMessage interactableMessage = interactionStorage.get(event.getMessageIdLong());
+        log.debug("REACTION 2");
+        if (!isInteractable(event.getUser().getIdLong())) return;
+        log.debug("REACTION 3");
+        InteractableMessage interactableMessage = interactionStorage.get(event.getUser().getIdLong());
+        log.debug("REACTION 4");
         event.getReaction().removeReaction(event.getUser()).queue();
+        log.debug("REACTION 5");
         if (!checkAuthor(interactableMessage, event.getUser())) return;
+        log.debug("REACTION 6");
         interactableMessage.handleReaction(event);
     }
 

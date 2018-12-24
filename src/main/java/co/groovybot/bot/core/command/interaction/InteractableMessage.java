@@ -53,6 +53,7 @@ public abstract class InteractableMessage {
 
     protected void unregister() {
         onDelete();
+        infoMessage.delete().queue();
         GroovyBot.getInstance().getInteractionManager().unregister(this);
     }
 
