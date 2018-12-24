@@ -26,6 +26,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 
 import java.sql.Connection;
@@ -130,7 +131,7 @@ public class Permissions {
         if (owner)
             return permissions.getIsOwner();
         if (admin)
-            return permissions.isAdmin(event.getGuild());
+            return permissions.isAdmin(event.getGuild()) || event.getMember().hasPermission(Permission.MANAGE_SERVER);
         if (voted)
             return permissions.hasVoted();
         if (tierone)
