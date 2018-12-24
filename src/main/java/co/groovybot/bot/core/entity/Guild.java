@@ -41,6 +41,7 @@ public class Guild extends DatabaseEntitiy {
     private boolean autoLeave = true;
     private boolean autoPause = false;
     private boolean preventDups = false;
+    private boolean deleteMessage = true;
     private long autoJoinChannelId;
     private long djRole= 0;
     private JSONArray blacklistedChannels = new JSONArray();
@@ -65,6 +66,7 @@ public class Guild extends DatabaseEntitiy {
                 botChannel = rs.getLong("commands_channel");
                 blacklistedChannels = new JSONArray(rs.getString("blacklisted_channels"));
                 preventDups = rs.getBoolean("prevent_dups");
+                deleteMessage = rs.getBoolean("delete_messages");
             } else {
                 PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO guilds (id, prefix, volume, dj_mode, announce_songs, auto_leave, blacklisted_channels, commands_channel, auto_pause, prevent_dups) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 insertStatement.setLong(1, entityId);
@@ -99,6 +101,11 @@ public class Guild extends DatabaseEntitiy {
             ps.setLong(11, entityId);
             ps.execute();
         }
+    }
+
+    public void setDeleteMessage(boolean deleteMessage) {
+        this.deleteMessage = deleteMessage;
+        update();
     }
 
     public void setVolume(Integer volume) {
