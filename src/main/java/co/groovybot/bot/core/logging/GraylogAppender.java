@@ -43,7 +43,6 @@ public class GraylogAppender extends AbstractAppender {
         builder.additionalField("instance", GroovyBot.getInstance().getInstanceName());
         builder.additionalField("level_name", event.getLevel().name());
         try {
-
             GroovyBot.getInstance().getGelfTransport().send(builder.build());
         } catch (InterruptedException e) {
             e.printStackTrace();

@@ -67,6 +67,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.graylog2.gelfclient.GelfConfiguration;
 import org.graylog2.gelfclient.GelfMessage;
 import org.graylog2.gelfclient.GelfTransports;
+import org.graylog2.gelfclient.transport.AbstractGelfTransport;
 import org.graylog2.gelfclient.transport.GelfTransport;
 import org.influxdb.InfluxDB;
 
@@ -308,6 +309,7 @@ public class GroovyBot implements Closeable {
 
     private void initLogger(CommandLine args) throws IOException {
         Configurator.setRootLevel(Level.toLevel(args.getOptionValue("log-level", "INFO")));
+        Configurator.setLevel(AbstractGelfTransport.class.getName(), Level.INFO);
         Configurator.initialize(ClassLoader.getSystemClassLoader(), new ConfigurationSource(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("log4j2.xml"))));
     }
 
