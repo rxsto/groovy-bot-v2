@@ -130,6 +130,8 @@ public class UserPermissions {
             if (guild.getMemberById(user.getEntityId()).getVoiceState().getChannel().getMembers().size() == 2)
                 return true;
         for (Role role : guild.getMemberById(user.getEntityId()).getRoles()) {
+            log.debug(role.getIdLong());
+            log.debug(gguild.getDjRole());
             if (role.getIdLong() == gguild.getDjRole())
                 return true;
         }
