@@ -72,7 +72,6 @@ public class InteractionManager {
         final long authorId = event.getAuthor().getIdLong();
         if (!isInteractable(authorId)) return;
         InteractableMessage interactableMessage = interactionStorage.get(authorId);
-        event.getMessage().delete().queue();
         if (!checkAuthor(interactableMessage, event.getAuthor())) return;
         interactableMessage.handleMessage(event);
     }
