@@ -4,6 +4,9 @@ import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.interaction.InteractableMessage;
+import co.groovybot.bot.core.command.permission.Permissions;
+import co.groovybot.bot.core.command.permission.UserPermissions;
+import co.groovybot.bot.core.entity.EntityProvider;
 import co.groovybot.bot.util.EmbedUtil;
 import co.groovybot.bot.util.SafeMessage;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,9 @@ import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 @RequiredArgsConstructor
 @Log4j2
 @SuppressWarnings("unused")
@@ -25,6 +31,8 @@ public class AutoQueueListener {
     @SubscribeEvent
     private void handleURLMessage(GuildMessageReceivedEvent event) {
         if (!event.getMessage().getContentDisplay().matches("([a-zA-Z\\d]+:\\/\\/)?((\\w+:\\w+@)?([a-zA-Z\\d-]*\\.)?([a-zA-Z\\d.-]+\\.[A-Za-z]{2,13})(:\\d+)?(\\/\\S*)?)"))
+            return;
+        if(!Permissions.tierOne().isCovered(new UserPermissions(EntityProvider.getUser(event.getAuthor().getIdLong()),bot),new CommandEvent(event,bot,new String[]{},"listenerFillingSystem")))
             return;
         MusicPlayer player = bot.getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
         if (player == null)
@@ -51,6 +59,12 @@ public class AutoQueueListener {
             this.searchItem = item;
             this.e = e;
             this.player = player;
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    unregister();
+                }
+            }, 15 * 1000);
         }
 
         @Override
@@ -66,6 +80,7 @@ public class AutoQueueListener {
                 }
 
             }
+            this.unregister();
         }
     }
 
