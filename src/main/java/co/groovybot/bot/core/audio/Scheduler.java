@@ -108,8 +108,9 @@ public class Scheduler extends AudioEventAdapterWrapped {
 
                 // Check for Shuffle-mode
                 if (shuffle) {
-                    if (player.trackQueue.isEmpty())
+                    if (player.trackQueue.isEmpty()) {
                         player.onEnd(true);
+                    }
                     else {
                         final int index = ThreadLocalRandom.current().nextInt(player.trackQueue.size());
                         nextTrack = ((LinkedList<AudioTrack>) player.trackQueue).get(index);
@@ -144,6 +145,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
             default:
                 break;
         }
+        player.resetSkipVotes();
     }
 
     private void runAutoplay(AudioTrack track) {
