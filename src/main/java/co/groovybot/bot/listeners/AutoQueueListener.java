@@ -30,7 +30,7 @@ public class AutoQueueListener {
 
     @SubscribeEvent
     private void handleURLMessage(GuildMessageReceivedEvent event) {
-        if (!event.getMessage().getContentDisplay().matches("([a-zA-Z\\d]+:\\/\\/)?((\\w+:\\w+@)?([a-zA-Z\\d-]*\\.)?([a-zA-Z\\d.-]+\\.[A-Za-z]{2,13})(:\\d+)?(\\/\\S*)?)"))
+        if (!event.getMessage().getContentDisplay().matches("(https?://)?(.*)?spotify\\.com.*") || !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?youtube\\.com.*") || !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?youtu\\.be.*") || !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?soundcloud\\.com.*") || !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?twitch\\.tv.*"))
             return;
         if(!Permissions.tierOne().isCovered(new UserPermissions(EntityProvider.getUser(event.getAuthor().getIdLong()),bot),new CommandEvent(event,bot,new String[]{},"listenerFillingSystem")))
             return;
