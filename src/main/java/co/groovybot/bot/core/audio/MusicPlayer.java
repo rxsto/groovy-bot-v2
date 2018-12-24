@@ -383,7 +383,7 @@ public class MusicPlayer extends Player implements Runnable {
         }
     }
 
-    private String removeQueryFromUrl(String url) {
+    public String removeQueryFromUrl(String url) {
         try {
             return new URIBuilder(url).removeQuery().toString();
         } catch (URISyntaxException e) {
