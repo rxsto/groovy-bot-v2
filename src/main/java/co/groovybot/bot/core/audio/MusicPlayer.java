@@ -95,13 +95,20 @@ public class MusicPlayer extends Player implements Runnable {
     }
 
     public boolean checkConnect(CommandEvent event) {
-        if (event.getMember().getVoiceState().getChannel() == null) return false;
-        if (!event.getGuild().getSelfMember().hasPermission(event.getMember().getVoiceState().getChannel(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
+        final VoiceChannel channel = event.getMember().getVoiceState().getChannel();
+        if (channel == null) return false;
+        if (!event.getGuild().getSelfMember().hasPermission(channel, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
             SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.join.nopermission.description")));
             return false;
         }
+        log.debug(!event.getGuild().getSelfMember().hasPermission(channel, Permission.ADMINISTRATOR));
+        log.debug(!event.getGuild().getSelfMember().hasPermission(channel, Permission.VOICE_MOVE_OTHERS));
+        if (!event.getGuild().getSelfMember().hasPermission(channel, Permission.ADMINISTRATOR) && !event.getGuild().getSelfMember().hasPermission(channel, Permission.VOICE_MOVE_OTHERS) && channel.getMembers().size() >= channel.getUserLimit()) {
+            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.channelfull.title"), event.translate("phrases.channelfull.description")));
+            return false;
+        }
         final GuildVoiceState voiceState = event.getGuild().getSelfMember().getVoiceState();
-        if (voiceState.inVoiceChannel() && voiceState.getChannel().getMembers().size() != 1 && !Permissions.djMode().isCovered(event.getPermissions(), event)) {
+        if (voiceState.inVoiceChannel() && channel.getMembers().size() != 1 && !Permissions.djMode().isCovered(event.getPermissions(), event)) {
             SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.djrequired.title"), event.translate("phrases.djrequired.description")));
             return false;
         }
