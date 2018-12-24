@@ -86,7 +86,8 @@ public class CommandRegistry {
                 new SettingsCommand(),
                 new PremiumCommand(),
                 new DuplicatesCommand(),
-                new VoteSkipCommand()
+                new VoteSkipCommand(),
+                new VoicefixCommand()
         );
     }
 }
