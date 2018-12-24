@@ -100,13 +100,12 @@ public class MusicPlayer extends Player implements Runnable {
             SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.join.nopermission.description")));
             return false;
         }
-        if (!event.getGuild().getSelfMember().hasPermission(event.getMember().getVoiceState().getChannel(), Permission.ADMINISTRATOR) && !event.getGuild().getSelfMember().hasPermission(event.getMember().getVoiceState().getChannel(), Permission.VOICE_MOVE_OTHERS) && event.getMember().getVoiceState().getChannel().getMembers().size() >= event.getMember().getVoiceState().getChannel().getUserLimit()) {
+        if (event.getMember().getVoiceState().getChannel().getUserLimit() != 0 && !event.getGuild().getSelfMember().hasPermission(event.getMember().getVoiceState().getChannel(), Permission.ADMINISTRATOR) && !event.getGuild().getSelfMember().hasPermission(event.getMember().getVoiceState().getChannel(), Permission.VOICE_MOVE_OTHERS) && event.getMember().getVoiceState().getChannel().getMembers().size() >= event.getMember().getVoiceState().getChannel().getUserLimit()) {
             SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.channelfull.title"), event.translate("phrases.channelfull.description")));
             return false;
         }
         final GuildVoiceState voiceState = event.getGuild().getSelfMember().getVoiceState();
         if (voiceState.inVoiceChannel() && voiceState.getChannel().getMembers().size() != 1 && !Permissions.djMode().isCovered(event.getPermissions(), event)) {
-            log.debug("ALDA");
             SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.djrequired.title"), event.translate("phrases.djrequired.description")));
             return false;
         }
