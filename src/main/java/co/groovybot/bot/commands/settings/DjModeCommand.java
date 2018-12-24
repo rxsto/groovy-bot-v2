@@ -58,12 +58,14 @@ public class DjModeCommand extends Command {
             if(event.getMessage().getMentionedRoles().isEmpty()) {
                 try {
                     guild.setDjRole(event.getGuild().getRolesByName(args[0],true).get(0).getIdLong());
-                    return send(success(event.translate(""), event.translate("")));
+                    return send(success(event.translate("command.dj.role.enabled.title"), String.format(event.translate("command.jd.role.enabled.description"), event.getGuild().getRolesByName(args[0],true).get(0).getName())));
                 }catch (Exception e) {
                     return send(error(event.translate("phrases.role.not.found.title"), event.translate("phrases.role.not.found.description")));
                 }
+            }else {
+                guild.setDjRole(event.getMessage().getMentionedRoles().get(0).getIdLong());
+                return send(success(event.translate("command.dj.role.enabled.title"), String.format(event.translate("command.jd.role.enabled.description"), event.getMessage().getMentionedRoles().get(0).getName())));
             }
-            return null;
         }
     }
 }
