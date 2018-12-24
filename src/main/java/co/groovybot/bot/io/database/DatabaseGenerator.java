@@ -30,6 +30,7 @@ public class DatabaseGenerator {
                 "  prefix               varchar,\n" +
                 "  volume               integer,\n" +
                 "  dj_mode              boolean default false not null,\n" +
+                "  dj_role              bigint default null,\n"+
                 "  announce_songs       boolean default true,\n" +
                 "  blacklisted_channels varchar default '[]' :: character varying,\n" +
                 "  commands_channel     bigint,\n" +
