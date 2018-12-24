@@ -19,10 +19,7 @@
 
 package co.groovybot.bot.commands.settings;
 
-import co.groovybot.bot.core.command.Command;
-import co.groovybot.bot.core.command.CommandCategory;
-import co.groovybot.bot.core.command.CommandEvent;
-import co.groovybot.bot.core.command.Result;
+import co.groovybot.bot.core.command.*;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.entity.EntityProvider;
 import co.groovybot.bot.core.entity.Guild;
@@ -31,6 +28,7 @@ public class DjModeCommand extends Command {
 
     public DjModeCommand() {
         super(new String[]{"setdj", "dj", "djmode"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Lets you toggle the dj-mode", "");
+        this.registerSubCommand(new DjRoleCommand());
     }
 
     @Override
@@ -42,5 +40,30 @@ public class DjModeCommand extends Command {
         }
         guild.setDjMode(false);
         return send(success(event.translate("command.dj.disabled.title"), event.translate("command.dj.disabled.description")));
+    }
+
+    public class DjRoleCommand extends SubCommand{
+
+        public DjRoleCommand() {
+            super(new String[]{"role"}, Permissions.adminOnly(), "Set the dj-role", "[role]");
+        }
+
+        @Override
+        public Result run(String[] args, CommandEvent event) {
+            Guild guild = EntityProvider.getGuild(event.getGuild().getIdLong());
+            if(!guild.isDjMode())
+                return send(error(event.translate("command.dj.not.enabled.title"), event.translate("command.dj.not.enabled.description")));
+            if(args.length<1)
+                return send(error(event.translate("phrases.invalidarguments.title"), event.translate("phrases.invalidarguments.description")));
+            if(event.getMessage().getMentionedRoles().isEmpty()) {
+                try {
+                    guild.setDjRole(event.getGuild().getRolesByName(args[0],true).get(0).getIdLong());
+                    return send(success(event.translate(""), event.translate("")));
+                }catch (Exception e) {
+                    return send(error(event.translate("phrases.role.not.found.title"), event.translate("phrases.role.not.found.description")));
+                }
+            }
+            return null;
+        }
     }
 }

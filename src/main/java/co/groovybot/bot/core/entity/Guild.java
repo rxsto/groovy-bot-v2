@@ -42,6 +42,7 @@ public class Guild extends DatabaseEntitiy {
     private boolean autoPause = false;
     private boolean preventDups = false;
     private long autoJoinChannelId;
+    private long djRole= 0;
     private JSONArray blacklistedChannels = new JSONArray();
     @Getter
     private long botChannel = 0;
@@ -147,6 +148,11 @@ public class Guild extends DatabaseEntitiy {
 
     public void setAutoJoinChannel(VoiceChannel channel) {
         setAutoJoinChannelId(channel.getIdLong());
+    }
+
+    public void setDjRole(long djRoleId) {
+        this.djRole = djRoleId;
+        update();
     }
 
     public VoiceChannel getAutoJoinChannel() {
