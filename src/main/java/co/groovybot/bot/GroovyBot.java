@@ -284,6 +284,7 @@ public class GroovyBot implements Closeable {
                         new AutopauseListener(),
                         new GuildLeaveListener(),
                         new AutoJoinExecutor(this),
+                        new AutoQueueListener(this),
                         commandManager,
                         lavalinkManager,
                         interactionManager,
