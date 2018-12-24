@@ -37,7 +37,8 @@ public class DatabaseGenerator {
                 "  auto_leave           boolean default true  not null,\n" +
                 "  auto_pause           boolean default false  not null,\n" +
                 "  auto_join_channel    bigint,\n" +
-                "  prevent_dups         boolean default false  not null\n" +
+                "  prevent_dups         boolean default false  not null,\n" +
+                "  delete_messages      boolean default true not null\n" +
                 ");");
 
         postgreSQL.addDefault(() -> "create table if not exists keys\n" +
