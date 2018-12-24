@@ -110,7 +110,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions djMode() {
-        return new Permissions(false, false, false, false, false, false, true, false, "djmode");
+        return new Permissions(false, false, false, false, false, false, true, false, "dj");
     }
 
     /**
