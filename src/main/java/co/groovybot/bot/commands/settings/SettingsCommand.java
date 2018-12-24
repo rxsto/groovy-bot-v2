@@ -39,6 +39,7 @@ public class SettingsCommand extends Command {
         embedBuilder.setDescription(event.translate("command.settings.description"));
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.prefix")), String.format("**```%s```**", event.getGroovyGuild().getPrefix()), true);
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.djmode")), String.format("**```%s```**", event.getGroovyGuild().isDjMode()), true);
+        embedBuilder.addField(String.format("**%s**", event.translate("command.settings.djrole")), String.format("**```%s```**", event.getGroovyGuild().getDjRole() != 0 ? event.getGuild().getRoleById(event.getGroovyGuild().getDjRole()).getName() : "Not set"), true);
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.announce")), String.format("**```%s```**", event.getGroovyGuild().isAnnounceSongs()), true);
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.join")), String.format("**```%s```**", event.getGroovyGuild().hasAutoJoinChannel()), true);
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.leave")), String.format("**```%s```**", event.getGroovyGuild().isAutoLeave()), true);
