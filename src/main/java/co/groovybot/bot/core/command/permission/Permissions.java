@@ -56,7 +56,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions everyone() {
-        return new Permissions(true, false, false, false, false, false, false, false, "everyone");
+        return new Permissions(true, false, false, false, false, false, false, false, "Everyone");
     }
 
     /**
@@ -65,7 +65,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions ownerOnly() {
-        return new Permissions(false, true, false, false,false, false, false, false, "owner");
+        return new Permissions(false, true, false, false,false, false, false, false, "Owner");
     }
 
     /**
@@ -74,7 +74,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions tierOne() {
-        return new Permissions(false, false, true, false, false, false, false, false, "tierone");
+        return new Permissions(false, false, true, false, false, false, false, false, "Tier 1");
     }
 
     /**
@@ -83,7 +83,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions tierTwo() {
-        return new Permissions(false, false, false, true, false, false, false, false, "tiertwo");
+        return new Permissions(false, false, false, true, false, false, false, false, "Tier 2");
     }
 
     /**
@@ -92,7 +92,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions tierThree() {
-        return new Permissions(false, false, false, false, true, false, false, false, "tierthree");
+        return new Permissions(false, false, false, false, true, false, false, false, "Tier 3");
     }
 
     /**
@@ -101,7 +101,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions adminOnly() {
-        return new Permissions(false, false, false, false, false, true, false, false, "admin");
+        return new Permissions(false, false, false, false, false, true, false, false, "Admin");
     }
 
     /**
@@ -110,7 +110,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions djMode() {
-        return new Permissions(false, false, false, false, false, false, true, false, "dj");
+        return new Permissions(false, false, false, false, false, false, true, false, "DJ");
     }
 
     /**
@@ -119,7 +119,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions votedOnly() {
-        return new Permissions(false, false, false, false, false, false, false, true, "voted");
+        return new Permissions(false, false, false, false, false, false, false, true, "Voted");
     }
 
     public Boolean isCovered(UserPermissions permissions, CommandEvent event) {
