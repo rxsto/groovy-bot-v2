@@ -22,21 +22,15 @@ package co.groovybot.bot.util;
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.command.Command;
 import co.groovybot.bot.core.command.SubCommand;
-import co.groovybot.bot.core.events.command.CommandFailEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.Event;
-import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
+import org.apache.commons.text.WordUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -44,6 +38,7 @@ import java.util.stream.Collectors;
 
 import static co.groovybot.bot.util.EmbedUtil.info;
 
+@SuppressWarnings("unused")
 @Log4j2
 public class FormatUtil {
 
@@ -63,6 +58,7 @@ public class FormatUtil {
 
     /**
      * Formats memory bytes to mb
+     *
      * @param bytes the actual bytes
      * @return amount of megabytes
      */
@@ -71,9 +67,9 @@ public class FormatUtil {
     }
 
     public static String formatDuration(long milliseconds) {
-        int seconds = (int) (milliseconds / 1000) % 60 ;
-        int minutes = (int) ((milliseconds / (1000*60)) % 60);
-        int hours   = (int) ((milliseconds / (1000*60*60)) % 24);
+        int seconds = (int) (milliseconds / 1000) % 60;
+        int minutes = (int) ((milliseconds / (1000 * 60)) % 60);
+        int hours = (int) ((milliseconds / (1000 * 60 * 60)) % 24);
         StringBuilder stringBuilder = new StringBuilder();
         if (hours > 0) stringBuilder.append(String.format("%dh", hours)).append(' ');
         if (minutes >= 0) stringBuilder.append(String.format("%dm", minutes)).append(' ');
@@ -115,7 +111,7 @@ public class FormatUtil {
      * @return an EmbedBuilder
      */
     public static EmbedBuilder formatCommand(Command command) {
-        return info(command.getName() + " - Help", formatUsage(command));
+        return info(WordUtils.capitalizeFully(command.getName()) + "Command", formatUsage(command));
     }
 
     private static String formatUsage(Command command) {
@@ -140,9 +136,9 @@ public class FormatUtil {
     private static String buildUsage(Command command) {
         if (command instanceof SubCommand) {
             SubCommand subCommand = ((SubCommand) command);
-            return String.format("▫ `g!%s %s %s` `%s`", subCommand.getMainCommand().getName(), subCommand.getName(), subCommand.getUsage(), subCommand.getDescription());
+            return String.format("▫ `" + GroovyBot.getInstance().getConfig().getJSONObject("settings").getString("prefix") + "%s %s %s` `%s`", subCommand.getMainCommand().getName(), subCommand.getName(), subCommand.getUsage(), subCommand.getDescription());
         }
-        return String.format("g!%s %s", command.getName(), command.getUsage());
+        return String.format(GroovyBot.getInstance().getConfig().getJSONObject("settings").getString("prefix") + "%s %s", command.getName(), command.getUsage());
     }
 
     public static String humanReadableByteCount(long bytes) {
@@ -205,43 +201,6 @@ public class FormatUtil {
 
         if (Pattern.compile("\\w+").matcher(comps[0]).find()) return comps;
         return Arrays.copyOfRange(comps, 1, comps.length);
-    }
-
-    public static EmbedBuilder formatWebhookMessage(String type, Event event) {
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTimestamp(Instant.now());
-
-        switch (type) {
-            case "GUILDJOIN":
-                GuildJoinEvent guildJoinEvent = ((GuildJoinEvent) event);
-                embedBuilder.setDescription(String.format("#%s **%s** `%s`", GroovyBot.getInstance().getShardManager().getGuilds().size(), guildJoinEvent.getGuild().getName(), guildJoinEvent.getGuild().getIdLong()));
-                embedBuilder.setColor(Colors.GREEN);
-                break;
-            case "GUILDLEAVE":
-                GuildLeaveEvent guildLeaveEvent = ((GuildLeaveEvent) event);
-                embedBuilder.setDescription(String.format("#%s **%s** `%s`", GroovyBot.getInstance().getShardManager().getGuilds().size(), guildLeaveEvent.getGuild().getName(), guildLeaveEvent.getGuild().getIdLong()));
-                embedBuilder.setColor(Colors.RED);
-                break;
-            case "MEMBERJOIN":
-                GuildMemberJoinEvent guildMemberJoinEvent = ((GuildMemberJoinEvent) event);
-                embedBuilder.setDescription(String.format("#%s **%s** `%s`", GroovyBot.getInstance().getShardManager().getGuildById(403882830225997825L).getMembers().size(), formatUserName(guildMemberJoinEvent.getUser()), guildMemberJoinEvent.getUser().getIdLong()));
-                embedBuilder.setColor(Colors.GREEN);
-                break;
-            case "MEMBERLEAVE":
-                GuildMemberLeaveEvent guildMemberLeaveEvent = ((GuildMemberLeaveEvent) event);
-                embedBuilder.setDescription(String.format("#%s **%s** `%s`", GroovyBot.getInstance().getShardManager().getGuildById(403882830225997825L).getMembers().size(), formatUserName(guildMemberLeaveEvent.getUser()), guildMemberLeaveEvent.getUser().getIdLong()));
-                embedBuilder.setColor(Colors.RED);
-                break;
-            case "ERROR":
-                CommandFailEvent commandFailEvent = ((CommandFailEvent) event);
-                embedBuilder.setColor(Colors.DARK_BUT_NOT_BLACK);
-                embedBuilder.setTitle(String.format("⚠ Command '%s' failed on **%s** (%s)", commandFailEvent.getCommand().getAliases()[0], commandFailEvent.getGuild().getName(), commandFailEvent.getGuild().getIdLong()));
-                embedBuilder.addField("Message", "`" + formatException(commandFailEvent.getThrowable()) + "`", false);
-                embedBuilder.addField("Stacktrace", "```" + formatStacktrace(commandFailEvent.getThrowable()) + "```", false);
-                break;
-        }
-
-        return embedBuilder;
     }
 
     public static String formatStacktrace(Throwable throwable) {
