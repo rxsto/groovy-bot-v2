@@ -74,13 +74,6 @@ public class ConfigurationSetup {
         owners.put(153507094933274624L);
         configuration.addDefault("owners", owners);
 
-        // Create object for webhooks
-        final JSONObject webhook = new JSONObject();
-        webhook.put("error_logger", "defaultvalue");
-        webhook.put("guild_logger", "defaultvalue");
-        webhook.put("user_logger", "defaultvalue");
-        configuration.addDefault("webhooks", webhook);
-
         // Create object for youtube
         final JSONObject youtube = new JSONObject();
         youtube.put("apikey", "defaultvalue");
@@ -111,7 +104,6 @@ public class ConfigurationSetup {
         influxdb.put("host", "defaultvalue");
         influxdb.put("database", "defaultvalue");
         configuration.addDefault("influxdb", influxdb);
-
 
         // Create object for botlists
         final JSONObject botlists = new JSONObject()
