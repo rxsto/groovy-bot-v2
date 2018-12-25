@@ -25,11 +25,16 @@
 
     <groupId>io.groovybot</groupId>
     <artifactId>bot</artifactId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.3.0</version>
 
     <developers>
         <developer>
             <name>Oskar Lang</name>
+            <organization>Groovy</organization>
+            <organizationUrl>https://groovybot.co</organizationUrl>
+        </developer>
+        <developer>
+            <name>Yannick Seeger</name>
             <organization>Groovy</organization>
             <organizationUrl>https://groovybot.co</organizationUrl>
         </developer>
@@ -44,12 +49,12 @@
             <organizationUrl>https://groovybot.co</organizationUrl>
         </developer>
         <developer>
-            <name>Yannick Seeger</name>
+            <name>Justus Kliem</name>
             <organization>Groovy</organization>
             <organizationUrl>https://groovybot.co</organizationUrl>
         </developer>
         <developer>
-            <name>Justus Kliem</name>
+            <name>Leon Kappes</name>
             <organization>Groovy</organization>
             <organizationUrl>https://groovybot.co</organizationUrl>
         </developer>
