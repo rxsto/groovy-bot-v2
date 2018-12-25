@@ -89,7 +89,8 @@ public class CommandRegistry {
                 new DuplicatesCommand(),
                 new VoteSkipCommand(),
                 new DeleteMessagesCommand(),
-                new VoicefixCommand()
+                new VoicefixCommand(),
+                new TextToSpeechCommand()
         );
     }
 }
