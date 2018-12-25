@@ -20,6 +20,7 @@
 package co.groovybot.bot.core.audio;
 
 import co.groovybot.bot.GroovyBot;
+import co.groovybot.bot.commands.music.SearchCommand;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
@@ -59,6 +60,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static co.groovybot.bot.util.EmbedUtil.info;
 
 @Log4j2
 public class MusicPlayer extends Player implements Runnable {
@@ -143,12 +146,12 @@ public class MusicPlayer extends Player implements Runnable {
 
     @Override
     public Message announceAutoplay() {
-        return SafeMessage.sendMessageBlocking(channel, EmbedUtil.info("Searching video!", "Searching new autoplay video ..."));
+        return SafeMessage.sendMessageBlocking(channel, info("Searching video!", "Searching new autoplay video ..."));
     }
 
     @Override
     public void announceRequeue(AudioTrack track) {
-        SafeMessage.sendMessage(channel, EmbedUtil.info("An error occurred while queueing song!", "An unexpected error occurred while queueing song, trying to requeue now."));
+        SafeMessage.sendMessage(channel, info("An error occurred while queueing song!", "An unexpected error occurred while queueing song, trying to requeue now."));
     }
 
     @Override
@@ -213,7 +216,7 @@ public class MusicPlayer extends Player implements Runnable {
             keyword = keyword.replaceAll("-playtop", "").replaceAll("-pt", "").replaceAll("-top", "");
         } else isTop = false;
 
-        Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), keyword)));
+        Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), keyword)));
 
         if (!keyword.startsWith("http://") && !keyword.startsWith("https://")) {
             if (isSoundcloud) keyword = "scsearch: " + keyword;
@@ -275,20 +278,23 @@ public class MusicPlayer extends Player implements Runnable {
                     else {
                         SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), tracks.size(), audioPlaylist.getName())));
                         if (!dups.isEmpty())
-                            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.info(String.format(event.translate("phrases.load.playlist.dups.title"), dups.size()), String.format(event.translate("phrases.load.playlist.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
+                            SafeMessage.sendMessage(event.getChannel(), info(String.format(event.translate("phrases.load.playlist.dups.title"), dups.size()), String.format(event.translate("phrases.load.playlist.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
                     }
                     return;
                 }
+                tracks = tracks.stream().limit(5).collect(Collectors.toList());
+                Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("command.search.results.title"), SearchCommand.buildTrackDescription(tracks)).setFooter(event.translate("command.search.results.footer"), null));
+                for(int i=0;i<tracks.size();i++) {
+                    infoMessage.addReaction(SearchCommand.EMOTES[i]).complete();
+                }
+                new SearchCommand.MusicResult(infoMessage,event.getChannel(),event.getMember(),tracks,GroovyBot.getInstance().getMusicPlayerManager().getPlayer(event.getGuild(),event.getChannel()));
 
-                final AudioTrack track = tracks.get(0);
-
-                queueWithChecks(track);
             }
 
             private void queueWithChecks(AudioTrack track) {
                 if (!checkSong(track)) return;
                 if (checkDups(track)) {
-                    SafeMessage.editMessage(infoMessage, EmbedUtil.info(event.translate("phrases.load.single.dups.title"), String.format(event.translate("phrases.load.single.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
+                    SafeMessage.editMessage(infoMessage, info(event.translate("phrases.load.single.dups.title"), String.format(event.translate("phrases.load.single.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
                     return;
                 }
                 queueTrack(track, isForce, isTop);
