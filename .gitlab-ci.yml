@@ -1,0 +1,25 @@
+image: maven:latest
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS clean package
+  artifacts:
+    paths:
+      - target/*.jar
+    expire_in: 1 week
+
+deploy_stage:
+  stage: deploy
+  only:
+    - develop
+  script:
+    - apt-get update && apt-get install -y -qq sshpass
+    - export SSHPASS=$USER_PASS
+    - cd target/
+    - sshpass -e scp -o stricthostkeychecking=no -r . root@$IP_ADDRESS:/opt/groovy/bots/canary/
+    - sshpass -e ssh -t root@$IP_ADDRESS "/opt/groovy/bots/canary/update.sh"

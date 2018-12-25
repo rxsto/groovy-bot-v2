@@ -4,19 +4,14 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff
-.idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
-.idea/**/dictionaries
 .idea/**/shelf
 
 # Sensitive or high-churn files
-.idea/**/dataSources/
 .idea/**/dataSources.ids
-.idea/**/dataSources.local.xml
 .idea/**/sqlDataSources.xml
 .idea/**/dynamic.xml
-.idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 
 # Gradle
@@ -62,16 +57,13 @@ fabric.properties
 .idea/httpRequests
 ### Java template
 # Compiled class file
-*.class
 
 # Log file
-*.log
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear
@@ -101,3 +93,16 @@ buildNumber.properties
 /update.mp3
 /lavalink.env
 /groovy.sh
+
+*.iml
+/src/test
+src/main/java/io/groovybot/bot/core/events/guilds/
+src/test/resources/
+/lavalink.env
+/groovy.sh
+/config/old-config.json
+
+*.gz
+/update.mp3
+
+*.log
