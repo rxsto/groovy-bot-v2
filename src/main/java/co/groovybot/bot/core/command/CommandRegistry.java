@@ -88,7 +88,8 @@ public class CommandRegistry {
                 new PremiumCommand(),
                 new DuplicatesCommand(),
                 new VoteSkipCommand(),
-                new DeleteMessagesCommand()
+                new DeleteMessagesCommand(),
+                new VoicefixCommand()
         );
     }
 }
