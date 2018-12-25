@@ -137,7 +137,7 @@ public class MusicPlayer extends Player implements Runnable {
 
     @Override
     public void onEnd(boolean announce) {
-        if (inProgress) return;
+        //if (inProgress) return;
         if (announce)
             SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not **queue** more songs?"));
         if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
@@ -243,6 +243,7 @@ public class MusicPlayer extends Player implements Runnable {
 
                 if (tracks.isEmpty()) {
                     SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event));
+                    inProgress = false;
                     return;
                 }
 
@@ -254,6 +255,7 @@ public class MusicPlayer extends Player implements Runnable {
 
                 if (tracks.isEmpty()) {
                     SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.fullqueue.title"), event.translate("phrases.fullqueue.description")));
+                    inProgress = false;
                     return;
                 }
 
@@ -280,6 +282,7 @@ public class MusicPlayer extends Player implements Runnable {
                         if (!dups.isEmpty())
                             SafeMessage.sendMessage(event.getChannel(), info(String.format(event.translate("phrases.load.playlist.dups.title"), dups.size()), String.format(event.translate("phrases.load.playlist.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
                     }
+                    inProgress = false;
                     return;
                 }
                 tracks = tracks.stream().limit(5).collect(Collectors.toList());
@@ -295,6 +298,7 @@ public class MusicPlayer extends Player implements Runnable {
                 if (!checkSong(track)) return;
                 if (checkDups(track)) {
                     SafeMessage.editMessage(infoMessage, info(event.translate("phrases.load.single.dups.title"), String.format(event.translate("phrases.load.single.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
+                    inProgress = false;
                     return;
                 }
                 queueTrack(track, isForce, isTop);
@@ -484,7 +488,5 @@ public class MusicPlayer extends Player implements Runnable {
 
         private final String titleTranslationKey;
         private final String descriptionTranslationKey;
-
-
     }
 }
