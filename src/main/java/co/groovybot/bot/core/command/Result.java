@@ -48,6 +48,10 @@ public class Result {
         this(embedBuilder.build());
     }
 
+    public void sendMessage(TextChannel channel) {
+        SafeMessage.sendMessage(channel, message);
+    }
+
     public void sendMessage(TextChannel channel, Integer delTime) {
         SafeMessage.sendMessage(channel, message, delTime);
     }

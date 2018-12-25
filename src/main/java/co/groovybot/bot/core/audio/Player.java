@@ -189,4 +189,6 @@ public abstract class Player {
         }
         return millis.get();
     }
+
+    public abstract void resetSkipVotes();
 }

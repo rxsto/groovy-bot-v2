@@ -69,6 +69,8 @@ public class DuplicatesCommand extends Command {
             if (!event.getGuild().getSelfMember().getVoiceState().getChannel().equals(event.getMember().getVoiceState().getChannel()))
                 return send(error(event.translate("phrases.notsamechannel.title"), event.translate("phrases.notsamechannel.description")));
             MusicPlayer musicPlayer = GroovyBot.getInstance().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
+            if (!musicPlayer.isPlaying())
+                return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
             int dups = musicPlayer.removeDups();
             return send(success(event.translate("command.dups.removed.title"), String.format(event.translate("command.dups.removed.description"), dups)));
         }

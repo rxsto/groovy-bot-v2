@@ -20,7 +20,7 @@ import java.io.StringWriter;
 @Plugin(name = "Graylog", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE)
 public class GraylogAppender extends AbstractAppender {
 
-    protected GraylogAppender(String name, Filter filter) {
+    public GraylogAppender(String name, Filter filter) {
         super(name, filter, null);
     }
 
@@ -38,11 +38,11 @@ public class GraylogAppender extends AbstractAppender {
         }
 
         builder.level(GelfMessageLevel.valueOf(event.getLevel().name()));
-        builder.additionalField("source", event.getSource().toString());
+        if (event.getSource() != null)
+            builder.additionalField("source", event.getSource().toString());
         builder.additionalField("instance", GroovyBot.getInstance().getInstanceName());
         builder.additionalField("level_name", event.getLevel().name());
         try {
-
             GroovyBot.getInstance().getGelfTransport().send(builder.build());
         } catch (InterruptedException e) {
             e.printStackTrace();
