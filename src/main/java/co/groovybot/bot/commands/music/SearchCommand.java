@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
 public class SearchCommand extends SemiInChannelCommand {
 
     private final SearchCommand instance;
-    private final String[] EMOTES = {"\u0031\u20E3", "\u0032\u20E3", "\u0033\u20E3", "\u0034\u20E3", "\u0035\u20E3"};
+    public static final String[] EMOTES = {"\u0031\u20E3", "\u0032\u20E3", "\u0033\u20E3", "\u0034\u20E3", "\u0035\u20E3"};
 
     public SearchCommand() {
         super(new String[]{"search", "find"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you search for songs", "<song>");
@@ -106,7 +106,7 @@ public class SearchCommand extends SemiInChannelCommand {
         return null;
     }
 
-    private String buildTrackDescription(List<AudioTrack> results) {
+    public static String buildTrackDescription(List<AudioTrack> results) {
         final String[] NUMBERS = {"**1:**", "**2:**", "**3:**", "**4:**", "**5:**", "**6:**"};
         StringBuilder resultBuilder = new StringBuilder();
         AtomicInteger count = new AtomicInteger(0);
@@ -117,7 +117,7 @@ public class SearchCommand extends SemiInChannelCommand {
         return resultBuilder.toString();
     }
 
-    private class MusicResult extends InteractableMessage {
+    public static class MusicResult extends InteractableMessage {
 
         private final List<AudioTrack> searchResults;
         private final Player player;
