@@ -128,6 +128,10 @@ public class ConfigurationSetup {
                 .put("port", 12201);
         configuration.addDefault("graylog", graylog);
 
+        final JSONObject voiceRss = new JSONObject()
+                .put("api_key", "defaultvalue");
+        configuration.addDefault("voice_rss", voiceRss);
+
         // Return config
         return configuration;
     }
