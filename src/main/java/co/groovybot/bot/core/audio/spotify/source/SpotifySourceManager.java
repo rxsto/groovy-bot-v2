@@ -196,6 +196,7 @@ public class SpotifySourceManager implements AudioSourceManager {
     }
 
     private List<PlaylistTrack> getPlaylistTracks(Playlist playlist) {
+        this.spotifyManager.refreshAccessToken();
         List<PlaylistTrack> playlistTracks = Lists.newArrayList();
         Paging<PlaylistTrack> currentPage = playlist.getTracks();
 
