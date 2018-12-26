@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt
 & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify

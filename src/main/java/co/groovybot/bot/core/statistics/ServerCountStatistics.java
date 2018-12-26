@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,11 +84,13 @@ public class ServerCountStatistics extends StatsPoster {
                 .addHeader("Content-Type", "application/json")
                 .addHeader("User-Agent", botId)
                 .build();
+
         try (Response response = okHttpClient.newCall(request).execute()) {
             if (response.code() != 200) {
                 assert response.body() != null;
                 log.warn(String.format("[ServerCount] Error while posting stats! Response: %s", response.body().string()));
             }
+
             log.debug(String.format("[StatsPoster] Posted stats. Got response %s", response.body().string()));
         } catch (IOException e) {
             log.error("[ServerCount] Error while posting stats!", e);

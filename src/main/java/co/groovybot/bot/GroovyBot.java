@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,6 +147,8 @@ public class GroovyBot implements Closeable {
     @Getter
     private final boolean configNodes;
     @Getter
+    private final boolean noStatistics;
+    @Getter
     private final boolean noWebsocket;
     @Getter
     private final boolean premium;
@@ -172,6 +174,7 @@ public class GroovyBot implements Closeable {
         // Checking for args
         debugMode = args.hasOption("debug");
         premium = args.hasOption("premium");
+        noStatistics = args.hasOption("no-statistics");
         noWebsocket = args.hasOption("no-websocket");
         noJoin = args.hasOption("no-voice-join");
         noPatrons = args.hasOption("no-patrons");
@@ -212,7 +215,7 @@ public class GroovyBot implements Closeable {
         log.info("[Database] Initializing Database ...");
         postgreSQL = new PostgreSQL();
 
-        // Check for --no-monitoring and initialize InfluxDB if not
+        // Initializing InfluxDB
         if (!noMonitoring) influxDB = new InfluxDBManager(config).build();
 
         httpClient = new OkHttpClient();
@@ -244,23 +247,28 @@ public class GroovyBot implements Closeable {
     public static void main(String[] args) throws IOException {
         if (instance != null)
             throw new RuntimeException("[Core] Groovy was already initialized in this VM!");
+
         Options options = new Options();
         options.addOption("L", "log-level", true, "Let's you set the loglevel of groovy");
         options.addOption("D", "debug", false, "Let's you enable debug mode");
         options.addOption("P", "premium", false, "Let's you enable premium mode");
         options.addOption("CN", "config-nodes", false, "Let's you load nodes from config");
+        options.addOption("NS", "no-statistics", false, "Disables statistics like server-count and ping");
         options.addOption("NW", "no-websocket", false, "Disables connection to stats socket");
         options.addOption("NV", "no-voice-join", false, "Disable automatic voice channel joining on Groovy support server");
         options.addOption("NM", "no-monitoring", false, "Disables InfluxDB monitoring");
         options.addOption("NP", "no-patrons", false, "Disable patrons feature");
         options.addOption("NCL", "no-centralized-logging", false, "Disabled centralized logging");
+
         CommandLine cmd = null;
+
         try {
             cmd = new DefaultParser().parse(options, args);
         } catch (ParseException e) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(e.getMessage(), options);
         }
+
         new GroovyBot(cmd);
     }
 
@@ -279,7 +287,7 @@ public class GroovyBot implements Closeable {
                         this,
                         new ShardsListener(),
                         new SelfMentionListener(),
-                        new JoinGuildListener(),
+                        new GuildJoinListener(),
                         new CommandLogger(),
                         new BlacklistWatcher(guildCache),
                         new AutopauseListener(),
@@ -294,10 +302,13 @@ public class GroovyBot implements Closeable {
 
         if (!noWebsocket)
             shardManagerBuilder.addEventListeners(new WebsiteStatsListener());
+
         if (!noPatrons)
             shardManagerBuilder.addEventListeners(new PremiumListener(premiumHandler));
+
         if (premium)
             shardManagerBuilder.addEventListeners(new PremiumExecutor(this));
+
         try {
             shardManager = shardManagerBuilder.build();
             log.info("[LavalinkManager] Initializing LavalinkManager ...");
@@ -350,7 +361,7 @@ public class GroovyBot implements Closeable {
             }
 
         // Initializing statuspage and servercountstatistics
-        if (!debugMode) {
+        if (!noStatistics) {
             log.info("[StatusPage] Initializing StatusPage ...");
             statusPage.start();
             log.info("[ServerCountStatistics] Initializing ServerCountStatistics ...");
