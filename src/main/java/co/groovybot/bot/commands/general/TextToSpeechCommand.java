@@ -82,11 +82,13 @@ public class TextToSpeechCommand extends SemiInChannelCommand {
         Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("command.tts.loading.title"), event.translate("command.tts.loading.description")));
 
         player.stop();
+        if (!player.checkConnect(event))
+            player.connect(event.getMember().getVoiceState().getChannel());
         player.getAudioPlayerManager().loadItem(url, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
                 player.play(track);
-                SafeMessage.editMessage(infoMessage, success(event.translate("command.tts.loaded.title"), event.translate("command.tts.loaded.title")));
+                SafeMessage.editMessage(infoMessage, success(event.translate("command.tts.loaded.title"), event.translate("command.tts.loaded.description")));
             }
 
             @Override
