@@ -14,10 +14,14 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.utils.Helpers;
+import org.apache.commons.cli.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Arrays;
+import java.util.OptionalInt;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * https://github.com/Stupremee
@@ -27,8 +31,14 @@ import java.net.URLEncoder;
 @Log4j2
 public class TextToSpeechCommand extends SemiInChannelCommand {
 
+    private final Options options;
+
     public TextToSpeechCommand() {
-        super(new String[]{"tts"}, CommandCategory.GENERAL, Permissions.tierOne(), "Converts text into spoken voice.", "[speed] [language] <text>");
+        super(new String[]{"tts"}, CommandCategory.GENERAL, Permissions.tierOne(), "Converts text into spoken voice.", "[-S <speed>] [-L <language>] -T text");
+        options = new Options();
+        options.addRequiredOption("T", "text", true, "Set's the text");
+        options.addOption("S", "speed", true, "Set's the speed");
+        options.addOption("L", "language", true, "Set's the language");
     }
 
     @Override
@@ -37,39 +47,39 @@ public class TextToSpeechCommand extends SemiInChannelCommand {
             return sendHelp();
         }
 
-        Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("command.tts.loading.title"), event.translate("command.tts.loading.description")));
-
-        int speed = 0;
-        String speedString = args[0];
+        CommandLine cmd;
         try {
-            speed = Integer.parseInt(speedString);
-            args[0] = "";
-            if (speed < -10 || speed > 10) {
-                SafeMessage.editMessage(infoMessage, error(event.translate("command.tts.invalidnumber.title"), event.translate("command.tts.invalidnumber.description")));
-                return null;
-            }
-        } catch (NumberFormatException ignored) {
+            cmd = new DefaultParser().parse(options, args);
+        } catch (ParseException e) {
+            log.error(e);
+            return send(error(event.translate("command.tts.parseexception.title"), String.format(event.translate("command.tts.parseexception.description"), e.getMessage())));
         }
 
-
-        Language language = Language.EN_US;
-        if (args.length > 1) {
-            language = Language.fromCode(args[1]);
-            if (language != Language.UNKNOWN) {
-                args[1] = "";
-            }
+        String text = String.join(" ", cmd.getOptionValues("text")) + " " + String.join(" ", cmd.getArgs());
+        OptionalInt speed = cmd.hasOption("speed") ? getNumberFromString(cmd.getOptionValue("speed")) : OptionalInt.of(0);
+        if (!speed.isPresent()) {
+            return send(error(event.translate("command.tts.nan.title"), event.translate("command.tts.nan.description")));
         }
 
-        String text = String.join(" ", args).replace(",", "");
+        if (speed.getAsInt() > 10 || speed.getAsInt() < -10) {
+            return send(error(event.translate("command.tts.invalidnumber.title"), event.translate("command.tts.invalidnumber.description")));
+        }
+
+        Language language = cmd.hasOption("language") ? Language.fromCode(cmd.getOptionValue("language").toLowerCase()) : Language.EN_US;
+        if (language == Language.UNKNOWN) {
+            return send(error(event.translate("command.tts.invalidlang.title"), String.format(event.translate("command.tts.invalidlang.description"),
+                    Stream.of(Language.values()).filter(l -> l != Language.UNKNOWN).map(l -> "`" + l.code + "`").collect(Collectors.joining(", ")))));
+        }
 
         String url;
         try {
-            url = buildUrl(text, language, speed);
+            url = buildUrl(text, language, speed.getAsInt());
         } catch (UnsupportedEncodingException e) {
             log.error(e);
-            SafeMessage.editMessage(infoMessage, error(event.translate("phrases.error.unknown.title"), event.translate("phrases.error.unknown.description")));
-            return null;
+            return send(error(event.translate("phrases.error.unknown.title"), event.translate("phrases.error.unknown.description")));
         }
+
+        Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("command.tts.loading.title"), event.translate("command.tts.loading.description")));
 
         player.stop();
         player.getAudioPlayerManager().loadItem(url, new AudioLoadResultHandler() {
@@ -95,6 +105,14 @@ public class TextToSpeechCommand extends SemiInChannelCommand {
         });
 
         return null;
+    }
+
+    private OptionalInt getNumberFromString(String string) {
+        try {
+            return OptionalInt.of(Integer.parseInt(string));
+        } catch (NumberFormatException e) {
+            return OptionalInt.empty();
+        }
     }
 
     private String buildUrl(String text, Language language, int speed) throws UnsupportedEncodingException {
@@ -129,7 +147,7 @@ public class TextToSpeechCommand extends SemiInChannelCommand {
         ES_MX("es-mx"),
         ES_ES("es-es"),
         SV_SE("sv-se"),
-        UNKNOWN("en-us");
+        UNKNOWN("");
 
         private final String code;
 
