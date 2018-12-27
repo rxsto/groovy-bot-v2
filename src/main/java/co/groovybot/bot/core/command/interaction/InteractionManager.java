@@ -20,8 +20,6 @@
 package co.groovybot.bot.core.command.interaction;
 
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
-import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;

@@ -21,7 +21,6 @@ package co.groovybot.bot.listeners;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.entity.EntityProvider;
-import co.groovybot.bot.util.Colors;
 import co.groovybot.bot.util.EmbedUtil;
 import co.groovybot.bot.util.SafeMessage;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;

@@ -20,20 +20,33 @@
 package co.groovybot.bot.core.monitoring.monitors;
 
 import co.groovybot.bot.GroovyBot;
-import co.groovybot.bot.core.monitoring.Monitor;
-import org.influxdb.dto.Point;
+import io.prometheus.client.Gauge;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
+import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
 /**
  * https://github.com/Stupremee
  *
  * @author: Stu
  */
-public class UserMonitor extends Monitor {
+public class UserMonitor {
 
-    @Override
-    public Point save() {
-        return Point.measurement("users")
-                .addField("groovy_guild_users", GroovyBot.getInstance().getShardManager().getGuildById("403882830225997825").getMemberCache().size())
-                .addField("user_count", GroovyBot.getInstance().getShardManager().getUserCache().size()).build();
+    private final Gauge member = Gauge.build().help("Show's member count").namespace("groovy").name("member_count").labelNames("guild").register();
+
+    public UserMonitor() {
+        GroovyBot.getInstance().getShardManager().getGuildCache().forEach(g -> {
+            member.labels(g.getId()).set(g.getMemberCache().size());
+        });
+    }
+
+    @SubscribeEvent
+    public void onMemberJoin(GuildMemberJoinEvent event) {
+        member.labels(event.getGuild().getId()).set(event.getGuild().getMemberCache().size());
+    }
+
+    @SubscribeEvent
+    public void onMemberLeave(GuildMemberLeaveEvent event) {
+        member.labels(event.getGuild().getId()).set(event.getGuild().getMemberCache().size());
     }
 }

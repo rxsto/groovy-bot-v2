@@ -21,20 +21,40 @@ package co.groovybot.bot.core.monitoring.monitors;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.LavalinkManager;
-import co.groovybot.bot.core.monitoring.Monitor;
-import org.influxdb.dto.Point;
+import co.groovybot.bot.core.monitoring.ActionMonitor;
+import io.prometheus.client.Gauge;
+import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
+import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
 /**
  * https://github.com/Stupremee
  *
  * @author: Stu
  */
-public class GuildMonitor extends Monitor {
+public class GuildMonitor extends ActionMonitor {
+
+    private final Gauge guildCount;
+    private final Gauge playingCount;
+
+    public GuildMonitor() {
+        this.guildCount = Gauge.build().namespace("groovy").name("guild_count").help("Show's the guild count.").register();
+        this.playingCount = Gauge.build().namespace("groovy").name("playing_guilds").help("Show's the count of guilds, that groovy is playing on.").register();
+        guildCount.set(GroovyBot.getInstance().getShardManager().getGuildCache().size());
+    }
+
+    @SubscribeEvent
+    public void onGuildJoin(GuildJoinEvent event) {
+        guildCount.set(GroovyBot.getInstance().getShardManager().getGuildCache().size());
+    }
+
+    @SubscribeEvent
+    public void onGuildLeave(GuildLeaveEvent event) {
+        guildCount.set(GroovyBot.getInstance().getShardManager().getGuildCache().size());
+    }
+
     @Override
-    public Point save() {
-        return Point.measurement("guilds")
-                .addField("guild_count", GroovyBot.getInstance().getShardManager().getGuildCache().size())
-                .addField("playing_guilds", GroovyBot.getInstance().getMusicPlayerManager().getPlayingServers())
-                .build();
+    public void action() {
+        playingCount.set(LavalinkManager.countPlayers());
     }
 }

@@ -25,9 +25,6 @@ import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.voice.SameChannelCommand;
-import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
-
-import javax.naming.NoPermissionException;
 
 public class ClearCommand extends SameChannelCommand {
 

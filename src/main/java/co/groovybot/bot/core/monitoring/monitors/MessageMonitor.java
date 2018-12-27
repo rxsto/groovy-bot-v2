@@ -20,10 +20,10 @@
 package co.groovybot.bot.core.monitoring.monitors;
 
 import co.groovybot.bot.GroovyBot;
-import co.groovybot.bot.core.monitoring.Monitor;
+import co.groovybot.bot.core.monitoring.ActionMonitor;
+import io.prometheus.client.Gauge;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
-import org.influxdb.dto.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,27 +33,31 @@ import java.util.List;
  *
  * @author: Stu
  */
-public class MessageMonitor extends Monitor {
+public class MessageMonitor extends ActionMonitor {
+
+    private final Gauge counterGauge;
+    private final Gauge lengthGauge;
 
     private final List<Integer> lengths;
     private int counter;
 
     public MessageMonitor() {
+
+        counterGauge = Gauge.build().namespace("groovy").name("message_count").help("Show's the message count").register();
+        lengthGauge = Gauge.build().namespace("groovy").name("average_message_length").help("Show's the average message length").register();
+
         this.counter = 0;
         this.lengths = new ArrayList<>();
         GroovyBot.getInstance().getEventManager().register(this);
     }
 
     @Override
-    public Point save() {
-        Point point = Point.measurement("messages")
-                .addField("count", counter)
-                .addField("average_length", average(lengths))
-                .build();
+    public void action() {
+        counterGauge.set(counter);
+        lengthGauge.set(average(lengths));
 
         lengths.clear();
         counter = 0;
-        return point;
     }
 
     private double average(List<Integer> list) {

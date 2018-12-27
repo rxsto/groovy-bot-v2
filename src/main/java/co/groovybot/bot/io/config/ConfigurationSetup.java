@@ -132,6 +132,10 @@ public class ConfigurationSetup {
                 .put("api_key", "defaultvalue");
         configuration.addDefault("voice_rss", voiceRss);
 
+        final JSONObject prometheus = new JSONObject()
+                .put("port", 3033);
+        configuration.addDefault("prometheus", prometheus);
+
         // Return config
         return configuration;
     }

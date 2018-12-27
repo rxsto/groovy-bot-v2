@@ -19,9 +19,9 @@
 
 package co.groovybot.bot.core.monitoring.monitors;
 
-import co.groovybot.bot.core.monitoring.Monitor;
+import co.groovybot.bot.core.monitoring.ActionMonitor;
 import com.sun.management.OperatingSystemMXBean;
-import org.influxdb.dto.Point;
+import io.prometheus.client.Gauge;
 
 import java.lang.management.ManagementFactory;
 
@@ -30,18 +30,21 @@ import java.lang.management.ManagementFactory;
  *
  * @author: Stu
  */
-public class SystemMonitor extends Monitor {
+public class SystemMonitor extends ActionMonitor {
+
+    private final Gauge memoryUsed = Gauge.build().help("Show's used memory").namespace("groovy").name("memory_used").register();
+    private final Gauge memoryFree = Gauge.build().help("Show's free memory").namespace("groovy").name("memory_free").register();
+    private final Gauge cpuLoad = Gauge.build().help("Show's cpu load in percentage (0.0 - 1.0)").namespace("groovy").name("cpu_load").register();
+    private final Gauge threads = Gauge.build().namespace("groovy").name("thread_count").help("Show's thread count").register();
 
     private final OperatingSystemMXBean system = ManagementFactory.getPlatformMXBean(com.sun.management.OperatingSystemMXBean.class);
 
     @Override
-    public Point save() {
+    public void action() {
         Runtime runtime = Runtime.getRuntime();
-        return Point.measurement("system_info")
-                .addField("memory_used", runtime.totalMemory() - runtime.freeMemory())
-                .addField("memory_free", system.getFreePhysicalMemorySize())
-                .addField("cpu_load", system.getSystemCpuLoad())
-                .addField("threads", Thread.getAllStackTraces().size())
-                .build();
+        memoryUsed.set(runtime.totalMemory() - runtime.freeMemory());
+        memoryFree.set(runtime.freeMemory());
+        cpuLoad.set(system.getProcessCpuLoad());
+        threads.set(ManagementFactory.getThreadMXBean().getThreadCount());
     }
 }

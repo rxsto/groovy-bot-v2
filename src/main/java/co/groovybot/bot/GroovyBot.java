@@ -32,9 +32,8 @@ import co.groovybot.bot.core.command.interaction.InteractionManager;
 import co.groovybot.bot.core.entity.Guild;
 import co.groovybot.bot.core.entity.User;
 import co.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
-import co.groovybot.bot.core.influx.InfluxDBManager;
 import co.groovybot.bot.core.lyrics.GeniusClient;
-import co.groovybot.bot.core.monitoring.Monitor;
+import co.groovybot.bot.core.monitoring.ActionMonitor;
 import co.groovybot.bot.core.monitoring.MonitorManager;
 import co.groovybot.bot.core.monitoring.monitors.*;
 import co.groovybot.bot.core.premium.PremiumHandler;
@@ -50,6 +49,7 @@ import co.groovybot.bot.io.database.PostgreSQL;
 import co.groovybot.bot.listeners.*;
 import co.groovybot.bot.util.YoutubeUtil;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import io.prometheus.client.exporter.HTTPServer;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
@@ -69,7 +69,6 @@ import org.graylog2.gelfclient.GelfMessage;
 import org.graylog2.gelfclient.GelfTransports;
 import org.graylog2.gelfclient.transport.AbstractGelfTransport;
 import org.graylog2.gelfclient.transport.GelfTransport;
-import org.influxdb.InfluxDB;
 
 import javax.security.auth.login.LoginException;
 import java.io.Closeable;
@@ -121,7 +120,7 @@ public class GroovyBot implements Closeable {
     @Getter
     private MonitorManager monitorManager;
     @Getter
-    private InfluxDB influxDB;
+    private HTTPServer prometheusServer;
     @Getter
     private WebsocketConnection webSocket;
     @Getter
@@ -215,8 +214,11 @@ public class GroovyBot implements Closeable {
         log.info("[Database] Initializing Database ...");
         postgreSQL = new PostgreSQL();
 
-        // Initializing InfluxDB
-        if (!noMonitoring) influxDB = new InfluxDBManager(config).build();
+        // Starting prometheus server
+        if (!noMonitoring) {
+            log.info("[Prometheus] Prometheus server is starting...");
+            prometheusServer = new HTTPServer(config.getJSONObject("prometheus").getInt("port"));
+        }
 
         httpClient = new OkHttpClient();
         spotifyClient = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
@@ -369,16 +371,18 @@ public class GroovyBot implements Closeable {
         }
 
         // Register all monitors and start monitoring
-        if (influxDB == null) {
-            log.info("[MonitoringManager] Monitoring disabled, because there is no connection to InfluxDB!");
-        } else {
-            monitorManager = new MonitorManager(influxDB);
-            Monitor msgMonitor = new MessageMonitor();
-            shardManager.addEventListener(msgMonitor);
-            monitorManager.register(new SystemMonitor(), new GuildMonitor(), new RequestMonitor(), msgMonitor, new UserMonitor());
+        if (prometheusServer != null) {
+            monitorManager = new MonitorManager();
+            ActionMonitor msgMonitor = new MessageMonitor();
+            ActionMonitor guildMonitor = new GuildMonitor();
+            shardManager.addEventListener(msgMonitor, guildMonitor, new RequestMonitor(), new UserMonitor());
+            monitorManager.register(guildMonitor, new SystemMonitor(), msgMonitor);
             monitorManager.start();
             log.info("[MonitoringManager] Monitoring started.");
+        } else {
+            log.info("[MonitoringManager] Monitoring is disabled.");
         }
+
 
         // Now Groovy is ready
         allShardsInitialized = true;
@@ -388,6 +392,8 @@ public class GroovyBot implements Closeable {
     @Override
     public void close() {
         try {
+            if (prometheusServer != null)
+                prometheusServer.stop();
             if (commandManager != null)
                 commandManager.close();
             if (postgreSQL != null)

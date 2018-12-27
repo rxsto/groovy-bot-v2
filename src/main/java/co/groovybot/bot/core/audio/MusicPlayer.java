@@ -22,7 +22,6 @@ package co.groovybot.bot.core.audio;
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.commands.music.SearchCommand;
 import co.groovybot.bot.core.command.CommandEvent;
-import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.permission.UserPermissions;
 import co.groovybot.bot.core.entity.EntityProvider;

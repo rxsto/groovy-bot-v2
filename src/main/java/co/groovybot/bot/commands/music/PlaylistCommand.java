@@ -113,7 +113,7 @@ public class PlaylistCommand extends Command {
     private class SaveCommand extends SemiInChannelSubCommand {
 
         public SaveCommand() {
-            super(new String[]{"save"}, Permissions.everyone(), "Saves the queue to a playlist", "<name>");
+            super(new String[]{"action"}, Permissions.everyone(), "Saves the queue to a playlist", "<name>");
         }
 
         @Override

@@ -1,6 +1,5 @@
 package co.groovybot.bot.commands.music;
 
-import co.groovybot.bot.core.audio.LavalinkManager;
 import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.command.CommandCategory;
 import co.groovybot.bot.core.command.CommandEvent;
