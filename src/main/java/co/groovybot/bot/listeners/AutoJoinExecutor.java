@@ -43,7 +43,7 @@ public class AutoJoinExecutor {
         Guild guild = bot.getGuildCache().get(event.getGuild());
         VoiceChannel channel = event.getChannelLeft();
         if (!event.getMember().getUser().isBot() && guild.hasAutoJoinChannel() && channel.getIdLong() == guild.getAutoJoinChannelId() && guild.getAutoJoinChannel().getMembers().contains(event.getGuild().getSelfMember()) && channel.getMembers().size() == 1)
-            bot.getMusicPlayerManager().getExistingPlayer(event.getGuild()).leave("No membery anymore in AutoJoin:tm: channel!");
+            bot.getMusicPlayerManager().getExistingPlayer(event.getGuild()).leave(String.format("I've **left** the voice-channel because the **AutoJoin-channel** is **empty** now! If you would like to disable this you should remove this channel as an AutoJoin-channel with `%sautojoin disable`!", guild.getPrefix()));
     }
 
     @SubscribeEvent
