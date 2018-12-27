@@ -19,8 +19,6 @@
 
 package co.groovybot.bot.core.audio.deezer.source;
 
-import co.groovybot.bot.core.audio.AudioTrackFactory;
-import co.groovybot.bot.core.audio.spotify.entities.track.TrackData;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.*;
@@ -30,6 +28,8 @@ import com.zeloon.deezer.domain.Track;
 import com.zeloon.deezer.domain.internal.PlaylistId;
 import com.zeloon.deezer.domain.internal.TrackId;
 import com.zeloon.deezer.io.HttpResourceConnection;
+import co.groovybot.bot.core.audio.AudioTrackFactory;
+import co.groovybot.bot.core.audio.spotify.entities.track.TrackData;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 

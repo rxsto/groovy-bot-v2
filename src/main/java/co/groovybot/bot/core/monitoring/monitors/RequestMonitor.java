@@ -20,13 +20,9 @@
 package co.groovybot.bot.core.monitoring.monitors;
 
 import co.groovybot.bot.GroovyBot;
-import co.groovybot.bot.core.monitoring.ActionMonitor;
 import io.prometheus.client.Gauge;
 import net.dv8tion.jda.core.events.http.HttpRequestEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
-import org.influxdb.dto.Point;
-
-import java.util.Map;
 
 /**
  * https://github.com/Stupremee
