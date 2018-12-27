@@ -200,6 +200,11 @@
             <artifactId>commons-text</artifactId>
             <version>1.6</version>
         </dependency>
+        <dependency>
+            <groupId>fr.bmartel</groupId>
+            <artifactId>jspeedtest</artifactId>
+            <version>1.32.1</version>
+        </dependency>
     </dependencies>
 
     <build>
