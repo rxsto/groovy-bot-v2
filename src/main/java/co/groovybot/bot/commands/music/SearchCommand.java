@@ -41,6 +41,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.utils.Helpers;
 
 import java.util.List;
@@ -81,7 +82,11 @@ public class SearchCommand extends SemiInChannelCommand {
                 for(int i=0;i<results.size();i++) {
                     infoMessage.addReaction(EMOTES[i]).complete();
                 }
-                new MusicResult(infoMessage, event.getChannel(), event.getMember(), results, player);
+                try {
+                    new MusicResult(infoMessage, event.getChannel(), event.getMember(), results, player);
+                } catch (InsufficientPermissionException e) {
+                    sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
+                }
             }
 
 

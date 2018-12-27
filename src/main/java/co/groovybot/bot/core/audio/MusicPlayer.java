@@ -22,7 +22,6 @@ package co.groovybot.bot.core.audio;
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.commands.music.SearchCommand;
 import co.groovybot.bot.core.command.CommandEvent;
-import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.permission.UserPermissions;
 import co.groovybot.bot.core.entity.EntityProvider;
@@ -44,6 +43,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONArray;
@@ -62,6 +62,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static co.groovybot.bot.util.EmbedUtil.info;
+import static co.groovybot.bot.util.SafeMessage.sendMessage;
 
 @Log4j2
 public class MusicPlayer extends Player implements Runnable {
@@ -290,7 +291,11 @@ public class MusicPlayer extends Player implements Runnable {
                 for(int i=0;i<tracks.size();i++) {
                     infoMessage.addReaction(SearchCommand.EMOTES[i]).complete();
                 }
-                new SearchCommand.MusicResult(infoMessage,event.getChannel(),event.getMember(),tracks,GroovyBot.getInstance().getMusicPlayerManager().getPlayer(event.getGuild(),event.getChannel()));
+                try {
+                    new SearchCommand.MusicResult(infoMessage, event.getChannel(), event.getMember(), tracks, GroovyBot.getInstance().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()));
+                } catch (InsufficientPermissionException e) {
+                    sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
+                }
 
             }
 
