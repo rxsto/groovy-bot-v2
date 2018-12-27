@@ -139,7 +139,6 @@ public class Scheduler extends AudioEventAdapterWrapped {
                     runAutoplay(track);
                     return;
                 }
-
                 break;
 
             default:
@@ -154,7 +153,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
         final Matcher matcher = TRACK_PATTERN.matcher(track.getInfo().uri);
 
         if (!matcher.find()) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error("Not a YouTube-Track!", "We **couldn't search** for a AutoPlay-Track as the **previos** track was **not a YouTube-Track**!"));
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error("Not a YouTube-Track!", "We **couldn't search** for a AutoPlay-Track as the **previous** track was **not a YouTube-Track**!"));
             return;
         }
 
@@ -163,7 +162,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
             SafeMessage.editMessage(infoMessage, EmbedUtil.success("Loaded video", String.format("Successfully loaded video `%s`", result.getSnippet().getTitle())));
             queueSearchResult(result, infoMessage);
         } catch (IOException e) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error("Unknown error", "An unknown autoplay-error occurred while retrieving the next video!"));
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error("Unknown error", "An **unknown error** occurred while **retrieving** the next video!"));
             log.error("[Scheduler] Error while retrieving autoplay video", e);
         }
     }
