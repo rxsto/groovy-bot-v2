@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -65,20 +66,20 @@ import static co.groovybot.bot.util.EmbedUtil.info;
 import static co.groovybot.bot.util.SafeMessage.sendMessage;
 
 @Log4j2
-public class MusicPlayer extends Player implements Runnable {
+public class MusicPlayer extends Player {
 
     @Getter
     private final Guild guild;
     @Getter
     private final AudioPlayerManager audioPlayerManager;
     private final ScheduledExecutorService scheduler;
+    private ScheduledFuture leaveListener;
     @Getter
     @Setter
     private TextChannel channel;
     @Getter
     @Setter
     private AudioTrack previousTrack;
-    private boolean inProgress;
     @Getter
     @Setter
     private String bassboost = "off";
@@ -92,14 +93,25 @@ public class MusicPlayer extends Player implements Runnable {
         this.guild = guild;
         this.channel = channel;
         this.previousTrack = null;
-        this.inProgress = false;
         this.voiceChannel = guild.getSelfMember().getVoiceState().getChannel();
         instanciatePlayer(LavalinkManager.getLavalink().getLink(guild));
         getPlayer().addListener(getScheduler());
         audioPlayerManager = lavalinkManager.getAudioPlayerManager();
         scheduler = Executors.newSingleThreadScheduledExecutor(new NameThreadFactory("LeaveListener"));
-        scheduler.scheduleAtFixedRate(this, 0, 10, TimeUnit.MINUTES);
+        scheduleLeaveListener();
         guild.getJDA().addEventListener(this);
+    }
+
+    public void scheduleLeaveListener() {
+        log.debug("LISTENER REG");
+        if (EntityProvider.getGuild(guild.getIdLong()).isAutoLeave())
+            leaveListener = scheduler.scheduleAtFixedRate(this::checkAutoLeave, 0, 30, TimeUnit.SECONDS);
+    }
+
+    public void cancelLeaveListener() {
+        log.debug("LISTENER DEREG");
+        if (leaveListener != null && !leaveListener.isCancelled())
+            leaveListener.cancel(true);
     }
 
     public void connect(VoiceChannel channel) {
@@ -128,21 +140,22 @@ public class MusicPlayer extends Player implements Runnable {
     public void leave() {
         clearQueue();
         stop();
-        LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
+        cancelLeaveListener();
+        //Wait one second to not interrupt thread
+        scheduler.schedule(() -> LavalinkManager.getLavalink().getLink(guild.getId()).disconnect(), 1, TimeUnit.SECONDS);
     }
 
     public void leave(String cause) {
-        if (channel != null) SafeMessage.sendMessage(channel, EmbedUtil.noTitle(cause));
+        if (channel != null)
+            SafeMessage.sendMessage(channel, EmbedUtil.noTitle(cause));
         leave();
     }
 
     @Override
     public void onEnd(boolean announce) {
-        //if (inProgress) return;
+        scheduleLeaveListener();
         if (announce)
             SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not **queue** more songs?"));
-        if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
-        leave();
     }
 
     @Override
@@ -186,6 +199,7 @@ public class MusicPlayer extends Player implements Runnable {
     }
 
     public void queueSongs(final CommandEvent event) {
+        cancelLeaveListener();
         UserPermissions userPermissions = EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions();
         Permissions tierTwo = Permissions.tierTwo();
 
@@ -227,7 +241,6 @@ public class MusicPlayer extends Player implements Runnable {
 
         final boolean isURL = isUrl;
 
-        inProgress = true;
 
         if (isUrl && keyword.matches("(https?://)?(.*)?spotify\\.com.*"))
             keyword = removeQueryFromUrl(keyword);
@@ -244,7 +257,6 @@ public class MusicPlayer extends Player implements Runnable {
 
                 if (tracks.isEmpty()) {
                     SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event));
-                    inProgress = false;
                     return;
                 }
 
@@ -256,7 +268,6 @@ public class MusicPlayer extends Player implements Runnable {
 
                 if (tracks.isEmpty()) {
                     SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.fullqueue.title"), event.translate("phrases.fullqueue.description")));
-                    inProgress = false;
                     return;
                 }
 
@@ -274,7 +285,6 @@ public class MusicPlayer extends Player implements Runnable {
                         tracks.addAll(playTracks);
                     }
                     queueTracks(tracks.toArray(new AudioTrack[0]));
-                    inProgress = false;
 
                     if (!tierTwo.isCovered(userPermissions, event))
                         SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.nopremium.title"), String.format(event.translate("phrases.searching.playlistloaded.nopremium.description"), tracks.size(), audioPlaylist.getName())));
@@ -283,7 +293,6 @@ public class MusicPlayer extends Player implements Runnable {
                         if (!dups.isEmpty())
                             SafeMessage.sendMessage(event.getChannel(), info(String.format(event.translate("phrases.load.playlist.dups.title"), dups.size()), String.format(event.translate("phrases.load.playlist.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
                     }
-                    inProgress = false;
                     return;
                 }
                 tracks = tracks.stream().limit(5).collect(Collectors.toList());
@@ -303,24 +312,20 @@ public class MusicPlayer extends Player implements Runnable {
                 if (!checkSong(track)) return;
                 if (checkDups(track)) {
                     SafeMessage.editMessage(infoMessage, info(event.translate("phrases.load.single.dups.title"), String.format(event.translate("phrases.load.single.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
-                    inProgress = false;
                     return;
                 }
                 queueTrack(track, isForce, isTop);
                 queuedTrack(track, infoMessage, event);
-                inProgress = false;
             }
 
             @Override
             public void noMatches() {
                 SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
-                inProgress = false;
             }
 
             @Override
             public void loadFailed(FriendlyException e) {
                 handleFailedLoads(e, infoMessage, event);
-                inProgress = false;
             }
 
             private boolean checkSong(AudioTrack track) {
@@ -429,9 +434,7 @@ public class MusicPlayer extends Player implements Runnable {
         return player.getPlayingTrack() != null && player.getPlayingTrack().getInfo().title.equals(audioTrack.getInfo().title) || trackQueue.stream().anyMatch(t -> t.getInfo().title.equals(audioTrack.getInfo().title));
     }
 
-    @Override
-    public void run() {
-        if (inProgress) return;
+    private void checkAutoLeave() {
         if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
         if (guild.getSelfMember().getVoiceState().getChannel() == null) return;
         if (!isPlaying())

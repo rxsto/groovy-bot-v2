@@ -19,6 +19,7 @@
 
 package co.groovybot.bot.commands.settings;
 
+import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.command.Command;
 import co.groovybot.bot.core.command.CommandCategory;
 import co.groovybot.bot.core.command.CommandEvent;
@@ -36,11 +37,14 @@ public class AutoLeaveCommand extends Command {
         if (!event.getMember().hasPermission(Permission.ADMINISTRATOR))
             return send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.admin")));
         else {
+            MusicPlayer player = event.getBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
             if (event.getGroovyGuild().isAutoLeave()) {
                 event.getGroovyGuild().setAutoLeave(false);
+                player.cancelLeaveListener();
                 return send(success(event.translate("command.autoleave.disabled.title"), event.translate("command.autoleave.disabled.description")));
             } else {
                 event.getGroovyGuild().setAutoLeave(true);
+                player.scheduleLeaveListener();
                 return send(success(event.translate("command.autoleave.enabled.title"), event.translate("command.autoleave.enabled.description")));
             }
         }
