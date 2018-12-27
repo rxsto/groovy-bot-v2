@@ -26,7 +26,6 @@ import co.groovybot.bot.core.events.command.CommandFailEvent;
 import co.groovybot.bot.core.events.command.NoPermissionEvent;
 import co.groovybot.bot.util.EmbedUtil;
 import co.groovybot.bot.util.NameThreadFactory;
-import co.groovybot.bot.util.SafeMessage;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.Permission;
@@ -40,7 +39,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Log4j2
 public class CommandManager implements Closeable {
