@@ -74,11 +74,19 @@ public class Scheduler extends AudioEventAdapterWrapped {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+        if (endReason == AudioTrackEndReason.LOAD_FAILED) {
+            this.player.play(this.player.pollTrack(), false);
+            return;
+        }
         handleTrackEnd(track, endReason);
     }
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
+        if (exception.getCause().getMessage().equalsIgnoreCase("Unable to play this YouTube track.")) {
+            this.player.announceNotFound(track);
+            return;
+        }
         handleTrackEnd(track, AudioTrackEndReason.LOAD_FAILED);
     }
 
@@ -110,8 +118,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
                 if (shuffle) {
                     if (player.trackQueue.isEmpty()) {
                         player.onEnd(true);
-                    }
-                    else {
+                    } else {
                         final int index = ThreadLocalRandom.current().nextInt(player.trackQueue.size());
                         nextTrack = ((LinkedList<AudioTrack>) player.trackQueue).get(index);
                         ((LinkedList<AudioTrack>) player.trackQueue).remove(index);

@@ -156,6 +156,11 @@ public class MusicPlayer extends Player implements Runnable {
     }
 
     @Override
+    public void announceNotFound(AudioTrack track) {
+        SafeMessage.sendMessage(channel, info("An error occurred while searching song!", String.format("We couldn't find any fitting results for **[%s](%s)** by **%s**! Skipping!", track.getInfo().title, track.getInfo().uri, track.getInfo().author)));
+    }
+
+    @Override
     protected void save() {
         GroovyBot.getInstance().getMusicPlayerManager().update(guild, this);
     }
@@ -336,7 +341,7 @@ public class MusicPlayer extends Player implements Runnable {
             return true;
         }
         return false;
-    }
+    }//mrminecraft090
 
     private void handleFailedLoads(FriendlyException e, Message infoMessage, CommandEvent event) {
         SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.error.title"), e.getCause() != null ? String.format("**%s**\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));

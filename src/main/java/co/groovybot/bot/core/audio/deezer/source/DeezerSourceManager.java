@@ -29,7 +29,7 @@ import com.zeloon.deezer.domain.internal.PlaylistId;
 import com.zeloon.deezer.domain.internal.TrackId;
 import com.zeloon.deezer.io.HttpResourceConnection;
 import co.groovybot.bot.core.audio.AudioTrackFactory;
-import co.groovybot.bot.core.audio.spotify.entities.track.TrackData;
+import co.groovybot.bot.core.audio.spotify.entities.data.TrackData;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
