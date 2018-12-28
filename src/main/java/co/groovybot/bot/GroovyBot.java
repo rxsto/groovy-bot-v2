@@ -38,7 +38,6 @@ import co.groovybot.bot.core.monitoring.Monitor;
 import co.groovybot.bot.core.monitoring.MonitorManager;
 import co.groovybot.bot.core.monitoring.monitors.*;
 import co.groovybot.bot.core.premium.PremiumHandler;
-import co.groovybot.bot.core.statistics.ServerCountStatistics;
 import co.groovybot.bot.core.statistics.StatusPage;
 import co.groovybot.bot.core.translation.TranslationManager;
 import co.groovybot.bot.io.FileManager;
@@ -64,6 +63,14 @@ import org.apache.commons.cli.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.dicordlist.botlistwrapper.BotlistWrapper;
+import org.dicordlist.botlistwrapper.BotlistWrapperBuilder;
+import org.dicordlist.botlistwrapper.core.models.Botlist;
+import org.dicordlist.botlistwrapper.core.models.impls.JDAProvider;
+import org.dicordlist.botlistwrapper.core.models.impls.botlists.BotlistSPACE;
+import org.dicordlist.botlistwrapper.core.models.impls.botlists.BotsForDiscordCOM;
+import org.dicordlist.botlistwrapper.core.models.impls.botlists.DiscordBotsGG;
+import org.dicordlist.botlistwrapper.core.models.impls.botlists.DiscordBotsORG;
 import org.graylog2.gelfclient.GelfConfiguration;
 import org.graylog2.gelfclient.GelfMessage;
 import org.graylog2.gelfclient.GelfTransports;
@@ -77,6 +84,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Objects;
 
 @Log4j2
@@ -96,8 +104,6 @@ public class GroovyBot implements Closeable {
     private final LavalinkManager lavalinkManager;
     @Getter
     private final StatusPage statusPage;
-    @Getter
-    private final ServerCountStatistics serverCountStatistics;
     @Getter
     private final MusicPlayerManager musicPlayerManager;
     @Getter
@@ -150,6 +156,8 @@ public class GroovyBot implements Closeable {
     private PlaylistManager playlistManager;
     @Getter
     private GelfTransport gelfTransport;
+    @Getter
+    private BotlistWrapper botlistWrapper;
     @Getter
     private Cache<Guild> guildCache;
     @Getter
@@ -224,7 +232,6 @@ public class GroovyBot implements Closeable {
         new DatabaseGenerator(postgreSQL);
 
         commandManager = new CommandManager(config.getJSONObject("settings").getString("prefix"), this);
-        serverCountStatistics = new ServerCountStatistics(config.getJSONObject("botlists"));
         keyManager = new KeyManager(postgreSQL.getDataSource());
         interactionManager = new InteractionManager();
         eventWaiter = new EventWaiter();
@@ -351,11 +358,16 @@ public class GroovyBot implements Closeable {
 
         // Initializing statuspage and servercountstatistics
         if (!debugMode) {
-            log.info("[StatusPage] Initializing StatusPage ...");
             statusPage.start();
-            log.info("[ServerCountStatistics] Initializing ServerCountStatistics ...");
-            serverCountStatistics.start();
         }
+
+        botlistWrapper = new BotlistWrapperBuilder(new JDAProvider(this.getShardManager()), botlist -> config.getJSONObject("botlists").getString(botlist.getName()))
+                .registerBotlist(new BotlistSPACE())
+                .registerBotlist(new DiscordBotsGG())
+                .registerBotlist(new DiscordBotsORG())
+                .build();
+
+        botlistWrapper.post();
 
         // Register all monitors and start monitoring
         if (influxDB == null) {

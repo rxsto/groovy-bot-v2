@@ -107,20 +107,9 @@ public class ConfigurationSetup {
 
         // Create object for botlists
         final JSONObject botlists = new JSONObject()
-                .put("botlist.space", "defaultvalue")
-                .put("bots.ondiscord.xyz", "defaultvalue")
-                .put("discordboats.xyz", "defaultvalue")
-                .put("discordboats.club", "defaultvalue")
-                .put("discordbotlist.com", "defaultvalue")
-                .put("discordbot.world", "defaultvalue")
-                .put("bots.discord.pw", "defaultvalue")
-                .put("discordbotlist.xyz", "defaultvalue")
-                .put("discordbots.group", "defaultvalue")
-                .put("bots.discordlist.app", "defaultvalue")
-                .put("discord.services", "defaultvalue")
-                .put("discordsbestbots.xyz", "defaultvalue")
-                .put("divinediscordbots.com", "defaultvalue")
-                .put("discordbotindex.com", "defaultvalue");
+                .put("DiscordBotsORG", "defaultvalue")
+                .put("BotlistSPACE", "defaultvalue")
+                .put("DiscordBotsGG", "defaultvalue");
         configuration.addDefault("botlists", botlists);
 
         final JSONObject graylog = new JSONObject()
