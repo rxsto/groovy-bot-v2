@@ -35,6 +35,7 @@ import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.*;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.specification.*;
@@ -52,10 +53,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -91,6 +89,9 @@ public class SpotifySourceManager implements AudioSourceManager {
     private LoadingCache<ArtistKey, Playlist> topTenPlaylistLoadingCache;
     @Getter
     private LoadingCache<AlbumKey, Album> albumLoadingCache;
+
+    @Getter
+    private String retryAfter;
 
     public SpotifySourceManager(@NonNull SpotifyManager spotifyManager, @NonNull AudioTrackFactory audioTrackFactory) {
         this.spotifyManager = spotifyManager;
@@ -141,6 +142,7 @@ public class SpotifySourceManager implements AudioSourceManager {
                         return getAlbumById(key);
                     }
                 }, Executors.newCachedThreadPool()));
+        this.retryAfter = "";
     }
 
     @Override
@@ -151,11 +153,24 @@ public class SpotifySourceManager implements AudioSourceManager {
     @Override
     public AudioItem loadItem(DefaultAudioPlayerManager manager, AudioReference reference) {
         if (reference.identifier.startsWith("ytsearch:") || reference.identifier.startsWith("scsearch:")) return null;
+
+        if (spotifyManager.getAccessTokenExpires() < System.currentTimeMillis()) {
+            spotifyManager.refreshAccessToken();
+            throw new FriendlyException("Our access-token is currently invalid. We are validating our authorization! Please try again in `30` seconds.", FriendlyException.Severity.COMMON, new Throwable());
+        }
+
         try {
             URL url = new URL(reference.identifier);
             if (!url.getHost().equalsIgnoreCase("open.spotify.com"))
                 return null;
             String rawUrl = url.toString();
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            int statusCode = urlConnection.getResponseCode();
+            if (statusCode == 429) {
+                this.retryAfter = urlConnection.getHeaderField("Retry-After");
+                throw new FriendlyException(String.format("We are currently rate-limited. Please try again in `%s`!", retryAfter), FriendlyException.Severity.COMMON, new Throwable());
+            }
+
             AudioItem audioItem = null;
 
             if (TRACK_PATTERN.matcher(rawUrl).matches())
@@ -172,6 +187,9 @@ public class SpotifySourceManager implements AudioSourceManager {
             return audioItem;
         } catch (MalformedURLException e) {
             log.error("Failed to load the item!", e);
+            return null;
+        } catch (IOException e) {
+            log.error(e);
             return null;
         }
     }
@@ -282,6 +300,7 @@ public class SpotifySourceManager implements AudioSourceManager {
                 currentPage = null;
             else {
                 try {
+                    this.spotifyManager.refreshAccessToken();
                     URI nextPageUri = new URI(currentPage.getNext());
                     List<NameValuePair> queryPairs = URLEncodedUtils.parse(nextPageUri.toString(), StandardCharsets.UTF_8);
                     GetNormalPlaylistsTracksRequest.Builder builder = new GetNormalPlaylistsTracksRequest.Builder(this.spotifyManager.getAccessToken())

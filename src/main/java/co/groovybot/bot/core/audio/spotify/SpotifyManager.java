@@ -34,6 +34,7 @@ public class SpotifyManager {
     private final String clientId, clientSecret;
     @Getter
     private SpotifyApi spotifyApi;
+    @Getter
     private volatile long accessTokenExpires = 0;
     @Getter
     private volatile String accessToken = "";
