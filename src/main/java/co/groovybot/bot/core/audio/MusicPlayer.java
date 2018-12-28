@@ -291,16 +291,19 @@ public class MusicPlayer extends Player implements Runnable {
                     inProgress = false;
                     return;
                 }
-                tracks = tracks.stream().limit(5).collect(Collectors.toList());
-                Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("command.search.results.title"), SearchCommand.buildTrackDescription(tracks)).setFooter(event.translate("command.search.results.footer"), null));
-                for(int i=0;i<tracks.size();i++) {
-                    infoMessage.addReaction(SearchCommand.EMOTES[i]).complete();
-                }
-                try {
-                    new SearchCommand.MusicResult(infoMessage, event.getChannel(), event.getMember(), tracks, GroovyBot.getInstance().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()));
-                } catch (InsufficientPermissionException e) {
-                    sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
-                }
+                if(EntityProvider.getGuild(guild.getIdLong()).isSearchPlay()) {
+                    tracks = tracks.stream().limit(5).collect(Collectors.toList());
+                    Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("command.search.results.title"), SearchCommand.buildTrackDescription(tracks)).setFooter(event.translate("command.search.results.footer"), null));
+                    for (int i = 0; i < tracks.size(); i++) {
+                        infoMessage.addReaction(SearchCommand.EMOTES[i]).complete();
+                    }
+                    try {
+                        new SearchCommand.MusicResult(infoMessage, event.getChannel(), event.getMember(), tracks, GroovyBot.getInstance().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()));
+                    } catch (InsufficientPermissionException e) {
+                        sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
+                    }
+                }else
+                    queueWithChecks(tracks.get(0));
 
             }
 

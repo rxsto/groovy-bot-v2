@@ -21,6 +21,7 @@ package co.groovybot.bot.core.entity;
 
 import co.groovybot.bot.GroovyBot;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import org.json.JSONArray;
@@ -42,10 +43,10 @@ public class Guild extends DatabaseEntitiy {
     private boolean autoPause = false;
     private boolean preventDups = false;
     private boolean deleteMessage = true;
+    private boolean searchPlay = false;
     private long autoJoinChannelId;
     private long djRole= 0;
     private JSONArray blacklistedChannels = new JSONArray();
-    @Getter
     private long botChannel = 0;
 
     public Guild(Long entityId) throws Exception {
@@ -155,6 +156,11 @@ public class Guild extends DatabaseEntitiy {
 
     public void setAutoJoinChannel(VoiceChannel channel) {
         setAutoJoinChannelId(channel.getIdLong());
+    }
+
+    public void setSearchPlay(boolean searchPlay) {
+        this.searchPlay = searchPlay;
+        update();
     }
 
     public void setDjRole(long djRoleId) {
