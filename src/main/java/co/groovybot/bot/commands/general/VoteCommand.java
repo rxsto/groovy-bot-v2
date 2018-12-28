@@ -23,6 +23,7 @@ import co.groovybot.bot.core.command.*;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.entity.User;
 import co.groovybot.bot.core.premium.PremiumManager;
+import co.groovybot.bot.util.FormatUtil;
 
 public class VoteCommand extends Command {
     public VoteCommand() {
@@ -32,7 +33,7 @@ public class VoteCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return send(info(event.translate("command.vote.title"), event.translate("command.vote.description")));
+        return send(small(String.format("**[%s](https://vote.groovybot.co)**", event.translate("command.vote"))));
     }
 
     private class CheckCommand extends SubCommand {
@@ -45,13 +46,13 @@ public class VoteCommand extends Command {
         public Result run(String[] args, CommandEvent event) {
             final User groovyUser = event.getGroovyUser();
             if (!PremiumManager.hasVoted(groovyUser))
-                return send(error(event.translate("command.vote.not.title"), event.translate("command.vote.not.description")));
+                return send(error(event.translate("phrases.error"), event.translate("command.vote.not")));
             if (PremiumManager.hasAlreadyVoted(groovyUser))
-                return send(error(event.translate("command.vote.already.title"), event.translate("command.vote.already.description")));
+                return send(error(event.translate("phrases.error"), event.translate("command.vote.already")));
             if (!PremiumManager.isAbleToVote(groovyUser))
-                return send(error(event.translate("command.vote.forbidden.title"), event.translate("command.vote.forbidden.description")));
+                return send(error(event.translate("phrases.error"), String.format(event.translate("command.vote.forbidden"), FormatUtil.formatDuration(PremiumManager.getVoteAgainIn(event.getGroovyUser())))));
             PremiumManager.givePremium(groovyUser);
-            return send(success(event.translate("command.vote.success.title"), event.translate("command.vote.success.description")));
+            return send(success(event.translate("phrases.success"), String.format(event.translate("command.vote.success"), "1h")));
         }
     }
 }

@@ -32,6 +32,6 @@ public class InviteCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return send(noTitle(String.format("**[%s](https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot&permissions=70610241)**", event.translate("command.invite"), event.getJDA().getSelfUser().getId())));
+        return send(small(String.format("**[%s](https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot&permissions=70610241)**", event.translate("command.invite"), event.getJDA().getSelfUser().getId())));
     }
 }

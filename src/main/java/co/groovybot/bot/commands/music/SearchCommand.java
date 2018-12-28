@@ -29,6 +29,8 @@ import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.voice.SemiInChannelCommand;
 import co.groovybot.bot.core.events.command.CommandFailEvent;
 import co.groovybot.bot.util.EmbedUtil;
+import co.groovybot.bot.util.FormatUtil;
+import co.groovybot.bot.util.SafeMessage;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
@@ -50,6 +52,8 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+// TODO: REWRITE STRINGS AND MESSAGES
+
 @Log4j2
 public class SearchCommand extends SemiInChannelCommand {
 
@@ -70,7 +74,10 @@ public class SearchCommand extends SemiInChannelCommand {
         player.getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                sendMessage(event.getChannel(), EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("command.search.oneresult.description"), track.getInfo().title)));
+                if (track.getInfo().isStream)
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.success(event.translate("phrases.searching.streamloaded.title"), String.format(event.translate("phrases.searching.streamloaded.description"), track.getInfo().title)));
+                else
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)).setFooter(String.format("Estimated: %s", player.getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(player.getQueueLengthMillis())), null));
                 player.play(track, false);
             }
 
@@ -79,7 +86,7 @@ public class SearchCommand extends SemiInChannelCommand {
                 final List<AudioTrack> tracks = playlist.getTracks();
                 List<AudioTrack> results = tracks.stream().limit(tracks.size() < 5 ? tracks.size() : 5).collect(Collectors.toList());
                 Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.search.results.title"), buildTrackDescription(results)).setFooter(event.translate("command.search.results.footer"), null));
-                for(int i=0;i<results.size();i++) {
+                for (int i = 0; i < results.size(); i++) {
                     infoMessage.addReaction(EMOTES[i]).complete();
                 }
                 try {
@@ -156,29 +163,33 @@ public class SearchCommand extends SemiInChannelCommand {
             }
             AudioTrack track = searchResults.get(song - 1);
             player.queueTrack(track, false, false);
-            sendMessage(event.getChannel(), EmbedUtil.success(translate(author, "phrases.searching.trackloaded.title"), String.format(translate(author, "phrases.searching.trackloaded.description"), track.getInfo().title)));
+            if (track.getInfo().isStream)
+                SafeMessage.sendMessage(event.getChannel(), EmbedUtil.success(translate(author, "phrases.searching.streamloaded.title"), String.format(translate(author, "phrases.searching.streamloaded.description"), track.getInfo().title)));
+            else
+                SafeMessage.sendMessage(event.getChannel(), EmbedUtil.success(translate(author, "phrases.searching.trackloaded.title"), String.format(translate(author, "phrases.searching.trackloaded.description"), track.getInfo().title)).setFooter(String.format("Estimated: %s", player.getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(player.getQueueLengthMillis())), null));
             unregister();
         }
 
         @Override
         protected void handleReaction(GuildMessageReactionAddEvent event) {
+            final User author = event.getUser();
             final String reactionRaw = event.getReactionEmote().getName();
             int song = 0;
             switch (reactionRaw) {
                 case "\u0031\u20E3":
-                    song=1;
+                    song = 1;
                     break;
                 case "\u0032\u20E3":
-                    song=2;
+                    song = 2;
                     break;
                 case "\u0033\u20E3":
-                    song=3;
+                    song = 3;
                     break;
                 case "\u0034\u20E3":
-                    song=4;
+                    song = 4;
                     break;
                 case "\u0035\u20E3":
-                    song=5;
+                    song = 5;
                     break;
                 default:
                     sendMessage(event.getChannel(), error(translate(event.getUser(), "phrases.invalidnumber.title"), translate(event.getUser(), "phrases.invalidnumber.description")), 8);
@@ -190,7 +201,10 @@ public class SearchCommand extends SemiInChannelCommand {
             }
             AudioTrack track = searchResults.get(song - 1);
             player.queueTrack(track, false, false);
-            sendMessage(event.getChannel(), EmbedUtil.success(translate(event.getUser(), "phrases.searching.trackloaded.title"), String.format(translate(event.getUser(), "phrases.searching.trackloaded.description"), track.getInfo().title)));
+            if (track.getInfo().isStream)
+                SafeMessage.sendMessage(event.getChannel(), EmbedUtil.success(translate(author, "phrases.searching.streamloaded.title"), String.format(translate(author, "phrases.searching.streamloaded.description"), track.getInfo().title)));
+            else
+                SafeMessage.sendMessage(event.getChannel(), EmbedUtil.success(translate(author, "phrases.searching.trackloaded.title"), String.format(translate(author, "phrases.searching.trackloaded.description"), track.getInfo().title)).setFooter(String.format("Estimated: %s", player.getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(player.getQueueLengthMillis())), null));
             unregister();
         }
     }

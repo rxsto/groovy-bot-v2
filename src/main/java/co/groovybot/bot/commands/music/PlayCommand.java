@@ -39,11 +39,14 @@ public class PlayCommand extends SemiInChannelCommand {
         if (args.length == 0) {
             if (player.isPaused()) {
                 player.resume();
-                return send(success(event.translate("command.resume.title"), event.translate("command.resume.description")));
+                return send(success(event.translate("phrases.success"), event.translate("command.resume")));
             }
+
             return sendHelp();
         }
+
         player.queueSongs(event);
+
         return null;
     }
 }

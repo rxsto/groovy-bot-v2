@@ -32,6 +32,6 @@ public class DonateCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return send(info(event.translate("command.donate.title"), event.translate("command.donate.description")));
+        return send(small(String.format("**[%s](https://donate.groovybot.co)**", event.translate("command.donate"))));
     }
 }

@@ -38,6 +38,9 @@ public class MoveCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
+        if (!player.isPlaying())
+            return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
+
         if (args.length != 2 || !Helpers.isNumeric(args[0]) || !Helpers.isNumeric(args[1]))
             return sendHelp();
 
@@ -45,10 +48,10 @@ public class MoveCommand extends SameChannelCommand {
         int wantPos = Integer.parseInt(args[1]);
 
         if (songPos > player.getTrackQueue().size() || wantPos > player.getTrackQueue().size() || songPos < 1 || wantPos < 1)
-            return send(error(event.translate("phrases.invalidnumbers.title"), event.translate("phrases.invalidnumbers.description")));
+            return send(error(event.translate("phrases.invalid"), event.translate("phrases.invalidnumbers.description")));
 
         if (songPos == wantPos)
-            return send(error(event.translate("phrases.samenumbers.title"), event.translate("phrases.samenumbers.description")));
+            return send(error(event.translate("phrases.error"), event.translate("phrases.error.samenumbers")));
 
         LinkedList<AudioTrack> trackQueue = (LinkedList<AudioTrack>) player.getTrackQueue();
 
@@ -59,6 +62,6 @@ public class MoveCommand extends SameChannelCommand {
         trackQueue.remove(songPosIndex);
         trackQueue.add(wantPosIndex, preSave);
 
-        return send(success(event.translate("command.move.title"), String.format(event.translate("command.move.description"), preSave.getInfo().title, wantPos)));
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.move"), preSave.getInfo().title, wantPos)));
     }
 }

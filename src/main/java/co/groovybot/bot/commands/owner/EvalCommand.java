@@ -71,17 +71,12 @@ public class EvalCommand extends Command {
 
         String code = event.getArguments();
 
-        if (code.toLowerCase().contains("gettoken"))
+        if (code.toLowerCase().contains("token"))
             return send(error("Oh no", "You wanted to leak our token"));
 
         try {
-            Object result = scriptEngine.eval(
-                    "{" +
-                            "with (imports) {" +
-                            code +
-                            "}" +
-                            "};");
-            return send(info("Evaluated successfully", String.format("```%s```", result.toString())));
+            Object result = scriptEngine.eval("{" + "with (imports) {" + code + "}" + "};");
+            return send(success("Evaluated successfully", String.format("```%s```", result.toString())));
         } catch (ScriptException e) {
             return send(error("An error occurred!", String.format("An exception was thrown: ```%s```", e.getMessage())));
         }

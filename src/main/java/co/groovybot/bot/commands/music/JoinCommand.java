@@ -36,7 +36,7 @@ public class JoinCommand extends InChannelCommand {
     public Result execute(String[] args, CommandEvent event, MusicPlayer player) {
         if (player.checkConnect(event)) {
             player.connect(event.getMember().getVoiceState().getChannel());
-            return send(success(event.translate("command.join.joined.title"), event.translate("command.join.joined.description")));
+            return send(success(event.translate("phrases.success"), String.format(event.translate("command.join"), event.getMember().getVoiceState().getChannel().getName())));
         } else return null;
     }
 }

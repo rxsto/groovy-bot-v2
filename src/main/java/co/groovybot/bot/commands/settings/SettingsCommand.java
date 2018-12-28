@@ -24,6 +24,8 @@ import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
 
+// TODO: REWORK STRINGS AND MESSAGES
+
 public class SettingsCommand extends Command {
 
     public SettingsCommand() {

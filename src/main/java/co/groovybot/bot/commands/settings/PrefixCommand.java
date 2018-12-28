@@ -30,17 +30,17 @@ import co.groovybot.bot.core.entity.Guild;
 public class PrefixCommand extends Command {
 
     public PrefixCommand() {
-        super(new String[]{"prefix"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Lets you set Groovy's prefix", "[prefix]");
+        super(new String[]{"prefix", "pr"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Lets you set Groovy's prefix", "[prefix]");
     }
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        Guild guild = EntityProvider.getGuild(event.getGuild().getIdLong());
+        Guild guild = event.getGroovyGuild();
 
         if (args.length == 0)
-            return send(info(event.translate("command.prefix.current.title"), String.format(event.translate("command.prefix.current.description"), guild.getPrefix())));
+            return send(small(String.format(event.translate("command.prefix.current"), guild.getPrefix())));
 
         guild.setPrefix(args[0]);
-        return send(success(event.translate("command.prefix.set.title"), String.format(event.translate("command.prefix.set.description"), args[0])));
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.prefix"), guild.getPrefix())));
     }
 }

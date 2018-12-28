@@ -35,12 +35,8 @@ public class AnnounceCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        Guild guild = EntityProvider.getGuild(event.getGuild().getIdLong());
-        if (guild.isAnnounceSongs()) {
-            guild.setAnnounceSongs(false);
-            return send(success(event.translate("command.announce.disabled.title"), event.translate("command.announce.disabled.description")));
-        }
-        guild.setAnnounceSongs(true);
-        return send(success(event.translate("command.announce.enabled.title"), event.translate("command.announce.enabled.description")));
+        Guild guild = event.getGroovyGuild();
+        guild.setAnnounceSongs(!guild.isAnnounceSongs());
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.announce"), guild.isAnnounceSongs() ? event.translate("phrases.text.enabled") : event.translate("phrases.text.disabled"))));
     }
 }
