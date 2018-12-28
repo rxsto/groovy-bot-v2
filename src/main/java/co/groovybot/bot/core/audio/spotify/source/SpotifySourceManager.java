@@ -21,21 +21,24 @@ package co.groovybot.bot.core.audio.spotify.source;
 
 import co.groovybot.bot.core.audio.AudioTrackFactory;
 import co.groovybot.bot.core.audio.spotify.SpotifyManager;
-import co.groovybot.bot.core.audio.spotify.entities.AlbumKey;
-import co.groovybot.bot.core.audio.spotify.entities.ArtistKey;
-import co.groovybot.bot.core.audio.spotify.entities.PlaylistKey;
-import co.groovybot.bot.core.audio.spotify.entities.UserPlaylistKey;
-import co.groovybot.bot.core.audio.spotify.entities.track.TrackData;
+import co.groovybot.bot.core.audio.spotify.entities.data.TrackData;
+import co.groovybot.bot.core.audio.spotify.entities.keys.AlbumKey;
+import co.groovybot.bot.core.audio.spotify.entities.keys.ArtistKey;
+import co.groovybot.bot.core.audio.spotify.entities.keys.PlaylistKey;
+import co.groovybot.bot.core.audio.spotify.entities.keys.UserPlaylistKey;
 import co.groovybot.bot.core.audio.spotify.request.GetNormalPlaylistRequest;
 import co.groovybot.bot.core.audio.spotify.request.GetNormalPlaylistsTracksRequest;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.*;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.specification.*;
-import com.wrapper.spotify.requests.data.albums.GetAlbumRequest;
 import com.wrapper.spotify.requests.data.albums.GetAlbumsTracksRequest;
 import com.wrapper.spotify.requests.data.artists.GetArtistRequest;
 import com.wrapper.spotify.requests.data.artists.GetArtistsTopTracksRequest;
@@ -50,14 +53,14 @@ import org.jetbrains.annotations.NotNull;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -76,9 +79,70 @@ public class SpotifySourceManager implements AudioSourceManager {
     @Getter
     private final AudioTrackFactory audioTrackFactory;
 
+    @Getter
+    private LoadingCache<String, Track> trackLoadingCache;
+    @Getter
+    private LoadingCache<PlaylistKey, Playlist> playlistLoadingCache;
+    @Getter
+    private LoadingCache<UserPlaylistKey, Playlist> userPlaylistLoadingCache;
+    @Getter
+    private LoadingCache<ArtistKey, Playlist> topTenPlaylistLoadingCache;
+    @Getter
+    private LoadingCache<AlbumKey, Album> albumLoadingCache;
+
+    @Getter
+    private String retryAfter;
+
     public SpotifySourceManager(@NonNull SpotifyManager spotifyManager, @NonNull AudioTrackFactory audioTrackFactory) {
         this.spotifyManager = spotifyManager;
         this.audioTrackFactory = audioTrackFactory;
+        this.trackLoadingCache = CacheBuilder.newBuilder()
+                .maximumSize(100)
+                .expireAfterWrite(12, TimeUnit.HOURS)
+                .build(CacheLoader.asyncReloading(new CacheLoader<String, Track>() {
+                    @Override
+                    public Track load(@NotNull String key) {
+                        return getTrackById(key);
+                    }
+                }, Executors.newCachedThreadPool()));
+        this.playlistLoadingCache = CacheBuilder.newBuilder()
+                .maximumSize(30)
+                .expireAfterWrite(12, TimeUnit.HOURS)
+                .build(CacheLoader.asyncReloading(new CacheLoader<PlaylistKey, Playlist>() {
+                    @Override
+                    public Playlist load(@NotNull PlaylistKey key) {
+                        return getPlaylistById(key);
+                    }
+                }, Executors.newCachedThreadPool()));
+        this.userPlaylistLoadingCache = CacheBuilder.newBuilder()
+                .maximumSize(30)
+                .expireAfterWrite(12, TimeUnit.HOURS)
+                .build(CacheLoader.asyncReloading(new CacheLoader<UserPlaylistKey, Playlist>() {
+                    @Override
+                    public Playlist load(@NotNull UserPlaylistKey key) {
+                        return getUserPlaylistById(key);
+                    }
+                }, Executors.newCachedThreadPool()));
+        this.topTenPlaylistLoadingCache = CacheBuilder.newBuilder()
+                .maximumSize(25)
+                .expireAfterWrite(12, TimeUnit.HOURS)
+                .build(CacheLoader.asyncReloading(new CacheLoader<ArtistKey, Playlist>() {
+                    @Override
+                    public Playlist load(@NotNull ArtistKey key) throws IOException, SpotifyWebApiException {
+                        Artist artist = spotifyManager.getSpotifyApi().getArtist(key.getArtistId()).build().execute();
+                        return convertListToPlaylist(getTopTenSongs(artist));
+                    }
+                }, Executors.newCachedThreadPool()));
+        this.albumLoadingCache = CacheBuilder.newBuilder()
+                .maximumSize(30)
+                .expireAfterWrite(12, TimeUnit.HOURS)
+                .build(CacheLoader.asyncReloading(new CacheLoader<AlbumKey, Album>() {
+                    @Override
+                    public Album load(@NotNull AlbumKey key) {
+                        return getAlbumById(key);
+                    }
+                }, Executors.newCachedThreadPool()));
+        this.retryAfter = "";
     }
 
     @Override
@@ -89,11 +153,24 @@ public class SpotifySourceManager implements AudioSourceManager {
     @Override
     public AudioItem loadItem(DefaultAudioPlayerManager manager, AudioReference reference) {
         if (reference.identifier.startsWith("ytsearch:") || reference.identifier.startsWith("scsearch:")) return null;
+
+        if (spotifyManager.getAccessTokenExpires() < System.currentTimeMillis()) {
+            spotifyManager.refreshAccessToken();
+            throw new FriendlyException("Our access-token is currently invalid. We are validating our authorization! Please try again in `30` seconds.", FriendlyException.Severity.COMMON, new Throwable());
+        }
+
         try {
             URL url = new URL(reference.identifier);
             if (!url.getHost().equalsIgnoreCase("open.spotify.com"))
                 return null;
             String rawUrl = url.toString();
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            int statusCode = urlConnection.getResponseCode();
+            if (statusCode == 429) {
+                this.retryAfter = urlConnection.getHeaderField("Retry-After");
+                throw new FriendlyException(String.format("We are currently rate-limited. Please try again in `%s`!", retryAfter), FriendlyException.Severity.COMMON, new Throwable());
+            }
+
             AudioItem audioItem = null;
 
             if (TRACK_PATTERN.matcher(rawUrl).matches())
@@ -111,51 +188,61 @@ public class SpotifySourceManager implements AudioSourceManager {
         } catch (MalformedURLException e) {
             log.error("Failed to load the item!", e);
             return null;
+        } catch (IOException e) {
+            log.error(e);
+            return null;
         }
     }
 
     private AudioTrack buildTrack(String url) {
-        this.spotifyManager.refreshAccessToken();
         String trackId = parseTrackPattern(url);
+
         Track track;
         try {
-            track = this.spotifyManager.getSpotifyApi()
-                    .getTrack(trackId)
-                    .build()
-                    .execute();
-        } catch (SpotifyWebApiException | IOException e) {
+            long startTime = System.currentTimeMillis();
+            log.debug("Before: " + startTime);
+            track = trackLoadingCache.get(trackId);
+            log.debug("After: " + (System.currentTimeMillis() - startTime));
+        } catch (ExecutionException e) {
+            log.error(e);
             return null;
         }
-        TrackData trackData = this.getTrackData(Objects.requireNonNull(track));
+        TrackData trackData = getTrackData(Objects.requireNonNull(track));
         return this.audioTrackFactory.getAudioTrack(trackData);
     }
 
     private AudioPlaylist buildPlaylist(String url) {
-        this.spotifyManager.refreshAccessToken();
         PlaylistKey playlistKey = parsePlaylistPattern(url);
-        GetNormalPlaylistRequest normalPlaylistRequest = new GetNormalPlaylistRequest.Builder(this.spotifyManager.getAccessToken())
-                .playlistId(Objects.requireNonNull(playlistKey).getPlaylistId())
-                .build();
+
         Playlist playlist;
         try {
-            playlist = normalPlaylistRequest.execute();
-        } catch (IOException | SpotifyWebApiException e) {
+            long startTime = System.currentTimeMillis();
+            log.debug("Before: " + startTime);
+            playlist = playlistLoadingCache.get(playlistKey);
+            log.debug("After: " + (System.currentTimeMillis() - startTime));
+        } catch (ExecutionException e) {
+            log.error(e);
             return null;
         }
-        List<TrackData> trackDataList = getPlaylistTrackDataList(getPlaylistTracks(Objects.requireNonNull(playlist)));
+        List<TrackData> trackDataList = this.getPlaylistTrackDataList(getPlaylistTracks(playlist));
         List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
         return new BasicAudioPlaylist(playlist.getName(), audioTracks, null, false);
     }
 
     private AudioPlaylist buildUserPlaylist(String url) {
-        this.spotifyManager.refreshAccessToken();
         UserPlaylistKey userPlaylistKey = parseUserPlaylistPattern(url);
+
+        this.spotifyManager.refreshAccessToken();
         GetPlaylistRequest getPlaylistRequest = this.spotifyManager.getSpotifyApi().getPlaylist(userPlaylistKey.getUserId(), userPlaylistKey.getPlaylistId())
                 .build();
         Playlist playlist;
         try {
+            long startTime = System.currentTimeMillis();
+            log.debug("Before: " + startTime);
             playlist = getPlaylistRequest.execute();
+            log.debug("After: " + (System.currentTimeMillis() - startTime));
         } catch (IOException | SpotifyWebApiException e) {
+            log.error(e);
             return null;
         }
         List<TrackData> trackDataList = getPlaylistTrackDataList(getPlaylistTracks(Objects.requireNonNull(playlist)));
@@ -164,14 +251,16 @@ public class SpotifySourceManager implements AudioSourceManager {
     }
 
     private AudioPlaylist buildPlaylistFromAlbum(String url) {
-        this.spotifyManager.refreshAccessToken();
         AlbumKey albumKey = parseAlbumPattern(url);
-        GetAlbumRequest getAlbumRequest = this.spotifyManager.getSpotifyApi().getAlbum(albumKey.getAlbumId())
-                .build();
+
         Album album;
         try {
-            album = getAlbumRequest.execute();
-        } catch (IOException | SpotifyWebApiException e) {
+            long startTime = System.currentTimeMillis();
+            log.debug("Before: " + startTime);
+            album = albumLoadingCache.get(albumKey);
+            log.debug("After: " + (System.currentTimeMillis() - startTime));
+        } catch (ExecutionException e) {
+            log.error(e);
             return null;
         }
         List<TrackData> trackDataList = getTrackDataListSimplified(getAlbumTracks(Objects.requireNonNull(album)));
@@ -180,14 +269,19 @@ public class SpotifySourceManager implements AudioSourceManager {
     }
 
     private AudioPlaylist buildTopTenPlaylist(String url) {
-        this.spotifyManager.refreshAccessToken();
         ArtistKey artistKey = parseArtistPattern(url);
+
+        this.spotifyManager.refreshAccessToken();
         GetArtistRequest getArtistRequest = this.spotifyManager.getSpotifyApi().getArtist(artistKey.getArtistId())
                 .build();
         Artist artist;
         try {
+            long startTime = System.currentTimeMillis();
+            log.debug("Before: " + startTime);
             artist = getArtistRequest.execute();
+            log.debug("After: " + (System.currentTimeMillis() - startTime));
         } catch (SpotifyWebApiException | IOException e) {
+            log.error(e);
             return null;
         }
         List<TrackData> trackDataList = getTrackDataList(getTopTenSongs(artist));
@@ -206,6 +300,7 @@ public class SpotifySourceManager implements AudioSourceManager {
                 currentPage = null;
             else {
                 try {
+                    this.spotifyManager.refreshAccessToken();
                     URI nextPageUri = new URI(currentPage.getNext());
                     List<NameValuePair> queryPairs = URLEncodedUtils.parse(nextPageUri.toString(), StandardCharsets.UTF_8);
                     GetNormalPlaylistsTracksRequest.Builder builder = new GetNormalPlaylistsTracksRequest.Builder(this.spotifyManager.getAccessToken())
@@ -217,8 +312,10 @@ public class SpotifySourceManager implements AudioSourceManager {
                     currentPage = builder.build().execute();
                 } catch (URISyntaxException e) {
                     log.error("Got invalid 'next page' URI!", e);
+                    return null;
                 } catch (SpotifyWebApiException | IOException e) {
                     log.error("Failed to query Spotify for playlist tracks!", e);
+                    return null;
                 }
             }
         } while (currentPage != null);
@@ -252,7 +349,6 @@ public class SpotifySourceManager implements AudioSourceManager {
         } while (currentPage != null);
         return albumTracks;
     }
-
 
     private List<Track> getTopTenSongs(Artist artist) {
         List<Track> albumTracks = Lists.newArrayList();
@@ -305,6 +401,76 @@ public class SpotifySourceManager implements AudioSourceManager {
                         .collect(Collectors.toList()),
                 track.getDurationMs()
         );
+    }
+
+    private Track getTrackById(String id) {
+        this.spotifyManager.refreshAccessToken();
+        try {
+            return this.spotifyManager.getSpotifyApi()
+                    .getTrack(id)
+                    .build()
+                    .execute();
+        } catch (SpotifyWebApiException | IOException e) {
+            log.error(e);
+            return new Track.Builder().build();
+        }
+    }
+
+    private Playlist getPlaylistById(PlaylistKey playlistKey) {
+        this.spotifyManager.refreshAccessToken();
+        GetNormalPlaylistRequest normalPlaylistRequest = new GetNormalPlaylistRequest.Builder(this.spotifyManager.getAccessToken())
+                .playlistId(playlistKey.getPlaylistId())
+                .build();
+        try {
+            return normalPlaylistRequest.execute();
+        } catch (SpotifyWebApiException | IOException e) {
+            log.error(e);
+            return new Playlist.Builder().build();
+        }
+    }
+
+    private Playlist getUserPlaylistById(UserPlaylistKey userPlaylistKey) {
+        this.spotifyManager.refreshAccessToken();
+        GetPlaylistRequest getPlaylistRequest = this.spotifyManager.getSpotifyApi().getPlaylist(userPlaylistKey.getUserId(), userPlaylistKey.getPlaylistId())
+                .build();
+        try {
+            return getPlaylistRequest.execute();
+        } catch (SpotifyWebApiException | IOException e) {
+            log.error(e);
+            return new Playlist.Builder().build();
+        }
+    }
+
+    private Album getAlbumById(AlbumKey albumKey) {
+        this.spotifyManager.refreshAccessToken();
+        try {
+            return this.spotifyManager.getSpotifyApi()
+                    .getAlbum(albumKey.getAlbumId())
+                    .build()
+                    .execute();
+        } catch (SpotifyWebApiException | IOException e) {
+            log.error(e);
+            return new Album.Builder().build();
+        }
+    }
+
+    private Playlist convertListToPlaylist(List<Track> tracks) {
+        List<PlaylistTrack> playlistTracks = Lists.newArrayList();
+        tracks.forEach(track -> {
+            PlaylistTrack playlistTrack = new PlaylistTrack.Builder()
+                    .setTrack(track)
+                    .setIsLocal(false)
+                    .build();
+            playlistTracks.add(playlistTrack);
+        });
+        Paging<PlaylistTrack> trackPaging = new Paging.Builder<PlaylistTrack>()
+                .setTotal(playlistTracks.size())
+                .setItems(playlistTracks.toArray(new PlaylistTrack[0]))
+                .build();
+        return new Playlist.Builder()
+                .setTracks(trackPaging)
+                .setId(tracks.get(0).getArtists()[0].getId())
+                .build();
     }
 
     private String parseTrackPattern(String identifier) {

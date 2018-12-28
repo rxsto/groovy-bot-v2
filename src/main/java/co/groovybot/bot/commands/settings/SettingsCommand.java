@@ -50,6 +50,7 @@ public class SettingsCommand extends Command {
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.dupes")), String.format("**```%s```**", event.getGroovyGuild().isPreventDups()), true);
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.botchannel")), String.format("**```%s```**", event.getGroovyGuild().getBotChannel() == 0 ? "none" : event.getBot().getShardManager().getTextChannelById(event.getGroovyGuild().getBotChannel()).getAsMention()), true);
         embedBuilder.addField(String.format("**%s**", event.translate("command.settings.channelblacklist")), String.format("**```%s```**", event.getGroovyGuild().getBlacklistedChannels().size()), true);
+        embedBuilder.addField(String.format("**%s**", event.translate("command.settings.searchplay")), String.format("**```%s```**", event.getGroovyGuild().isSearchPlay()), true);
         return send(embedBuilder);
     }
 

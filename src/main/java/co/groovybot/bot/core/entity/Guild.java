@@ -21,6 +21,7 @@ package co.groovybot.bot.core.entity;
 
 import co.groovybot.bot.GroovyBot;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import org.json.JSONArray;
@@ -155,6 +156,11 @@ public class Guild extends DatabaseEntitiy {
 
     public void setAutoJoinChannel(VoiceChannel channel) {
         setAutoJoinChannelId(channel.getIdLong());
+    }
+
+    public void setSearchPlay(boolean searchPlay) {
+        this.searchPlay = searchPlay;
+        update();
     }
 
     public void setDjRole(long djRoleId) {

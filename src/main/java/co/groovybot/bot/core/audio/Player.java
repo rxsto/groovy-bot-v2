@@ -73,6 +73,8 @@ public abstract class Player {
 
     public abstract void announceRequeue(AudioTrack track);
 
+    public abstract void announceNotFound(AudioTrack track);
+
     public void stop() {
         player.stopTrack();
     }

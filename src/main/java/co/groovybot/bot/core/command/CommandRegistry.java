@@ -89,6 +89,7 @@ public class CommandRegistry {
                 new VoiceFixCommand(),
                 new TextToSpeechCommand(),
                 new CreateInviteCommand()
+                new PlaySearchCommand()
         );
     }
 }

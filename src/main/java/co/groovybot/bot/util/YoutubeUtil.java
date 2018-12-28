@@ -96,7 +96,7 @@ public class YoutubeUtil {
                 .setQ(query);
         SearchListResponse response = search.execute();
         if (response.getItems().isEmpty())
-            throw new NullPointerException("No videos were found");
+            return "";
         return response.getItems().get(0).getId().getVideoId();
     }
 
