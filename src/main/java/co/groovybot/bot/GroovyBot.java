@@ -65,10 +65,8 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.dicordlist.botlistwrapper.BotlistWrapper;
 import org.dicordlist.botlistwrapper.BotlistWrapperBuilder;
-import org.dicordlist.botlistwrapper.core.models.Botlist;
 import org.dicordlist.botlistwrapper.core.models.impls.JDAProvider;
 import org.dicordlist.botlistwrapper.core.models.impls.botlists.BotlistSPACE;
-import org.dicordlist.botlistwrapper.core.models.impls.botlists.BotsForDiscordCOM;
 import org.dicordlist.botlistwrapper.core.models.impls.botlists.DiscordBotsGG;
 import org.dicordlist.botlistwrapper.core.models.impls.botlists.DiscordBotsORG;
 import org.graylog2.gelfclient.GelfConfiguration;
@@ -77,6 +75,7 @@ import org.graylog2.gelfclient.GelfTransports;
 import org.graylog2.gelfclient.transport.AbstractGelfTransport;
 import org.graylog2.gelfclient.transport.GelfTransport;
 import org.influxdb.InfluxDB;
+import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.Closeable;
@@ -361,7 +360,12 @@ public class GroovyBot implements Closeable {
             statusPage.start();
         }
 
-        botlistWrapper = new BotlistWrapperBuilder(new JDAProvider(this.getShardManager()), botlist -> config.getJSONObject("botlists").getString(botlist.getName()))
+        botlistWrapper = new BotlistWrapperBuilder(new JDAProvider(this.getShardManager()), botlist -> {
+            JSONObject json = config.getJSONObject("botlists");
+            if (json.has(botlist.getName()))
+                return json.getString(botlist.getName());
+            return null;
+        })
                 .registerBotlist(new BotlistSPACE())
                 .registerBotlist(new DiscordBotsGG())
                 .registerBotlist(new DiscordBotsORG())
