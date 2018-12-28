@@ -20,14 +20,12 @@
 package co.groovybot.bot.commands.settings;
 
 import co.groovybot.bot.core.audio.MusicPlayer;
-import co.groovybot.bot.core.command.Command;
 import co.groovybot.bot.core.command.CommandCategory;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.voice.SameChannelCommand;
 import co.groovybot.bot.core.entity.Guild;
-import net.dv8tion.jda.core.Permission;
 
 public class AutoLeaveCommand extends SameChannelCommand {
     public AutoLeaveCommand() {

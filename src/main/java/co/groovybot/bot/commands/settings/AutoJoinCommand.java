@@ -31,7 +31,7 @@ import java.util.List;
 
 public class AutoJoinCommand extends Command {
     public AutoJoinCommand() {
-        super(new String[] {"autojoin", "aj"}, CommandCategory.SETTINGS, Permissions.tierThree(), "Let's you define a channel in which the bot joins automatically when a user joins into it", "[channelId/name]");
+        super(new String[]{"autojoin", "aj"}, CommandCategory.SETTINGS, Permissions.tierThree(), "Let's you define a channel in which the bot joins automatically when a user joins into it", "[channelId/name]");
         registerSubCommand(new DisableCommand());
     }
 
@@ -60,7 +60,7 @@ public class AutoJoinCommand extends Command {
     private class DisableCommand extends SubCommand {
 
         private DisableCommand() {
-            super(new String[] {"disable", "delete"}, Permissions.adminOnly(), "Let's you disable the current AutoJoin");
+            super(new String[]{"disable", "delete"}, Permissions.adminOnly(), "Let's you disable the current AutoJoin");
         }
 
         @Override

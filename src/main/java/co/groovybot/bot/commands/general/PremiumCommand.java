@@ -25,7 +25,6 @@ import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.util.PremiumUtil;
-import org.apache.commons.text.WordUtils;
 
 public class PremiumCommand extends Command {
 

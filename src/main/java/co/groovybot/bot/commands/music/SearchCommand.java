@@ -57,14 +57,24 @@ import java.util.stream.Collectors;
 @Log4j2
 public class SearchCommand extends SemiInChannelCommand {
 
-    private final SearchCommand instance;
     public static final String[] EMOTES = {"\u0031\u20E3", "\u0032\u20E3", "\u0033\u20E3", "\u0034\u20E3", "\u0035\u20E3"};
+    private final SearchCommand instance;
 
     public SearchCommand() {
         super(new String[]{"search", "find"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you search for songs", "<song>");
         instance = this;
     }
 
+    public static String buildTrackDescription(List<AudioTrack> results) {
+        final String[] NUMBERS = {"**1:**", "**2:**", "**3:**", "**4:**", "**5:**", "**6:**"};
+        StringBuilder resultBuilder = new StringBuilder();
+        AtomicInteger count = new AtomicInteger(0);
+        results.forEach(track -> {
+            final AudioTrackInfo info = track.getInfo();
+            resultBuilder.append(NUMBERS[count.getAndAdd(1)]).append(" [").append(info.title).append(" - ").append(info.author).append("](").append(info.uri).append(")").append("\n");
+        });
+        return resultBuilder.toString();
+    }
 
     @Override
     public Result executeCommand(String[] args, CommandEvent event, MusicPlayer player) {
@@ -116,17 +126,6 @@ public class SearchCommand extends SemiInChannelCommand {
             }
         });
         return null;
-    }
-
-    public static String buildTrackDescription(List<AudioTrack> results) {
-        final String[] NUMBERS = {"**1:**", "**2:**", "**3:**", "**4:**", "**5:**", "**6:**"};
-        StringBuilder resultBuilder = new StringBuilder();
-        AtomicInteger count = new AtomicInteger(0);
-        results.forEach(track -> {
-            final AudioTrackInfo info = track.getInfo();
-            resultBuilder.append(NUMBERS[count.getAndAdd(1)]).append(" [").append(info.title).append(" - ").append(info.author).append("](").append(info.uri).append(")").append("\n");
-        });
-        return resultBuilder.toString();
     }
 
     public static class MusicResult extends InteractableMessage {

@@ -21,10 +21,6 @@ package co.groovybot.bot.commands.general;
 
 import co.groovybot.bot.core.command.*;
 import co.groovybot.bot.core.command.permission.Permissions;
-import co.groovybot.bot.core.entity.Guild;
-import net.dv8tion.jda.core.entities.TextChannel;
-
-import java.util.List;
 
 public class ShardCommand extends Command {
 

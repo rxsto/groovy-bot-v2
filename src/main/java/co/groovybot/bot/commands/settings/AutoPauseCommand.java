@@ -20,7 +20,6 @@
 package co.groovybot.bot.commands.settings;
 
 import co.groovybot.bot.core.audio.MusicPlayer;
-import co.groovybot.bot.core.audio.Scheduler;
 import co.groovybot.bot.core.command.CommandCategory;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;

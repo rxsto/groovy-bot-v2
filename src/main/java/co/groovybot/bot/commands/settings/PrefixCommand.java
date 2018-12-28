@@ -24,7 +24,6 @@ import co.groovybot.bot.core.command.CommandCategory;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
-import co.groovybot.bot.core.entity.EntityProvider;
 import co.groovybot.bot.core.entity.Guild;
 
 public class PrefixCommand extends Command {

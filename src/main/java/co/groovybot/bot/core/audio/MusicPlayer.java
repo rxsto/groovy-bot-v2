@@ -68,10 +68,10 @@ import static co.groovybot.bot.util.SafeMessage.sendMessage;
 public class MusicPlayer extends Player implements Runnable {
 
     @Getter
-    private Guild guild;
-    @Getter
     private final AudioPlayerManager audioPlayerManager;
     private final ScheduledExecutorService scheduler;
+    @Getter
+    private Guild guild;
     @Getter
     @Setter
     private TextChannel channel;
@@ -294,7 +294,7 @@ public class MusicPlayer extends Player implements Runnable {
                     inProgress = false;
                     return;
                 }
-                if(EntityProvider.getGuild(guild.getIdLong()).isSearchPlay()) {
+                if (EntityProvider.getGuild(guild.getIdLong()).isSearchPlay()) {
                     tracks = tracks.stream().limit(5).collect(Collectors.toList());
                     Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("command.search.results.title"), SearchCommand.buildTrackDescription(tracks)).setFooter(event.translate("command.search.results.footer"), null));
                     for (int i = 0; i < tracks.size(); i++) {
@@ -305,7 +305,7 @@ public class MusicPlayer extends Player implements Runnable {
                     } catch (InsufficientPermissionException e) {
                         sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
                     }
-                }else
+                } else
                     queueWithChecks(tracks.get(0));
 
             }

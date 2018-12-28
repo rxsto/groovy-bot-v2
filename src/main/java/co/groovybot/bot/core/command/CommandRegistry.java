@@ -23,8 +23,6 @@ import co.groovybot.bot.commands.general.*;
 import co.groovybot.bot.commands.music.*;
 import co.groovybot.bot.commands.owner.*;
 import co.groovybot.bot.commands.settings.*;
-import co.groovybot.bot.commands.settings.AutoPlayCommand;
-import co.groovybot.bot.commands.music.SwitchCommand;
 
 public class CommandRegistry {
 
@@ -88,7 +86,7 @@ public class CommandRegistry {
                 new DeleteMessagesCommand(),
                 new VoiceFixCommand(),
                 new TextToSpeechCommand(),
-                new CreateInviteCommand()
+                new CreateInviteCommand(),
                 new PlaySearchCommand()
         );
     }

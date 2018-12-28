@@ -102,6 +102,7 @@ public class YoutubeUtil {
 
     /**
      * Search for youtube Videos by it's ide
+     *
      * @param videoId The id of the video
      * @return an VideoListResponse {@link com.google.api.services.youtube.model.VideoListResponse}
      * @throws IOException When YoutubeRequest returns an error
@@ -112,6 +113,7 @@ public class YoutubeUtil {
 
     /**
      * Gets the first video from an VideoListResponse
+     *
      * @param videoId The yotube video id
      * @return The first Video {@link com.google.api.services.youtube.model.Video} of the {@link com.google.api.services.youtube.model.VideoListResponse}
      * @throws IOException When YoutubeRequest returns an error
