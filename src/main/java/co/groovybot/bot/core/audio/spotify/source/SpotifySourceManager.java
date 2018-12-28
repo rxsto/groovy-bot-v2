@@ -312,8 +312,10 @@ public class SpotifySourceManager implements AudioSourceManager {
                     currentPage = builder.build().execute();
                 } catch (URISyntaxException e) {
                     log.error("Got invalid 'next page' URI!", e);
+                    return null;
                 } catch (SpotifyWebApiException | IOException e) {
                     log.error("Failed to query Spotify for playlist tracks!", e);
+                    return null;
                 }
             }
         } while (currentPage != null);
