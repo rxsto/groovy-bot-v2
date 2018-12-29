@@ -357,20 +357,20 @@ public class GroovyBot implements Closeable {
         // Initializing statuspage and servercountstatistics
         if (!debugMode) {
             statusPage.start();
+            botlistWrapper = new BotlistWrapperBuilder(new JDAProvider(this.getShardManager()), botlist -> {
+                JSONObject json = config.getJSONObject("botlists");
+                if (json.has(botlist.getName()))
+                    return json.getString(botlist.getName());
+                return null;
+            })
+                    .registerBotlist(new BotlistSPACE())
+                    .registerBotlist(new DiscordBotsGG())
+                    .registerBotlist(new DiscordBotsORG())
+                    .build();
+
+            botlistWrapper.post();
         }
 
-        botlistWrapper = new BotlistWrapperBuilder(new JDAProvider(this.getShardManager()), botlist -> {
-            JSONObject json = config.getJSONObject("botlists");
-            if (json.has(botlist.getName()))
-                return json.getString(botlist.getName());
-            return null;
-        })
-                .registerBotlist(new BotlistSPACE())
-                .registerBotlist(new DiscordBotsGG())
-                .registerBotlist(new DiscordBotsORG())
-                .build();
-
-        botlistWrapper.post();
 
         // Register all monitors and start monitoring
         if (influxDB == null) {
