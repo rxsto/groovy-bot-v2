@@ -56,6 +56,7 @@ import java.io.IOException;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -293,6 +294,7 @@ public class SpotifySourceManager implements AudioSourceManager {
         List<PlaylistTrack> playlistTracks = Lists.newArrayList();
         Paging<PlaylistTrack> currentPage = playlist.getTracks();
 
+        int i = 0;
         do {
             playlistTracks.addAll(Arrays.asList(currentPage.getItems()));
             if (currentPage.getNext() == null)
@@ -309,15 +311,17 @@ public class SpotifySourceManager implements AudioSourceManager {
                     }
 
                     currentPage = builder.build().execute();
+                    i++;
                 } catch (URISyntaxException e) {
                     log.error("Got invalid 'next page' URI!", e);
-                    return null;
+                    return Collections.emptyList();
                 } catch (SpotifyWebApiException | IOException e) {
                     log.error("Failed to query Spotify for playlist tracks!", e);
-                    return null;
+                    return Collections.emptyList();
                 }
             }
         } while (currentPage != null);
+        log.debug("UserPlaylist-Requests executed " + i + " times.");
         return playlistTracks;
     }
 
