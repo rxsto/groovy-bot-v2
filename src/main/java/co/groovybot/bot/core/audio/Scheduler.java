@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class Scheduler extends AudioEventAdapterWrapped {
 
-    private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.youtube\\.com/watch\\?v=([^?/&]*)");
+    private static final Pattern TRACK_PATTERN = Pattern.compile("(https?://)?(.*)?youtube\\.com/watch\\?v=([^?/\\s]*)");
 
     private final Player player;
     @Getter
