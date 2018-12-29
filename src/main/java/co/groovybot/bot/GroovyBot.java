@@ -138,6 +138,7 @@ public class GroovyBot implements Closeable {
     private final boolean noMonitoring;
     @Getter
     private final boolean noCentralizedLogging;
+    private final boolean disableBotlist;
     @Getter
     private PostgreSQL postgreSQL;
     @Getter
@@ -184,6 +185,7 @@ public class GroovyBot implements Closeable {
         noMonitoring = args.hasOption("no-monitoring");
         configNodes = args.hasOption("config-nodes");
         noCentralizedLogging = args.hasOption("no-centralized-logging");
+        disableBotlist = args.hasOption("no-stats");
 
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
@@ -259,6 +261,7 @@ public class GroovyBot implements Closeable {
         options.addOption("NM", "no-monitoring", false, "Disables InfluxDB monitoring");
         options.addOption("NP", "no-patrons", false, "Disable patrons feature");
         options.addOption("NCL", "no-centralized-logging", false, "Disabled centralized logging");
+        options.addOption("NS", "no-stats", false, "Disables the botlist stats posting");
         CommandLine cmd = null;
         try {
             cmd = new DefaultParser().parse(options, args);
@@ -357,6 +360,8 @@ public class GroovyBot implements Closeable {
         // Initializing statuspage and servercountstatistics
         if (!debugMode) {
             statusPage.start();
+        }
+        if(disableBotlist) {
             botlistWrapper = new BotlistWrapperBuilder(new JDAProvider(this.getShardManager()), botlist -> {
                 JSONObject json = config.getJSONObject("botlists");
                 if (json.has(botlist.getName()))
