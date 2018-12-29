@@ -39,14 +39,23 @@ public class RemoveCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
+        if (!player.isPlaying())
+            return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
+
         if (args.length == 0)
             return sendHelp();
+
         if (!Helpers.isNumeric(args[0]))
-            return send(EmbedUtil.error(event.translate("phrases.invalidnumber.title"), event.translate("phrases.invalidnumber.description")));
+            return send(EmbedUtil.error(event.translate("phrases.invalid"), event.translate("phrases.invalid.number")));
+
         int query = Integer.parseInt(args[0]);
+
         if (query > player.trackQueue.size() || query < 1)
-            return send(EmbedUtil.error(event.translate("command.remove.notinqueue.title"), event.translate("command.remove.notinqueue.description")));
+            return send(EmbedUtil.error(event.translate("phrases.error"), event.translate("command.remove.notinqueue")));
+
+        String title = ((LinkedList<AudioTrack>) player.trackQueue).get(query - 1).getInfo().title;
         ((LinkedList<AudioTrack>) player.trackQueue).remove(query - 1);
-        return send(EmbedUtil.success(event.translate("command.remove.removed.title"), String.format(event.translate("command.remove.removed.description"), query)));
+
+        return send(EmbedUtil.success(event.translate("phrases.success"), String.format(event.translate("command.remove"), title, query)));
     }
 }

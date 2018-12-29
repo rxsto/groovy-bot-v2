@@ -20,7 +20,6 @@
 package co.groovybot.bot.commands.music;
 
 import co.groovybot.bot.core.audio.MusicPlayer;
-import co.groovybot.bot.core.audio.Scheduler;
 import co.groovybot.bot.core.command.CommandCategory;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
@@ -35,14 +34,10 @@ public class ShuffleCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
-        Scheduler scheduler = player.getScheduler();
+        if (!player.isPlaying())
+            return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
 
-        if (scheduler.isShuffle()) {
-            scheduler.setShuffle(false);
-            return send(success(event.translate("command.shuffle.disabled.title"), event.translate("command.shuffle.disabled.description")));
-        }
-
-        scheduler.setShuffle(true);
-        return send(success(event.translate("command.shuffle.enabled.title"), event.translate("command.shuffle.enabled.description")));
+        player.getScheduler().setShuffle(!player.getScheduler().isShuffle());
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.shuffle"), player.getScheduler().isShuffle() ? event.translate("phrases.text.enabled") : event.translate("phrases.text.disabled"))));
     }
 }

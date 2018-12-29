@@ -43,10 +43,11 @@ public abstract class InteractableMessage {
 
     /**
      * Constructs a new interactable message
+     *
      * @param infoMessage The messages which show the user information about the interactive action
-     * @param channel The channel were the action is in
-     * @param author The executor of the command
-     * @param identifier The identifier for the action
+     * @param channel     The channel were the action is in
+     * @param author      The executor of the command
+     * @param identifier  The identifier for the action
      * @throws InsufficientPermissionException When the bot user has not the needed permission {@link Permission#MESSAGE_ADD_REACTION} {@link Permission#MESSAGE_MANAGE}
      */
     public InteractableMessage(Message infoMessage, TextChannel channel, Member author, long identifier) throws InsufficientPermissionException {

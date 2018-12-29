@@ -19,6 +19,8 @@
 
 package co.groovybot.bot.core.audio.deezer.source;
 
+import co.groovybot.bot.core.audio.AudioTrackFactory;
+import co.groovybot.bot.core.audio.spotify.entities.data.TrackData;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.*;
@@ -28,8 +30,6 @@ import com.zeloon.deezer.domain.Track;
 import com.zeloon.deezer.domain.internal.PlaylistId;
 import com.zeloon.deezer.domain.internal.TrackId;
 import com.zeloon.deezer.io.HttpResourceConnection;
-import co.groovybot.bot.core.audio.AudioTrackFactory;
-import co.groovybot.bot.core.audio.spotify.entities.track.TrackData;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -46,13 +46,12 @@ import java.util.stream.Collectors;
 @Log4j2
 public class DeezerSourceManager implements AudioSourceManager {
 
+    private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.deezer\\.com/.*/track/([0-9]*)");
+    private static final Pattern PLAYLIST_PATTERN = Pattern.compile("https?://.*\\.deezer\\.com/.*/playlist/([0-9]*)");
     @Getter
     private final DeezerClient deezerClient;
     @Getter
     private final AudioTrackFactory audioTrackFactory;
-
-    private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.deezer\\.com/.*/track/([0-9]*)");
-    private static final Pattern PLAYLIST_PATTERN = Pattern.compile("https?://.*\\.deezer\\.com/.*/playlist/([0-9]*)");
 
     public DeezerSourceManager() {
         this.deezerClient = new DeezerClient(new HttpResourceConnection());

@@ -21,8 +21,8 @@ package co.groovybot.bot.commands.settings;
 
 import co.groovybot.bot.core.command.*;
 import co.groovybot.bot.core.command.permission.Permissions;
-import co.groovybot.bot.core.entity.EntityProvider;
 import co.groovybot.bot.core.entity.Guild;
+import net.dv8tion.jda.core.entities.Role;
 
 public class DjModeCommand extends Command {
 
@@ -33,38 +33,38 @@ public class DjModeCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        Guild guild = EntityProvider.getGuild(event.getGuild().getIdLong());
-        if (!guild.isDjMode()) {
-            guild.setDjMode(true);
-            return send(success(event.translate("command.dj.enabled.title"), event.translate("command.dj.enabled.description")));
-        }
-        guild.setDjMode(false);
-        return send(success(event.translate("command.dj.disabled.title"), event.translate("command.dj.disabled.description")));
+        Guild guild = event.getGroovyGuild();
+        guild.setDjMode(!guild.isDjMode());
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.djmode"), guild.isDjMode() ? event.translate("phrases.text.enabled") : event.translate("phrases.text.disabled"))));
     }
 
-    public class DjRoleCommand extends SubCommand{
+    public class DjRoleCommand extends SubCommand {
 
         public DjRoleCommand() {
-            super(new String[]{"role"}, Permissions.adminOnly(), "Set the dj-role", "[role]");
+            super(new String[]{"role", "setrole"}, Permissions.adminOnly(), "Lets you set the dj-role", "<role-name>/<@role>");
         }
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            Guild guild = EntityProvider.getGuild(event.getGuild().getIdLong());
-            if(!guild.isDjMode())
-                return send(error(event.translate("command.dj.not.enabled.title"), event.translate("command.dj.not.enabled.description")));
-            if(args.length<1)
-                return send(error(event.translate("phrases.invalidarguments.title"), event.translate("phrases.invalidarguments.description")));
-            if(event.getMessage().getMentionedRoles().isEmpty()) {
-                try {
-                    guild.setDjRole(event.getGuild().getRolesByName(args[0],true).get(0).getIdLong());
-                    return send(success(event.translate("command.dj.role.enabled.title"), String.format(event.translate("command.jd.role.enabled.description"), event.getGuild().getRolesByName(args[0],true).get(0).getName())));
-                }catch (Exception e) {
-                    return send(error(event.translate("phrases.role.not.found.title"), event.translate("phrases.role.not.found.description")));
-                }
-            }else {
+            if (args.length == 0)
+                return sendHelp();
+
+            Guild guild = event.getGroovyGuild();
+
+            if (!guild.isDjMode())
+                return send(error(event.translate("phrases.error"), event.translate("command.djmode.disabled")));
+
+            if (event.getMessage().getMentionedRoles().isEmpty()) {
+                Role role = event.getGuild().getRolesByName(args[0], true).get(0);
+
+                if (role == null)
+                    return send(error(event.translate("phrases.error"), event.translate("phrases.invalid.role")));
+
+                guild.setDjRole(role.getIdLong());
+                return send(success(event.translate("phrases.success"), String.format(event.translate("command.djmode.role"), role.getName())));
+            } else {
                 guild.setDjRole(event.getMessage().getMentionedRoles().get(0).getIdLong());
-                return send(success(event.translate("command.dj.role.enabled.title"), String.format(event.translate("command.jd.role.enabled.description"), event.getMessage().getMentionedRoles().get(0).getName())));
+                return send(success(event.translate("phrases.success"), String.format(event.translate("command.djmode.role"), event.getMessage().getMentionedRoles().get(0).getName())));
             }
         }
     }

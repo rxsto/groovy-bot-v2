@@ -52,7 +52,7 @@ public class LyricsCommand extends Command {
                 String lyricsUrl = getLyricsUrl(String.join(" ", args), geniusClient);
 
                 if (lyricsUrl == null)
-                    editMessage(infoMessage, error(event.translate("command.lyrics.notfound.title"), event.translate("command.lyrics.notfound.description")));
+                    editMessage(infoMessage, error(event.translate("phrases.searching.nomatches.title"), event.translate("command.lyrics.notfound")));
                 else {
                     editMessage(infoMessage, getLyricsEmbed(geniusClient, lyricsUrl));
                 }
@@ -63,7 +63,7 @@ public class LyricsCommand extends Command {
                 String lyricsUrl = getLyricsUrl(player.getPlayer().getPlayingTrack().getInfo().title, geniusClient);
 
                 if (lyricsUrl == null)
-                    editMessage(infoMessage, error(event.translate("command.lyrics.notfound.title"), event.translate("command.lyrics.notfound.description")));
+                    editMessage(infoMessage, error(event.translate("phrases.searching.nomatches.title"), event.translate("command.lyrics.notfound")));
                 else
                     editMessage(infoMessage, getLyricsEmbed(geniusClient, lyricsUrl, player.getPlayer().getPlayingTrack().getInfo().title));
             } else {
@@ -71,7 +71,7 @@ public class LyricsCommand extends Command {
                 String lyricsUrl = getLyricsUrl(String.join(" ", args), geniusClient);
 
                 if (lyricsUrl == null)
-                    editMessage(infoMessage, error(event.translate("command.lyrics.notfound.title"), event.translate("command.lyrics.notfound.description")));
+                    editMessage(infoMessage, error(event.translate("phrases.searching.nomatches.title"), event.translate("command.lyrics.notfound")));
                 else
                     editMessage(infoMessage, getLyricsEmbed(geniusClient, lyricsUrl));
             }
@@ -80,7 +80,7 @@ public class LyricsCommand extends Command {
     }
 
     private EmbedBuilder getLyricsEmbed(GeniusClient geniusClient, String lyricsUrl, String title) {
-        EmbedBuilder embedBuilder = new EmbedBuilder().setTitle("\uD83D\uDCC4 " + title, lyricsUrl).setColor(Colors.DARK_BUT_NOT_BLACK);
+        EmbedBuilder embedBuilder = new EmbedBuilder().setTitle(title, lyricsUrl).setColor(Colors.DARK_BUT_NOT_BLACK);
         String[] comps = getLyrics(lyricsUrl, geniusClient);
         String[] tempLine = new String[2];
         tempLine[0] = null;

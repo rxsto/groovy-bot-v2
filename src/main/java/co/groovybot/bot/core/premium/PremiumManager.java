@@ -61,4 +61,14 @@ public class PremiumManager {
     public static boolean isAbleToVote(User user) {
         return user.isAbleToVote();
     }
+
+    /**
+     * Checks if a user has already voted
+     *
+     * @param user The user that needs to be checked
+     * @return if the user used the command or not
+     */
+    public static long getVoteAgainIn(User user) {
+        return user.getAgain() - System.currentTimeMillis();
+    }
 }

@@ -32,7 +32,7 @@ public class AutoQueueListener {
     private void handleURLMessage(GuildMessageReceivedEvent event) {
         if (!event.getMessage().getContentDisplay().matches("(https?://)?(.*)?spotify\\.com.*") || !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?youtube\\.com.*") || !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?youtu\\.be.*") || !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?soundcloud\\.com.*") || !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?twitch\\.tv.*"))
             return;
-        if(!Permissions.tierOne().isCovered(new UserPermissions(EntityProvider.getUser(event.getAuthor().getIdLong()),bot),new CommandEvent(event,bot,new String[]{},"listenerFillingSystem")))
+        if (!Permissions.tierOne().isCovered(new UserPermissions(EntityProvider.getUser(event.getAuthor().getIdLong()), bot), new CommandEvent(event, bot, new String[]{}, "listenerFillingSystem")))
             return;
         MusicPlayer player = bot.getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
         if (player == null)
@@ -72,11 +72,11 @@ public class AutoQueueListener {
             final String reactionRaw = event.getReactionEmote().getName();
             if (reactionRaw.equals("⏯")) {
                 CommandEvent eve = new CommandEvent(this.e, bot, new String[]{searchItem}, "listenerFillingSystem");
-                if(player.checkConnect(eve)) {
+                if (player.checkConnect(eve)) {
                     player.connect(eve.getMember().getVoiceState().getChannel());
                     player.queueSongs(eve);
-                }else {
-                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(translate(event.getUser(),"phrases.notconnected.title"), translate(event.getUser(), "phrases.notconnected.description")), 10);
+                } else {
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(translate(event.getUser(), "phrases.notconnected.title"), translate(event.getUser(), "phrases.notconnected.description")), 10);
                 }
 
             }

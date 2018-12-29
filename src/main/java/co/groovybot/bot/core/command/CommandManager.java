@@ -26,7 +26,6 @@ import co.groovybot.bot.core.events.command.CommandFailEvent;
 import co.groovybot.bot.core.events.command.NoPermissionEvent;
 import co.groovybot.bot.util.EmbedUtil;
 import co.groovybot.bot.util.NameThreadFactory;
-import co.groovybot.bot.util.SafeMessage;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.Permission;
@@ -40,7 +39,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Log4j2
 public class CommandManager implements Closeable {
@@ -156,14 +154,14 @@ public class CommandManager implements Closeable {
             channel.sendTyping().queue();
 
             // Delete invoke message
-            if (commandEvent.getGuild().getSelfMember().hasPermission(commandEvent.getChannel(), Permission.MESSAGE_MANAGE) && commandEvent.getGroovyGuild().isDeleteMessage())
+            if (commandEvent.getGuild().getSelfMember().hasPermission(commandEvent.getChannel(), Permission.MESSAGE_MANAGE) && commandEvent.getGroovyGuild().isDeleteMessages())
                 commandEvent.getMessage().delete().queue();
 
             // Run the commands run() method
             Result result = command.run(commandEvent.getArgs(), commandEvent);
-            if (result != null && commandEvent.getGroovyGuild().isDeleteMessage())
+            if (result != null && commandEvent.getGroovyGuild().isDeleteMessages())
                 result.sendMessage(channel, 10);
-            else if (result != null && !commandEvent.getGroovyGuild().isDeleteMessage())
+            else if (result != null && !commandEvent.getGroovyGuild().isDeleteMessages())
                 result.sendMessage(channel);
             bot.getEventManager().handle(new CommandExecutedEvent(commandEvent, command));
         } catch (Exception e) {

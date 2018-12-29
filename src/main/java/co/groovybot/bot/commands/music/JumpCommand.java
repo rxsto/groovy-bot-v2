@@ -38,23 +38,39 @@ public class JumpCommand extends SameChannelCommand {
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (args.length == 0)
             return sendHelp();
+
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
+
         String input = args[0].replace("-", "");
-        if (!Helpers.isNumeric(input)) {
-            return send(error(event.translate("phrases.invalidnumber.title"), event.translate("phrases.invalidnumber.description")));
-        }
+
+        if (!Helpers.isNumeric(input))
+            return send(error(event.translate("phrases.invalid"), event.translate("phrases.invalid.number")));
+
         if (input.length() > ("" + player.getPlayer().getPlayingTrack().getDuration() / 1000).length()) {
+            if (args[0].startsWith("-"))
+                return send(error(event.translate("phrases.invalid"), event.translate("phrases.invalid.number")));
+
             player.seekTo(player.getPlayer().getPlayingTrack().getDuration());
-            return send(error(event.translate("command.jumpto.skipped.title"), event.translate("command.jumpto.skipped.description")));
+            return send(info(event.translate("phrases.skipped"), event.translate("command.jump.skipped.description")));
         }
+
         int seconds = Integer.parseInt(input) * 1000;
+
+        if (args[0].startsWith("-") && seconds > player.getPlayer().getTrackPosition())
+            return send(error(event.translate("phrases.invalid"), event.translate("phrases.invalid.number")));
+
         if (args[0].startsWith("-"))
             seconds = ~seconds;
-        long position = player.getPlayer().getTrackPosition() + seconds;
+
+        long current = player.getPlayer().getTrackPosition();
+        long position = current + seconds;
+
         player.seekTo(position);
+
         if (position > player.getPlayer().getPlayingTrack().getDuration())
-            return send(error(event.translate("command.jumpto.skipped.title"), event.translate("command.jumpto.skipped.description")));
-        return send(success(event.translate("command.jumpto.success.title"), String.format(event.translate("command.jumpto.success.description"), FormatUtil.formatTimestamp(position))));
+            return send(info(event.translate("phrases.skipped"), event.translate("command.jump.skipped")));
+
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.jump"), FormatUtil.formatTimestamp(current), FormatUtil.formatTimestamp(position))));
     }
 }

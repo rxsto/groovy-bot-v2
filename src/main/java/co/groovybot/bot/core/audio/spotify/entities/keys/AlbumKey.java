@@ -17,7 +17,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-package co.groovybot.bot.core.audio.spotify.entities;
+package co.groovybot.bot.core.audio.spotify.entities.keys;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

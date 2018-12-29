@@ -21,13 +21,8 @@ package co.groovybot.bot.core.command;
 
 import co.groovybot.bot.commands.general.*;
 import co.groovybot.bot.commands.music.*;
-import co.groovybot.bot.commands.owner.CloseCommand;
-import co.groovybot.bot.commands.owner.EvalCommand;
-import co.groovybot.bot.commands.owner.FriendsCommand;
-import co.groovybot.bot.commands.owner.UpdateCommand;
+import co.groovybot.bot.commands.owner.*;
 import co.groovybot.bot.commands.settings.*;
-import co.groovybot.bot.commands.settings.AutoPlayCommand;
-import co.groovybot.bot.commands.settings.SwitchCommand;
 
 public class CommandRegistry {
 
@@ -89,8 +84,10 @@ public class CommandRegistry {
                 new DuplicatesCommand(),
                 new VoteSkipCommand(),
                 new DeleteMessagesCommand(),
-                new VoicefixCommand(),
-                new TextToSpeechCommand()
+                new VoiceFixCommand(),
+                new TextToSpeechCommand(),
+                new CreateInviteCommand(),
+                new PlaySearchCommand()
         );
     }
 }

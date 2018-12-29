@@ -27,14 +27,14 @@ import net.dv8tion.jda.core.entities.Guild;
 public class EmbedUtil extends SafeMessage {
 
     /**
-     * Creates an success embed
+     * Creates a success embed
      *
      * @param title       The title of the embed
      * @param description The description of the embed
      * @return an EmbedBuiler
      */
     public static EmbedBuilder success(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle("✅ " + title).setColor(Colors.DARK_BUT_NOT_BLACK);
+        return new EmbedBuilder().setDescription(description).setTitle(title).setColor(Colors.GREEN);
     }
 
     /**
@@ -45,7 +45,7 @@ public class EmbedUtil extends SafeMessage {
      * @return an EmbedBuiler
      */
     public static EmbedBuilder error(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle("❌ " + title).setColor(Colors.DARK_BUT_NOT_BLACK);
+        return new EmbedBuilder().setDescription(description).setTitle(title).setColor(Colors.RED);
     }
 
     /**
@@ -66,32 +66,32 @@ public class EmbedUtil extends SafeMessage {
      * @return an EmbedBuiler
      */
     public static EmbedBuilder info(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle("ℹ " + title).setColor(Colors.DARK_BUT_NOT_BLACK);
+        return new EmbedBuilder().setDescription(description).setTitle(title).setColor(Colors.DARK_BUT_NOT_BLACK);
     }
 
     /**
-     * Creates an play embed
+     * Creates a play embed
      *
      * @param title       The title of the embed
      * @param description The description of the embed
      * @return an EmbedBuiler
      */
     public static EmbedBuilder play(String title, String description, long duration) {
-        return new EmbedBuilder().setDescription(description).setTitle("🎶 " + title).setColor(Colors.DARK_BUT_NOT_BLACK).setFooter("Duration: " + FormatUtil.formatDuration(duration), null);
+        return new EmbedBuilder().setDescription(description).setTitle(title).setColor(Colors.DARK_BUT_NOT_BLACK).setFooter("Duration: " + FormatUtil.formatDuration(duration), null);
     }
 
     /**
-     * Creates an noTitle embed
+     * Creates a small embed
      *
      * @param description The description of the embed
      * @return an EmbedBuiler
      */
-    public static EmbedBuilder noTitle(String description) {
+    public static EmbedBuilder small(String description) {
         return new EmbedBuilder().setDescription(description).setColor(Colors.DARK_BUT_NOT_BLACK);
     }
 
     /**
-     * Creates an welcome embed
+     * Creates a welcome embed
      *
      * @param guild The guild Groovy joined
      * @return an EmbedBuiler
@@ -100,6 +100,6 @@ public class EmbedUtil extends SafeMessage {
         String prefix = GroovyBot.getInstance().getConfig().getJSONObject("settings").getString("prefix");
         String title = "\uD83C\uDFB6 **Hey, I'm Groovy, the best music-bot on Discord!**";
         String description = title + "\n" + String.format("▫ My **prefix** on this guild **is** **`%s`**\n▫ **Change** my **prefix** with **`%sprefix`**\n▫ For a **list** of **all commands** type **`%shelp`**\n▫ You **want** to **play** music? **Right now?** Try **`%splay`**\n▫ **Join** our **support-server** at **https://discord.gg/5s5TsW2**", prefix, prefix, prefix, prefix);
-        return new EmbedBuilder().setDescription(description).setColor(Colors.DARK_BUT_NOT_BLACK).setThumbnail(guild.getSelfMember().getUser().getAvatarUrl()).setFooter("Let's enjoy some good music!", guild.getSelfMember().getUser().getAvatarUrl());
+        return new EmbedBuilder().setDescription(description).setColor(Colors.BLURPLE).setThumbnail(guild.getSelfMember().getUser().getAvatarUrl()).setFooter("Let's enjoy some good music!", guild.getSelfMember().getUser().getAvatarUrl());
     }
 }

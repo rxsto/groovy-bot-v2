@@ -17,7 +17,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-package co.groovybot.bot.commands.settings;
+package co.groovybot.bot.commands.music;
 
 import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.command.CommandCategory;

@@ -104,4 +104,14 @@ public class MusicPlayerManager {
         }
         log.info(String.format("[MusicPlayerManager] Successfully initialized %s %s!", initializedPlayersCount, initializedPlayersCount == 1 ? "MusicPlayer" : "MusicPlayers"));
     }
+
+    public void updateAllPlayers() {
+        playerStorage.forEach((id, player) -> {
+            try {
+                player.update();
+            } catch (SQLException | IOException e) {
+                log.error("[MusicPlayerManager] Error while updating Groovy!", e);
+            }
+        });
+    }
 }

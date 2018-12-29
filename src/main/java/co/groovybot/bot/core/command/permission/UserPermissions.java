@@ -38,7 +38,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.stream.Collectors;
 
 @Getter
 @Log4j2
@@ -123,16 +122,14 @@ public class UserPermissions {
 
     public boolean isDj(Guild guild) {
         if (isOwner) return true;
-        co.groovybot.bot.core.entity.Guild gguild = EntityProvider.getGuild(guild.getIdLong());
-        if (!gguild.isDjMode())
+        co.groovybot.bot.core.entity.Guild groovyGuild = EntityProvider.getGuild(guild.getIdLong());
+        if (!groovyGuild.isDjMode())
             return true;
         if (guild.getMemberById(user.getEntityId()).getVoiceState().inVoiceChannel())
             if (guild.getMemberById(user.getEntityId()).getVoiceState().getChannel().getMembers().size() == 2)
                 return true;
         for (Role role : guild.getMemberById(user.getEntityId()).getRoles()) {
-            log.debug(role.getIdLong());
-            log.debug(gguild.getDjRole());
-            if (role.getIdLong() == gguild.getDjRole())
+            if (role.getIdLong() == groovyGuild.getDjRole())
                 return true;
         }
         return false;

@@ -37,7 +37,7 @@ public class TrendsCommand extends Command {
     @Override
     public Result run(String[] args, CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setDescription(event.translate("command.trends.playlist.top.title"))
+                .setTitle(event.translate("command.trends.playlist.top.title"))
                 .setColor(Colors.DARK_BUT_NOT_BLACK);
 
         event.getBot().getPlaylistManager().getTopPlaylists().forEach((rank, playlist) -> {

@@ -35,8 +35,12 @@ public class BassBoostCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
+        if (!player.isPlaying())
+            return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
+
         if (args.length == 0)
-            return send(EmbedUtil.success(event.translate("command.bassboost.info.title"), String.format(event.translate("command.bassboost.info.description"), player.getBassboost())));
+            return send(EmbedUtil.info(event.translate("command.bassboost.info.title"), String.format(event.translate("command.bassboost.info.description"), player.getBassboost())));
+
         float[] bands = new float[15];
         switch (args[0]) {
             case "off":
@@ -62,8 +66,9 @@ public class BassBoostCommand extends SameChannelCommand {
             default:
                 return sendHelp();
         }
+        String current = player.getBassboost();
         player.getPlayer().getEqualizer().setGain(bands);
         player.setBassboost(args[0]);
-        return send(EmbedUtil.success(event.translate("command.bassboost.title"), String.format(event.translate("command.bassboost.description"), args[0])));
+        return send(EmbedUtil.success(event.translate("command.bassboost.title"), String.format(event.translate("command.bassboost.description"), current, player.getBassboost())));
     }
 }
