@@ -23,6 +23,7 @@ import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.command.CommandEvent;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 
 public class EmbedUtil extends SafeMessage {
 
@@ -101,5 +102,10 @@ public class EmbedUtil extends SafeMessage {
         String title = "\uD83C\uDFB6 **Hey, I'm Groovy, the best music-bot on Discord!**";
         String description = title + "\n" + String.format("▫ My **prefix** on this guild **is** **`%s`**\n▫ **Change** my **prefix** with **`%sprefix`**\n▫ For a **list** of **all commands** type **`%shelp`**\n▫ You **want** to **play** music? **Right now?** Try **`%splay`**\n▫ **Join** our **support-server** at **https://discord.gg/5s5TsW2**", prefix, prefix, prefix, prefix);
         return new EmbedBuilder().setDescription(description).setColor(Colors.BLURPLE).setThumbnail(guild.getSelfMember().getUser().getAvatarUrl()).setFooter("Let's enjoy some good music!", guild.getSelfMember().getUser().getAvatarUrl());
+    }
+
+    public static EmbedBuilder noTitle(String description) {
+        return new EmbedBuilder()
+                .setDescription(description);
     }
 }

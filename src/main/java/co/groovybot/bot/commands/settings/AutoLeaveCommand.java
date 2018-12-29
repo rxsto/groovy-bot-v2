@@ -25,10 +25,9 @@ import co.groovybot.bot.core.command.CommandCategory;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
-import co.groovybot.bot.core.command.voice.SameChannelCommand;
-import co.groovybot.bot.core.entity.Guild;
+import net.dv8tion.jda.core.Permission;
 
-public class AutoLeaveCommand extends SameChannelCommand {
+public class AutoLeaveCommand extends Command {
     public AutoLeaveCommand() {
         super(new String[]{"autoleave", "al"}, CommandCategory.SETTINGS, Permissions.tierTwo(), "Lets you deactivate the auto-leave mode", "");
     }
