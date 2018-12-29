@@ -37,9 +37,9 @@ public class PauseCommand extends SameChannelCommand {
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
 
         if (player.isPaused())
-            return send(error(event.translate("command.pause.already.title"), event.translate("command.pause.already.description")));
+            return send(error(event.translate("phrases.error"), event.translate("command.pause.already")));
 
         player.pause();
-        return send(success(event.translate("command.pause.title"), event.translate("command.pause.description")));
+        return send(success(event.translate("phrases.success"), event.translate("command.pause")));
     }
 }

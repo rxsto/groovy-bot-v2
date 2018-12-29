@@ -26,6 +26,8 @@ import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.util.List;
 
+// TODO: REWORK STRINGS AND MESSAGES
+
 public class BlackListCommand extends Command {
 
     public BlackListCommand() {

@@ -33,6 +33,6 @@ public class PingCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return send(noTitle(String.format("**%s** ms", Math.ceil(event.getBot().getShardManager().getAveragePing()))));
+        return send(small(String.format("**[%sms](https://status.groovybot.co)**", Math.ceil(event.getJDA().getPing()))));
     }
 }

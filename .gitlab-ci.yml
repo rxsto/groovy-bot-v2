@@ -1,5 +1,12 @@
 image: maven:latest
 
+cache:
+  paths:
+    - .m2/
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2"
+
 stages:
   - build
   - deploy

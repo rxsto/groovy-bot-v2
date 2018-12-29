@@ -20,7 +20,6 @@
 package co.groovybot.bot.core.monitoring.monitors;
 
 import co.groovybot.bot.core.monitoring.Monitor;
-import co.groovybot.bot.util.FormatUtil;
 import com.sun.management.OperatingSystemMXBean;
 import org.influxdb.dto.Point;
 

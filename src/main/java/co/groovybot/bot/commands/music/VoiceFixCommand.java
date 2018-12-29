@@ -1,6 +1,5 @@
 package co.groovybot.bot.commands.music;
 
-import co.groovybot.bot.core.audio.LavalinkManager;
 import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.command.CommandCategory;
 import co.groovybot.bot.core.command.CommandEvent;
@@ -14,9 +13,11 @@ import net.dv8tion.jda.core.entities.Message;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class VoicefixCommand extends SameChannelCommand {
+// TODO: REWRITE STRINGS AND MESSAGES
 
-    public VoicefixCommand() {
+public class VoiceFixCommand extends SameChannelCommand {
+
+    public VoiceFixCommand() {
         super(new String[]{"voicefix", "fix"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Changes your voice region to a random one and back", "");
     }
 

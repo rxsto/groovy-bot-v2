@@ -1,4 +1,4 @@
-package co.groovybot.bot.commands.general;
+package co.groovybot.bot.commands.music;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.MusicPlayer;
@@ -14,20 +14,19 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.entities.Message;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * https://github.com/Stupremee
- *
- * @author: Stu
- */
+// TODO: REWRITE STRINGS AND MESSAGES
+
 @Log4j2
 public class TextToSpeechCommand extends SemiInChannelCommand {
 
@@ -43,11 +42,11 @@ public class TextToSpeechCommand extends SemiInChannelCommand {
 
     @Override
     protected Result executeCommand(String[] args, CommandEvent event, MusicPlayer player) {
-        if (args.length == 0) {
+        if (args.length == 0)
             return sendHelp();
-        }
 
         CommandLine cmd;
+
         try {
             cmd = new DefaultParser().parse(options, args);
         } catch (ParseException e) {

@@ -20,7 +20,6 @@
 package co.groovybot.bot.core.monitoring.monitors;
 
 import co.groovybot.bot.GroovyBot;
-import co.groovybot.bot.core.audio.LavalinkManager;
 import co.groovybot.bot.core.monitoring.Monitor;
 import org.influxdb.dto.Point;
 

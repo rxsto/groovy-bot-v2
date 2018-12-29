@@ -96,12 +96,13 @@ public class YoutubeUtil {
                 .setQ(query);
         SearchListResponse response = search.execute();
         if (response.getItems().isEmpty())
-            throw new NullPointerException("No videos were found");
+            return "";
         return response.getItems().get(0).getId().getVideoId();
     }
 
     /**
      * Search for youtube Videos by it's ide
+     *
      * @param videoId The id of the video
      * @return an VideoListResponse {@link com.google.api.services.youtube.model.VideoListResponse}
      * @throws IOException When YoutubeRequest returns an error
@@ -112,6 +113,7 @@ public class YoutubeUtil {
 
     /**
      * Gets the first video from an VideoListResponse
+     *
      * @param videoId The yotube video id
      * @return The first Video {@link com.google.api.services.youtube.model.Video} of the {@link com.google.api.services.youtube.model.VideoListResponse}
      * @throws IOException When YoutubeRequest returns an error

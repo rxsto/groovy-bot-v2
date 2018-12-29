@@ -36,11 +36,7 @@ public class AutoPlayCommand extends SameChannelCommand {
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         Scheduler scheduler = player.getScheduler();
-        if (scheduler.isAutoPlay()) {
-            scheduler.setAutoPlay(false);
-            return send(success(event.translate("command.autoplay.disabled.title"), event.translate("command.autoplay.disabled.description")));
-        }
-        scheduler.setAutoPlay(true);
-        return send(success(event.translate("command.autoplay.enabled.title"), event.translate("command.autoplay.enabled.description")));
+        scheduler.setAutoPlay(!scheduler.isAutoPlay());
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.autoplay"), player.getScheduler().isAutoPlay() ? event.translate("phrases.text.enabled") : event.translate("phrases.text.disabled"))));
     }
 }

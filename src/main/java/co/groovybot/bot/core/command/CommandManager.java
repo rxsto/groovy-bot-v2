@@ -154,14 +154,14 @@ public class CommandManager implements Closeable {
             channel.sendTyping().queue();
 
             // Delete invoke message
-            if (commandEvent.getGuild().getSelfMember().hasPermission(commandEvent.getChannel(), Permission.MESSAGE_MANAGE) && commandEvent.getGroovyGuild().isDeleteMessage())
+            if (commandEvent.getGuild().getSelfMember().hasPermission(commandEvent.getChannel(), Permission.MESSAGE_MANAGE) && commandEvent.getGroovyGuild().isDeleteMessages())
                 commandEvent.getMessage().delete().queue();
 
             // Run the commands run() method
             Result result = command.run(commandEvent.getArgs(), commandEvent);
-            if (result != null && commandEvent.getGroovyGuild().isDeleteMessage())
+            if (result != null && commandEvent.getGroovyGuild().isDeleteMessages())
                 result.sendMessage(channel, 10);
-            else if (result != null && !commandEvent.getGroovyGuild().isDeleteMessage())
+            else if (result != null && !commandEvent.getGroovyGuild().isDeleteMessages())
                 result.sendMessage(channel);
             bot.getEventManager().handle(new CommandExecutedEvent(commandEvent, command));
         } catch (Exception e) {

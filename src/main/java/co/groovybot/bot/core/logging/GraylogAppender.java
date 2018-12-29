@@ -24,6 +24,11 @@ public class GraylogAppender extends AbstractAppender {
         super(name, filter, null);
     }
 
+    @PluginFactory
+    public static GraylogAppender createAppender(@PluginAttribute("name") String name, @PluginElement("Filter") Filter filter) {
+        return new GraylogAppender(name, filter);
+    }
+
     @Override
     public void append(LogEvent event) {
         if (GroovyBot.getInstance().getGelfTransport() == null)
@@ -47,10 +52,5 @@ public class GraylogAppender extends AbstractAppender {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    @PluginFactory
-    public static GraylogAppender createAppender(@PluginAttribute("name") String name, @PluginElement("Filter") Filter filter) {
-        return new GraylogAppender(name, filter);
     }
 }

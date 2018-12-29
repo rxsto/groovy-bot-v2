@@ -38,6 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// TODO: REWRITE STRINGS AND MESSAGES
+
 public class PlaylistCommand extends Command {
 
     public PlaylistCommand() {

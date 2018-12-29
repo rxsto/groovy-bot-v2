@@ -27,11 +27,11 @@ import co.groovybot.bot.core.command.permission.Permissions;
 
 public class PartnerCommand extends Command {
     public PartnerCommand() {
-        super(new String[]{"partner"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you Groovy's partne", "");
+        super(new String[]{"partner", "sponsor"}, CommandCategory.GENERAL, Permissions.everyone(), "Shows you Groovy's partner", "");
     }
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return send(info(event.translate("command.partner.title"), event.translate("command.partner.description")));
+        return send(small(String.format("**[%s](https://sponsor.groovybot.co)**", event.translate("command.partner"))));
     }
 }

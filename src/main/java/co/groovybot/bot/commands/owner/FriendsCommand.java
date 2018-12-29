@@ -53,10 +53,10 @@ public class FriendsCommand extends Command {
             }
 
             if (friendsNames.toString().equals(""))
-                return send(error(event.translate("command.friends.nofriends.title"), event.translate("command.friends.nofriends.description")));
+                return send(error(event.translate("phrases.error"), event.translate("command.friends.nofriends")));
 
             friendsNames.replace(friendsNames.lastIndexOf(", "), friendsNames.lastIndexOf(", ") + 1, "");
-            return send(info(event.translate("command.friends.list.title"), friendsNames.toString()));
+            return send(small(friendsNames.toString()));
         } catch (SQLException e) {
             log.error("[FriendsCommand] Error while querying all friends!", e);
             return send(error(event));

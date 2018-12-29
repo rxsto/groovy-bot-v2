@@ -95,10 +95,10 @@ public class MusicPlayer extends Player implements Runnable {
             );
 
     @Getter
-    private final Guild guild;
-    @Getter
     private final AudioPlayerManager audioPlayerManager;
     private final ScheduledExecutorService scheduler;
+    @Getter
+    private Guild guild;
     @Getter
     @Setter
     private TextChannel channel;
@@ -111,6 +111,7 @@ public class MusicPlayer extends Player implements Runnable {
     private String bassboost = "off";
     @Getter
     private int skipVotes;
+    @Getter
     private VoiceChannel voiceChannel;
 
     protected MusicPlayer(Guild guild, TextChannel channel, YoutubeUtil youtubeClient) {
@@ -159,7 +160,7 @@ public class MusicPlayer extends Player implements Runnable {
     }
 
     public void leave(String cause) {
-        if (channel != null) SafeMessage.sendMessage(channel, EmbedUtil.noTitle(cause));
+        if (channel != null) SafeMessage.sendMessage(channel, EmbedUtil.small(cause));
         leave();
     }
 
@@ -167,19 +168,24 @@ public class MusicPlayer extends Player implements Runnable {
     public void onEnd(boolean announce) {
         //if (inProgress) return;
         if (announce)
-            SafeMessage.sendMessage(channel, EmbedUtil.success("The queue ended!", "Why not **queue** more songs?"));
+            SafeMessage.sendMessage(channel, EmbedUtil.info("Queue Ended", "The queue ended, why don't you add more songs?"));
         if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
         leave();
     }
 
     @Override
     public Message announceAutoplay() {
-        return SafeMessage.sendMessageBlocking(channel, info("Searching video!", "Searching new autoplay video ..."));
+        return SafeMessage.sendMessageBlocking(channel, info("Searching Video", "Searching new AutoPlay video ..."));
     }
 
     @Override
     public void announceRequeue(AudioTrack track) {
         SafeMessage.sendMessage(channel, info("An error occurred while queueing song!", "An unexpected error occurred while queueing song, trying to requeue now."));
+    }
+
+    @Override
+    public void announceNotFound(AudioTrack track) {
+        SafeMessage.sendMessage(channel, info("An error occurred while searching song!", String.format("We couldn't find any fitting results for **[%s](%s)** by **%s**! Skipping!", track.getInfo().title, track.getInfo().uri, track.getInfo().author)));
     }
 
     @Override
@@ -190,7 +196,7 @@ public class MusicPlayer extends Player implements Runnable {
     @Override
     public void announceSong(AudioPlayer audioPlayer, AudioTrack track) {
         if (EntityProvider.getGuild(guild.getIdLong()).isAnnounceSongs())
-            SafeMessage.sendMessage(channel, EmbedUtil.play("Now Playing", FormatUtil.formatTrack(track), track.getDuration()));
+            SafeMessage.sendMessage(channel, EmbedUtil.play("Now Playing", String.format("Groovy successfully started playing `%s`.", track.getInfo().title), track.getDuration()));
     }
 
     @Override
@@ -391,7 +397,7 @@ public class MusicPlayer extends Player implements Runnable {
     public void update() throws SQLException, IOException {
         if (channel != null)
             if (channel.canTalk())
-                SafeMessage.sendMessageBlocking(channel, EmbedUtil.noTitle(":warning: Update initialized! Groovy should be back soon!"));
+                SafeMessage.sendMessageBlocking(channel, EmbedUtil.small("Update initialized! Groovy should be back soon!"));
 
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             // Initialize preparedstatement
@@ -416,6 +422,7 @@ public class MusicPlayer extends Player implements Runnable {
             getScheduler().setLoopqueue(false);
             getScheduler().setLoop(false);
             setVolume(100);
+            stop();
 
             if (isPaused())
                 resume();
@@ -526,9 +533,9 @@ public class MusicPlayer extends Player implements Runnable {
     @RequiredArgsConstructor
     public enum VoteSkipReason {
         ALLOWED(null, null),
-        ALONE("command.voteskip.deny.alone.title", "command.voteskip.deny.description"),
-        DJ_IN_CHANNEL("command.voteskip.deny.dj.title", "command.voteskip.deny.dj.description"),
-        ERROR("command.voteskip.deny.error", "command.voteskip.deny.description");
+        ALONE("phrases.skipped", "command.skip"),
+        DJ_IN_CHANNEL("phrases.nopermission.title", "command.voteskip.dj"),
+        ERROR("phrases.error", "phrases.internal.error");
 
         private final String titleTranslationKey;
         private final String descriptionTranslationKey;

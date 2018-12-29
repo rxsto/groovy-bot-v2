@@ -33,18 +33,27 @@ public class VolumeCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
-        int volume;
+        if (!player.isPlaying())
+            return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
+
         if (args.length == 0)
-            return send(info(event.translate("command.volume.current.title"), String.format(event.translate("command.volume.current.description"), player.getPlayer().getVolume())));
+            return send(small(String.format("%s%s", player.getPlayer().getVolume(), "%")));
+
+        int volume;
+
         try {
-            volume = Integer.parseInt(args[0]);
+            volume = Integer.parseInt(args[0].replace("%", ""));
         } catch (NumberFormatException e) {
-            return send(error(event.translate("phrases.invalidnumber.title"), event.translate("phrases.invalidnumber.description")));
+            return send(error(event.translate("phrases.invalid"), event.translate("phrases.invalid.number")));
 
         }
+
         if (volume > 200 || volume < 0)
-            return send(error(event.translate("command.volume.tohigh.title"), event.translate("command.volume.tohigh.description")));
+            return send(error(event.translate("phrases.invalid"), event.translate("phrases.invalid.volume")));
+
+        int current = player.getPlayer().getVolume();
+
         player.setVolume(volume);
-        return send(success(event.translate("command.volume.set.title"), String.format(event.translate("command.volume.set.description"), volume)));
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.volume"), current, volume)));
     }
 }

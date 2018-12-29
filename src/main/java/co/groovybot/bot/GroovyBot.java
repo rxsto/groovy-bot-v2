@@ -117,6 +117,24 @@ public class GroovyBot implements Closeable {
     @Getter
     private final Configuration config;
     @Getter
+    private final long startupTime;
+    @Getter
+    private final boolean debugMode;
+    @Getter
+    private final boolean configNodes;
+    @Getter
+    private final boolean noWebsocket;
+    @Getter
+    private final boolean premium;
+    @Getter
+    private final boolean noJoin;
+    @Getter
+    private final boolean noPatrons;
+    @Getter
+    private final boolean noMonitoring;
+    @Getter
+    private final boolean noCentralizedLogging;
+    @Getter
     private PostgreSQL postgreSQL;
     @Getter
     private MonitorManager monitorManager;
@@ -139,25 +157,7 @@ public class GroovyBot implements Closeable {
     @Getter
     private net.dv8tion.jda.core.entities.Guild supportGuild;
     @Getter
-    private final long startupTime;
-    @Getter
     private boolean allShardsInitialized = false;
-    @Getter
-    private final boolean debugMode;
-    @Getter
-    private final boolean configNodes;
-    @Getter
-    private final boolean noWebsocket;
-    @Getter
-    private final boolean premium;
-    @Getter
-    private final boolean noJoin;
-    @Getter
-    private final boolean noPatrons;
-    @Getter
-    private final boolean noMonitoring;
-    @Getter
-    private final boolean noCentralizedLogging;
 
     private GroovyBot(CommandLine args) throws IOException {
 
