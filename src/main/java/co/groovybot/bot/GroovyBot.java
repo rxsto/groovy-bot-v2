@@ -20,7 +20,6 @@
 package co.groovybot.bot;
 
 import co.groovybot.bot.core.GameAnimator;
-import co.groovybot.bot.core.KeyManager;
 import co.groovybot.bot.core.audio.LavalinkManager;
 import co.groovybot.bot.core.audio.MusicPlayerManager;
 import co.groovybot.bot.core.audio.playlists.PlaylistManager;
