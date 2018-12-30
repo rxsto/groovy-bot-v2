@@ -1,0 +1,1072 @@
+[22:09:16] [INFO ] [main - 1] co.groovybot.bot.GroovyBot - [Core] Starting Groovy ...
+[22:09:16] [INFO ] [main - 1] co.groovybot.bot.GroovyBot - [Database] Initializing Database ...
+[22:09:16] [INFO ] [main - 1] co.groovybot.bot.io.database.PostgreSQL - [Database] Connecting to Database ...
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - HikariPool-1 - configuration:
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - allowPoolSuspension.............false
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - autoCommit......................true
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - catalog.........................none
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - connectionInitSql...............none
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - connectionTestQuery.............none
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - connectionTimeout...............30000
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - dataSource......................none
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - dataSourceClassName.............none
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - dataSourceJNDI..................none
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - dataSourceProperties............{password=<masked>, prepStmtCacheSqlLimit=2048, cachePrepStmts=true, prepStmtCacheSize=250}
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - driverClassName.................none
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - healthCheckProperties...........{}
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - healthCheckRegistry.............none
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - idleTimeout.....................600000
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - initializationFailTimeout.......1
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - isolateInternalQueries..........false
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - jdbcUrl.........................jdbc:postgresql://91.200.102.167:5432/bot_testing?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - leakDetectionThreshold..........0
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - maxLifetime.....................1800000
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - maximumPoolSize.................15
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - metricRegistry..................none
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - metricsTrackerFactory...........none
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - minimumIdle.....................15
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - password........................<masked>
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - poolName........................"HikariPool-1"
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - readOnly........................false
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - registerMbeans..................false
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - scheduledExecutor...............none
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - schema..........................none
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - threadFactory...................internal
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - transactionIsolation............default
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - username........................"groovy"
+[22:09:16] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - validationTimeout...............5000
+[22:09:16] [INFO ] [main - 1] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+[22:09:17] [DEBUG] [main - 1] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@72cde7cc
+[22:09:17] [INFO ] [main - 1] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+[22:09:17] [INFO ] [main - 1] co.groovybot.bot.io.database.PostgreSQL - [Database] Connected!
+[22:09:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=1, active=0, idle=1, waiting=0)
+[22:09:18] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1accfe80
+[22:09:18] [DEBUG] [main - 1] co.groovybot.bot.core.audio.spotify.SpotifyManager - Received access token: BQDdYhPyVZ4tAvZhnfVhyyFBQ-df0K2jp37_UtVtU7Lq2qEccNZoTwJdKcKv_otsYCMQ27v39YjSlvn40nY which expires in: 3600 seconds.
+[22:09:18] [INFO ] [main - 1] co.groovybot.bot.core.audio.LavalinkManager - [LavalinkManager] Connecting to Nodes ...
+[22:09:18] [DEBUG] [main - 1] com.sedmelluq.discord.lavaplayer.tools.io.TrustManagerBuilder - Certificate list /certificates/extended.txt not present in classpath.
+[22:09:18] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@103495f0
+[22:09:18] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2873d54a
+[22:09:19] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@64a99da6
+[22:09:19] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@50061fd6
+[22:09:19] [DEBUG] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177c9a5c7763c7-FRA]
+[22:09:19] [INFO ] [main - 1] net.dv8tion.jda.bot.sharding.ShardManager - Login Successful!
+[22:09:19] [INFO ] [main - 1] co.groovybot.bot.GroovyBot - [LavalinkManager] Initializing LavalinkManager ...
+[22:09:19] [INFO ] [main - 1] co.groovybot.bot.core.audio.LavalinkManager - [LavalinkManager] Initializing Lavalink and trying to connect to Nodes ...
+[22:09:19] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3519f6dd
+[22:09:19] [DEBUG] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.RateLimiter - Encountered issue with headers when updating a bucket
+Route: oauth2/applications/@me
+Headers: Date: Sun, 30 Dec 2018 21:09:19 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+Set-Cookie: __cfduid=d2a29d79cff46e415a0702cd175ee9a1a1546204159; expires=Mon, 30-Dec-19 21:09:19 GMT; path=/; domain=.discordapp.com; HttpOnly
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Content-Encoding: gzip
+Via: 1.1 google
+Alt-Svc: clear
+Expect-CT: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+Server: cloudflare
+CF-RAY: 49177c9bfd7e63c7-FRA
+
+[22:09:19] [DEBUG] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177c9bfd7e63c7-FRA]
+[22:09:19] [INFO ] [main - 1] co.groovybot.bot.core.audio.LavalinkManager - [LavalinkManager] Successfully initialized Lavalink with 3 Nodes!
+[22:09:19] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3f6acb1
+[22:09:19] [INFO ] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - Received handshake from server
+[22:09:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":7,"op":"stats","memory":{"reservable":4294967296,"used":229851256,"free":126664584,"allocated":356515840},"players":19,"cpu":{"cores":4,"systemLoad":0.042105263157894736,"lavalinkLoad":0.374027628307666},"uptime":201459935}
+[22:09:19] [INFO ] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - Received handshake from server
+[22:09:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":899889584,"free":1063044688,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.2556053811659193,"lavalinkLoad":0.11611513305054583},"uptime":346405744}
+[22:09:20] [INFO ] [JDA [0 / 1] MainWS-WriteThread - 40] net.dv8tion.jda.core.requests.WebSocketClient - Connected to WebSocket
+[22:09:20] [DEBUG] [JDA [0 / 1] MainWS-WriteThread - 40] net.dv8tion.jda.core.requests.WebSocketClient - Sending Identify-packet...
+[22:09:20] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.requests.WebSocketClient - Got HELLO packet (OP 10). Initializing keep-alive.
+[22:09:20] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.requests.WebSocketClient - Received a _trace for HELLO (OP: 10) with ["gateway-prd-main-rskw"]
+[22:09:20] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4b0217ce
+[22:09:20] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.requests.WebSocketClient - Received a _trace for READY (OP: 0) with ["gateway-prd-main-rskw","discord-sessions-prd-1-10"]
+[22:09:20] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.handle.GuildSetupController - Setting incomplete count to 8
+[22:09:20] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3157af6d
+[22:09:20] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 258294814309744642 firing cached events 0
+[22:09:20] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 327074506390896652 firing cached events 0
+[22:09:20] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 343489621713485834 firing cached events 0
+[22:09:20] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 442250363425390592 firing cached events 0
+[22:09:20] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 445601426891210762 firing cached events 0
+[22:09:20] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 500004771038494720 firing cached events 0
+[22:09:20] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.handle.GuildSetupController - Sending chunking requests for 1 guilds
+[22:09:20] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 507517900127469568 firing cached events 0
+[22:09:20] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7720ed2
+[22:09:20] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@29f8e4e2
+[22:09:20] [WARN ] [WebSocketConnectReadThread-32 - 32] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in -2 seconds.
+[22:09:20] [WARN ] [WebSocketConnectReadThread-32 - 32] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:09:20] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending chunk/sync request {"op":8,"d":{"query":"","guild_id":[403882830225997825],"limit":0}}
+[22:09:21] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5bca1b53
+[22:09:21] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.handle.GuildSetupController - Received member chunk for guild id: 403882830225997825 size: 1000
+[22:09:21] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.handle.GuildSetupController - Received member chunk for guild id: 403882830225997825 size: 268
+[22:09:21] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.JDA - Finished Loading!
+[22:09:21] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 39] co.groovybot.bot.listeners.ShardsListener - [ShardManager] Successfully launched 1 Shard! Finishing Startup ...
+[22:09:21] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 39] co.groovybot.bot.GroovyBot - [MusicPlayerManager] Initializing MusicPlayers ...
+[22:09:21] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5029e9e1
+[22:09:21] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] lavalink.client.io.Link - Link Link{guild='403882830225997825', channel='null', state=NOT_CONNECTED} changed state from NOT_CONNECTED to CONNECTING
+[22:09:21] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 39] co.groovybot.bot.core.audio.MusicPlayerManager - [MusicPlayerManager] Successfully initialized 0 MusicPlayers!
+[22:09:21] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 39] co.groovybot.bot.GroovyBot - [PremiumHandler] Initializing Patrons ...
+[22:09:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending voice request {"op":4,"d":{"self_deaf":true,"guild_id":403882830225997825,"channel_id":404313679308521483,"self_mute":false}}
+[22:09:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"Starting ...","type":0},"afk":false,"status":"online","since":1546204161292}}
+[22:09:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546204161305}}
+[22:09:21] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 39] co.groovybot.bot.core.premium.PremiumHandler - [PremiumHandler] Successfully initialized Patrons!
+[22:09:21] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 39] co.groovybot.bot.GroovyBot - [MonitoringManager] Monitoring disabled, because there is no connection to InfluxDB!
+[22:09:21] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 39] co.groovybot.bot.GroovyBot - [Core] Successfully launched Groovy!
+[22:09:21] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 403882830225997825 firing cached events 1
+[22:09:21] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4d694f6e
+[22:09:21] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After adding stats (total=15, active=1, idle=14, waiting=0)
+[22:09:21] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] lavalink.client.io.jda.VoiceServerUpdateInterceptor - {"endpoint":"eu-central394.discord.gg:80","guild_id":"403882830225997825","token":"942eab26fa368e10"}
+[22:09:21] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] lavalink.client.io.Link - Link Link{guild='403882830225997825', channel='404313679308521483', state=CONNECTING} changed state from CONNECTING to CONNECTED
+[22:09:22] [WARN ] [WebSocketConnectReadThread-41 - 41] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 0 seconds.
+[22:09:22] [WARN ] [WebSocketConnectReadThread-41 - 41] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:09:23] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending voice request {"op":4,"d":{"self_deaf":true,"guild_id":403882830225997825,"channel_id":404313679308521483,"self_mute":false}}
+[22:09:23] [WARN ] [WebSocketConnectReadThread-45 - 45] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 2 seconds.
+[22:09:23] [WARN ] [WebSocketConnectReadThread-45 - 45] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:09:25] [WARN ] [WebSocketConnectReadThread-46 - 46] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 4 seconds.
+[22:09:25] [WARN ] [WebSocketConnectReadThread-46 - 46] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:09:29] [WARN ] [WebSocketConnectReadThread-47 - 47] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 6 seconds.
+[22:09:29] [WARN ] [WebSocketConnectReadThread-47 - 47] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:09:35] [WARN ] [WebSocketConnectReadThread-48 - 48] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 8 seconds.
+[22:09:35] [WARN ] [WebSocketConnectReadThread-48 - 48] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:09:43] [WARN ] [WebSocketConnectReadThread-49 - 49] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 10 seconds.
+[22:09:43] [WARN ] [WebSocketConnectReadThread-49 - 49] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:09:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:09:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546204191294}}
+[22:09:53] [WARN ] [WebSocketConnectReadThread-50 - 50] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 12 seconds.
+[22:09:53] [WARN ] [WebSocketConnectReadThread-50 - 50] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:10:05] [WARN ] [WebSocketConnectReadThread-51 - 51] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 14 seconds.
+[22:10:05] [WARN ] [WebSocketConnectReadThread-51 - 51] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:10:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:10:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":7,"op":"stats","memory":{"reservable":4294967296,"used":134553400,"free":221962440,"allocated":356515840},"players":19,"cpu":{"cores":4,"systemLoad":0.0346124905944319,"lavalinkLoad":0.0018546921627794542},"uptime":201519931}
+[22:10:19] [WARN ] [WebSocketConnectReadThread-52 - 52] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 16 seconds.
+[22:10:19] [WARN ] [WebSocketConnectReadThread-52 - 52] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:10:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":4,"op":"stats","memory":{"reservable":16861102080,"used":979684176,"free":983250096,"allocated":1962934272},"players":4,"cpu":{"cores":12,"systemLoad":0.1780274656679151,"lavalinkLoad":5.422088755422089E-5},"uptime":346465744}
+[22:10:20] [DEBUG] [CommandExecutor-pool-2-thread-1 - 53] lavalink.client.io.Link - Link Link{guild='507517900127469568', channel='null', state=NOT_CONNECTED} changed state from NOT_CONNECTED to CONNECTING
+[22:10:20] [DEBUG] [CommandExecutor-pool-2-thread-1 - 53] co.groovybot.bot.listeners.CommandLogger - [Command] search - Rxsto#1337 | Discordlist.org (507517900127469568)
+[22:10:20] [DEBUG] [lava-daemon-pool-info-loader-2-thread-1 - 57] com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSearchProvider - Performing a search with query kaskobi
+[22:10:20] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending voice request {"op":4,"d":{"self_deaf":true,"guild_id":507517900127469568,"channel_id":514849904330276866,"self_mute":false}}
+[22:10:20] [DEBUG] [JDA [0 / 1] RateLimit-Worker 2 - 29] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177e193a5663c7-FRA]
+[22:10:20] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] lavalink.client.io.jda.VoiceServerUpdateInterceptor - {"endpoint":"eu-central66.discord.gg:80","guild_id":"507517900127469568","token":"f38d5e17390140cf"}
+[22:10:20] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] lavalink.client.io.Link - Link Link{guild='507517900127469568', channel='514849904330276866', state=CONNECTING} changed state from CONNECTING to CONNECTED
+[22:10:21] [DEBUG] [lava-daemon-pool-info-loader-2-thread-1 - 57] com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager - Loaded a playlist with identifier ytsearch: kaskobi using YoutubeAudioSourceManager.
+[22:10:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546204221296}}
+[22:10:21] [DEBUG] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177e1eeeb263c7-FRA]
+[22:10:21] [DEBUG] [JDA [0 / 1] RateLimit-Worker 3 - 54] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177e20984563c7-FRA]
+[22:10:21] [DEBUG] [lava-daemon-pool-info-loader-2-thread-1 - 57] net.dv8tion.jda.core.requests.RateLimiter - Backing off 249 milliseconds on route /channels/507627405163364363/messages/{message_id}/reactions/{reaction_code}/@me
+[22:10:22] [DEBUG] [JDA [0 / 1] RateLimit-Worker 2 - 29] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177e236a0363c7-FRA]
+[22:10:22] [DEBUG] [lava-daemon-pool-info-loader-2-thread-1 - 57] net.dv8tion.jda.core.requests.RateLimiter - Backing off 249 milliseconds on route /channels/507627405163364363/messages/{message_id}/reactions/{reaction_code}/@me
+[22:10:22] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending voice request {"op":4,"d":{"self_deaf":true,"guild_id":507517900127469568,"channel_id":514849904330276866,"self_mute":false}}
+[22:10:22] [DEBUG] [JDA [0 / 1] RateLimit-Worker 4 - 62] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177e262cbd63c7-FRA]
+[22:10:22] [DEBUG] [lava-daemon-pool-info-loader-2-thread-1 - 57] net.dv8tion.jda.core.requests.RateLimiter - Backing off 250 milliseconds on route /channels/507627405163364363/messages/{message_id}/reactions/{reaction_code}/@me
+[22:10:23] [DEBUG] [JDA [0 / 1] RateLimit-Worker 5 - 63] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177e28eee863c7-FRA]
+[22:10:23] [DEBUG] [lava-daemon-pool-info-loader-2-thread-1 - 57] net.dv8tion.jda.core.requests.RateLimiter - Backing off 250 milliseconds on route /channels/507627405163364363/messages/{message_id}/reactions/{reaction_code}/@me
+[22:10:23] [DEBUG] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177e2d6b7363c7-FRA]
+[22:10:26] [DEBUG] [JDA [0 / 1] RateLimit-Worker 3 - 54] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177e3f29f263c7-FRA]
+[22:10:26] [WARN ] [JDA [0 / 1] RateLimit-Worker 5 - 63] net.dv8tion.jda.core.requests.RateLimiter - Encountered 429 on route /channels/507627405163364363/messages/{message_id}/reactions
+[22:10:26] [DEBUG] [JDA [0 / 1] RateLimit-Worker 5 - 63] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177e409abf63af-FRA]
+[22:10:26] [DEBUG] [JDA [0 / 1] RateLimit-Worker 5 - 63] net.dv8tion.jda.core.requests.RateLimiter - Backing off 443 milliseconds on route /channels/507627405163364363/messages/{message_id}/reactions
+[22:10:27] [DEBUG] [JDA [0 / 1] RateLimit-Worker 4 - 62] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177e422c5563c7-FRA]
+[22:10:27] [DEBUG] [JDA [0 / 1] RateLimit-Worker 2 - 29] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177e4098b063eb-FRA]
+[22:10:27] [DEBUG] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177e448de963c7-FRA]
+[22:10:35] [WARN ] [WebSocketConnectReadThread-65 - 65] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 18 seconds.
+[22:10:35] [WARN ] [WebSocketConnectReadThread-65 - 65] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:10:39] [DEBUG] [JDA [0 / 1] RateLimit-Worker 3 - 54] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [49177e8c9f7f63c7-FRA]
+[22:10:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:10:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546204251295}}
+[22:10:53] [WARN ] [WebSocketConnectReadThread-66 - 66] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 20 seconds.
+[22:10:53] [WARN ] [WebSocketConnectReadThread-66 - 66] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:11:13] [WARN ] [WebSocketConnectReadThread-67 - 67] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 22 seconds.
+[22:11:13] [WARN ] [WebSocketConnectReadThread-67 - 67] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:11:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:11:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":7,"op":"stats","memory":{"reservable":4294967296,"used":266959760,"free":89556080,"allocated":356515840},"players":18,"cpu":{"cores":4,"systemLoad":0.0672713529856387,"lavalinkLoad":0.001970833333333333},"uptime":201579930}
+[22:11:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":4,"op":"stats","memory":{"reservable":16861102080,"used":1052463320,"free":910470952,"allocated":1962934272},"players":4,"cpu":{"cores":12,"systemLoad":0.1678740944291781,"lavalinkLoad":5.138888888888888E-5},"uptime":346525744}
+[22:11:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546204281295}}
+[22:11:35] [WARN ] [WebSocketConnectReadThread-68 - 68] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 24 seconds.
+[22:11:35] [WARN ] [WebSocketConnectReadThread-68 - 68] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:11:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:11:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546204311295}}
+[22:11:59] [WARN ] [WebSocketConnectReadThread-69 - 69] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 26 seconds.
+[22:11:59] [WARN ] [WebSocketConnectReadThread-69 - 69] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:12:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:12:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":6,"op":"stats","memory":{"reservable":4294967296,"used":165800200,"free":190715640,"allocated":356515840},"frameStats":{"sent":2999,"deficit":1,"nulled":0},"players":17,"cpu":{"cores":4,"systemLoad":0.035311795642374154,"lavalinkLoad":0.0017041666666666668},"uptime":201639930}
+[22:12:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":4,"op":"stats","memory":{"reservable":16861102080,"used":1113222392,"free":849711880,"allocated":1962934272},"players":4,"cpu":{"cores":12,"systemLoad":0.17881292261457551,"lavalinkLoad":5.138888888888888E-5},"uptime":346585744}
+[22:12:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546204341295}}
+[22:12:26] [WARN ] [WebSocketConnectReadThread-70 - 70] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 28 seconds.
+[22:12:26] [WARN ] [WebSocketConnectReadThread-70 - 70] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:12:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:12:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546204371295}}
+[22:12:54] [WARN ] [WebSocketConnectReadThread-71 - 71] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 30 seconds.
+[22:12:54] [WARN ] [WebSocketConnectReadThread-71 - 71] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:13:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:13:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":7,"op":"stats","memory":{"reservable":4294967296,"used":275326824,"free":81189016,"allocated":356515840},"frameStats":{"sent":3000,"deficit":0,"nulled":0},"players":18,"cpu":{"cores":4,"systemLoad":0.06037735849056604,"lavalinkLoad":0.001425},"uptime":201699930}
+[22:13:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":4,"op":"stats","memory":{"reservable":16861102080,"used":1180915840,"free":782018432,"allocated":1962934272},"players":4,"cpu":{"cores":12,"systemLoad":0.1754429747941103,"lavalinkLoad":4.9999999999999996E-5},"uptime":346645744}
+[22:13:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546204401295}}
+[22:13:24] [WARN ] [WebSocketConnectReadThread-72 - 72] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 32 seconds.
+[22:13:24] [WARN ] [WebSocketConnectReadThread-72 - 72] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:13:26] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"op":"event","reason":"FINISHED","type":"TrackEndEvent","track":"QAAAmAIAN1BhdWwgRmxpbnQgLSBTQVZBR0UgLy8gV29ybGQncyBGaXJzdCAyMSBMYXVuY2hwYWQgQ292ZXIAB0thc2tvYmkAAAAAAAK/IAALdG1semtQNHQtUGsAAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj10bWx6a1A0dC1QawAHeW91dHViZQAAAAAAAr4I","guildId":"507517900127469568"}
+[22:13:26] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.Link - Link Link{guild='507517900127469568', channel='514849904330276866', state=CONNECTED} changed state from CONNECTED to DISCONNECTING
+[22:13:26] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending voice request {"op":4,"d":{"self_deaf":false,"guild_id":"507517900127469568","channel_id":null,"self_mute":false}}
+[22:13:26] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 39] lavalink.client.io.Link - Link Link{guild='507517900127469568', channel='514849904330276866', state=DISCONNECTING} changed state from DISCONNECTING to NOT_CONNECTED
+[22:13:26] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"op":"event","reason":"Closed by client","code":1000,"byRemote":false,"type":"WebSocketClosedEvent","guildId":"507517900127469568"}
+[22:13:26] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"op":"event","reason":"Closed by client","code":1000,"byRemote":false,"type":"WebSocketClosedEvent","guildId":"507517900127469568"}
+[22:13:26] [DEBUG] [JDA [0 / 1] RateLimit-Worker 5 - 63] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491782a12ca963c7-FRA]
+[22:13:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:13:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546204431295}}
+[22:13:56] [WARN ] [WebSocketConnectReadThread-75 - 75] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 34 seconds.
+[22:13:56] [WARN ] [WebSocketConnectReadThread-75 - 75] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:14:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:14:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":7,"op":"stats","memory":{"reservable":4294967296,"used":184268288,"free":172247552,"allocated":356515840},"players":17,"cpu":{"cores":4,"systemLoad":0.04387291981845688,"lavalinkLoad":0.0019208333333333334},"uptime":201759930}
+[22:14:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":3,"op":"stats","memory":{"reservable":16861102080,"used":69979648,"free":1892954624,"allocated":1962934272},"players":3,"cpu":{"cores":12,"systemLoad":0.17336997252060954,"lavalinkLoad":4.5833333333333334E-5},"uptime":346705744}
+[22:14:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546204461295}}
+[22:14:30] [WARN ] [WebSocketConnectReadThread-77 - 77] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 36 seconds.
+[22:14:30] [WARN ] [WebSocketConnectReadThread-77 - 77] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:14:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:14:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546204491295}}
+[22:15:06] [WARN ] [WebSocketConnectReadThread-78 - 78] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 38 seconds.
+[22:15:06] [WARN ] [WebSocketConnectReadThread-78 - 78] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:15:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:15:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":8,"op":"stats","memory":{"reservable":4294967296,"used":101904184,"free":254611656,"allocated":356515840},"players":18,"cpu":{"cores":4,"systemLoad":0.03622641509433962,"lavalinkLoad":0.0025458333333333335},"uptime":201819930}
+[22:15:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":105802392,"free":1857131880,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.1700324108701072,"lavalinkLoad":3.194444444444445E-5},"uptime":346765744}
+[22:15:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546204521294}}
+[22:15:44] [WARN ] [WebSocketConnectReadThread-80 - 80] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 40 seconds.
+[22:15:44] [WARN ] [WebSocketConnectReadThread-80 - 80] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:15:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:15:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546204551294}}
+[22:16:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:16:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":8,"op":"stats","memory":{"reservable":4294967296,"used":226904840,"free":129611000,"allocated":356515840},"players":18,"cpu":{"cores":4,"systemLoad":0.04377358490566037,"lavalinkLoad":0.0018583333333333334},"uptime":201879930}
+[22:16:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":138994488,"free":1823939784,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.16471759144065687,"lavalinkLoad":2.9166666666666666E-5},"uptime":346825744}
+[22:16:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546204581294}}
+[22:16:24] [WARN ] [WebSocketConnectReadThread-81 - 81] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 42 seconds.
+[22:16:24] [WARN ] [WebSocketConnectReadThread-81 - 81] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:16:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:16:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546204611294}}
+[22:17:06] [WARN ] [WebSocketConnectReadThread-82 - 82] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 44 seconds.
+[22:17:06] [WARN ] [WebSocketConnectReadThread-82 - 82] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:17:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:17:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":8,"op":"stats","memory":{"reservable":4294967296,"used":140862096,"free":215653744,"allocated":356515840},"players":18,"cpu":{"cores":4,"systemLoad":0.04390613171839515,"lavalinkLoad":0.0018166666666666667},"uptime":201939930}
+[22:17:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":170875296,"free":1792058976,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.16920769807548114,"lavalinkLoad":3.3333333333333335E-5},"uptime":346885744}
+[22:17:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546204641294}}
+[22:17:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:17:50] [WARN ] [WebSocketConnectReadThread-83 - 83] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 46 seconds.
+[22:17:50] [WARN ] [WebSocketConnectReadThread-83 - 83] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:17:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546204671295}}
+[22:18:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:18:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":9,"op":"stats","memory":{"reservable":4294967296,"used":299475616,"free":57040224,"allocated":356515840},"players":18,"cpu":{"cores":4,"systemLoad":0.033962264150943396,"lavalinkLoad":0.0018458333333333334},"uptime":201999930}
+[22:18:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":212475264,"free":1750459008,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.17355371900826444,"lavalinkLoad":3.0555555555555554E-5},"uptime":346945744}
+[22:18:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546204701295}}
+[22:18:36] [WARN ] [WebSocketConnectReadThread-84 - 84] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 48 seconds.
+[22:18:36] [WARN ] [WebSocketConnectReadThread-84 - 84] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:18:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:18:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546204731294}}
+[22:19:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:19:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":10,"op":"stats","memory":{"reservable":4294967296,"used":240038440,"free":116477400,"allocated":356515840},"players":19,"cpu":{"cores":4,"systemLoad":0.034874905231235785,"lavalinkLoad":0.0020916666666666666},"uptime":202059930}
+[22:19:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":244214424,"free":1718719848,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.16425855513307985,"lavalinkLoad":3.194444444444445E-5},"uptime":347005744}
+[22:19:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546204761294}}
+[22:19:24] [WARN ] [WebSocketConnectReadThread-85 - 85] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 50 seconds.
+[22:19:24] [WARN ] [WebSocketConnectReadThread-85 - 85] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:19:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:19:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546204791294}}
+[22:20:14] [WARN ] [WebSocketConnectReadThread-86 - 86] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 52 seconds.
+[22:20:14] [WARN ] [WebSocketConnectReadThread-86 - 86] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:20:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:20:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":9,"op":"stats","memory":{"reservable":4294967296,"used":186645416,"free":169870424,"allocated":356515840},"players":18,"cpu":{"cores":4,"systemLoad":0.04790419161676646,"lavalinkLoad":0.002575},"uptime":202119930}
+[22:20:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":276476432,"free":1686457840,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.2502878415719988,"lavalinkLoad":3.333277778703688E-5},"uptime":347065744}
+[22:20:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546204821295}}
+[22:20:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:20:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546204851294}}
+[22:21:06] [WARN ] [WebSocketConnectReadThread-87 - 87] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 54 seconds.
+[22:21:06] [WARN ] [WebSocketConnectReadThread-87 - 87] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:21:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:21:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":9,"op":"stats","memory":{"reservable":4294967296,"used":109904232,"free":246611608,"allocated":356515840},"players":18,"cpu":{"cores":4,"systemLoad":0.04209191028080493,"lavalinkLoad":0.0025041666666666667},"uptime":202179930}
+[22:21:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":307131032,"free":1655803240,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.17410962315841907,"lavalinkLoad":3.0555555555555554E-5},"uptime":347125744}
+[22:21:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546204881295}}
+[22:21:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:21:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546204911294}}
+[22:22:00] [WARN ] [WebSocketConnectReadThread-88 - 88] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 56 seconds.
+[22:22:00] [WARN ] [WebSocketConnectReadThread-88 - 88] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:22:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:22:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":8,"op":"stats","memory":{"reservable":4294967296,"used":244865336,"free":111650504,"allocated":356515840},"players":17,"cpu":{"cores":4,"systemLoad":0.04229085042636552,"lavalinkLoad":0.002425},"uptime":202239930}
+[22:22:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":350452152,"free":1612482120,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.1822863027806385,"lavalinkLoad":3.0555555555555554E-5},"uptime":347185744}
+[22:22:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546204941294}}
+[22:22:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:22:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546204971295}}
+[22:22:56] [WARN ] [WebSocketConnectReadThread-89 - 89] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 58 seconds.
+[22:22:56] [WARN ] [WebSocketConnectReadThread-89 - 89] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:23:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:23:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":8,"op":"stats","memory":{"reservable":4294967296,"used":157959512,"free":198556328,"allocated":356515840},"players":17,"cpu":{"cores":4,"systemLoad":0.04252629159243722,"lavalinkLoad":0.002375},"uptime":202299930}
+[22:23:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":381800656,"free":1581133616,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.1883115644961388,"lavalinkLoad":3.194444444444445E-5},"uptime":347245744}
+[22:23:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546205001295}}
+[22:23:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:23:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546205031294}}
+[22:23:54] [WARN ] [WebSocketConnectReadThread-90 - 90] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 60 seconds.
+[22:23:54] [WARN ] [WebSocketConnectReadThread-90 - 90] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:24:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:24:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":6,"op":"stats","memory":{"reservable":4294967296,"used":277856848,"free":78658992,"allocated":356515840},"players":16,"cpu":{"cores":4,"systemLoad":0.04758628597637886,"lavalinkLoad":0.0030041666666666667},"uptime":202359930}
+[22:24:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":413487552,"free":1549446720,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.22961919827153826,"lavalinkLoad":3.194444444444445E-5},"uptime":347305744}
+[22:24:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546205061295}}
+[22:24:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:24:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546205091295}}
+[22:24:55] [WARN ] [WebSocketConnectReadThread-91 - 91] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 62 seconds.
+[22:24:55] [WARN ] [WebSocketConnectReadThread-91 - 91] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:25:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:25:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":6,"op":"stats","memory":{"reservable":4294967296,"used":154639344,"free":201876496,"allocated":356515840},"players":16,"cpu":{"cores":4,"systemLoad":0.05362974846731221,"lavalinkLoad":0.0028125},"uptime":202419930}
+[22:25:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":445541016,"free":1517393256,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.1917936024371668,"lavalinkLoad":3.194444444444445E-5},"uptime":347365744}
+[22:25:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546205121294}}
+[22:25:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:25:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546205151294}}
+[22:25:57] [WARN ] [WebSocketConnectReadThread-92 - 92] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 64 seconds.
+[22:25:57] [WARN ] [WebSocketConnectReadThread-92 - 92] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:26:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:26:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":165464256,"free":191051584,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.023423217550274225,"lavalinkLoad":3.25E-4},"uptime":202479930}
+[22:26:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":483295696,"free":1479638576,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.1810503889977364,"lavalinkLoad":3.194444444444445E-5},"uptime":347425744}
+[22:26:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546205181294}}
+[22:26:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:26:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546205211295}}
+[22:27:01] [WARN ] [WebSocketConnectReadThread-93 - 93] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 66 seconds.
+[22:27:01] [WARN ] [WebSocketConnectReadThread-93 - 93] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:27:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:27:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":166320768,"free":190195072,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.022876376290718238,"lavalinkLoad":6.25E-5},"uptime":202539930}
+[22:27:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":516608264,"free":1446326008,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.19045704329178392,"lavalinkLoad":3.0555555555555554E-5},"uptime":347485744}
+[22:27:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546205241295}}
+[22:27:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:27:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546205271294}}
+[22:28:07] [WARN ] [WebSocketConnectReadThread-94 - 94] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 68 seconds.
+[22:28:07] [WARN ] [WebSocketConnectReadThread-94 - 94] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:28:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:28:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":167309944,"free":189205896,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.025279616525907326,"lavalinkLoad":6.666666666666667E-5},"uptime":202599931}
+[22:28:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":551948528,"free":1410985744,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.19095573962677534,"lavalinkLoad":3.194444444444445E-5},"uptime":347545744}
+[22:28:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546205301295}}
+[22:28:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:28:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546205331295}}
+[22:29:15] [WARN ] [WebSocketConnectReadThread-95 - 95] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 70 seconds.
+[22:29:15] [WARN ] [WebSocketConnectReadThread-95 - 95] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:29:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:29:19] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":168152200,"free":188363640,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.020317315374957196,"lavalinkLoad":5.833333333333333E-5},"uptime":202659930}
+[22:29:19] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":587745424,"free":1375188848,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.1790779456660355,"lavalinkLoad":3.194444444444445E-5},"uptime":347605744}
+[22:29:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546205361294}}
+[22:29:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:29:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546205391294}}
+[22:30:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:30:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546205421295}}
+[22:30:24] [ERROR] [WebSocketConnectReadThread-96 - 96] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.UnknownHostException: foryasee.de
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:184) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:24] [WARN ] [WebSocketConnectReadThread-96 - 96] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: foryasee.de :: Remote=false
+[22:30:38] [WARN ] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - Connection to ws://91.200.102.167:8099 closed unexpectedly with reason 1006:  :: Remote=true
+[22:30:38] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.Link - Link Link{guild='403882830225997825', channel='404313679308521483', state=CONNECTED} changed state from CONNECTED to CONNECTED
+[22:30:39] [WARN ] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - Connection to ws://51.254.51.155:2333 closed unexpectedly with reason 1006:  :: Remote=true
+[22:30:39] [ERROR] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.lang.IllegalStateException: No available nodes!
+	at lavalink.client.io.LavalinkLoadBalancer.determineBestSocket(LavalinkLoadBalancer.java:59) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkLoadBalancer.lambda$onNodeDisconnect$0(LavalinkLoadBalancer.java:79) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at java.util.concurrent.ConcurrentHashMap$ValuesView.forEach(ConcurrentHashMap.java:4707) ~[?:1.8.0_181]
+	at lavalink.client.io.LavalinkLoadBalancer.onNodeDisconnect(LavalinkLoadBalancer.java:77) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkSocket.onClose(LavalinkSocket.java:166) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.ReusableWebSocket$DisposableSocket.onClose(ReusableWebSocket.java:139) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at org.java_websocket.client.WebSocketClient.onWebsocketClose(WebSocketClient.java:523) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:504) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:515) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.eot(WebSocketImpl.java:563) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.client.WebSocketClient.handleIOException(WebSocketClient.java:803) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:421) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:39] [ERROR] [WebSocketConnectReadThread-98 - 98] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:39] [ERROR] [WebSocketConnectReadThread-97 - 97] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:39] [WARN ] [WebSocketConnectReadThread-98 - 98] lavalink.client.io.LavalinkSocket - Connection to ws://51.254.51.155:2333 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:30:39] [WARN ] [WebSocketConnectReadThread-97 - 97] lavalink.client.io.LavalinkSocket - Connection to ws://91.200.102.167:8099 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:30:39] [ERROR] [WebSocketConnectReadThread-98 - 98] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.lang.IllegalStateException: No available nodes!
+	at lavalink.client.io.LavalinkLoadBalancer.determineBestSocket(LavalinkLoadBalancer.java:59) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkLoadBalancer.lambda$onNodeDisconnect$0(LavalinkLoadBalancer.java:79) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at java.util.concurrent.ConcurrentHashMap$ValuesView.forEach(ConcurrentHashMap.java:4707) ~[?:1.8.0_181]
+	at lavalink.client.io.LavalinkLoadBalancer.onNodeDisconnect(LavalinkLoadBalancer.java:77) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkSocket.onClose(LavalinkSocket.java:166) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.ReusableWebSocket$DisposableSocket.onClose(ReusableWebSocket.java:139) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at org.java_websocket.client.WebSocketClient.onWebsocketClose(WebSocketClient.java:523) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:504) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:526) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:405) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:39] [ERROR] [WebSocketConnectReadThread-99 - 99] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:39] [ERROR] [WebSocketConnectReadThread-100 - 100] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:39] [WARN ] [WebSocketConnectReadThread-99 - 99] lavalink.client.io.LavalinkSocket - Connection to ws://91.200.102.167:8099 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:30:39] [WARN ] [WebSocketConnectReadThread-100 - 100] lavalink.client.io.LavalinkSocket - Connection to ws://51.254.51.155:2333 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:30:39] [ERROR] [WebSocketConnectReadThread-100 - 100] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.lang.IllegalStateException: No available nodes!
+	at lavalink.client.io.LavalinkLoadBalancer.determineBestSocket(LavalinkLoadBalancer.java:59) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkLoadBalancer.lambda$onNodeDisconnect$0(LavalinkLoadBalancer.java:79) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at java.util.concurrent.ConcurrentHashMap$ValuesView.forEach(ConcurrentHashMap.java:4707) ~[?:1.8.0_181]
+	at lavalink.client.io.LavalinkLoadBalancer.onNodeDisconnect(LavalinkLoadBalancer.java:77) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkSocket.onClose(LavalinkSocket.java:166) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.ReusableWebSocket$DisposableSocket.onClose(ReusableWebSocket.java:139) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at org.java_websocket.client.WebSocketClient.onWebsocketClose(WebSocketClient.java:523) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:504) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:526) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:405) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:40] [WARN ] [JDA [0 / 1] MainWS-WriteThread - 40] net.dv8tion.jda.core.requests.WebSocketClient - Got disconnected from WebSocket. Attempting to resume session
+[22:30:40] [DEBUG] [JDA [0 / 1] MainWS-WriteThread - 40] net.dv8tion.jda.core.requests.WebSocketClient - Attempting to reconnect in 2s
+[22:30:41] [ERROR] [WebSocketConnectReadThread-102 - 102] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:41] [ERROR] [WebSocketConnectReadThread-103 - 103] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:41] [WARN ] [WebSocketConnectReadThread-102 - 102] lavalink.client.io.LavalinkSocket - Connection to ws://91.200.102.167:8099 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:30:41] [WARN ] [WebSocketConnectReadThread-103 - 103] lavalink.client.io.LavalinkSocket - Connection to ws://51.254.51.155:2333 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:30:41] [ERROR] [WebSocketConnectReadThread-103 - 103] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.lang.IllegalStateException: No available nodes!
+	at lavalink.client.io.LavalinkLoadBalancer.determineBestSocket(LavalinkLoadBalancer.java:59) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkLoadBalancer.lambda$onNodeDisconnect$0(LavalinkLoadBalancer.java:79) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at java.util.concurrent.ConcurrentHashMap$ValuesView.forEach(ConcurrentHashMap.java:4707) ~[?:1.8.0_181]
+	at lavalink.client.io.LavalinkLoadBalancer.onNodeDisconnect(LavalinkLoadBalancer.java:77) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkSocket.onClose(LavalinkSocket.java:166) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.ReusableWebSocket$DisposableSocket.onClose(ReusableWebSocket.java:139) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at org.java_websocket.client.WebSocketClient.onWebsocketClose(WebSocketClient.java:523) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:504) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:526) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:405) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:42] [DEBUG] [JDA [0 / 1] MainWS-WriteThread - 40] net.dv8tion.jda.core.requests.WebSocketClient - Attempting to reconnect!
+[22:30:42] [ERROR] [JDA [0 / 1] RateLimit-Worker 4 - 62] net.dv8tion.jda.core.requests.Requester - There was an exception while executing a REST request
+java.net.UnknownHostException: discordapp.com
+	at java.net.Inet6AddressImpl.lookupAllHostAddr(Native Method) ~[?:1.8.0_181]
+	at java.net.InetAddress$2.lookupAllHostAddr(InetAddress.java:928) ~[?:1.8.0_181]
+	at java.net.InetAddress.getAddressesFromNameService(InetAddress.java:1323) ~[?:1.8.0_181]
+	at java.net.InetAddress.getAllByName0(InetAddress.java:1276) ~[?:1.8.0_181]
+	at java.net.InetAddress.getAllByName(InetAddress.java:1192) ~[?:1.8.0_181]
+	at java.net.InetAddress.getAllByName(InetAddress.java:1126) ~[?:1.8.0_181]
+	at okhttp3.Dns$1.lookup(Dns.java:40) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.RouteSelector.resetNextInetSocketAddress(RouteSelector.java:185) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.RouteSelector.nextProxy(RouteSelector.java:149) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.RouteSelector.next(RouteSelector.java:84) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.StreamAllocation.findConnection(StreamAllocation.java:214) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.StreamAllocation.findHealthyConnection(StreamAllocation.java:135) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.StreamAllocation.newStream(StreamAllocation.java:114) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.java:42) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.java:93) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.java:93) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.java:126) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.RealCall.getResponseWithInterceptorChain(RealCall.java:200) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.RealCall.execute(RealCall.java:77) ~[okhttp-3.11.0.jar:?]
+	at net.dv8tion.jda.core.requests.Requester.execute(Requester.java:191) [JDA-3.8.1_447.jar:3.8.1_447]
+	at net.dv8tion.jda.core.requests.Requester.execute(Requester.java:133) [JDA-3.8.1_447.jar:3.8.1_447]
+	at net.dv8tion.jda.core.requests.Requester.execute(Requester.java:116) [JDA-3.8.1_447.jar:3.8.1_447]
+	at net.dv8tion.jda.core.requests.ratelimit.BotRateLimiter$Bucket.run(BotRateLimiter.java:350) [JDA-3.8.1_447.jar:3.8.1_447]
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511) [?:1.8.0_181]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266) [?:1.8.0_181]
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180) [?:1.8.0_181]
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293) [?:1.8.0_181]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149) [?:1.8.0_181]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) [?:1.8.0_181]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:42] [WARN ] [JDA [0 / 1] MainWS-WriteThread - 40] net.dv8tion.jda.core.requests.WebSocketClient - Reconnect failed! Next attempt in 4s
+[22:30:45] [ERROR] [WebSocketConnectReadThread-105 - 105] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:45] [ERROR] [WebSocketConnectReadThread-106 - 106] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:45] [WARN ] [WebSocketConnectReadThread-106 - 106] lavalink.client.io.LavalinkSocket - Connection to ws://51.254.51.155:2333 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:30:45] [WARN ] [WebSocketConnectReadThread-105 - 105] lavalink.client.io.LavalinkSocket - Connection to ws://91.200.102.167:8099 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:30:45] [ERROR] [WebSocketConnectReadThread-106 - 106] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.lang.IllegalStateException: No available nodes!
+	at lavalink.client.io.LavalinkLoadBalancer.determineBestSocket(LavalinkLoadBalancer.java:59) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkLoadBalancer.lambda$onNodeDisconnect$0(LavalinkLoadBalancer.java:79) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at java.util.concurrent.ConcurrentHashMap$ValuesView.forEach(ConcurrentHashMap.java:4707) ~[?:1.8.0_181]
+	at lavalink.client.io.LavalinkLoadBalancer.onNodeDisconnect(LavalinkLoadBalancer.java:77) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkSocket.onClose(LavalinkSocket.java:166) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.ReusableWebSocket$DisposableSocket.onClose(ReusableWebSocket.java:139) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at org.java_websocket.client.WebSocketClient.onWebsocketClose(WebSocketClient.java:523) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:504) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:526) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:405) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:46] [DEBUG] [JDA [0 / 1] MainWS-WriteThread - 40] net.dv8tion.jda.core.requests.WebSocketClient - Attempting to reconnect!
+[22:30:46] [ERROR] [JDA [0 / 1] RateLimit-Worker 2 - 29] net.dv8tion.jda.core.requests.Requester - There was an exception while executing a REST request
+java.net.UnknownHostException: discordapp.com
+	at java.net.InetAddress.getAllByName0(InetAddress.java:1280) ~[?:1.8.0_181]
+	at java.net.InetAddress.getAllByName(InetAddress.java:1192) ~[?:1.8.0_181]
+	at java.net.InetAddress.getAllByName(InetAddress.java:1126) ~[?:1.8.0_181]
+	at okhttp3.Dns$1.lookup(Dns.java:40) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.RouteSelector.resetNextInetSocketAddress(RouteSelector.java:185) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.RouteSelector.nextProxy(RouteSelector.java:149) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.RouteSelector.next(RouteSelector.java:84) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.StreamAllocation.findConnection(StreamAllocation.java:214) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.StreamAllocation.findHealthyConnection(StreamAllocation.java:135) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.StreamAllocation.newStream(StreamAllocation.java:114) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.java:42) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.java:93) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.java:93) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.java:126) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.RealCall.getResponseWithInterceptorChain(RealCall.java:200) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.RealCall.execute(RealCall.java:77) ~[okhttp-3.11.0.jar:?]
+	at net.dv8tion.jda.core.requests.Requester.execute(Requester.java:191) [JDA-3.8.1_447.jar:3.8.1_447]
+	at net.dv8tion.jda.core.requests.Requester.execute(Requester.java:133) [JDA-3.8.1_447.jar:3.8.1_447]
+	at net.dv8tion.jda.core.requests.Requester.execute(Requester.java:116) [JDA-3.8.1_447.jar:3.8.1_447]
+	at net.dv8tion.jda.core.requests.ratelimit.BotRateLimiter$Bucket.run(BotRateLimiter.java:350) [JDA-3.8.1_447.jar:3.8.1_447]
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511) [?:1.8.0_181]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266) [?:1.8.0_181]
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180) [?:1.8.0_181]
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293) [?:1.8.0_181]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149) [?:1.8.0_181]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) [?:1.8.0_181]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:46] [WARN ] [JDA [0 / 1] MainWS-WriteThread - 40] net.dv8tion.jda.core.requests.WebSocketClient - Reconnect failed! Next attempt in 8s
+[22:30:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:30:51] [ERROR] [WebSocketConnectReadThread-108 - 108] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:51] [ERROR] [WebSocketConnectReadThread-107 - 107] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:51] [WARN ] [WebSocketConnectReadThread-107 - 107] lavalink.client.io.LavalinkSocket - Connection to ws://91.200.102.167:8099 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:30:51] [WARN ] [WebSocketConnectReadThread-108 - 108] lavalink.client.io.LavalinkSocket - Connection to ws://51.254.51.155:2333 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:30:51] [ERROR] [WebSocketConnectReadThread-108 - 108] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.lang.IllegalStateException: No available nodes!
+	at lavalink.client.io.LavalinkLoadBalancer.determineBestSocket(LavalinkLoadBalancer.java:59) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkLoadBalancer.lambda$onNodeDisconnect$0(LavalinkLoadBalancer.java:79) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at java.util.concurrent.ConcurrentHashMap$ValuesView.forEach(ConcurrentHashMap.java:4707) ~[?:1.8.0_181]
+	at lavalink.client.io.LavalinkLoadBalancer.onNodeDisconnect(LavalinkLoadBalancer.java:77) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkSocket.onClose(LavalinkSocket.java:166) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.ReusableWebSocket$DisposableSocket.onClose(ReusableWebSocket.java:139) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at org.java_websocket.client.WebSocketClient.onWebsocketClose(WebSocketClient.java:523) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:504) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:526) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:405) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:54] [DEBUG] [JDA [0 / 1] MainWS-WriteThread - 40] net.dv8tion.jda.core.requests.WebSocketClient - Attempting to reconnect!
+[22:30:54] [ERROR] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.Requester - There was an exception while executing a REST request
+java.net.UnknownHostException: discordapp.com
+	at java.net.Inet6AddressImpl.lookupAllHostAddr(Native Method) ~[?:1.8.0_181]
+	at java.net.InetAddress$2.lookupAllHostAddr(InetAddress.java:928) ~[?:1.8.0_181]
+	at java.net.InetAddress.getAddressesFromNameService(InetAddress.java:1323) ~[?:1.8.0_181]
+	at java.net.InetAddress.getAllByName0(InetAddress.java:1276) ~[?:1.8.0_181]
+	at java.net.InetAddress.getAllByName(InetAddress.java:1192) ~[?:1.8.0_181]
+	at java.net.InetAddress.getAllByName(InetAddress.java:1126) ~[?:1.8.0_181]
+	at okhttp3.Dns$1.lookup(Dns.java:40) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.RouteSelector.resetNextInetSocketAddress(RouteSelector.java:185) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.RouteSelector.nextProxy(RouteSelector.java:149) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.RouteSelector.next(RouteSelector.java:84) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.StreamAllocation.findConnection(StreamAllocation.java:214) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.StreamAllocation.findHealthyConnection(StreamAllocation.java:135) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.StreamAllocation.newStream(StreamAllocation.java:114) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.java:42) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.java:93) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.java:93) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.java:126) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.RealCall.getResponseWithInterceptorChain(RealCall.java:200) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.RealCall.execute(RealCall.java:77) ~[okhttp-3.11.0.jar:?]
+	at net.dv8tion.jda.core.requests.Requester.execute(Requester.java:191) [JDA-3.8.1_447.jar:3.8.1_447]
+	at net.dv8tion.jda.core.requests.Requester.execute(Requester.java:133) [JDA-3.8.1_447.jar:3.8.1_447]
+	at net.dv8tion.jda.core.requests.Requester.execute(Requester.java:116) [JDA-3.8.1_447.jar:3.8.1_447]
+	at net.dv8tion.jda.core.requests.ratelimit.BotRateLimiter$Bucket.run(BotRateLimiter.java:350) [JDA-3.8.1_447.jar:3.8.1_447]
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511) [?:1.8.0_181]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266) [?:1.8.0_181]
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180) [?:1.8.0_181]
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293) [?:1.8.0_181]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149) [?:1.8.0_181]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) [?:1.8.0_181]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:54] [WARN ] [JDA [0 / 1] MainWS-WriteThread - 40] net.dv8tion.jda.core.requests.WebSocketClient - Reconnect failed! Next attempt in 16s
+[22:30:59] [ERROR] [WebSocketConnectReadThread-110 - 110] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:59] [ERROR] [WebSocketConnectReadThread-109 - 109] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:30:59] [WARN ] [WebSocketConnectReadThread-110 - 110] lavalink.client.io.LavalinkSocket - Connection to ws://51.254.51.155:2333 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:30:59] [WARN ] [WebSocketConnectReadThread-109 - 109] lavalink.client.io.LavalinkSocket - Connection to ws://91.200.102.167:8099 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:30:59] [ERROR] [WebSocketConnectReadThread-110 - 110] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.lang.IllegalStateException: No available nodes!
+	at lavalink.client.io.LavalinkLoadBalancer.determineBestSocket(LavalinkLoadBalancer.java:59) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkLoadBalancer.lambda$onNodeDisconnect$0(LavalinkLoadBalancer.java:79) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at java.util.concurrent.ConcurrentHashMap$ValuesView.forEach(ConcurrentHashMap.java:4707) ~[?:1.8.0_181]
+	at lavalink.client.io.LavalinkLoadBalancer.onNodeDisconnect(LavalinkLoadBalancer.java:77) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkSocket.onClose(LavalinkSocket.java:166) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.ReusableWebSocket$DisposableSocket.onClose(ReusableWebSocket.java:139) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at org.java_websocket.client.WebSocketClient.onWebsocketClose(WebSocketClient.java:523) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:504) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:526) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:405) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:31:09] [ERROR] [WebSocketConnectReadThread-111 - 111] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:31:09] [ERROR] [WebSocketConnectReadThread-112 - 112] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:31:09] [WARN ] [WebSocketConnectReadThread-111 - 111] lavalink.client.io.LavalinkSocket - Connection to ws://91.200.102.167:8099 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:31:09] [WARN ] [WebSocketConnectReadThread-112 - 112] lavalink.client.io.LavalinkSocket - Connection to ws://51.254.51.155:2333 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:31:09] [ERROR] [WebSocketConnectReadThread-112 - 112] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.lang.IllegalStateException: No available nodes!
+	at lavalink.client.io.LavalinkLoadBalancer.determineBestSocket(LavalinkLoadBalancer.java:59) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkLoadBalancer.lambda$onNodeDisconnect$0(LavalinkLoadBalancer.java:79) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at java.util.concurrent.ConcurrentHashMap$ValuesView.forEach(ConcurrentHashMap.java:4707) ~[?:1.8.0_181]
+	at lavalink.client.io.LavalinkLoadBalancer.onNodeDisconnect(LavalinkLoadBalancer.java:77) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkSocket.onClose(LavalinkSocket.java:166) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.ReusableWebSocket$DisposableSocket.onClose(ReusableWebSocket.java:139) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at org.java_websocket.client.WebSocketClient.onWebsocketClose(WebSocketClient.java:523) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:504) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:526) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:405) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:31:10] [DEBUG] [JDA [0 / 1] MainWS-WriteThread - 40] net.dv8tion.jda.core.requests.WebSocketClient - Attempting to reconnect!
+[22:31:10] [ERROR] [JDA [0 / 1] RateLimit-Worker 3 - 54] net.dv8tion.jda.core.requests.Requester - There was an exception while executing a REST request
+java.net.UnknownHostException: discordapp.com
+	at java.net.Inet6AddressImpl.lookupAllHostAddr(Native Method) ~[?:1.8.0_181]
+	at java.net.InetAddress$2.lookupAllHostAddr(InetAddress.java:928) ~[?:1.8.0_181]
+	at java.net.InetAddress.getAddressesFromNameService(InetAddress.java:1323) ~[?:1.8.0_181]
+	at java.net.InetAddress.getAllByName0(InetAddress.java:1276) ~[?:1.8.0_181]
+	at java.net.InetAddress.getAllByName(InetAddress.java:1192) ~[?:1.8.0_181]
+	at java.net.InetAddress.getAllByName(InetAddress.java:1126) ~[?:1.8.0_181]
+	at okhttp3.Dns$1.lookup(Dns.java:40) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.RouteSelector.resetNextInetSocketAddress(RouteSelector.java:185) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.RouteSelector.nextProxy(RouteSelector.java:149) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.RouteSelector.next(RouteSelector.java:84) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.StreamAllocation.findConnection(StreamAllocation.java:214) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.StreamAllocation.findHealthyConnection(StreamAllocation.java:135) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.StreamAllocation.newStream(StreamAllocation.java:114) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.java:42) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.java:93) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.java:93) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.java:126) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.RealCall.getResponseWithInterceptorChain(RealCall.java:200) ~[okhttp-3.11.0.jar:?]
+	at okhttp3.RealCall.execute(RealCall.java:77) ~[okhttp-3.11.0.jar:?]
+	at net.dv8tion.jda.core.requests.Requester.execute(Requester.java:191) [JDA-3.8.1_447.jar:3.8.1_447]
+	at net.dv8tion.jda.core.requests.Requester.execute(Requester.java:133) [JDA-3.8.1_447.jar:3.8.1_447]
+	at net.dv8tion.jda.core.requests.Requester.execute(Requester.java:116) [JDA-3.8.1_447.jar:3.8.1_447]
+	at net.dv8tion.jda.core.requests.ratelimit.BotRateLimiter$Bucket.run(BotRateLimiter.java:350) [JDA-3.8.1_447.jar:3.8.1_447]
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511) [?:1.8.0_181]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266) [?:1.8.0_181]
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180) [?:1.8.0_181]
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293) [?:1.8.0_181]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149) [?:1.8.0_181]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) [?:1.8.0_181]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:31:10] [WARN ] [JDA [0 / 1] MainWS-WriteThread - 40] net.dv8tion.jda.core.requests.WebSocketClient - Reconnect failed! Next attempt in 32s
+[22:31:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:31:21] [ERROR] [WebSocketConnectReadThread-115 - 115] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:31:21] [ERROR] [WebSocketConnectReadThread-114 - 114] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.net.NoRouteToHostException: No route to host: connect
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[?:1.8.0_181]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:85) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[?:1.8.0_181]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[?:1.8.0_181]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[?:1.8.0_181]
+	at java.net.Socket.connect(Socket.java:589) ~[?:1.8.0_181]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:387) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:31:21] [WARN ] [WebSocketConnectReadThread-114 - 114] lavalink.client.io.LavalinkSocket - Connection to ws://91.200.102.167:8099 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:31:21] [WARN ] [WebSocketConnectReadThread-115 - 115] lavalink.client.io.LavalinkSocket - Connection to ws://51.254.51.155:2333 closed unexpectedly with reason -1: No route to host: connect :: Remote=false
+[22:31:21] [ERROR] [WebSocketConnectReadThread-115 - 115] lavalink.client.io.LavalinkSocket - Caught exception in websocket
+java.lang.IllegalStateException: No available nodes!
+	at lavalink.client.io.LavalinkLoadBalancer.determineBestSocket(LavalinkLoadBalancer.java:59) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkLoadBalancer.lambda$onNodeDisconnect$0(LavalinkLoadBalancer.java:79) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at java.util.concurrent.ConcurrentHashMap$ValuesView.forEach(ConcurrentHashMap.java:4707) ~[?:1.8.0_181]
+	at lavalink.client.io.LavalinkLoadBalancer.onNodeDisconnect(LavalinkLoadBalancer.java:77) ~[Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.LavalinkSocket.onClose(LavalinkSocket.java:166) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at lavalink.client.io.ReusableWebSocket$DisposableSocket.onClose(ReusableWebSocket.java:139) [Lavalink-Client-master-3.0-g6fa112e-26.jar:?]
+	at org.java_websocket.client.WebSocketClient.onWebsocketClose(WebSocketClient.java:523) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:504) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.WebSocketImpl.closeConnection(WebSocketImpl.java:526) [Java-WebSocket-1.3.9.jar:?]
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:405) [Java-WebSocket-1.3.9.jar:?]
+	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_181]
+[22:31:35] [INFO ] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - Received handshake from server
+[22:31:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.Link - Link Link{guild='507517900127469568', channel='514849904330276866', state=NOT_CONNECTED} changed state from NOT_CONNECTED to CONNECTED
+[22:31:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":171361544,"free":185154296,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.16,"lavalinkLoad":0.3733663070337427},"uptime":202796114}
+[22:31:36] [INFO ] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - Received handshake from server
+[22:31:36] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"op":"event","reason":"Session is no longer valid.","code":4006,"byRemote":true,"type":"WebSocketClosedEvent","guildId":"507517900127469568"}
+[22:31:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":669823696,"free":1293110576,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.2767857142857143,"lavalinkLoad":0.11612900868955306},"uptime":347741927}
+[22:31:37] [WARN ] [WebSocketConnectReadThread-122 - 122] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 74 seconds.
+[22:31:37] [WARN ] [WebSocketConnectReadThread-122 - 122] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:31:42] [DEBUG] [JDA [0 / 1] MainWS-WriteThread - 40] net.dv8tion.jda.core.requests.WebSocketClient - Attempting to reconnect!
+[22:31:43] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 123] net.dv8tion.jda.core.requests.WebSocketClient - Connected to WebSocket
+[22:31:43] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 123] net.dv8tion.jda.core.requests.WebSocketClient - Sending Resume-packet...
+[22:31:43] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 123] net.dv8tion.jda.core.requests.WebSocketClient - Got HELLO packet (OP 10). Initializing keep-alive.
+[22:31:43] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 123] net.dv8tion.jda.core.requests.WebSocketClient - Received a _trace for HELLO (OP: 10) with ["gateway-prd-main-h4c5"]
+[22:31:43] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 123] net.dv8tion.jda.core.JDA - Successfully resumed Session!
+[22:31:43] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 123] net.dv8tion.jda.core.requests.WebSocketClient - Received a _trace for RESUMED (OP: 0) with ["gateway-prd-main-h4c5","discord-sessions-prd-1-10"]
+[22:31:43] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546205451294}}
+[22:31:43] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546205481295}}
+[22:31:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:31:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546205511294}}
+[22:32:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:32:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546205541294}}
+[22:32:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":174376216,"free":182139624,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.041666666666666664,"lavalinkLoad":6.668111424141897E-5},"uptime":202856113}
+[22:32:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":705883056,"free":1257051216,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.17543859649122806,"lavalinkLoad":3.1964155673776605E-5},"uptime":347801927}
+[22:32:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:32:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546205571304}}
+[22:32:51] [WARN ] [WebSocketConnectReadThread-125 - 125] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 76 seconds.
+[22:32:51] [WARN ] [WebSocketConnectReadThread-125 - 125] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:33:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:33:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546205601296}}
+[22:33:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":175517408,"free":180998432,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0,"lavalinkLoad":5.833333333333333E-5},"uptime":202916113}
+[22:33:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":2,"op":"stats","memory":{"reservable":16861102080,"used":741019448,"free":1221914824,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.25225225225225223,"lavalinkLoad":3.3333333333333335E-5},"uptime":347861927}
+[22:33:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:33:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546205631294}}
+[22:34:07] [WARN ] [WebSocketConnectReadThread-126 - 126] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 78 seconds.
+[22:34:07] [WARN ] [WebSocketConnectReadThread-126 - 126] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:34:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:34:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546205661294}}
+[22:34:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":176738400,"free":179777440,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.11538461538461539,"lavalinkLoad":6.25E-5},"uptime":202976113}
+[22:34:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":770302400,"free":1192631872,"allocated":1962934272},"players":1,"cpu":{"cores":12,"systemLoad":0.22413793103448276,"lavalinkLoad":2.9166666666666666E-5},"uptime":347921927}
+[22:34:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:34:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546205691295}}
+[22:35:17] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:35:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546205721296}}
+[22:35:25] [WARN ] [WebSocketConnectReadThread-127 - 127] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 80 seconds.
+[22:35:25] [WARN ] [WebSocketConnectReadThread-127 - 127] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:35:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":177853328,"free":178662512,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.04,"lavalinkLoad":5.833333333333333E-5},"uptime":203036113}
+[22:35:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":795460952,"free":1167473320,"allocated":1962934272},"players":1,"cpu":{"cores":12,"systemLoad":0.18584070796460178,"lavalinkLoad":2.2222222222222223E-5},"uptime":347981927}
+[22:35:47] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:35:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546205751294}}
+[22:36:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:36:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546205781295}}
+[22:36:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":178952888,"free":177562952,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.04,"lavalinkLoad":5.4166666666666664E-5},"uptime":203096113}
+[22:36:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":819090008,"free":1143844264,"allocated":1962934272},"players":1,"cpu":{"cores":12,"systemLoad":0.1946902654867257,"lavalinkLoad":2.3611111111111114E-5},"uptime":348041927}
+[22:36:45] [WARN ] [WebSocketConnectReadThread-128 - 128] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 82 seconds.
+[22:36:45] [WARN ] [WebSocketConnectReadThread-128 - 128] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:36:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:36:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546205811296}}
+[22:37:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:37:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546205841295}}
+[22:37:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":180289528,"free":176226312,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.08,"lavalinkLoad":6.666666666666667E-5},"uptime":203156113}
+[22:37:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":839951336,"free":1122982936,"allocated":1962934272},"players":1,"cpu":{"cores":12,"systemLoad":0.24107142857142855,"lavalinkLoad":2.2222222222222223E-5},"uptime":348101927}
+[22:37:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:37:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546205871294}}
+[22:38:08] [WARN ] [WebSocketConnectReadThread-130 - 130] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 84 seconds.
+[22:38:08] [WARN ] [WebSocketConnectReadThread-130 - 130] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:38:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:38:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546205901294}}
+[22:38:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":181411656,"free":175104184,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.04,"lavalinkLoad":5.833333333333333E-5},"uptime":203216113}
+[22:38:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":859728704,"free":1103205568,"allocated":1962934272},"players":1,"cpu":{"cores":12,"systemLoad":0.21739130434782608,"lavalinkLoad":2.0833333333333333E-5},"uptime":348161927}
+[22:38:39] [DEBUG] [HikariPool-1 connection closer - 131] com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@29f8e4e2: (connection has passed maxLifetime)
+[22:38:39] [DEBUG] [HikariPool-1 connection adder - 132] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7f76448f
+[22:38:43] [DEBUG] [HikariPool-1 connection closer - 131] com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@64a99da6: (connection has passed maxLifetime)
+[22:38:43] [DEBUG] [HikariPool-1 connection adder - 132] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@71b1a511
+[22:38:45] [DEBUG] [HikariPool-1 connection closer - 131] com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@50061fd6: (connection has passed maxLifetime)
+[22:38:45] [DEBUG] [HikariPool-1 connection adder - 132] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@758e2fff
+[22:38:47] [DEBUG] [HikariPool-1 connection closer - 131] com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@72cde7cc: (connection has passed maxLifetime)
+[22:38:47] [DEBUG] [HikariPool-1 connection adder - 132] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@308caf2a
+[22:38:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:38:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546205931294}}
+[22:38:52] [DEBUG] [HikariPool-1 connection closer - 133] com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@3157af6d: (connection has passed maxLifetime)
+[22:38:52] [DEBUG] [HikariPool-1 connection adder - 132] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7d93c788
+[22:38:53] [DEBUG] [HikariPool-1 connection closer - 133] com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@4d694f6e: (connection has passed maxLifetime)
+[22:38:53] [DEBUG] [HikariPool-1 connection adder - 132] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1f67c06
+[22:38:54] [DEBUG] [HikariPool-1 connection closer - 133] com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@2873d54a: (connection has passed maxLifetime)
+[22:38:54] [DEBUG] [HikariPool-1 connection adder - 132] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5034a10
+[22:38:57] [DEBUG] [HikariPool-1 connection closer - 133] com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@5029e9e1: (connection has passed maxLifetime)
+[22:38:57] [DEBUG] [HikariPool-1 connection adder - 132] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@50a35065
+[22:38:58] [DEBUG] [HikariPool-1 connection closer - 133] com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@103495f0: (connection has passed maxLifetime)
+[22:38:58] [DEBUG] [HikariPool-1 connection adder - 132] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@33ef627e
+[22:39:00] [DEBUG] [HikariPool-1 connection closer - 133] com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@4b0217ce: (connection has passed maxLifetime)
+[22:39:00] [DEBUG] [HikariPool-1 connection adder - 132] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1cb3e49
+[22:39:07] [DEBUG] [HikariPool-1 connection closer - 134] com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@3f6acb1: (connection has passed maxLifetime)
+[22:39:08] [DEBUG] [HikariPool-1 connection adder - 135] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@419649c5
+[22:39:09] [DEBUG] [HikariPool-1 connection closer - 134] com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@3519f6dd: (connection has passed maxLifetime)
+[22:39:10] [DEBUG] [HikariPool-1 connection adder - 135] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4f51af87
+[22:39:13] [DEBUG] [HikariPool-1 connection closer - 134] com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@5bca1b53: (connection has passed maxLifetime)
+[22:39:13] [DEBUG] [HikariPool-1 connection adder - 135] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4b6e22b5
+[22:39:15] [DEBUG] [HikariPool-1 connection closer - 134] com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@7720ed2: (connection has passed maxLifetime)
+[22:39:15] [DEBUG] [HikariPool-1 connection adder - 135] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@e6ca5bc
+[22:39:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:39:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546205961295}}
+[22:39:32] [WARN ] [WebSocketConnectReadThread-136 - 136] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 86 seconds.
+[22:39:32] [WARN ] [WebSocketConnectReadThread-136 - 136] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:39:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":182557016,"free":173958824,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.07692307692307693,"lavalinkLoad":5.4166666666666664E-5},"uptime":203276113}
+[22:39:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":877689184,"free":1085245088,"allocated":1962934272},"players":1,"cpu":{"cores":12,"systemLoad":0.15315315315315314,"lavalinkLoad":2.2222222222222223E-5},"uptime":348221927}
+[22:39:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:39:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546205991294}}
+[22:40:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:40:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546206021294}}
+[22:40:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":183792640,"free":172723200,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.16,"lavalinkLoad":6.666666666666667E-5},"uptime":203336113}
+[22:40:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":904317864,"free":1058616408,"allocated":1962934272},"players":1,"cpu":{"cores":12,"systemLoad":0.22123893805309736,"lavalinkLoad":2.0833333333333333E-5},"uptime":348281927}
+[22:40:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:40:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546206051295}}
+[22:40:58] [WARN ] [WebSocketConnectReadThread-138 - 138] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 88 seconds.
+[22:40:58] [WARN ] [WebSocketConnectReadThread-138 - 138] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:41:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:41:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546206081294}}
+[22:41:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":184874352,"free":171641488,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.07692307692307693,"lavalinkLoad":5.833333333333333E-5},"uptime":203396113}
+[22:41:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":925333808,"free":1037600464,"allocated":1962934272},"players":1,"cpu":{"cores":12,"systemLoad":0.1801801801801802,"lavalinkLoad":1.8055555555555555E-5},"uptime":348341927}
+[22:41:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:41:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546206111294}}
+[22:42:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:42:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546206141295}}
+[22:42:26] [WARN ] [WebSocketConnectReadThread-139 - 139] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 90 seconds.
+[22:42:26] [WARN ] [WebSocketConnectReadThread-139 - 139] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:42:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":186052480,"free":170463360,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.04,"lavalinkLoad":5.833333333333333E-5},"uptime":203456113}
+[22:42:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":943055864,"free":1019878408,"allocated":1962934272},"players":1,"cpu":{"cores":12,"systemLoad":0.15740740740740738,"lavalinkLoad":1.9444444444444445E-5},"uptime":348401927}
+[22:42:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:42:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546206171294}}
+[22:43:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:43:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546206201296}}
+[22:43:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":187084424,"free":169431416,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.04,"lavalinkLoad":5.4166666666666664E-5},"uptime":203516113}
+[22:43:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":968010880,"free":994923392,"allocated":1962934272},"players":1,"cpu":{"cores":12,"systemLoad":0.05504587155963303,"lavalinkLoad":1.9444120375771514E-5},"uptime":348461927}
+[22:43:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:43:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546206231295}}
+[22:43:56] [WARN ] [WebSocketConnectReadThread-141 - 141] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 92 seconds.
+[22:43:56] [WARN ] [WebSocketConnectReadThread-141 - 141] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:44:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:44:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546206261294}}
+[22:44:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":188427376,"free":168088464,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.08,"lavalinkLoad":6.25E-5},"uptime":203576113}
+[22:44:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":985983752,"free":976950520,"allocated":1962934272},"players":1,"cpu":{"cores":12,"systemLoad":0.10526315789473684,"lavalinkLoad":1.8055856486497E-5},"uptime":348521927}
+[22:44:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:44:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546206291295}}
+[22:45:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:45:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546206321294}}
+[22:45:28] [WARN ] [WebSocketConnectReadThread-143 - 143] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 94 seconds.
+[22:45:28] [WARN ] [WebSocketConnectReadThread-143 - 143] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:45:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":189560864,"free":166954976,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.07692307692307693,"lavalinkLoad":5.833333333333333E-5},"uptime":203636113}
+[22:45:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":1005424456,"free":957509816,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.2540983606557377,"lavalinkLoad":2.0833333333333333E-5},"uptime":348581927}
+[22:45:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:45:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546206351294}}
+[22:46:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:46:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546206381295}}
+[22:46:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":190584064,"free":165931776,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.08,"lavalinkLoad":5.833333333333333E-5},"uptime":203696113}
+[22:46:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":1024045560,"free":938888712,"allocated":1962934272},"players":3,"cpu":{"cores":12,"systemLoad":0.1794871794871795,"lavalinkLoad":1.8055555555555555E-5},"uptime":348641927}
+[22:46:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:46:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546206411294}}
+[22:47:02] [WARN ] [WebSocketConnectReadThread-144 - 144] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 96 seconds.
+[22:47:02] [WARN ] [WebSocketConnectReadThread-144 - 144] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:47:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:47:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546206441296}}
+[22:47:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":191639824,"free":164876016,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.125,"lavalinkLoad":5.833333333333333E-5},"uptime":203756113}
+[22:47:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":1048225104,"free":914709168,"allocated":1962934272},"players":3,"cpu":{"cores":12,"systemLoad":0.1588785046728972,"lavalinkLoad":1.8055555555555555E-5},"uptime":348701927}
+[22:47:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:47:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546206471295}}
+[22:48:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:48:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546206501294}}
+[22:48:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":192389928,"free":164125912,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.041666666666666664,"lavalinkLoad":5.833333333333333E-5},"uptime":203816113}
+[22:48:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":1068660096,"free":894274176,"allocated":1962934272},"players":3,"cpu":{"cores":12,"systemLoad":0.27049180327868855,"lavalinkLoad":1.8055555555555555E-5},"uptime":348761927}
+[22:48:39] [WARN ] [WebSocketConnectReadThread-145 - 145] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 98 seconds.
+[22:48:39] [WARN ] [WebSocketConnectReadThread-145 - 145] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:48:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:48:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546206531294}}
+[22:49:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:49:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546206561294}}
+[22:49:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":193200720,"free":163315120,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.08,"lavalinkLoad":5.4166666666666664E-5},"uptime":203876113}
+[22:49:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":1084535240,"free":878399032,"allocated":1962934272},"players":3,"cpu":{"cores":12,"systemLoad":0.11711711711711711,"lavalinkLoad":1.9444444444444445E-5},"uptime":348821927}
+[22:49:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:49:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546206591295}}
+[22:50:17] [WARN ] [WebSocketConnectReadThread-146 - 146] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 100 seconds.
+[22:50:17] [WARN ] [WebSocketConnectReadThread-146 - 146] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:50:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:50:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546206621294}}
+[22:50:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":193994672,"free":162521168,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.07692307692307693,"lavalinkLoad":5.4166666666666664E-5},"uptime":203936113}
+[22:50:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":1,"op":"stats","memory":{"reservable":16861102080,"used":1102398912,"free":860535360,"allocated":1962934272},"players":3,"cpu":{"cores":12,"systemLoad":0.1391304347826087,"lavalinkLoad":1.8055555555555555E-5},"uptime":348881927}
+[22:50:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:50:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546206651295}}
+[22:51:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:51:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546206681294}}
+[22:51:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":194933784,"free":161582056,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0,"lavalinkLoad":5.833333333333333E-5},"uptime":203996113}
+[22:51:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":16861102080,"used":1112550320,"free":850383952,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.21551724137931036,"lavalinkLoad":1.2499999999999999E-5},"uptime":348941927}
+[22:51:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:51:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546206711294}}
+[22:51:57] [WARN ] [WebSocketConnectReadThread-147 - 147] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 102 seconds.
+[22:51:57] [WARN ] [WebSocketConnectReadThread-147 - 147] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:52:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:52:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546206741295}}
+[22:52:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":195726144,"free":160789696,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.07692307692307693,"lavalinkLoad":5.4166666666666664E-5},"uptime":204056113}
+[22:52:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":16861102080,"used":1116752008,"free":846182264,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.2596153846153846,"lavalinkLoad":6.944444444444444E-6},"uptime":349001927}
+[22:52:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:52:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546206771294}}
+[22:53:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:53:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546206801294}}
+[22:53:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":196570832,"free":159945008,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.04,"lavalinkLoad":5.4166666666666664E-5},"uptime":204116113}
+[22:53:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":16861102080,"used":1119035648,"free":843898624,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.13333333333333333,"lavalinkLoad":4.166666666666667E-6},"uptime":349061927}
+[22:53:39] [WARN ] [WebSocketConnectReadThread-148 - 148] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 104 seconds.
+[22:53:39] [WARN ] [WebSocketConnectReadThread-148 - 148] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:53:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:53:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546206831295}}
+[22:54:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:54:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546206861294}}
+[22:54:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":197560968,"free":158954872,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.08,"lavalinkLoad":6.25E-5},"uptime":204176113}
+[22:54:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":16861102080,"used":1121101888,"free":841832384,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.20869565217391306,"lavalinkLoad":5.555555555555556E-6},"uptime":349121927}
+[22:54:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:54:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546206891294}}
+[22:55:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:55:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546206921296}}
+[22:55:23] [WARN ] [WebSocketConnectReadThread-149 - 149] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 106 seconds.
+[22:55:23] [WARN ] [WebSocketConnectReadThread-149 - 149] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:55:36] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":198348960,"free":158166880,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0,"lavalinkLoad":5.833333333333333E-5},"uptime":204236113}
+[22:55:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":16861102080,"used":1123482952,"free":839451320,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.11009174311926606,"lavalinkLoad":2.777777777777778E-6},"uptime":349181927}
+[22:55:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:55:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546206951295}}
+[22:56:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:56:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546206981294}}
+[22:56:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":199144144,"free":157371696,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0,"lavalinkLoad":6.25E-5},"uptime":204296113}
+[22:56:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":16861102080,"used":1125817080,"free":837117192,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.11965811965811965,"lavalinkLoad":4.166666666666667E-6},"uptime":349241927}
+[22:56:48] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:56:51] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546207011294}}
+[22:57:10] [WARN ] [WebSocketConnectReadThread-150 - 150] lavalink.client.io.LavalinkSocket - Failed to connect to ws://foryasee.de:2333, retrying in 108 seconds.
+[22:57:10] [WARN ] [WebSocketConnectReadThread-150 - 150] lavalink.client.io.LavalinkSocket - Connection to ws://foryasee.de:2333 closed unexpectedly with reason -1: Connection refused: connect :: Remote=false
+[22:57:18] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[22:57:21] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546207041294}}
+[22:57:35] [DEBUG] [WebSocketConnectReadThread-116 - 116] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":200135616,"free":156380224,"allocated":356515840},"players":0,"cpu":{"cores":4,"systemLoad":0.12,"lavalinkLoad":5.833333333333333E-5},"uptime":204356113}
+[22:57:36] [DEBUG] [WebSocketConnectReadThread-117 - 117] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":16861102080,"used":1128113488,"free":834820784,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.18487394957983194,"lavalinkLoad":4.166666666666667E-6},"uptime":349301927}

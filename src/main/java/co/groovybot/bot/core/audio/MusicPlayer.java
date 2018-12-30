@@ -64,6 +64,8 @@ import java.util.stream.Collectors;
 import static co.groovybot.bot.util.EmbedUtil.info;
 import static co.groovybot.bot.util.SafeMessage.sendMessage;
 
+// TODO: REWORK STRINGS AND MESSAGES
+
 @Log4j2
 public class MusicPlayer extends Player implements Runnable {
 
@@ -75,6 +77,9 @@ public class MusicPlayer extends Player implements Runnable {
     @Getter
     @Setter
     private TextChannel channel;
+    @Getter
+    @Setter
+    private co.groovybot.bot.core.entity.User user;
     @Getter
     @Setter
     private AudioTrack previousTrack;
@@ -158,7 +163,7 @@ public class MusicPlayer extends Player implements Runnable {
 
     @Override
     public void announceNotFound(AudioTrack track) {
-        SafeMessage.sendMessage(channel, info("An error occurred while searching song!", String.format("We couldn't find any fitting results for **[%s](%s)** by **%s**! Skipping!", track.getInfo().title, track.getInfo().uri, track.getInfo().author)));
+        SafeMessage.sendMessage(channel, info("An error occurred while searching song!", String.format("We couldn't find any fitting results for [%s](%s) by %s! Skipping!", track.getInfo().title, track.getInfo().uri, track.getInfo().author)));
     }
 
     @Override
@@ -193,12 +198,13 @@ public class MusicPlayer extends Player implements Runnable {
 
     public void queueSongs(final CommandEvent event) {
         guild = event.getGuild();
+        user = event.getGroovyUser();
 
         UserPermissions userPermissions = EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions();
         Permissions tierTwo = Permissions.tierTwo();
 
         if (trackQueue.size() >= 25 && !tierTwo.isCovered(userPermissions, event)) {
-            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.fullqueue.title"), event.translate("phrases.fullqueue.description")));
+            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.error"), event.translate("phrases.queue.full")));
             return;
         }
 
@@ -263,7 +269,7 @@ public class MusicPlayer extends Player implements Runnable {
                             .collect(Collectors.toList());
 
                 if (tracks.isEmpty()) {
-                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.fullqueue.title"), event.translate("phrases.fullqueue.description")));
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.error"), event.translate("phrases.queuefull")));
                     inProgress = false;
                     return;
                 }
@@ -350,14 +356,14 @@ public class MusicPlayer extends Player implements Runnable {
     }
 
     private void handleFailedLoads(FriendlyException e, Message infoMessage, CommandEvent event) {
-        SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.error.title"), e.getCause() != null ? String.format("**%s**\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));
+        SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.error.title"), e.getCause() != null ? String.format("%s\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("%s", e.getMessage())));
     }
 
     private void queuedTrack(AudioTrack track, Message infoMessage, CommandEvent event) {
         if (track.getInfo().isStream)
-            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.streamloaded.title"), String.format(event.translate("phrases.searching.streamloaded.description"), track.getInfo().title)));
+            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.searching.streamloaded.description"), track.getInfo().title)));
         else
-            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)).setFooter(String.format("Estimated: %s", getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(getQueueLengthMillis())), null));
+            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)).setFooter(String.format("Estimated: %s", getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(getQueueLengthMillis())), null));
     }
 
     public void update() throws SQLException, IOException {
@@ -406,14 +412,10 @@ public class MusicPlayer extends Player implements Runnable {
 
                 @Override
                 public void noMatches() {
-                    if (channel != null)
-                        channel.sendMessage(":x: An error occurred! Please contact the developers!").queue();
                 }
 
                 @Override
                 public void loadFailed(FriendlyException exception) {
-                    if (channel != null)
-                        channel.sendMessage(":x: An error occurred! Please contact the developers!").queue();
                 }
             });
         }
@@ -447,9 +449,9 @@ public class MusicPlayer extends Player implements Runnable {
         if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
         if (guild.getSelfMember().getVoiceState().getChannel() == null) return;
         if (!isPlaying())
-            leave("I've **left** the voice-channel because I've been **inactive** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://donate.groovybot.co)**!");
+            leave("I've left the voice-channel because I've been inactive for too long! If you would like to disable this you should consider [donating](https://donate.groovybot.co)!");
         else if (guild.getSelfMember().getVoiceState().getChannel().getMembers().size() == 1)
-            leave("I've **left** the voice-channel because I've been **alone** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://donate.groovybot.co)**!");
+            leave("I've left the voice-channel because I've been alone for too long! If you would like to disable this you should consider [donating](https://donate.groovybot.co)!");
     }
 
     @SuppressWarnings("unused")

@@ -29,6 +29,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+// TODO: REWORK STRINGS AND MESSAGES
+
 @Log4j2
 public class FriendsCommand extends Command {
     public FriendsCommand() {

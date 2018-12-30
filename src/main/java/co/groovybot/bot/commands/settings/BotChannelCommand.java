@@ -41,7 +41,7 @@ public class BotChannelCommand extends Command {
     private class SetCommand extends SubCommand {
 
         public SetCommand() {
-            super(new String[]{"set"}, Permissions.adminOnly(), "Sets the botchannel", "<#channel>");
+            super(new String[]{"set"}, Permissions.adminOnly(), "Lets you set the botchannel", "<#channel>");
         }
 
         @Override
@@ -55,7 +55,7 @@ public class BotChannelCommand extends Command {
                     return sendHelp();
                 else {
                     event.getGroovyGuild().setBotChannel(mentionedChannels.get(0).getIdLong());
-                    return send(success(event.translate("command.botchannel.title"), String.format(event.translate("command.botchannel.description"), mentionedChannels.get(0))));
+                    return send(success(event.translate("phrases.success"), String.format(event.translate("command.botchannel"), mentionedChannels.get(0).getAsMention())));
                 }
             }
         }
@@ -70,11 +70,11 @@ public class BotChannelCommand extends Command {
         @Override
         public Result run(String[] args, CommandEvent event) {
             if (!event.getGroovyGuild().hasCommandsChannel())
-                return send(error(event.translate("command.botchannel.no.channel.title"), event.translate("command.botchannel.no.channel.description")));
+                return send(error(event.translate("phrases.error"), event.translate("command.botchannel.nochannel")));
 
             TextChannel oldBotChannel = event.getBot().getShardManager().getTextChannelById(event.getGroovyGuild().getBotChannel());
-            event.getGroovyGuild().setBotChannel(0);
-            return send(success(event.translate("command.botchannel.disable.title"), String.format(event.translate("command.botchannel.disable.description"), oldBotChannel.getAsMention())));
+            event.getGroovyGuild().setBotChannel(0L);
+            return send(success(event.translate("phrases.success"), String.format(event.translate("command.botchannel.disable"), oldBotChannel.getAsMention())));
         }
     }
 }

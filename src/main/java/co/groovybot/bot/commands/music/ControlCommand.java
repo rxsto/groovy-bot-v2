@@ -31,6 +31,7 @@ import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.voice.SameChannelCommand;
 import co.groovybot.bot.core.entity.EntityProvider;
 import co.groovybot.bot.util.*;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import lavalink.client.player.IPlayer;
@@ -47,8 +48,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-// TODO: REWORK STRINGS AND MESSAGES
 
 public class ControlCommand extends SameChannelCommand {
 
@@ -197,6 +196,7 @@ public class ControlCommand extends SameChannelCommand {
             if (player.getPlayer() == null || player.getPlayer().getPlayingTrack() == null) return;
             AudioTrackInfo currentSong = player.getPlayer().getPlayingTrack().getInfo();
             EmbedBuilder controlPanelEmbed = new EmbedBuilder()
+                    .setTitle(commandEvent.translate("command.control.title"))
                     .setDescription(String.format("[%s](%s)", currentSong.title, currentSong.uri))
                     .setColor(Colors.DARK_BUT_NOT_BLACK)
                     .setFooter(buildControlInformation(player).toString(), null);
@@ -213,13 +213,15 @@ public class ControlCommand extends SameChannelCommand {
             scheduler.shutdownNow();
             unregister();
             if (getInfoMessage() != null)
-                getInfoMessage().delete().queue();
+                if (commandEvent.getGroovyGuild().isDeleteMessages())
+                    getInfoMessage().delete().queue();
         }
 
         @Override
         public void onDelete() {
             if (getInfoMessage() != null)
-                getInfoMessage().delete().queue();
+                if (commandEvent.getGroovyGuild().isDeleteMessages())
+                    getInfoMessage().delete().queue();
             if (!scheduler.isShutdown())
                 scheduler.shutdownNow();
         }
