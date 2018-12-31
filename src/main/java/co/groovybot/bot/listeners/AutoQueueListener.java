@@ -30,7 +30,7 @@ public class AutoQueueListener {
 
     @SubscribeEvent
     private void handleURLMessage(GuildMessageReceivedEvent event) {
-        if (!event.getMessage().getContentDisplay().matches("(https?://)?(.*)?spotify\\.com.*") && !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?youtube\\.com.*") && !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?youtu\\.be.*") && !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?soundcloud\\.com.*") && !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?twitch\\.tv.*"))
+        if (!event.getMessage().getContentStripped().matches("https?://?(.*)?spotify\\.com[^\\s]+") && !event.getMessage().getContentRaw().matches("https?://?(.*)?youtube\\.com[^\\s]+") && !event.getMessage().getContentDisplay().matches("https?://?(.*)?youtu\\.be[^\\s]+") && !event.getMessage().getContentDisplay().matches("https?://?(.*)?soundcloud\\.com[^\\s]+") && !event.getMessage().getContentDisplay().matches("https?://?(.*)?twitch\\.tv[^\\s]+"))
             return;
 
         if (!Permissions.tierOne().isCovered(new UserPermissions(EntityProvider.getUser(event.getAuthor().getIdLong()), bot), new CommandEvent(event, bot, new String[]{}, "listenerFillingSystem")))
