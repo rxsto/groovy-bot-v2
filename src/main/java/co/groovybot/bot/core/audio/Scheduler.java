@@ -46,7 +46,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 @Log4j2
 @RequiredArgsConstructor
 public class Scheduler extends AudioEventAdapterWrapped {
@@ -78,6 +77,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
             this.player.play(this.player.pollTrack(), false);
             return;
         }
+
         handleTrackEnd(track, endReason);
     }
 
@@ -87,6 +87,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
             this.player.announceNotFound(track);
             return;
         }
+
         handleTrackEnd(track, AudioTrackEndReason.LOAD_FAILED);
     }
 
@@ -152,6 +153,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
             default:
                 break;
         }
+
         player.resetSkipVotes();
     }
 
@@ -161,16 +163,16 @@ public class Scheduler extends AudioEventAdapterWrapped {
         final Matcher matcher = TRACK_PATTERN.matcher(track.getInfo().uri);
 
         if (!matcher.find()) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error("Not a YouTube-Track!", "We **couldn't search** for a AutoPlay-Track as the **previos** track was **not a YouTube-Track**!"));
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error(player.translate("phrases.error"), player.translate("phrases.loadfailed.autoplay.previous")));
             return;
         }
 
         try {
             SearchResult result = player.youtubeClient.retrieveRelatedVideos(track.getIdentifier());
-            SafeMessage.editMessage(infoMessage, EmbedUtil.success("Loaded video", String.format("Successfully loaded video `%s`", result.getSnippet().getTitle())));
+            SafeMessage.editMessage(infoMessage, EmbedUtil.success(player.translate("phrases.loaded"), String.format(player.translate("phrases.loaded.track"), result.getSnippet().getTitle())));
             queueSearchResult(result, infoMessage);
         } catch (IOException e) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error("Unknown error", "An unknown autoplay-error occurred while retrieving the next video!"));
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error(player.translate("phrases.error"), player.translate("phrases.error.unknown")));
             log.error("[Scheduler] Error while retrieving autoplay video", e);
         }
     }
@@ -184,8 +186,8 @@ public class Scheduler extends AudioEventAdapterWrapped {
             AudioTrack track = new YoutubeAudioTrack(trackInfo, new YoutubeAudioSourceManager());
             player.play(track);
         } catch (IOException e) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error("Unknown error", "An **unknown error** occurred while **queueing** song!"));
-            log.error("[AutoPlay] Error while queueing song", e);
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error(player.translate("phrases.error"), player.translate("phrases.error.unknown")));
+            log.error("[Scheduler] Error while queueing song", e);
         }
     }
 }

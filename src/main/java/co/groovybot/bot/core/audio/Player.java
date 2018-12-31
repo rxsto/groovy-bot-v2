@@ -106,13 +106,13 @@ public abstract class Player {
         return track;
     }
 
-    public void queueTrack(AudioTrack audioTrack, boolean force, boolean playtop) {
+    public void queueTrack(AudioTrack audioTrack, boolean force, boolean top) {
         if (force) {
             play(audioTrack, false);
             return;
         }
 
-        if (playtop) ((LinkedList<AudioTrack>) trackQueue).addFirst(audioTrack);
+        if (top) ((LinkedList<AudioTrack>) trackQueue).addFirst(audioTrack);
         else trackQueue.add(audioTrack);
 
         if (!isPlaying()) play(pollTrack(), false);
@@ -193,4 +193,6 @@ public abstract class Player {
     }
 
     public abstract void resetSkipVotes();
+
+    public abstract String translate(String key);
 }

@@ -19,6 +19,7 @@
 
 package co.groovybot.bot.commands.music;
 
+import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.command.Command;
 import co.groovybot.bot.core.command.CommandCategory;
@@ -55,7 +56,7 @@ public class QueueCommand extends Command {
                 .setColor(Colors.DARK_BUT_NOT_BLACK);
 
         if (currentPage != 0 && totalPages != 0)
-            builder.setFooter(String.format("%s %s - %s %s", tracks.size(), event.translate("phrases.text.songs"), event.translate("phrases.text.site"), String.format("%s/%s", currentPage, totalPages)), null);
+            builder.setFooter(String.format("%s %s - %s %s", GroovyBot.getInstance().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size(), event.translate("phrases.text.songs"), event.translate("phrases.text.site"), String.format("%s/%s", currentPage, totalPages)), null);
 
         return builder;
     }
@@ -81,7 +82,7 @@ public class QueueCommand extends Command {
             return new Result(formatQueue((LinkedList<AudioTrack>) player.getTrackQueue(), event, 0, 1, 1));
 
         if (!event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE))
-            return send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
+            return send(error(event.translate("phrases.nopermission"), event.translate("phrases.nopermission.manage")));
 
         Message infoMessage = sendMessageBlocking(event.getChannel(), small(event.translate("phrases.loading")));
 
