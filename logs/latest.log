@@ -1,0 +1,191 @@
+[14:36:31] [INFO ] [main - 1] co.groovybot.bot.GroovyBot - [Core] Starting Groovy ...
+[14:36:31] [INFO ] [main - 1] co.groovybot.bot.GroovyBot - [Database] Initializing Database ...
+[14:36:31] [INFO ] [main - 1] co.groovybot.bot.io.database.PostgreSQL - [Database] Connecting to Database ...
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - HikariPool-1 - configuration:
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - allowPoolSuspension.............false
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - autoCommit......................true
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - catalog.........................none
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - connectionInitSql...............none
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - connectionTestQuery.............none
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - connectionTimeout...............30000
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - dataSource......................none
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - dataSourceClassName.............none
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - dataSourceJNDI..................none
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - dataSourceProperties............{password=<masked>, prepStmtCacheSqlLimit=2048, cachePrepStmts=true, prepStmtCacheSize=250}
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - driverClassName.................none
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - healthCheckProperties...........{}
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - healthCheckRegistry.............none
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - idleTimeout.....................600000
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - initializationFailTimeout.......1
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - isolateInternalQueries..........false
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - jdbcUrl.........................jdbc:postgresql://91.200.102.167:5432/bot_testing?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - leakDetectionThreshold..........0
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - maxLifetime.....................1800000
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - maximumPoolSize.................15
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - metricRegistry..................none
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - metricsTrackerFactory...........none
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - minimumIdle.....................15
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - password........................<masked>
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - poolName........................"HikariPool-1"
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - readOnly........................false
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - registerMbeans..................false
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - scheduledExecutor...............none
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - schema..........................none
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - threadFactory...................internal
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - transactionIsolation............default
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - username........................"groovy"
+[14:36:31] [DEBUG] [main - 1] com.zaxxer.hikari.HikariConfig - validationTimeout...............5000
+[14:36:31] [INFO ] [main - 1] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+[14:36:32] [DEBUG] [main - 1] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@72cde7cc
+[14:36:32] [INFO ] [main - 1] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+[14:36:32] [INFO ] [main - 1] co.groovybot.bot.io.database.PostgreSQL - [Database] Connected!
+[14:36:32] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=1, active=0, idle=1, waiting=0)
+[14:36:32] [DEBUG] [main - 1] co.groovybot.bot.core.audio.spotify.SpotifyManager - Received access token: BQD3GFjbntdvTch2q9ZANSpK-6b7HhL4W9dUrBSlLO1xienXMOyURXFnbDyV6rMcA1yGElNx1Q1RkIRus28 which expires in: 3600 seconds.
+[14:36:32] [INFO ] [main - 1] co.groovybot.bot.core.audio.LavalinkManager - [LavalinkManager] Connecting to Nodes ...
+[14:36:32] [DEBUG] [main - 1] com.sedmelluq.discord.lavaplayer.tools.io.TrustManagerBuilder - Certificate list /certificates/extended.txt not present in classpath.
+[14:36:33] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5cf60573
+[14:36:33] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@560e6e03
+[14:36:33] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7f3da829
+[14:36:33] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@22d50a4b
+[14:36:33] [DEBUG] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d22bfeb00645d-FRA]
+[14:36:33] [INFO ] [main - 1] net.dv8tion.jda.bot.sharding.ShardManager - Login Successful!
+[14:36:33] [INFO ] [main - 1] co.groovybot.bot.GroovyBot - [LavalinkManager] Initializing LavalinkManager ...
+[14:36:33] [INFO ] [main - 1] co.groovybot.bot.core.audio.LavalinkManager - [LavalinkManager] Initializing Lavalink and trying to connect to Nodes ...
+[14:36:34] [DEBUG] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.RateLimiter - Encountered issue with headers when updating a bucket
+Route: oauth2/applications/@me
+Headers: Date: Mon, 31 Dec 2018 13:36:33 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+Set-Cookie: __cfduid=d1ca00ca2fb324150a595c448bc7503d61546263393; expires=Tue, 31-Dec-19 13:36:33 GMT; path=/; domain=.discordapp.com; HttpOnly
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Content-Encoding: gzip
+Via: 1.1 google
+Alt-Svc: clear
+Expect-CT: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+Server: cloudflare
+CF-RAY: 491d22c15bf8645d-FRA
+
+[14:36:34] [DEBUG] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d22c15bf8645d-FRA]
+[14:36:34] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@61cd9744
+[14:36:34] [INFO ] [main - 1] co.groovybot.bot.core.audio.LavalinkManager - [LavalinkManager] Successfully initialized Lavalink with 3 Nodes!
+[14:36:34] [INFO ] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - Received handshake from server
+[14:36:34] [INFO ] [WebSocketConnectReadThread-32 - 32] lavalink.client.io.LavalinkSocket - Received handshake from server
+[14:36:34] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":97072472,"free":318163624,"allocated":415236096},"players":0,"cpu":{"cores":4,"systemLoad":0.009706064569422454,"lavalinkLoad":0.33482755567361755},"uptime":17027733}
+[14:36:34] [INFO ] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - Received handshake from server
+[14:36:34] [DEBUG] [WebSocketConnectReadThread-32 - 32] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":156167312,"free":161551216,"allocated":317718528},"players":0,"cpu":{"cores":6,"systemLoad":0.026343879424448144,"lavalinkLoad":0.1952895959957097},"uptime":9574078}
+[14:36:34] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":16861102080,"used":571989776,"free":1390944496,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.0771336968477218,"lavalinkLoad":0.1156325618952978},"uptime":405639847}
+[14:36:34] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1c0a485e
+[14:36:34] [INFO ] [JDA [0 / 1] MainWS-WriteThread - 42] net.dv8tion.jda.core.requests.WebSocketClient - Connected to WebSocket
+[14:36:34] [DEBUG] [JDA [0 / 1] MainWS-WriteThread - 42] net.dv8tion.jda.core.requests.WebSocketClient - Sending Identify-packet...
+[14:36:34] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.requests.WebSocketClient - Got HELLO packet (OP 10). Initializing keep-alive.
+[14:36:34] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.requests.WebSocketClient - Received a _trace for HELLO (OP: 10) with ["gateway-prd-main-c056"]
+[14:36:34] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@776d1a7b
+[14:36:34] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.requests.WebSocketClient - Received a _trace for READY (OP: 0) with ["gateway-prd-main-c056","discord-sessions-prd-1-20"]
+[14:36:34] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.handle.GuildSetupController - Setting incomplete count to 8
+[14:36:34] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 258294814309744642 firing cached events 0
+[14:36:34] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 327074506390896652 firing cached events 0
+[14:36:34] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 343489621713485834 firing cached events 0
+[14:36:34] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 442250363425390592 firing cached events 0
+[14:36:34] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@13cd862d
+[14:36:34] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 500004771038494720 firing cached events 0
+[14:36:34] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 507517900127469568 firing cached events 0
+[14:36:34] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.handle.GuildSetupController - Sending chunking requests for 1 guilds
+[14:36:34] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 445601426891210762 firing cached events 0
+[14:36:34] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending chunk/sync request {"op":8,"d":{"query":"","guild_id":[403882830225997825],"limit":0}}
+[14:36:35] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5d4b74b2
+[14:36:35] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.handle.GuildSetupController - Received member chunk for guild id: 403882830225997825 size: 1000
+[14:36:35] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.handle.GuildSetupController - Received member chunk for guild id: 403882830225997825 size: 270
+[14:36:35] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.JDA - Finished Loading!
+[14:36:35] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 41] co.groovybot.bot.listeners.ShardsListener - [ShardManager] Successfully launched 1 Shard! Finishing Startup ...
+[14:36:35] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 41] co.groovybot.bot.GroovyBot - [MusicPlayerManager] Initializing MusicPlayers ...
+[14:36:35] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@426a13a2
+[14:36:35] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 41] co.groovybot.bot.core.audio.MusicPlayerManager - [MusicPlayerManager] Successfully initialized 0 MusicPlayers!
+[14:36:35] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 41] co.groovybot.bot.GroovyBot - [PremiumHandler] Initializing Patrons ...
+[14:36:35] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 41] co.groovybot.bot.core.premium.PremiumHandler - [PremiumHandler] Successfully initialized Patrons!
+[14:36:35] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 41] co.groovybot.bot.GroovyBot - [MonitoringManager] Monitoring disabled, because there is no connection to InfluxDB!
+[14:36:35] [INFO ] [JDA [0 / 1] MainWS-ReadThread - 41] co.groovybot.bot.GroovyBot - [Core] Successfully launched Groovy!
+[14:36:35] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"Starting ...","type":0},"afk":false,"status":"online","since":1546263395285}}
+[14:36:35] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] net.dv8tion.jda.core.handle.GuildSetupController - Finished setup for guild 403882830225997825 firing cached events 0
+[14:36:35] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546263395287}}
+[14:36:35] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7ff15403
+[14:36:36] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@ae034d4
+[14:36:36] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@37e2163c
+[14:36:36] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@55829f5d
+[14:36:36] [DEBUG] [HikariPool-1 connection adder - 18] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After adding stats (total=15, active=1, idle=14, waiting=0)
+[14:36:57] [DEBUG] [JDA [0 / 1] MainWS-ReadThread - 41] lavalink.client.io.Link - Link Link{guild='403882830225997825', channel='null', state=NOT_CONNECTED} changed state from NOT_CONNECTED to NOT_CONNECTED
+[14:37:02] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[14:37:05] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546263425285}}
+[14:37:32] [DEBUG] [CommandExecutor-pool-2-thread-1 - 46] co.groovybot.bot.listeners.CommandLogger - [Command] settings - Rxsto#1337 | Discordlist.org (507517900127469568)
+[14:37:32] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[14:37:32] [DEBUG] [JDA [0 / 1] RateLimit-Worker 2 - 29] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d242efa31645d-FRA]
+[14:37:33] [DEBUG] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d2430cc136451-FRA]
+[14:37:34] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":98082984,"free":317153112,"allocated":415236096},"players":0,"cpu":{"cores":4,"systemLoad":0.00530156981547783,"lavalinkLoad":0.01458600743469636},"uptime":17087729}
+[14:37:34] [DEBUG] [WebSocketConnectReadThread-32 - 32] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":157161176,"free":160557352,"allocated":317718528},"players":0,"cpu":{"cores":6,"systemLoad":0.029389149935924817,"lavalinkLoad":4.612648660664666E-4},"uptime":9634077}
+[14:37:34] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":16861102080,"used":574960712,"free":1387973560,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.08443877551020408,"lavalinkLoad":1.2510216676952844E-5},"uptime":405699847}
+[14:37:35] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546263455285}}
+[14:37:44] [DEBUG] [CommandExecutor-pool-2-thread-1 - 46] co.groovybot.bot.listeners.CommandLogger - [Command] help - Rxsto#1337 | Discordlist.org (507517900127469568)
+[14:37:45] [DEBUG] [JDA [0 / 1] RateLimit-Worker 3 - 47] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d247d7b9f645d-FRA]
+[14:37:45] [DEBUG] [JDA [0 / 1] RateLimit-Worker 4 - 54] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d247d8c4b6451-FRA]
+[14:38:00] [DEBUG] [CommandExecutor-pool-2-thread-1 - 46] co.groovybot.bot.listeners.CommandLogger - [Command] role - Rxsto#1337 | Discordlist.org (507517900127469568)
+[14:38:00] [DEBUG] [JDA [0 / 1] RateLimit-Worker 2 - 29] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d24e02b7a645d-FRA]
+[14:38:00] [DEBUG] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d24e03f8a6451-FRA]
+[14:38:02] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[14:38:05] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546263485287}}
+[14:38:07] [DEBUG] [CommandExecutor-pool-2-thread-1 - 46] co.groovybot.bot.listeners.CommandLogger - [Command] setdj - Rxsto#1337 | Discordlist.org (507517900127469568)
+[14:38:07] [DEBUG] [JDA [0 / 1] RateLimit-Worker 5 - 55] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d2508596f645d-FRA]
+[14:38:07] [DEBUG] [JDA [0 / 1] RateLimit-Worker 3 - 47] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d2508ddd26451-FRA]
+[14:38:11] [DEBUG] [CommandExecutor-pool-2-thread-1 - 46] co.groovybot.bot.listeners.CommandLogger - [Command] role - Rxsto#1337 | Discordlist.org (507517900127469568)
+[14:38:11] [DEBUG] [JDA [0 / 1] RateLimit-Worker 4 - 54] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d251fda3b645d-FRA]
+[14:38:11] [DEBUG] [JDA [0 / 1] RateLimit-Worker 2 - 29] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d25203e6f6451-FRA]
+[14:38:14] [DEBUG] [CommandExecutor-pool-2-thread-1 - 46] co.groovybot.bot.listeners.CommandLogger - [Command] settings - Rxsto#1337 | Discordlist.org (507517900127469568)
+[14:38:14] [DEBUG] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d25340f10645d-FRA]
+[14:38:14] [DEBUG] [JDA [0 / 1] RateLimit-Worker 5 - 55] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d25343e3c6451-FRA]
+[14:38:32] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[14:38:34] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":98944208,"free":316291888,"allocated":415236096},"players":0,"cpu":{"cores":4,"systemLoad":0.0054411460844410765,"lavalinkLoad":0.014583333333333334},"uptime":17147729}
+[14:38:34] [DEBUG] [WebSocketConnectReadThread-32 - 32] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":158193048,"free":159525480,"allocated":317718528},"players":0,"cpu":{"cores":6,"systemLoad":0.025992317541613318,"lavalinkLoad":5.638888888888888E-4},"uptime":9694077}
+[14:38:34] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":16861102080,"used":577788376,"free":1385145896,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.08811114203543928,"lavalinkLoad":9.722384261959921E-6},"uptime":405759847}
+[14:38:35] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546263515286}}
+[14:38:39] [DEBUG] [CommandExecutor-pool-2-thread-1 - 46] co.groovybot.bot.listeners.CommandLogger - [Command] settings - Rxsto#1337 | Discordlist.org (507517900127469568)
+[14:38:39] [DEBUG] [JDA [0 / 1] RateLimit-Worker 3 - 47] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d25d38bc4645d-FRA]
+[14:38:39] [DEBUG] [JDA [0 / 1] RateLimit-Worker 4 - 54] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d25d38fb76451-FRA]
+[14:39:02] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[14:39:05] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546263545286}}
+[14:39:24] [DEBUG] [CommandExecutor-pool-2-thread-1 - 46] co.groovybot.bot.listeners.CommandLogger - [Command] botchannel - Rxsto#1337 | Discordlist.org (507517900127469568)
+[14:39:24] [DEBUG] [JDA [0 / 1] RateLimit-Worker 2 - 29] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d26ea5f60645d-FRA]
+[14:39:24] [DEBUG] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d26ea5abb6451-FRA]
+[14:39:32] [DEBUG] [CommandExecutor-pool-2-thread-1 - 46] co.groovybot.bot.listeners.CommandLogger - [Command] set - Rxsto#1337 | Discordlist.org (507517900127469568)
+[14:39:32] [DEBUG] [JDA [0 / 1] RateLimit-Worker 5 - 55] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d271bbbaa645d-FRA]
+[14:39:32] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[14:39:32] [DEBUG] [JDA [0 / 1] RateLimit-Worker 3 - 47] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d271c2e1e6451-FRA]
+[14:39:34] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":99618840,"free":315617256,"allocated":415236096},"players":0,"cpu":{"cores":4,"systemLoad":0.00523379932511535,"lavalinkLoad":0.014583576392939883},"uptime":17207729}
+[14:39:34] [DEBUG] [WebSocketConnectReadThread-32 - 32] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":158559448,"free":159159080,"allocated":317718528},"players":0,"cpu":{"cores":6,"systemLoad":0.026467942952588974,"lavalinkLoad":5.611111111111111E-4},"uptime":9754077}
+[14:39:34] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":16861102080,"used":580380440,"free":1382553832,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.086098696246208,"lavalinkLoad":1.1110925929012295E-5},"uptime":405819847}
+[14:39:34] [DEBUG] [CommandExecutor-pool-2-thread-1 - 46] co.groovybot.bot.listeners.CommandLogger - [Command] settings - Rxsto#1337 | Discordlist.org (507517900127469568)
+[14:39:35] [DEBUG] [JDA [0 / 1] RateLimit-Worker 4 - 54] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d272c5ed5645d-FRA]
+[14:39:35] [DEBUG] [JDA [0 / 1] RateLimit-Worker 2 - 29] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d272c697b6451-FRA]
+[14:39:35] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546263575286}}
+[14:39:52] [DEBUG] [CommandExecutor-pool-2-thread-1 - 46] co.groovybot.bot.listeners.CommandLogger - [Command] settings - Rxsto#1337 | Discordlist.org (507517900127469568)
+[14:39:52] [DEBUG] [JDA RateLimit-Worker 1 - 23] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d279b2807645d-FRA]
+[14:39:52] [DEBUG] [JDA [0 / 1] RateLimit-Worker 5 - 55] net.dv8tion.jda.core.requests.Requester - Received response with following cf-rays: [491d279b3e486451-FRA]
+[14:40:02] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[14:40:05] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546263605286}}
+[14:40:32] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[14:40:34] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":100207312,"free":315028784,"allocated":415236096},"players":0,"cpu":{"cores":4,"systemLoad":0.006336088154269973,"lavalinkLoad":0.014583090281828637},"uptime":17267729}
+[14:40:34] [DEBUG] [WebSocketConnectReadThread-32 - 32] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":159244392,"free":158474136,"allocated":317718528},"players":0,"cpu":{"cores":6,"systemLoad":0.03030433102974632,"lavalinkLoad":4.944526853225331E-4},"uptime":9814077}
+[14:40:34] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":16861102080,"used":582433120,"free":1380501152,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.07977433793360686,"lavalinkLoad":1.1111111111111112E-5},"uptime":405879847}
+[14:40:35] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"deinserverhost.de","type":3},"afk":false,"status":"online","since":1546263635286}}
+[14:41:02] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[14:41:05] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546263665286}}
+[14:41:32] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[14:41:34] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":101032888,"free":314203208,"allocated":415236096},"players":0,"cpu":{"cores":4,"systemLoad":0.00584916047343793,"lavalinkLoad":0.014583333333333334},"uptime":17327729}
+[14:41:34] [DEBUG] [WebSocketConnectReadThread-32 - 32] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":159952160,"free":157766368,"allocated":317718528},"players":0,"cpu":{"cores":6,"systemLoad":0.024778232685090412,"lavalinkLoad":5.972122686844108E-4},"uptime":9874077}
+[14:41:34] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":16861102080,"used":584970088,"free":1377964184,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.07762077970527886,"lavalinkLoad":1.111129629938277E-5},"uptime":405939847}
+[14:41:35] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"gt!help","type":2},"afk":false,"status":"online","since":1546263695286}}
+[14:42:02] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[14:42:05] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"@Groovy Testing","type":2},"afk":false,"status":"online","since":1546263725286}}
+[14:42:32] [DEBUG] [HikariPool-1 housekeeper - 17] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=15, active=1, idle=14, waiting=0)
+[14:42:34] [DEBUG] [WebSocketConnectReadThread-31 - 31] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":101704152,"free":313531944,"allocated":415236096},"players":0,"cpu":{"cores":4,"systemLoad":0.007439041190246591,"lavalinkLoad":0.014583333333333334},"uptime":17387729}
+[14:42:34] [DEBUG] [WebSocketConnectReadThread-32 - 32] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":4294967296,"used":160232760,"free":157485768,"allocated":317718528},"players":0,"cpu":{"cores":6,"systemLoad":0.025117471166168304,"lavalinkLoad":4.638888888888889E-4},"uptime":9934077}
+[14:42:34] [DEBUG] [WebSocketConnectReadThread-33 - 33] lavalink.client.io.LavalinkSocket - {"playingPlayers":0,"op":"stats","memory":{"reservable":16861102080,"used":587668656,"free":1375265616,"allocated":1962934272},"players":2,"cpu":{"cores":12,"systemLoad":0.07993019197207679,"lavalinkLoad":1.1110925929012295E-5},"uptime":405999847}
+[14:42:35] [DEBUG] [JDA [0 / 1] Gateway-Worker 1 - 28] net.dv8tion.jda.core.requests.WebSocketClient - Sending normal message {"op":3,"d":{"game":{"name":"groovybot.co","type":3},"afk":false,"status":"online","since":1546263755287}}

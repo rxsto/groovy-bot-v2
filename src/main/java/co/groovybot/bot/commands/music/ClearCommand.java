@@ -38,6 +38,6 @@ public class ClearCommand extends SameChannelCommand {
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
 
         player.purgeQueue();
-        return send(success(event.translate("command.clear.title"), event.translate("command.clear.description")));
+        return send(success(event.translate("phrases.success"), event.translate("command.clear")));
     }
 }

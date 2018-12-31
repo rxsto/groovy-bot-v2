@@ -75,7 +75,6 @@ public class CommandRegistry {
                 new EvalCommand(),
                 new AutoLeaveCommand(),
                 new BassBoostCommand(),
-                new FriendsCommand(),
                 new TrendsCommand(),
                 new AutoPauseCommand(),
                 new AutoJoinCommand(),

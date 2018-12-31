@@ -52,17 +52,16 @@ public class UserPermissions {
     }
 
     public boolean isAdmin(Guild guild) {
+        if (isOwner) return true;
         return guild.getMemberById(user.getEntityId()).hasPermission(Permission.MANAGE_SERVER, Permission.ADMINISTRATOR);
     }
 
     public boolean isTierOne() {
-        Tier tier = retrievePatreonTier();
-        return tier == Tier.ONE || tier == Tier.TWO || tier == Tier.THREE;
+        return retrievePatreonTier() == Tier.ONE || retrievePatreonTier() == Tier.TWO || retrievePatreonTier() == Tier.THREE;
     }
 
     public boolean isTierTwo() {
-        Tier tier = retrievePatreonTier();
-        return tier == Tier.TWO || tier == Tier.THREE;
+        return retrievePatreonTier() == Tier.TWO || retrievePatreonTier() == Tier.THREE;
     }
 
     public boolean isTierThree() {
@@ -78,13 +77,6 @@ public class UserPermissions {
             if (premiumSet.next())
                 if (Tier.valueOf(premiumSet.getString("type")) != Tier.NONE)
                     return Tier.valueOf(premiumSet.getString("type"));
-
-            PreparedStatement friend = connection.prepareStatement("SELECT friend FROM users WHERE user_id = ?");
-            friend.setLong(1, user.getEntityId());
-            ResultSet friendSet = friend.executeQuery();
-            if (friendSet.next())
-                if (friendSet.getBoolean("friend"))
-                    return Tier.TWO;
 
             PreparedStatement voted = connection.prepareStatement("SELECT expiration FROM users WHERE user_id = ?");
             voted.setLong(1, user.getEntityId());
@@ -107,12 +99,6 @@ public class UserPermissions {
             ResultSet premiumSet = premium.executeQuery();
             if (premiumSet.next())
                 return Tier.valueOf(premiumSet.getString("type")) != Tier.NONE;
-
-            PreparedStatement friend = connection.prepareStatement("SELECT friend FROM users WHERE user_id = ?");
-            friend.setLong(1, user.getEntityId());
-            ResultSet friendSet = friend.executeQuery();
-            if (friendSet.next())
-                return friendSet.getBoolean("friend");
         } catch (SQLException e) {
             log.error("[PermissionProvider] Error while retrieving permissions!", e);
         }
@@ -122,16 +108,24 @@ public class UserPermissions {
 
     public boolean isDj(Guild guild) {
         if (isOwner) return true;
+
         co.groovybot.bot.core.entity.Guild groovyGuild = EntityProvider.getGuild(guild.getIdLong());
         if (!groovyGuild.isDjMode())
             return true;
+
         if (guild.getMemberById(user.getEntityId()).getVoiceState().inVoiceChannel())
             if (guild.getMemberById(user.getEntityId()).getVoiceState().getChannel().getMembers().size() == 2)
                 return true;
+
+        if (groovyGuild.getDjRole() == 0)
+            if (guild.getMemberById(user.entityId).getRoles().stream().anyMatch(role -> role.getName().toLowerCase().equals("dj")))
+                return true;
+
         for (Role role : guild.getMemberById(user.getEntityId()).getRoles()) {
             if (role.getIdLong() == groovyGuild.getDjRole())
                 return true;
         }
+
         return false;
     }
 
