@@ -162,7 +162,7 @@ public class SearchCommand extends SemiInChannelCommand {
             final User author = event.getAuthor();
 
             if (!Helpers.isNumeric(contentRaw)) {
-                editMessage(getInfoMessage(), error(translate(author, "phrases.invalid"), translate(author, "phrases.invalidnumber.description")));
+                editMessage(getInfoMessage(), error(translate(author, "phrases.invalid"), translate(author, "phrases.invalid.number")));
                 unregister();
                 return;
             }
@@ -170,7 +170,7 @@ public class SearchCommand extends SemiInChannelCommand {
             int song = Integer.parseInt(contentRaw);
 
             if (song > 5 || (song - 1) > searchResults.size()) {
-                editMessage(getInfoMessage(), error(translate(author, "phrases.invalid"), translate(author, "phrases.invalidnumber.description")));
+                editMessage(getInfoMessage(), error(translate(author, "phrases.invalid"), translate(author, "phrases.invalid.number")));
                 unregister();
                 return;
             }
@@ -210,11 +210,11 @@ public class SearchCommand extends SemiInChannelCommand {
                     song = 5;
                     break;
                 default:
-                    editMessage(getInfoMessage(), error(translate(event.getUser(), "phrases.invalid"), translate(event.getUser(), "phrases.invalidnumber.description")));
+                    editMessage(getInfoMessage(), error(translate(event.getUser(), "phrases.invalid"), translate(event.getUser(), "phrases.invalid.number")));
             }
 
             if (song - 1 > searchResults.size()) {
-                editMessage(getInfoMessage(), error(translate(event.getUser(), "phrases.invalid"), translate(event.getUser(), "phrases.invalidnumber.description")));
+                editMessage(getInfoMessage(), error(translate(event.getUser(), "phrases.invalid"), translate(event.getUser(), "phrases.invalid.number")));
                 unregister();
                 return;
             }
