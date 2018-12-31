@@ -85,13 +85,15 @@ buildNumber.properties
 
 /.idea/
 /config/config.json
+/logs/
 /.flooignore
 /.floo
 *.iml
 /src/test
-src/main/java/io/groovybot/bot/core/events/guilds/
-src/test/resources/
+/src/test/resources/
 /lavalink.env
 /groovy.sh
 *.gz
 /update.mp3
+
+*.log
