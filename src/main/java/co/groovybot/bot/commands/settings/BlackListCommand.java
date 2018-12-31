@@ -26,8 +26,6 @@ import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.util.List;
 
-// TODO: REWORK STRINGS AND MESSAGES
-
 public class BlackListCommand extends Command {
 
     public BlackListCommand() {
@@ -43,7 +41,7 @@ public class BlackListCommand extends Command {
                 Guild guild = event.getBot().getGuildCache().get(event.getGuild().getIdLong());
 
                 if (!guild.hasBlacklistedChannels())
-                    return send(error(event.translate("command.blacklist.nochannels.title"), event.translate("command.blacklist.nochannels.description")));
+                    return send(error(event.translate("phrases.error"), event.translate("command.blacklist.nochannels")));
 
                 StringBuilder channelNames = new StringBuilder();
                 guild.getBlacklistedChannels().forEach(channelObject -> {
@@ -59,10 +57,10 @@ public class BlackListCommand extends Command {
                 });
 
                 if (channelNames.toString().equals(""))
-                    return send(error(event.translate("command.blacklist.nochannels.title"), event.translate("command.blacklist.nochannels.description")));
+                    return send(error(event.translate("phrases.error"), event.translate("command.blacklist.nochannels")));
 
                 channelNames.replace(channelNames.lastIndexOf(", "), channelNames.lastIndexOf(", ") + 1, "");
-                return send(info(event.translate("command.blacklist.list.title"), String.format(event.translate("command.blacklist.list.description"), channelNames.toString())));
+                return send(info(event.translate("phrases.info"), channelNames.toString()));
             }
         return sendHelp();
     }
@@ -76,36 +74,45 @@ public class BlackListCommand extends Command {
         @Override
         public Result run(String[] args, CommandEvent event) {
             final List<TextChannel> mentionedChannels = event.getMessage().getMentionedChannels();
+
             if (mentionedChannels.isEmpty())
                 return sendHelp();
+
             TextChannel target = mentionedChannels.get(0);
             Guild guild = event.getBot().getGuildCache().get(event.getGuild().getIdLong());
+
             if (guild.isChannelBlacklisted(target.getIdLong()))
-                return send(error(event.translate("command.blacklist.alreadyblacklisted.title"), event.translate("command.blacklist.alreadyblacklisted.description")));
+                return send(error(event.translate("phrases.error"), event.translate("command.blacklist.alreadyblacklisted")));
+
             if (guild.getBotChannel() == target.getIdLong())
-                return send(error(event.translate("command.blacklist.isbotchannel.title"), event.translate("command.blacklist.isbotchannel.description")));
+                return send(error(event.translate("phrases.error"), event.translate("command.blacklist.isbotchannel")));
+
             guild.blacklistChannel(target.getIdLong());
-            return send(success(event.translate("command.blacklist.added.title"), String.format(event.translate("command.blacklist.added.description"), target.getAsMention())));
+            return send(success(event.translate("phrases.success"), String.format(event.translate("command.blacklist.added"), target.getAsMention())));
         }
     }
 
     private class RemoveCommand extends SubCommand {
 
         public RemoveCommand() {
-            super(new String[]{"remove", "rm"}, Permissions.adminOnly(), "Lets you remove a textchannel to the blacklist", "<#channel>");
+            super(new String[]{"remove", "rm"}, Permissions.adminOnly(), "Lets you remove a textchannel from the blacklist", "<#channel>");
         }
 
         @Override
         public Result run(String[] args, CommandEvent event) {
             final List<TextChannel> mentionedChannels = event.getMessage().getMentionedChannels();
+
             if (mentionedChannels.isEmpty())
                 return sendHelp();
+
             TextChannel target = mentionedChannels.get(0);
             Guild guild = event.getBot().getGuildCache().get(event.getGuild().getIdLong());
+
             if (!guild.isChannelBlacklisted(target.getIdLong()))
-                return send(error(event.translate("command.blacklist.notblacklisted.title"), event.translate("command.blacklist.notblacklisted.description")));
+                return send(error(event.translate("phrases.error"), event.translate("command.blacklist.notblacklisted")));
+
             guild.unBlacklistChannel(target.getIdLong());
-            return send(success(event.translate("command.blacklist.removed.title"), String.format(event.translate("command.blacklist.removed.description"), target.getAsMention())));
+            return send(success(event.translate("phrases.success"), String.format(event.translate("command.blacklist.removed"), target.getAsMention())));
         }
     }
 }

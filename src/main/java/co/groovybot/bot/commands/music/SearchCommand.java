@@ -89,9 +89,9 @@ public class SearchCommand extends SemiInChannelCommand {
             @Override
             public void trackLoaded(AudioTrack track) {
                 if (track.getInfo().isStream)
-                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.searching.streamloaded.description"), track.getInfo().title)));
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.loaded.stream"), track.getInfo().title)));
                 else
-                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)).setFooter(String.format("Estimated: %s", player.getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(player.getQueueLengthMillis())), null));
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.loaded.track"), track.getInfo().title)).setFooter(String.format("Estimated: %s", player.getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(player.getQueueLengthMillis())), null));
 
                 player.play(track, false);
             }
@@ -109,7 +109,7 @@ public class SearchCommand extends SemiInChannelCommand {
                 try {
                     new MusicResult(infoMessage, event.getChannel(), event.getMember(), results, player);
                 } catch (InsufficientPermissionException e) {
-                    editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
+                    editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.nopermission"), event.translate("phrases.nopermission.manage")));
                     removeReactions(infoMessage);
                 }
             }
@@ -117,7 +117,7 @@ public class SearchCommand extends SemiInChannelCommand {
 
             @Override
             public void noMatches() {
-                editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
+                editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.nothingfound"), event.translate("phrases.searching.nomatches")));
                 removeReactions(infoMessage);
                 leave();
             }
@@ -179,9 +179,9 @@ public class SearchCommand extends SemiInChannelCommand {
             player.queueTrack(track, false, false);
 
             if (track.getInfo().isStream)
-                SafeMessage.editMessage(getInfoMessage(), EmbedUtil.success(translate(author, "phrases.loaded"), String.format(translate(author, "phrases.searching.streamloaded.description"), track.getInfo().title)));
+                SafeMessage.editMessage(getInfoMessage(), EmbedUtil.success(translate(author, "phrases.loaded"), String.format(translate(author, "phrases.loaded.stream"), track.getInfo().title)));
             else
-                SafeMessage.editMessage(getInfoMessage(), EmbedUtil.success(translate(author, "phrases.loaded"), String.format(translate(author, "phrases.searching.trackloaded.description"), track.getInfo().title)).setFooter(String.format("Estimated: %s", player.getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(player.getQueueLengthMillis())), null));
+                SafeMessage.editMessage(getInfoMessage(), EmbedUtil.success(translate(author, "phrases.loaded"), String.format(translate(author, "phrases.loaded.track"), track.getInfo().title)).setFooter(String.format("Estimated: %s", player.getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(player.getQueueLengthMillis())), null));
 
             unregister();
         }
@@ -223,9 +223,9 @@ public class SearchCommand extends SemiInChannelCommand {
             player.queueTrack(track, false, false);
 
             if (track.getInfo().isStream)
-                SafeMessage.editMessage(getInfoMessage(), EmbedUtil.success(translate(author, "phrases.loaded"), String.format(translate(author, "phrases.searching.streamloaded.description"), track.getInfo().title)));
+                SafeMessage.editMessage(getInfoMessage(), EmbedUtil.success(translate(author, "phrases.loaded"), String.format(translate(author, "phrases.loaded.stream"), track.getInfo().title)));
             else
-                SafeMessage.editMessage(getInfoMessage(), EmbedUtil.success(translate(author, "phrases.loaded"), String.format(translate(author, "phrases.searching.trackloaded.description"), track.getInfo().title)).setFooter(String.format("Estimated: %s", player.getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(player.getQueueLengthMillis())), null));
+                SafeMessage.editMessage(getInfoMessage(), EmbedUtil.success(translate(author, "phrases.loaded"), String.format(translate(author, "phrases.loaded.track"), track.getInfo().title)).setFooter(String.format("Estimated: %s", player.getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(player.getQueueLengthMillis())), null));
 
             unregister();
         }

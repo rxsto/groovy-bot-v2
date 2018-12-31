@@ -63,7 +63,7 @@ public class ControlCommand extends SameChannelCommand {
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
 
         if (!event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE))
-            return send(EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
+            return send(EmbedUtil.error(event.translate("phrases.nopermission"), event.translate("phrases.nopermission.manage")));
 
         if (controlPanelExists(event.getGuild().getIdLong())) {
             Message confirmMessage = SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("command.control.alreadyinuse.title"), event.translate("command.control.alreadyinuse.description")));
@@ -117,7 +117,7 @@ public class ControlCommand extends SameChannelCommand {
             this.commandEvent = commandEvent;
             this.channel = author.getGuild().getSelfMember().getVoiceState().getChannel();
             this.player = player;
-            this.scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("command.control"));
+            this.scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("ControlCommand"));
             for (String emote : EMOTES) {
                 JDAUtil.waitForEntity(getInfoMessage().addReaction(emote));
             }

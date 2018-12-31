@@ -71,11 +71,11 @@ public abstract class InteractableMessage {
     }
 
     protected void handleReaction(GuildMessageReactionAddEvent event) {
-
+        // Empty method
     }
 
     protected void handleMessage(GuildMessageReceivedEvent event) {
-
+        // Empty method
     }
 
     protected String translate(User user, String key) {
@@ -83,6 +83,6 @@ public abstract class InteractableMessage {
     }
 
     public void onDelete() {
-        //Empty method
+        // Empty method
     }
 }

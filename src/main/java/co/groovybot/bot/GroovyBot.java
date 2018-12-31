@@ -104,8 +104,6 @@ public class GroovyBot implements Closeable {
     @Getter
     private final EventWaiter eventWaiter;
     @Getter
-    private final KeyManager keyManager;
-    @Getter
     private final YoutubeUtil youtubeClient;
     @Getter
     private final GeniusClient geniusClient;
@@ -224,7 +222,6 @@ public class GroovyBot implements Closeable {
 
         commandManager = new CommandManager(config.getJSONObject("settings").getString("prefix"), this);
         serverCountStatistics = new ServerCountStatistics(config.getJSONObject("botlists"));
-        keyManager = new KeyManager(postgreSQL.getDataSource());
         interactionManager = new InteractionManager();
         eventWaiter = new EventWaiter();
         premiumHandler = new PremiumHandler();
@@ -243,6 +240,7 @@ public class GroovyBot implements Closeable {
     public static void main(String[] args) throws IOException {
         if (instance != null)
             throw new RuntimeException("[Core] Groovy was already initialized in this VM!");
+
         Options options = new Options();
         options.addOption("L", "log-level", true, "Let's you set the loglevel of groovy");
         options.addOption("D", "debug", false, "Let's you enable debug mode");
@@ -253,13 +251,16 @@ public class GroovyBot implements Closeable {
         options.addOption("NM", "no-monitoring", false, "Disables InfluxDB monitoring");
         options.addOption("NP", "no-patrons", false, "Disable patrons feature");
         options.addOption("NCL", "no-centralized-logging", false, "Disabled centralized logging");
+
         CommandLine cmd = null;
+
         try {
             cmd = new DefaultParser().parse(options, args);
         } catch (ParseException e) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(e.getMessage(), options);
         }
+
         new GroovyBot(cmd);
     }
 
@@ -281,7 +282,7 @@ public class GroovyBot implements Closeable {
                         new JoinGuildListener(),
                         new CommandLogger(),
                         new BlacklistWatcher(guildCache),
-                        new AutopauseListener(),
+                        new AutoPauseListener(),
                         new GuildLeaveListener(),
                         new AutoJoinExecutor(this),
                         new AutoQueueListener(this),
@@ -293,10 +294,13 @@ public class GroovyBot implements Closeable {
 
         if (!noWebsocket)
             shardManagerBuilder.addEventListeners(new WebsiteStatsListener());
+
         if (!noPatrons)
             shardManagerBuilder.addEventListeners(new PremiumListener(premiumHandler));
+
         if (premium)
             shardManagerBuilder.addEventListeners(new PremiumExecutor(this));
+
         try {
             shardManager = shardManagerBuilder.build();
             log.info("[LavalinkManager] Initializing LavalinkManager ...");

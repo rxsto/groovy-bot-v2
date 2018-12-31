@@ -22,7 +22,7 @@ public class VoiceFixCommand extends SameChannelCommand {
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (!event.getGuild().getSelfMember().hasPermission(Permission.MANAGE_SERVER))
-            return send(error("phrases.nopermission.title", event.translate("phrases.nopermission.manageserver")));
+            return send(error("phrases.nopermission", event.translate("phrases.nopermission.manageserver")));
 
         Region oldRegion = event.getGuild().getRegion();
 

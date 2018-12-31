@@ -36,7 +36,7 @@ public class CreateInviteCommand extends Command {
         TextChannel textChannel = guild.getTextChannels().stream().filter(channel -> guild.getSelfMember().hasPermission(channel, Permission.CREATE_INSTANT_INVITE)).findFirst().orElse(null);
 
         if (textChannel == null)
-            return send(error(event.translate("phrases.error"), event.translate("phrases.nopermission.title")));
+            return send(error(event.translate("phrases.error"), event.translate("phrases.nopermission")));
 
         return send(small(String.format("%s", textChannel.createInvite().setMaxAge(0).setMaxUses(0).complete().getURL())));
     }

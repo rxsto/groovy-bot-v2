@@ -49,7 +49,7 @@ public class HelpCommand extends Command {
 
     private EmbedBuilder formatCommandList(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(event.translate("command.help.title"))
+                .setTitle(event.translate("command.help.title"), "https://groovybot.co")
                 .setColor(Colors.DARK_BUT_NOT_BLACK)
                 .setDescription(String.format(event.translate("command.help.description"), EntityProvider.getGuild(event.getGuild().getIdLong()).getPrefix()));
         for (CommandCategory commandCategory : CommandCategory.class.getEnumConstants()) {

@@ -54,6 +54,8 @@ public class BotChannelCommand extends Command {
                 if (mentionedChannels.isEmpty())
                     return sendHelp();
                 else {
+                    if (event.getGroovyGuild().getBlacklistedChannels().contains(mentionedChannels.get(0)))
+                        return send(error(event.translate("phrases.error"), String.format(event.translate("command.botchannel.blacklisted"), mentionedChannels.get(0).getAsMention())));
                     event.getGroovyGuild().setBotChannel(mentionedChannels.get(0).getIdLong());
                     return send(success(event.translate("phrases.success"), String.format(event.translate("command.botchannel"), mentionedChannels.get(0).getAsMention())));
                 }
