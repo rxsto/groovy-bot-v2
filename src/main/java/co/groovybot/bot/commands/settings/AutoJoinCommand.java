@@ -57,7 +57,7 @@ public class AutoJoinCommand extends Command {
             return send(error(event.translate("phrases.notfound"), event.translate("command.autojoin.notfound")));
 
         guild.setAutoJoinChannel(target);
-        return send(success(event.translate("phrases.success"), String.format(event.translate("command.autojoin.success.description"), target.getName())));
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.autojoin.success"), target.getName())));
     }
 
     private class DisableCommand extends SubCommand {

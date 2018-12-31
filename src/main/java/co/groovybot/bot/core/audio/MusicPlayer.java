@@ -525,6 +525,8 @@ public class MusicPlayer extends Player implements Runnable {
 
     @Override
     public String translate(String key) {
+        if (latestEvent == null)
+            return GroovyBot.getInstance().getTranslationManager().getDefaultLocale().translate(key);
         return latestEvent.translate(key);
     }
 
