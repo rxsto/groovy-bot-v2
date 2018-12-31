@@ -25,6 +25,9 @@ import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.voice.SameChannelCommand;
+import javafx.scene.media.AudioTrack;
+
+import java.util.ArrayList;
 
 public class SkipCommand extends SameChannelCommand {
     public SkipCommand() {
@@ -48,6 +51,6 @@ public class SkipCommand extends SameChannelCommand {
             }
 
         player.skipTo(skipTo);
-        return send(success(event.translate("phrases.success"), (String.format(event.translate("command.skip"), player.getPlayer().getPlayingTrack().getInfo().title != null ? player.getPlayer().getPlayingTrack().getInfo().title : skipTo))));
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.skip"), skipTo)));
     }
 }
