@@ -361,19 +361,19 @@ public class GroovyBot implements Closeable {
         if (!debugMode) {
             statusPage.start();
         }
-        if(disableBotlist) {
+        if(!disableBotlist) {
+            System.out.println("HI");
             botlistWrapper = new BotlistWrapperBuilder(new JDAProvider(this.getShardManager()), botlist -> {
                 JSONObject json = config.getJSONObject("botlists");
-                if (json.has(botlist.getName()))
-                    return json.getString(botlist.getName());
+                if (json.has(botlist.getSimpleName()))
+                    return json.getString(botlist.getSimpleName());
                 return null;
             })
                     .registerBotlist(new BotlistSPACE())
                     .registerBotlist(new DiscordBotsGG())
                     .registerBotlist(new DiscordBotsORG())
                     .build();
-
-            botlistWrapper.post();
+            System.out.println("HI2");
         }
 
 
