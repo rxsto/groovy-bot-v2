@@ -229,7 +229,6 @@ public class GroovyBot implements Closeable {
         new DatabaseGenerator(postgreSQL);
 
         commandManager = new CommandManager(config.getJSONObject("settings").getString("prefix"), this);
-        keyManager = new KeyManager(postgreSQL.getDataSource());
         interactionManager = new InteractionManager();
         eventWaiter = new EventWaiter();
         premiumHandler = new PremiumHandler();
