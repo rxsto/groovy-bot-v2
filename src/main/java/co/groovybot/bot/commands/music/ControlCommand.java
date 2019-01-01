@@ -31,7 +31,6 @@ import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.voice.SameChannelCommand;
 import co.groovybot.bot.core.entity.EntityProvider;
 import co.groovybot.bot.util.*;
-import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import lavalink.client.player.IPlayer;

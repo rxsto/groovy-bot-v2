@@ -78,6 +78,10 @@ public class SearchCommand extends SemiInChannelCommand {
         return resultBuilder.toString();
     }
 
+    private static void removeReactions(Message message) {
+        message.clearReactions().queue();
+    }
+
     @Override
     public Result executeCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (args.length == 0)
@@ -229,9 +233,5 @@ public class SearchCommand extends SemiInChannelCommand {
 
             unregister();
         }
-    }
-
-    private static void removeReactions(Message message) {
-        message.clearReactions().queue();
     }
 }

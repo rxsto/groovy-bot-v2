@@ -511,18 +511,6 @@ public class MusicPlayer extends Player implements Runnable {
         skipVotes = 0;
     }
 
-    @Getter
-    @RequiredArgsConstructor
-    public enum VoteSkipReason {
-        ALLOWED(null, null),
-        ALONE("phrases.skipped", "command.skip"),
-        DJ_IN_CHANNEL("phrases.nopermission", "command.voteskip.dj"),
-        ERROR("phrases.error", "phrases.internal.error");
-
-        private final String titleTranslationKey;
-        private final String descriptionTranslationKey;
-    }
-
     @Override
     public String translate(String key) {
         if (latestEvent == null)
@@ -533,5 +521,17 @@ public class MusicPlayer extends Player implements Runnable {
     @Override
     protected void save() {
         GroovyBot.getInstance().getMusicPlayerManager().update(guild, this);
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum VoteSkipReason {
+        ALLOWED(null, null),
+        ALONE("phrases.skipped", "command.skip"),
+        DJ_IN_CHANNEL("phrases.nopermission", "command.voteskip.dj"),
+        ERROR("phrases.error", "phrases.internal.error");
+
+        private final String titleTranslationKey;
+        private final String descriptionTranslationKey;
     }
 }
