@@ -38,8 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// TODO: REWRITE STRINGS AND MESSAGES
-
 public class PlaylistCommand extends Command {
 
     public PlaylistCommand() {
@@ -228,7 +226,7 @@ public class PlaylistCommand extends Command {
                 @Override
                 public void playlistLoaded(AudioPlaylist audioPlaylist) {
                     if (audioPlaylist.getTracks().isEmpty())
-                        SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
+                        SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.nothingfound"), event.translate("phrases.searching.nomatches")));
                     else {
                         user.getPlaylists().get(name).addTrack(audioPlaylist.getTracks().get(0));
                         SafeMessage.sendMessage(event.getChannel(), success(event.translate("command.playlist.added.title"), String.format(event.translate("command.playlist.added.description"), audioPlaylist.getTracks().get(0).getInfo().title, user.getPlaylists().get(name).getName())));
@@ -237,12 +235,12 @@ public class PlaylistCommand extends Command {
 
                 @Override
                 public void noMatches() {
-                    SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
+                    SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.nothingfound"), event.translate("phrases.searching.nomatches")));
                 }
 
                 @Override
                 public void loadFailed(FriendlyException e) {
-                    SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.searching.error.title"), e.getCause() != null ? String.format("**%s**\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));
+                    SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.error"), e.getCause() != null ? String.format("**%s**\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));
                 }
             });
             return null;
@@ -264,7 +262,7 @@ public class PlaylistCommand extends Command {
             String name = args[0];
 
             if (!Helpers.isNumeric(args[1]))
-                return send(error(event.translate("phrases.invalidnumber.title"), event.translate("phrases.invalidnumber.description")));
+                return send(error(event.translate("phrase.invalid"), event.translate("phrases.invalid.number")));
 
             int track = Integer.parseInt(args[1]);
 
@@ -272,7 +270,7 @@ public class PlaylistCommand extends Command {
                 return send(error(event.translate("command.playlist.not.exists.title"), event.translate("command.playlist.not.exists.description")));
 
             if (user.getPlaylists().get(name).getSongs().size() < track)
-                return send(error(event.translate("phrases.invalidnumber.title"), event.translate("phrases.invalidnumber.description")));
+                return send(error(event.translate("phrase.invalid"), event.translate("phrases.invalid.number")));
 
             String trackName = user.getPlaylists().get(name).getSongs().get(track - 1).getInfo().title;
             String playlistName = user.getPlaylists().get(name).getName();
@@ -303,7 +301,7 @@ public class PlaylistCommand extends Command {
 
                 user.getPlaylists().forEach((name, playlist) -> {
                     if (playlist.isPublic())
-                        builder.addField(String.format("%s **%s**", playlist.isPublic() ? "\uD83D\uDD13" : "\uD83D\uDD12", playlist.getName()), String.format(" - Includes **%s** songs\n - Loaded **%s** times\n - ID: `%s`", playlist.getSongs().size(), playlist.getCount(), playlist.getId()), false);
+                        builder.addField(String.format("%s **%s**", "\uD83D\uDD13", playlist.getName()), String.format(" - Includes **%s** songs\n - Loaded **%s** times\n - ID: `%s`", playlist.getSongs().size(), playlist.getCount(), playlist.getId()), false);
                 });
                 return send(builder);
 

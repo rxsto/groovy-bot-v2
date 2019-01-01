@@ -25,6 +25,8 @@ import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.voice.InChannelCommand;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 
 public class SwitchCommand extends InChannelCommand {
     public SwitchCommand() {
@@ -34,15 +36,17 @@ public class SwitchCommand extends InChannelCommand {
     @Override
     public Result execute(String[] args, CommandEvent event, MusicPlayer player) {
         if (player.getChannel() == event.getChannel())
-            return send(error(event.translate("command.switch.already.title"), event.translate("command.switch.already.description")));
+            return send(error(event.translate("phrases.success"), event.translate("command.switch.already")));
 
+        TextChannel text = player.getChannel();
+        VoiceChannel voice = player.getVoiceChannel();
         player.setChannel(event.getChannel());
 
         if (event.getMember().getVoiceState().getChannel() != event.getGuild().getSelfMember().getVoiceState().getChannel()) {
             player.connect(event.getMember().getVoiceState().getChannel());
-            return send(success(event.translate("command.switch.voice.title"), event.translate("command.switch.voice.description")));
+            return send(success(event.translate("phrases.success"), String.format(event.translate("command.switch.voice"), text.getAsMention(), player.getChannel().getAsMention(), voice, player.getVoiceChannel().getName())));
         }
 
-        return send(success(event.translate("command.switch.title"), event.translate("command.switch.description")));
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.switch"), text.getAsMention(), player.getChannel().getAsMention())));
     }
 }

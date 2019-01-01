@@ -31,7 +31,7 @@ import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
 @Log4j2
-public class AutopauseListener {
+public class AutoPauseListener {
 
     @SubscribeEvent
     public void onGuildVoiceMove(GuildVoiceMoveEvent event) {

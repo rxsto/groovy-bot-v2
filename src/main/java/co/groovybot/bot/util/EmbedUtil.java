@@ -55,7 +55,7 @@ public class EmbedUtil extends SafeMessage {
      * @return an EmbedBuilder
      */
     public static EmbedBuilder error(CommandEvent event) {
-        return error(event.translate("phrases.error.unknown.title"), event.translate("phrases.error.unknown.description"));
+        return error(event.translate("phrases.error"), event.translate("phrases.error.unknown"));
     }
 
     /**

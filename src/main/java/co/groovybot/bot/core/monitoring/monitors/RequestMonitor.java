@@ -33,7 +33,7 @@ import org.influxdb.dto.Point;
 public class RequestMonitor extends Monitor {
 
     // TODO: Implement request count for every shard separately
-    //private Map<Integer, Integer> requests; // ShardId, RequestCount
+    // private Map<Integer, Integer> requests; // ShardId, RequestCount
     private int counter;
 
     public RequestMonitor() {

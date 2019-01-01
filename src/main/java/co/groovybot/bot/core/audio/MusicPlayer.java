@@ -25,6 +25,7 @@ import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.permission.UserPermissions;
 import co.groovybot.bot.core.entity.EntityProvider;
+import co.groovybot.bot.core.premium.Constants;
 import co.groovybot.bot.util.*;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -40,7 +41,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
@@ -62,6 +66,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static co.groovybot.bot.util.EmbedUtil.info;
+import static co.groovybot.bot.util.EmbedUtil.success;
 import static co.groovybot.bot.util.SafeMessage.sendMessage;
 
 @Log4j2
@@ -76,16 +81,20 @@ public class MusicPlayer extends Player implements Runnable {
     @Setter
     private TextChannel channel;
     @Getter
+    private VoiceChannel voiceChannel;
+    @Getter
+    private CommandEvent latestEvent;
+    @Getter
     @Setter
     private AudioTrack previousTrack;
-    private boolean inProgress;
     @Getter
     @Setter
     private String bassboost = "off";
     @Getter
     private int skipVotes;
     @Getter
-    private VoiceChannel voiceChannel;
+    @Setter
+    private boolean inProgress;
 
     protected MusicPlayer(Guild guild, TextChannel channel, YoutubeUtil youtubeClient) {
         super(youtubeClient);
@@ -99,7 +108,7 @@ public class MusicPlayer extends Player implements Runnable {
         getPlayer().addListener(getScheduler());
         audioPlayerManager = lavalinkManager.getAudioPlayerManager();
         scheduler = Executors.newSingleThreadScheduledExecutor(new NameThreadFactory("LeaveListener"));
-        scheduler.scheduleAtFixedRate(this, 0, 10, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(this, 5, 10, TimeUnit.MINUTES);
         guild.getJDA().addEventListener(this);
     }
 
@@ -109,20 +118,24 @@ public class MusicPlayer extends Player implements Runnable {
     }
 
     public boolean checkConnect(CommandEvent event) {
-        if (event.getMember().getVoiceState().getChannel() == null) return false;
+        if (event.getMember().getVoiceState().getChannel() == null)
+            return false;
+
         if (!event.getGuild().getSelfMember().hasPermission(event.getMember().getVoiceState().getChannel(), Permission.VOICE_CONNECT, Permission.VOICE_SPEAK)) {
-            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.join.nopermission.description")));
+            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission"), event.translate("phrases.nopermission.join")));
             return false;
         }
+
         if (event.getMember().getVoiceState().getChannel().getUserLimit() != 0 && !event.getGuild().getSelfMember().hasPermission(event.getMember().getVoiceState().getChannel(), Permission.ADMINISTRATOR) && !event.getGuild().getSelfMember().hasPermission(event.getMember().getVoiceState().getChannel(), Permission.VOICE_MOVE_OTHERS) && event.getMember().getVoiceState().getChannel().getMembers().size() >= event.getMember().getVoiceState().getChannel().getUserLimit()) {
-            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.channelfull.title"), event.translate("phrases.channelfull.description")));
+            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission"), event.translate("phrases.nopermission.channelfull")));
             return false;
         }
-        final GuildVoiceState voiceState = event.getGuild().getSelfMember().getVoiceState();
-        if (voiceState.inVoiceChannel() && voiceState.getChannel().getMembers().size() != 1 && !Permissions.djMode().isCovered(event.getPermissions(), event)) {
-            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.djrequired.title"), event.translate("phrases.djrequired.description")));
+
+        if (event.getMember().getVoiceState().inVoiceChannel() && event.getMember().getVoiceState().getChannel().getMembers().size() > 2 && !Permissions.djMode().isCovered(event.getPermissions(), event)) {
+            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission"), event.translate("phrases.nopermission.djmode")));
             return false;
         }
+
         return true;
     }
 
@@ -139,37 +152,31 @@ public class MusicPlayer extends Player implements Runnable {
 
     @Override
     public void onEnd(boolean announce) {
-        //if (inProgress) return;
         if (announce)
-            SafeMessage.sendMessage(channel, EmbedUtil.info("Queue Ended", "The queue ended, why don't you add more songs?"));
+            SafeMessage.sendMessage(channel, EmbedUtil.small(translate("phrases.queueended")));
         if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
         leave();
     }
 
     @Override
     public Message announceAutoplay() {
-        return SafeMessage.sendMessageBlocking(channel, info("Searching Video", "Searching new AutoPlay video ..."));
+        return SafeMessage.sendMessageBlocking(channel, info(translate("phrases.searching"), translate("phrases.searching.autoplay")));
     }
 
     @Override
     public void announceRequeue(AudioTrack track) {
-        SafeMessage.sendMessage(channel, info("An error occurred while queueing song!", "An unexpected error occurred while queueing song, trying to requeue now."));
+        SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.loadfailed"), String.format("[%s](%s)", track.getInfo().title, track.getInfo().uri))));
     }
 
     @Override
     public void announceNotFound(AudioTrack track) {
-        SafeMessage.sendMessage(channel, info("An error occurred while searching song!", String.format("We couldn't find any fitting results for **[%s](%s)** by **%s**! Skipping!", track.getInfo().title, track.getInfo().uri, track.getInfo().author)));
-    }
-
-    @Override
-    protected void save() {
-        GroovyBot.getInstance().getMusicPlayerManager().update(guild, this);
+        SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.searching.nomatches"), String.format("[%s](%s)", track.getInfo().title, track.getInfo().uri))));
     }
 
     @Override
     public void announceSong(AudioPlayer audioPlayer, AudioTrack track) {
         if (EntityProvider.getGuild(guild.getIdLong()).isAnnounceSongs())
-            SafeMessage.sendMessage(channel, EmbedUtil.play("Now Playing", String.format("Groovy successfully started playing `%s`.", track.getInfo().title), track.getDuration()));
+            SafeMessage.sendMessage(channel, EmbedUtil.play(translate("phrases.now"), String.format(translate("phrases.now.playing"), track.getInfo().title), track.getDuration()));
     }
 
     @Override
@@ -181,24 +188,32 @@ public class MusicPlayer extends Player implements Runnable {
     public int removeDups() {
         List<String> fineTracks = new ArrayList<>();
         List<AudioTrack> dups = new ArrayList<>();
+
         trackQueue.forEach(t -> {
             if (fineTracks.contains(t.getInfo().title))
                 dups.add(t);
             else
                 fineTracks.add(t.getInfo().title);
         });
+
         dups.forEach(t -> trackQueue.remove(t));
         return dups.size();
     }
 
     public void queueSongs(final CommandEvent event) {
+        latestEvent = event;
         guild = event.getGuild();
+
+        if (inProgress) {
+            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.error"), event.translate("phrases.progress")));
+            return;
+        }
 
         UserPermissions userPermissions = EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions();
         Permissions tierTwo = Permissions.tierTwo();
 
-        if (trackQueue.size() >= 25 && !tierTwo.isCovered(userPermissions, event)) {
-            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.fullqueue.title"), event.translate("phrases.fullqueue.description")));
+        if (trackQueue.size() >= Constants.QUEUE_LENGTH && !tierTwo.isCovered(userPermissions, event)) {
+            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.error"), event.translate("phrases.premium.queuefull")).setFooter(translate("phrases.premium.footer"), null));
             return;
         }
 
@@ -225,7 +240,7 @@ public class MusicPlayer extends Player implements Runnable {
             keyword = keyword.replaceAll("-playtop", "").replaceAll("-pt", "").replaceAll("-top", "");
         } else isTop = false;
 
-        Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("phrases.searching.title"), String.format(event.translate("phrases.searching.description"), keyword)));
+        Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("phrases.searching"), String.format(event.translate("phrases.searching.description"), keyword)));
 
         if (!keyword.startsWith("http://") && !keyword.startsWith("https://")) {
             if (isSoundcloud) keyword = "scsearch: " + keyword;
@@ -258,112 +273,116 @@ public class MusicPlayer extends Player implements Runnable {
 
                 if (!tierTwo.isCovered(userPermissions, event))
                     tracks = tracks.stream()
-                            .limit(50 - getQueueSize())
-                            .filter(track -> track.getDuration() < 3600000)
+                            .limit(Constants.QUEUE_LENGTH - getQueueSize())
                             .collect(Collectors.toList());
 
                 if (tracks.isEmpty()) {
-                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.fullqueue.title"), event.translate("phrases.fullqueue.description")));
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.error"), event.translate("phrases.premium.queuefull")));
                     inProgress = false;
                     return;
                 }
 
-                List<AudioTrack> dups = new ArrayList<>();
+                if (!tierTwo.isCovered(userPermissions, event))
+                    tracks = tracks.stream()
+                            .filter(track -> track.getDuration() < Constants.SONG_DURATION)
+                            .collect(Collectors.toList());
+
+                if (tracks.isEmpty()) {
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.error"), event.translate("phrases.premium.songduration")));
+                    inProgress = false;
+                    return;
+                }
+
+                List<AudioTrack> duplicates = new ArrayList<>();
+
                 if (isURL) {
                     if (EntityProvider.getGuild(guild.getIdLong()).isPreventDups()) {
-                        List<AudioTrack> playTracks = new ArrayList<>();
+                        List<AudioTrack> filtered = new ArrayList<>();
                         tracks.forEach(t -> {
                             if (!checkDups(t))
-                                playTracks.add(t);
+                                filtered.add(t);
                             else
-                                dups.add(t);
+                                duplicates.add(t);
                         });
                         tracks.clear();
-                        tracks.addAll(playTracks);
+                        tracks.addAll(filtered);
                     }
-                    queueTracks(tracks.toArray(new AudioTrack[0]));
-                    inProgress = false;
 
-                    if (!tierTwo.isCovered(userPermissions, event))
-                        SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.nopremium.title"), String.format(event.translate("phrases.searching.playlistloaded.nopremium.description"), tracks.size(), audioPlaylist.getName())));
-                    else {
-                        SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.playlistloaded.title"), String.format(event.translate("phrases.searching.playlistloaded.description"), tracks.size(), audioPlaylist.getName())));
-                        if (!dups.isEmpty())
-                            SafeMessage.sendMessage(event.getChannel(), info(String.format(event.translate("phrases.load.playlist.dups.title"), dups.size()), String.format(event.translate("phrases.load.playlist.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
-                    }
+                    queueTracks(tracks.toArray(new AudioTrack[0]));
+
+                    if (!duplicates.isEmpty())
+                        SafeMessage.editMessage(infoMessage, success(event.translate("phrases.loaded"), String.format(event.translate("phrases.loaded.playlist.duplicates"), tracks.size(), audioPlaylist.getName(), duplicates.size(), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
+                    else
+                        SafeMessage.editMessage(infoMessage, success(event.translate("phrases.loaded"), String.format(event.translate("phrases.loaded.playlist"), tracks.size(), audioPlaylist.getName())));
+
                     inProgress = false;
                     return;
                 }
+
                 if (EntityProvider.getGuild(guild.getIdLong()).isSearchPlay()) {
                     tracks = tracks.stream().limit(5).collect(Collectors.toList());
-                    Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("command.search.results.title"), SearchCommand.buildTrackDescription(tracks)).setFooter(event.translate("command.search.results.footer"), null));
+                    Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("phrases.results"), SearchCommand.buildTrackDescription(tracks)));
+
                     for (int i = 0; i < tracks.size(); i++) {
                         infoMessage.addReaction(SearchCommand.EMOTES[i]).complete();
                     }
+
                     try {
+                        inProgress = false;
                         new SearchCommand.MusicResult(infoMessage, event.getChannel(), event.getMember(), tracks, GroovyBot.getInstance().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()));
                     } catch (InsufficientPermissionException e) {
-                        sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
+                        inProgress = false;
+                        sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission"), event.translate("phrases.nopermission.manage")));
                     }
-                } else
+                } else {
                     queueWithChecks(tracks.get(0));
-
+                }
             }
 
             private void queueWithChecks(AudioTrack track) {
-                if (!checkSong(track)) return;
-                if (checkDups(track)) {
-                    SafeMessage.editMessage(infoMessage, info(event.translate("phrases.load.single.dups.title"), String.format(event.translate("phrases.load.single.dups.description"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
+                if (track.getDuration() > Constants.SONG_DURATION && !Permissions.tierTwo().isCovered(userPermissions, event)) {
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.premium"), event.translate("phrases.premium.songduration")).setFooter(event.translate("phrases.premium.footer"), null));
                     inProgress = false;
                     return;
                 }
+
+                if (checkDups(track)) {
+                    SafeMessage.editMessage(infoMessage, info(event.translate("phrases.warning"), String.format(event.translate("phrases.duplicates.single"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
+                    inProgress = false;
+                    return;
+                }
+
                 queueTrack(track, isForce, isTop);
-                queuedTrack(track, infoMessage, event);
+
+                if (track.getInfo().isStream) {
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.loaded.stream"), track.getInfo().title)));
+                } else {
+                    SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.loaded.track"), track.getInfo().title)).setFooter(String.format("%s: %s", translate("phrases.estimated"), getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(getQueueLengthMillis())), null));
+                }
+
                 inProgress = false;
             }
 
             @Override
             public void noMatches() {
-                SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")));
                 inProgress = false;
+                SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.nothingfound"), event.translate("phrases.searching.nomatches")));
             }
 
             @Override
             public void loadFailed(FriendlyException e) {
-                handleFailedLoads(e, infoMessage, event);
                 inProgress = false;
-            }
-
-            private boolean checkSong(AudioTrack track) {
-                return !MusicPlayer.this.checkSong(track, userPermissions, event, infoMessage);
+                SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.error"), e.getCause() != null ? String.format("%s\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("%s", e.getMessage())));
             }
         });
     }
 
-    private boolean checkSong(AudioTrack track, UserPermissions userPermissions, CommandEvent event, Message infoMessage) {
-        if (track.getDuration() > 3600000 && !Permissions.tierTwo().isCovered(userPermissions, event)) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.patreon.songduration.title"), event.translate("phrases.patreon.songduration.description")));
-            if (trackQueue.isEmpty()) leave();
-            return true;
-        }
-        return false;
-    }
-
-    private void handleFailedLoads(FriendlyException e, Message infoMessage, CommandEvent event) {
-        SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.searching.error.title"), e.getCause() != null ? String.format("**%s**\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));
-    }
-
-    private void queuedTrack(AudioTrack track, Message infoMessage, CommandEvent event) {
-        if (track.getInfo().isStream)
-            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.streamloaded.title"), String.format(event.translate("phrases.searching.streamloaded.description"), track.getInfo().title)));
-        else
-            SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("phrases.searching.trackloaded.description"), track.getInfo().title)).setFooter(String.format("Estimated: %s", getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(getQueueLengthMillis())), null));
-    }
-
     public void update() throws SQLException, IOException {
+        inProgress = true;
+
         if (channel != null)
             if (channel.canTalk())
-                SafeMessage.sendMessageBlocking(channel, EmbedUtil.small("Update initialized! Groovy should be back soon!"));
+                SafeMessage.sendMessageBlocking(channel, EmbedUtil.small(translate("phrases.updating")));
 
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             // Initialize preparedstatement
@@ -406,14 +425,10 @@ public class MusicPlayer extends Player implements Runnable {
 
                 @Override
                 public void noMatches() {
-                    if (channel != null)
-                        channel.sendMessage(":x: An error occurred! Please contact the developers!").queue();
                 }
 
                 @Override
                 public void loadFailed(FriendlyException exception) {
-                    if (channel != null)
-                        channel.sendMessage(":x: An error occurred! Please contact the developers!").queue();
                 }
             });
         }
@@ -445,11 +460,12 @@ public class MusicPlayer extends Player implements Runnable {
     public void run() {
         if (inProgress) return;
         if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
-        if (guild.getSelfMember().getVoiceState().getChannel() == null) return;
-        if (!isPlaying())
-            leave("I've **left** the voice-channel because I've been **inactive** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://donate.groovybot.co)**!");
+        if (isPaused())
+            leave(translate("phrases.left.paused"));
+        else if (!isPlaying())
+            leave(translate("phrases.left.notplaying"));
         else if (guild.getSelfMember().getVoiceState().getChannel().getMembers().size() == 1)
-            leave("I've **left** the voice-channel because I've been **alone** for **too long**! If you **would like** to **disable** this you should consider **[donating](https://donate.groovybot.co)**!");
+            leave(translate("phrases.left.alone"));
     }
 
     @SuppressWarnings("unused")
@@ -495,12 +511,24 @@ public class MusicPlayer extends Player implements Runnable {
         skipVotes = 0;
     }
 
+    @Override
+    public String translate(String key) {
+        if (latestEvent == null)
+            return GroovyBot.getInstance().getTranslationManager().getDefaultLocale().translate(key);
+        return latestEvent.translate(key);
+    }
+
+    @Override
+    protected void save() {
+        GroovyBot.getInstance().getMusicPlayerManager().update(guild, this);
+    }
+
     @Getter
     @RequiredArgsConstructor
     public enum VoteSkipReason {
         ALLOWED(null, null),
         ALONE("phrases.skipped", "command.skip"),
-        DJ_IN_CHANNEL("phrases.nopermission.title", "command.voteskip.dj"),
+        DJ_IN_CHANNEL("phrases.nopermission", "command.voteskip.dj"),
         ERROR("phrases.error", "phrases.internal.error");
 
         private final String titleTranslationKey;

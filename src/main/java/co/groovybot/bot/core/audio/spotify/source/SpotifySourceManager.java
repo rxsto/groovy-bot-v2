@@ -27,7 +27,7 @@ import co.groovybot.bot.core.audio.spotify.entities.keys.ArtistKey;
 import co.groovybot.bot.core.audio.spotify.entities.keys.PlaylistKey;
 import co.groovybot.bot.core.audio.spotify.entities.keys.UserPlaylistKey;
 import co.groovybot.bot.core.audio.spotify.request.GetNormalPlaylistRequest;
-import co.groovybot.bot.core.audio.spotify.request.GetNormalPlaylistsTracksRequest;
+import co.groovybot.bot.core.audio.spotify.request.GetNormalPlaylistTracksRequest;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -56,6 +56,7 @@ import java.io.IOException;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -245,7 +246,7 @@ public class SpotifySourceManager implements AudioSourceManager {
             log.error(e);
             return null;
         }
-        List<TrackData> trackDataList = getPlaylistTrackDataList(getPlaylistTracks(Objects.requireNonNull(playlist)));
+        List<TrackData> trackDataList = getPlaylistTrackDataList(Objects.requireNonNull(getPlaylistTracks(playlist)));
         List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
         return new BasicAudioPlaylist(playlist.getName(), audioTracks, null, false);
     }
@@ -290,10 +291,10 @@ public class SpotifySourceManager implements AudioSourceManager {
     }
 
     private List<PlaylistTrack> getPlaylistTracks(Playlist playlist) {
-        this.spotifyManager.refreshAccessToken();
         List<PlaylistTrack> playlistTracks = Lists.newArrayList();
         Paging<PlaylistTrack> currentPage = playlist.getTracks();
 
+        int i = 0;
         do {
             playlistTracks.addAll(Arrays.asList(currentPage.getItems()));
             if (currentPage.getNext() == null)
@@ -303,22 +304,24 @@ public class SpotifySourceManager implements AudioSourceManager {
                     this.spotifyManager.refreshAccessToken();
                     URI nextPageUri = new URI(currentPage.getNext());
                     List<NameValuePair> queryPairs = URLEncodedUtils.parse(nextPageUri.toString(), StandardCharsets.UTF_8);
-                    GetNormalPlaylistsTracksRequest.Builder builder = new GetNormalPlaylistsTracksRequest.Builder(this.spotifyManager.getAccessToken())
+                    GetNormalPlaylistTracksRequest.Builder builder = new GetNormalPlaylistTracksRequest.Builder(this.spotifyManager.getAccessToken())
                             .playlistId(playlist.getId());
                     for (NameValuePair nameValuePair : queryPairs) {
                         builder = builder.setQueryParameter(nameValuePair.getName(), nameValuePair.getValue());
                     }
 
                     currentPage = builder.build().execute();
+                    i++;
                 } catch (URISyntaxException e) {
                     log.error("Got invalid 'next page' URI!", e);
-                    return null;
+                    return Collections.emptyList();
                 } catch (SpotifyWebApiException | IOException e) {
                     log.error("Failed to query Spotify for playlist tracks!", e);
-                    return null;
+                    return Collections.emptyList();
                 }
             }
         } while (currentPage != null);
+        log.debug("UserPlaylist-Requests executed " + i + " times.");
         return playlistTracks;
     }
 

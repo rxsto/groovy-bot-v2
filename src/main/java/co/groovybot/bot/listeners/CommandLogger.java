@@ -45,7 +45,7 @@ public class CommandLogger {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("❌ " + failEvent.translate("phrases.error.internal"))
                 .setDescription(String.format("We're sorry, but an internal error occured\n```%s```", failEvent.getThrowable().getClass().getCanonicalName() + ": " + failEvent.getThrowable().getMessage()))
-                .setColor(Colors.DARK_BUT_NOT_BLACK);
+                .setColor(Colors.RED);
         SafeMessage.sendMessage(failEvent.getChannel(), builder);
     }
 
@@ -53,7 +53,9 @@ public class CommandLogger {
     @SuppressWarnings("unused")
     private void onPermissionViolations(NoPermissionEvent noPermissionEvent) {
         String permission = noPermissionEvent.getCommand().getPermissions().getIdentifier().toLowerCase().replaceAll(" ", "");
-        EmbedBuilder builder = EmbedUtil.error(noPermissionEvent.translate("phrases.nopermission.title"), noPermissionEvent.translate(String.format("phrases.nopermission.%s", permission)));
+        EmbedBuilder builder = EmbedUtil.error(noPermissionEvent.translate("phrases.nopermission"), noPermissionEvent.translate(String.format("phrases.nopermission.%s", permission)));
+        if (permission.startsWith("tier"))
+            builder.setFooter(noPermissionEvent.translate("phrases.premium.footer"), null);
         SafeMessage.sendMessage(noPermissionEvent.getChannel(), builder);
     }
 }
