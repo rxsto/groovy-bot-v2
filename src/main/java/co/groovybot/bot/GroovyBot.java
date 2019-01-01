@@ -37,7 +37,6 @@ import co.groovybot.bot.core.monitoring.Monitor;
 import co.groovybot.bot.core.monitoring.MonitorManager;
 import co.groovybot.bot.core.monitoring.monitors.*;
 import co.groovybot.bot.core.premium.PremiumHandler;
-import co.groovybot.bot.core.statistics.ServerCountStatistics;
 import co.groovybot.bot.core.statistics.StatusPage;
 import co.groovybot.bot.core.translation.TranslationManager;
 import co.groovybot.bot.io.FileManager;
@@ -63,12 +62,19 @@ import org.apache.commons.cli.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.dicordlist.botlistwrapper.BotlistWrapper;
+import org.dicordlist.botlistwrapper.BotlistWrapperBuilder;
+import org.dicordlist.botlistwrapper.core.models.impls.JDAProvider;
+import org.dicordlist.botlistwrapper.core.models.impls.botlists.BotlistSPACE;
+import org.dicordlist.botlistwrapper.core.models.impls.botlists.DiscordBotsGG;
+import org.dicordlist.botlistwrapper.core.models.impls.botlists.DiscordBotsORG;
 import org.graylog2.gelfclient.GelfConfiguration;
 import org.graylog2.gelfclient.GelfMessage;
 import org.graylog2.gelfclient.GelfTransports;
 import org.graylog2.gelfclient.transport.AbstractGelfTransport;
 import org.graylog2.gelfclient.transport.GelfTransport;
 import org.influxdb.InfluxDB;
+import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.Closeable;
@@ -95,8 +101,6 @@ public class GroovyBot implements Closeable {
     private final LavalinkManager lavalinkManager;
     @Getter
     private final StatusPage statusPage;
-    @Getter
-    private final ServerCountStatistics serverCountStatistics;
     @Getter
     private final MusicPlayerManager musicPlayerManager;
     @Getter
@@ -131,6 +135,7 @@ public class GroovyBot implements Closeable {
     private final boolean noMonitoring;
     @Getter
     private final boolean noCentralizedLogging;
+    private final boolean disableBotlist;
     @Getter
     private PostgreSQL postgreSQL;
     @Getter
@@ -147,6 +152,8 @@ public class GroovyBot implements Closeable {
     private PlaylistManager playlistManager;
     @Getter
     private GelfTransport gelfTransport;
+    @Getter
+    private BotlistWrapper botlistWrapper;
     @Getter
     private Cache<Guild> guildCache;
     @Getter
@@ -175,6 +182,7 @@ public class GroovyBot implements Closeable {
         noMonitoring = args.hasOption("no-monitoring");
         configNodes = args.hasOption("config-nodes");
         noCentralizedLogging = args.hasOption("no-centralized-logging");
+        disableBotlist = args.hasOption("no-stats");
 
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
@@ -221,7 +229,6 @@ public class GroovyBot implements Closeable {
         new DatabaseGenerator(postgreSQL);
 
         commandManager = new CommandManager(config.getJSONObject("settings").getString("prefix"), this);
-        serverCountStatistics = new ServerCountStatistics(config.getJSONObject("botlists"));
         interactionManager = new InteractionManager();
         eventWaiter = new EventWaiter();
         premiumHandler = new PremiumHandler();
@@ -251,7 +258,7 @@ public class GroovyBot implements Closeable {
         options.addOption("NM", "no-monitoring", false, "Disables InfluxDB monitoring");
         options.addOption("NP", "no-patrons", false, "Disable patrons feature");
         options.addOption("NCL", "no-centralized-logging", false, "Disabled centralized logging");
-
+        options.addOption("NS", "no-stats", false, "Disables the botlist stats posting");
         CommandLine cmd = null;
 
         try {
@@ -354,11 +361,23 @@ public class GroovyBot implements Closeable {
 
         // Initializing statuspage and servercountstatistics
         if (!debugMode) {
-            log.info("[StatusPage] Initializing StatusPage ...");
             statusPage.start();
-            log.info("[ServerCountStatistics] Initializing ServerCountStatistics ...");
-            serverCountStatistics.start();
         }
+        if(!disableBotlist) {
+            System.out.println("HI");
+            botlistWrapper = new BotlistWrapperBuilder(new JDAProvider(this.getShardManager()), botlist -> {
+                JSONObject json = config.getJSONObject("botlists");
+                if (json.has(botlist.getSimpleName()))
+                    return json.getString(botlist.getSimpleName());
+                return null;
+            })
+                    .registerBotlist(new BotlistSPACE())
+                    .registerBotlist(new DiscordBotsGG())
+                    .registerBotlist(new DiscordBotsORG())
+                    .build();
+            System.out.println("HI2");
+        }
+
 
         // Register all monitors and start monitoring
         if (influxDB == null) {
