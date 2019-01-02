@@ -178,12 +178,12 @@ public class MusicPlayer extends Player {
 
     @Override
     public void announceRequeue(AudioTrack track) {
-        SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.loadfailed"), String.format("[%s](%s)", track.getInfo().title, track.getInfo().uri))));
+        SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.loadfailed"), String.format("[%s](%s)", track.getInfo().title == null ? "null" : track.getInfo().title, track.getInfo().uri == null ? "null" : track.getInfo().uri))));
     }
 
     @Override
     public void announceNotFound(AudioTrack track) {
-        SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.searching.nomatches"), String.format("[%s](%s)", track.getInfo().title, track.getInfo().uri))));
+        SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.searching.nomatches"), String.format("[%s](%s)", track.getInfo().title == null ? "null" : track.getInfo().title, track.getInfo().uri == null ? "null" : track.getInfo().uri))));
     }
 
     @Override
