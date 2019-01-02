@@ -22,7 +22,7 @@ package co.groovybot.bot.listeners;
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.entity.EntityProvider;
-import co.groovybot.bot.core.entity.Guild;
+import co.groovybot.bot.core.entity.entities.GroovyGuild;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.events.guild.voice.GenericGuildVoiceEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
@@ -54,8 +54,8 @@ public class AutoPauseListener {
     }
 
     private void handleAutopauseStart(GenericGuildVoiceEvent event) {
-        Guild guild = EntityProvider.getGuild(event.getGuild().getIdLong());
-        if (!guild.isAutoPause())
+        GroovyGuild groovyGuild = EntityProvider.getGuild(event.getGuild().getIdLong());
+        if (!groovyGuild.isAutoPause())
             return;
         MusicPlayer musicPlayer = GroovyBot.getInstance().getMusicPlayerManager().getExistingPlayer(event.getGuild());
         if (musicPlayer == null)
@@ -64,8 +64,8 @@ public class AutoPauseListener {
     }
 
     private void handleAutopauseStop(GenericGuildVoiceEvent event) {
-        Guild guild = EntityProvider.getGuild(event.getGuild().getIdLong());
-        if (!guild.isAutoPause())
+        GroovyGuild groovyGuild = EntityProvider.getGuild(event.getGuild().getIdLong());
+        if (!groovyGuild.isAutoPause())
             return;
         MusicPlayer musicPlayer = GroovyBot.getInstance().getMusicPlayerManager().getExistingPlayer(event.getGuild());
         if (musicPlayer == null)

@@ -24,7 +24,7 @@ import co.groovybot.bot.core.command.CommandCategory;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
-import co.groovybot.bot.core.entity.Guild;
+import co.groovybot.bot.core.entity.entities.GroovyGuild;
 
 public class PrefixCommand extends Command {
 
@@ -34,13 +34,13 @@ public class PrefixCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        Guild guild = event.getGroovyGuild();
+        GroovyGuild groovyGuild = event.getGroovyGuild();
 
         if (args.length == 0)
-            return send(small(String.format(event.translate("command.prefix.current"), guild.getPrefix())));
+            return send(small(String.format(event.translate("command.prefix.current"), groovyGuild.getPrefix())));
 
-        String current = guild.getPrefix();
-        guild.setPrefix(args[0]);
-        return send(success(event.translate("phrases.success"), String.format(event.translate("command.prefix"), current, guild.getPrefix())));
+        String current = groovyGuild.getPrefix();
+        groovyGuild.setPrefix(args[0]);
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.prefix"), current, groovyGuild.getPrefix())));
     }
 }

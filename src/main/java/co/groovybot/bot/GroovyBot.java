@@ -28,8 +28,8 @@ import co.groovybot.bot.core.cache.Cache;
 import co.groovybot.bot.core.command.CommandManager;
 import co.groovybot.bot.core.command.CommandRegistry;
 import co.groovybot.bot.core.command.interaction.InteractionManager;
-import co.groovybot.bot.core.entity.Guild;
-import co.groovybot.bot.core.entity.User;
+import co.groovybot.bot.core.entity.entities.GroovyGuild;
+import co.groovybot.bot.core.entity.entities.GroovyUser;
 import co.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
 import co.groovybot.bot.core.influx.InfluxDBManager;
 import co.groovybot.bot.core.lyrics.GeniusClient;
@@ -155,9 +155,9 @@ public class GroovyBot implements Closeable {
     @Getter
     private BotlistWrapper botlistWrapper;
     @Getter
-    private Cache<Guild> guildCache;
+    private Cache<GroovyGuild> guildCache;
     @Getter
-    private Cache<User> userCache;
+    private Cache<GroovyUser> userCache;
     @Getter
     private net.dv8tion.jda.core.entities.Guild supportGuild;
     @Getter
@@ -197,8 +197,8 @@ public class GroovyBot implements Closeable {
         instanceName = config.getJSONObject("bot").has("instance") ? config.getJSONObject("bot").getString("instance") : "dev";
 
         // Creating cache
-        guildCache = new Cache<>(Guild.class);
-        userCache = new Cache<>(User.class);
+        guildCache = new Cache<>(GroovyGuild.class);
+        userCache = new Cache<>(GroovyUser.class);
 
         if (!noCentralizedLogging) {
             final GelfConfiguration gelfConfiguration = new GelfConfiguration(new InetSocketAddress(config.getJSONObject("graylog").getString("host"), config.getJSONObject("graylog").getInt("port")));
@@ -259,6 +259,7 @@ public class GroovyBot implements Closeable {
         options.addOption("NP", "no-patrons", false, "Disable patrons feature");
         options.addOption("NCL", "no-centralized-logging", false, "Disabled centralized logging");
         options.addOption("NS", "no-stats", false, "Disables the botlist stats posting");
+
         CommandLine cmd = null;
 
         try {
@@ -359,12 +360,13 @@ public class GroovyBot implements Closeable {
                 log.error("[WebSocket] Error while initializing WebSocket!", e);
             }
 
-        // Initializing statuspage and servercountstatistics
+        // Initializing statuspage
         if (!debugMode) {
             statusPage.start();
         }
-        if(!disableBotlist) {
-            System.out.println("HI");
+
+        // Initializing servercountstats
+        if (!disableBotlist) {
             botlistWrapper = new BotlistWrapperBuilder(new JDAProvider(this.getShardManager()), botlist -> {
                 JSONObject json = config.getJSONObject("botlists");
                 if (json.has(botlist.getSimpleName()))
@@ -375,7 +377,6 @@ public class GroovyBot implements Closeable {
                     .registerBotlist(new DiscordBotsGG())
                     .registerBotlist(new DiscordBotsORG())
                     .build();
-            System.out.println("HI2");
         }
 
 
@@ -388,7 +389,7 @@ public class GroovyBot implements Closeable {
             shardManager.addEventListener(msgMonitor);
             monitorManager.register(new SystemMonitor(), new GuildMonitor(), new RequestMonitor(), msgMonitor, new UserMonitor());
             monitorManager.start();
-            log.info("[MonitoringManager] Monitoring started.");
+            log.info("[MonitoringManager] Monitoring started!");
         }
 
         // Now Groovy is ready

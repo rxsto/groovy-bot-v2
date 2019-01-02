@@ -21,7 +21,7 @@ package co.groovybot.bot.commands.settings;
 
 import co.groovybot.bot.core.command.*;
 import co.groovybot.bot.core.command.permission.Permissions;
-import co.groovybot.bot.core.entity.Guild;
+import co.groovybot.bot.core.entity.entities.GroovyGuild;
 import net.dv8tion.jda.core.entities.Role;
 
 public class DjModeCommand extends Command {
@@ -33,9 +33,9 @@ public class DjModeCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        Guild guild = event.getGroovyGuild();
-        guild.setDjMode(!guild.isDjMode());
-        return send(success(event.translate("phrases.success"), String.format(event.translate("command.djmode"), guild.isDjMode() ? event.translate("phrases.text.enabled") : event.translate("phrases.text.disabled"))));
+        GroovyGuild groovyGuild = event.getGroovyGuild();
+        groovyGuild.setDjMode(!groovyGuild.isDjMode());
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.djmode"), groovyGuild.isDjMode() ? event.translate("phrases.text.enabled") : event.translate("phrases.text.disabled"))));
     }
 
     public class DjRoleCommand extends SubCommand {
@@ -49,9 +49,9 @@ public class DjModeCommand extends Command {
             if (args.length == 0)
                 return sendHelp();
 
-            Guild guild = event.getGroovyGuild();
+            GroovyGuild groovyGuild = event.getGroovyGuild();
 
-            if (!guild.isDjMode())
+            if (!groovyGuild.isDjMode())
                 return send(error(event.translate("phrases.error"), event.translate("command.djmode.disabled")));
 
             if (event.getMessage().getMentionedRoles().isEmpty()) {
@@ -60,10 +60,10 @@ public class DjModeCommand extends Command {
                 if (role == null)
                     return send(error(event.translate("phrases.error"), event.translate("phrases.invalid.role")));
 
-                guild.setDjRole(role.getIdLong());
+                groovyGuild.setDjRole(role.getIdLong());
                 return send(success(event.translate("phrases.success"), String.format(event.translate("command.djmode.role"), role.getName())));
             } else {
-                guild.setDjRole(event.getMessage().getMentionedRoles().get(0).getIdLong());
+                groovyGuild.setDjRole(event.getMessage().getMentionedRoles().get(0).getIdLong());
                 return send(success(event.translate("phrases.success"), String.format(event.translate("command.djmode.role"), event.getMessage().getMentionedRoles().get(0).getName())));
             }
         }
