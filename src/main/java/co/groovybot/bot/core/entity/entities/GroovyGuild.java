@@ -17,9 +17,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-package co.groovybot.bot.core.entity;
+package co.groovybot.bot.core.entity.entities;
 
 import co.groovybot.bot.GroovyBot;
+import co.groovybot.bot.core.entity.DatabaseEntitiy;
 import lombok.Getter;
 import lombok.ToString;
 import net.dv8tion.jda.core.entities.VoiceChannel;
@@ -32,7 +33,7 @@ import java.util.List;
 
 @Getter
 @ToString
-public class Guild extends DatabaseEntitiy {
+public class GroovyGuild extends DatabaseEntitiy {
 
     private Integer volume = 100;
     private String prefix = GroovyBot.getInstance().getConfig().getJSONObject("settings").getString("prefix");
@@ -49,7 +50,7 @@ public class Guild extends DatabaseEntitiy {
     @Getter
     private long botChannel = 0;
 
-    public Guild(Long entityId) throws Exception {
+    public GroovyGuild(Long entityId) throws Exception {
         super(entityId);
         try (Connection connection = getConnection()) {
 
