@@ -20,8 +20,10 @@
 package co.groovybot.bot.listeners;
 
 import co.groovybot.bot.GroovyBot;
-import co.groovybot.bot.core.entity.Guild;
+import co.groovybot.bot.core.audio.MusicPlayer;
+import co.groovybot.bot.core.entity.entities.GroovyGuild;
 import lombok.RequiredArgsConstructor;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.guild.voice.GenericGuildVoiceEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
@@ -40,16 +42,19 @@ public class AutoJoinExecutor {
 
     @SubscribeEvent
     private void handleVoiceChannelLeave(GuildVoiceLeaveEvent event) {
-        Guild guild = bot.getGuildCache().get(event.getGuild());
+        GroovyGuild groovyGuild = bot.getGuildCache().get(event.getGuild());
+        Member member = event.getMember();
         VoiceChannel channel = event.getChannelLeft();
-        if (!event.getMember().getUser().isBot() && guild.hasAutoJoinChannel() && channel.getIdLong() == guild.getAutoJoinChannelId() && guild.getAutoJoinChannel().getMembers().contains(event.getGuild().getSelfMember()) && channel.getMembers().size() == 1)
-            bot.getMusicPlayerManager().getExistingPlayer(event.getGuild()).leave("No membery anymore in AutoJoin:tm: channel!");
+        if (!event.getMember().getUser().isBot() && groovyGuild.hasAutoJoinChannel() && channel.getIdLong() == groovyGuild.getAutoJoinChannelId() && groovyGuild.getAutoJoinChannel().getMembers().contains(event.getGuild().getSelfMember()) && channel.getMembers().size() == 1) {
+            MusicPlayer player = bot.getMusicPlayerManager().getExistingPlayer(event.getGuild());
+            player.leave(player.translate("phrases.left.autojoin"));
+        }
     }
 
     @SubscribeEvent
     private void handleVoiceMove(GuildVoiceMoveEvent event) {
-        Guild guild = bot.getGuildCache().get(event.getGuild());
-        long autoChannelId = guild.getAutoJoinChannelId();
+        GroovyGuild groovyGuild = bot.getGuildCache().get(event.getGuild());
+        long autoChannelId = groovyGuild.getAutoJoinChannelId();
         if (event.getChannelJoined().getIdLong() == autoChannelId)
             handleVoiceChannelJoin(new GuildVoiceJoinEvent(event.getJDA(), event.getResponseNumber(), event.getMember()));
         else if (event.getChannelLeft().getIdLong() == autoChannelId)
@@ -58,19 +63,16 @@ public class AutoJoinExecutor {
 
     @SubscribeEvent
     private void handleVoiceChannelJoin(GuildVoiceJoinEvent event) {
-        Guild guild = bot.getGuildCache().get(event.getGuild());
+        GroovyGuild groovyGuild = bot.getGuildCache().get(event.getGuild());
         VoiceChannel channel = event.getChannelJoined();
-        if (!event.getMember().getUser().isBot() && guild.hasAutoJoinChannel() && channel.getIdLong() == guild.getAutoJoinChannelId() && !guild.getAutoJoinChannel().getMembers().contains(event.getGuild().getSelfMember()) && !(event.getChannelJoined().getMembers().stream().filter(m -> !m.getUser().isBot()).collect(Collectors.toList()).size() > 1))
+        if (!event.getMember().getUser().isBot() && groovyGuild.hasAutoJoinChannel() && channel.getIdLong() == groovyGuild.getAutoJoinChannelId() && !groovyGuild.getAutoJoinChannel().getMembers().contains(event.getGuild().getSelfMember()) && !(event.getChannelJoined().getMembers().stream().filter(m -> !m.getUser().isBot()).collect(Collectors.toList()).size() > 1))
             bot.getMusicPlayerManager().getPlayer(event.getGuild(), null).connect(channel);
     }
 
-    private <T extends GenericGuildVoiceEvent> void doChecks(T event, BiConsumer<T, Guild> callback) {
-        System.out.println(1);
-        Guild guild = bot.getGuildCache().get(event.getGuild());
-        System.out.println(2);
+    private <T extends GenericGuildVoiceEvent> void doChecks(T event, BiConsumer<T, GroovyGuild> callback) {
+        GroovyGuild groovyGuild = bot.getGuildCache().get(event.getGuild());
         VoiceChannel channel = event instanceof GuildVoiceLeaveEvent ? ((GuildVoiceLeaveEvent) event).getChannelLeft() : event.getVoiceState().getChannel();
-        System.out.println(channel);
-        if (!event.getMember().getUser().isBot() && guild.hasAutoJoinChannel() && channel != null && channel.getIdLong() == guild.getAutoJoinChannelId())
-            callback.accept(event, guild);
+        if (!event.getMember().getUser().isBot() && groovyGuild.hasAutoJoinChannel() && channel != null && channel.getIdLong() == groovyGuild.getAutoJoinChannelId())
+            callback.accept(event, groovyGuild);
     }
 }
