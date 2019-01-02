@@ -287,7 +287,7 @@ public class GroovyBot implements Closeable {
                         this,
                         new ShardsListener(),
                         new SelfMentionListener(),
-                        new JoinGuildListener(),
+                        new GuildJoinListener(),
                         new CommandLogger(),
                         new BlacklistWatcher(guildCache),
                         new AutoPauseListener(),
