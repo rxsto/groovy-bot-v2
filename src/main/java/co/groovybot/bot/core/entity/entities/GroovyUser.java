@@ -17,10 +17,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-package co.groovybot.bot.core.entity;
+package co.groovybot.bot.core.entity.entities;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.command.permission.UserPermissions;
+import co.groovybot.bot.core.entity.DatabaseEntitiy;
+import co.groovybot.bot.core.entity.entities.GroovyPlaylist;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -33,13 +35,13 @@ import java.util.Map;
 
 @Log4j2
 @Getter
-public class User extends DatabaseEntitiy {
+public class GroovyUser extends DatabaseEntitiy {
 
     private long expiration = 0;
     private long again = 0;
     private Locale locale = GroovyBot.getInstance().getTranslationManager().getDefaultLocale().getLocale();
 
-    public User(Long entityId) throws Exception {
+    public GroovyUser(Long entityId) throws Exception {
         super(entityId);
         try (Connection connection = getConnection()) {
             PreparedStatement user = connection.prepareStatement("SELECT * FROM users WHERE user_id = ?");
@@ -98,7 +100,7 @@ public class User extends DatabaseEntitiy {
             if (votedResult.next())
                 if (votedResult.getLong("expiration") > System.currentTimeMillis()) return true;
         } catch (SQLException e) {
-            log.error("[User] Error while checking for hasVoted!", e);
+            log.error("[GroovyUser] Error while checking for hasVoted!", e);
         }
         return false;
     }
@@ -113,7 +115,7 @@ public class User extends DatabaseEntitiy {
             if (votedResult.next())
                 if (votedResult.getLong("again") < System.currentTimeMillis()) return true;
         } catch (SQLException e) {
-            log.error("[User] Error while checking for hasVoted!", e);
+            log.error("[GroovyUser] Error while checking for hasVoted!", e);
         }
         return false;
     }
@@ -128,7 +130,7 @@ public class User extends DatabaseEntitiy {
             if (userResult.next())
                 return userResult.getBoolean("friend");
         } catch (SQLException e) {
-            log.error("[User] Error while checking for isFriend!", e);
+            log.error("[GroovyUser] Error while checking for isFriend!", e);
         }
         return false;
     }
@@ -141,7 +143,7 @@ public class User extends DatabaseEntitiy {
             user.setLong(2, entityId);
             user.execute();
         } catch (SQLException e) {
-            log.error("[User] Error while checking for isFriend!", e);
+            log.error("[GroovyUser] Error while checking for isFriend!", e);
         }
     }
 
@@ -149,7 +151,7 @@ public class User extends DatabaseEntitiy {
         return new UserPermissions(this, GroovyBot.getInstance());
     }
 
-    public Map<String, Playlist> getPlaylists() {
+    public Map<String, GroovyPlaylist> getPlaylists() {
         return GroovyBot.getInstance().getPlaylistManager().getPlaylist(entityId);
     }
 

@@ -21,7 +21,7 @@ package co.groovybot.bot.commands.general;
 
 import co.groovybot.bot.core.command.*;
 import co.groovybot.bot.core.command.permission.Permissions;
-import co.groovybot.bot.core.entity.User;
+import co.groovybot.bot.core.entity.entities.GroovyUser;
 import co.groovybot.bot.core.premium.PremiumManager;
 import co.groovybot.bot.util.FormatUtil;
 
@@ -44,7 +44,7 @@ public class VoteCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            final User groovyUser = event.getGroovyUser();
+            final GroovyUser groovyUser = event.getGroovyUser();
             if (!PremiumManager.hasVoted(groovyUser))
                 return send(error(event.translate("phrases.error"), event.translate("command.vote.not")));
             if (PremiumManager.hasAlreadyVoted(groovyUser))

@@ -5,7 +5,7 @@ import co.groovybot.bot.core.command.CommandCategory;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
-import co.groovybot.bot.core.entity.Guild;
+import co.groovybot.bot.core.entity.entities.GroovyGuild;
 
 public class DeleteMessagesCommand extends Command {
     public DeleteMessagesCommand() {
@@ -14,8 +14,8 @@ public class DeleteMessagesCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        Guild guild = event.getGroovyGuild();
-        guild.setDeleteMessages(!guild.isDeleteMessages());
-        return send(success(event.translate("phrases.success"), String.format(event.translate("command.deletemessages"), guild.isDeleteMessages() ? event.translate("phrases.text.enabled") : event.translate("phrases.text.disabled"))));
+        GroovyGuild groovyGuild = event.getGroovyGuild();
+        groovyGuild.setDeleteMessages(!groovyGuild.isDeleteMessages());
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.deletemessages"), groovyGuild.isDeleteMessages() ? event.translate("phrases.text.enabled") : event.translate("phrases.text.disabled"))));
     }
 }

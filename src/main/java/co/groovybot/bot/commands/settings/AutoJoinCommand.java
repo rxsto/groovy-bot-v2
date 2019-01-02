@@ -21,7 +21,7 @@ package co.groovybot.bot.commands.settings;
 
 import co.groovybot.bot.core.command.*;
 import co.groovybot.bot.core.command.permission.Permissions;
-import co.groovybot.bot.core.entity.Guild;
+import co.groovybot.bot.core.entity.entities.GroovyGuild;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.utils.Helpers;
 
@@ -35,13 +35,13 @@ public class AutoJoinCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        Guild guild = event.getGroovyGuild();
+        GroovyGuild groovyGuild = event.getGroovyGuild();
 
         if (event.noArgs()) {
-            if (!guild.hasAutoJoinChannel())
+            if (!groovyGuild.hasAutoJoinChannel())
                 return send(error(event.translate("phrases.error"), event.translate("command.autojoin.nochannel")));
             else
-                return send(info(event.translate("phrases.current"), String.format(event.translate("command.autojoin.info"), guild.getAutoJoinChannel().getName())));
+                return send(info(event.translate("phrases.current"), String.format(event.translate("command.autojoin.info"), groovyGuild.getAutoJoinChannel().getName())));
         }
 
         VoiceChannel target;
@@ -56,7 +56,7 @@ public class AutoJoinCommand extends Command {
         if (target == null)
             return send(error(event.translate("phrases.notfound"), event.translate("command.autojoin.notfound")));
 
-        guild.setAutoJoinChannel(target);
+        groovyGuild.setAutoJoinChannel(target);
         return send(success(event.translate("phrases.success"), String.format(event.translate("command.autojoin.success"), target.getName())));
     }
 
@@ -68,12 +68,12 @@ public class AutoJoinCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            Guild guild = event.getGroovyGuild();
+            GroovyGuild groovyGuild = event.getGroovyGuild();
 
-            if (!guild.hasAutoJoinChannel())
+            if (!groovyGuild.hasAutoJoinChannel())
                 return send(error(event.translate("phrases.error"), event.translate("command.autojoin.nochannel")));
 
-            guild.setAutoJoinChannelId(0L);
+            groovyGuild.setAutoJoinChannelId(0L);
             return send(success(event.translate("phrases.success"), event.translate("command.autojoin.disable")));
         }
     }

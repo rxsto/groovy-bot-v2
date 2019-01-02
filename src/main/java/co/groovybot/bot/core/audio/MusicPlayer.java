@@ -21,12 +21,19 @@ package co.groovybot.bot.core.audio;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.commands.music.SearchCommand;
+import co.groovybot.bot.core.audio.executors.PlayerRunnable;
+import co.groovybot.bot.core.audio.executors.leave.IsAloneRunnable;
+import co.groovybot.bot.core.audio.executors.leave.IsNotPlayingRunnable;
+import co.groovybot.bot.core.audio.executors.leave.IsPausedRunnable;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.permission.UserPermissions;
 import co.groovybot.bot.core.entity.EntityProvider;
 import co.groovybot.bot.core.premium.Constants;
-import co.groovybot.bot.util.*;
+import co.groovybot.bot.util.EmbedUtil;
+import co.groovybot.bot.util.FormatUtil;
+import co.groovybot.bot.util.SafeMessage;
+import co.groovybot.bot.util.YoutubeUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -60,9 +67,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static co.groovybot.bot.util.EmbedUtil.info;
@@ -70,11 +75,10 @@ import static co.groovybot.bot.util.EmbedUtil.success;
 import static co.groovybot.bot.util.SafeMessage.sendMessage;
 
 @Log4j2
-public class MusicPlayer extends Player implements Runnable {
+public class MusicPlayer extends Player {
 
     @Getter
     private final AudioPlayerManager audioPlayerManager;
-    private final ScheduledExecutorService scheduler;
     @Getter
     private Guild guild;
     @Getter
@@ -93,23 +97,25 @@ public class MusicPlayer extends Player implements Runnable {
     @Getter
     private int skipVotes;
     @Getter
-    @Setter
     private boolean inProgress;
+    @Getter
+    private PlayerRunnable isAloneRunnable, isNotPlayingRunnable, isPausedRunnable;
 
     protected MusicPlayer(Guild guild, TextChannel channel, YoutubeUtil youtubeClient) {
         super(youtubeClient);
         LavalinkManager lavalinkManager = GroovyBot.getInstance().getLavalinkManager();
+
         this.guild = guild;
         this.channel = channel;
         this.previousTrack = null;
         this.inProgress = false;
         this.voiceChannel = guild.getSelfMember().getVoiceState().getChannel();
+
         instanciatePlayer(LavalinkManager.getLavalink().getLink(guild));
         getPlayer().addListener(getScheduler());
-        audioPlayerManager = lavalinkManager.getAudioPlayerManager();
-        scheduler = Executors.newSingleThreadScheduledExecutor(new NameThreadFactory("LeaveListener"));
-        scheduler.scheduleAtFixedRate(this, 5, 10, TimeUnit.MINUTES);
-        guild.getJDA().addEventListener(this);
+
+        this.audioPlayerManager = lavalinkManager.getAudioPlayerManager();
+        this.guild.getJDA().addEventListener(this);
     }
 
     public void connect(VoiceChannel channel) {
@@ -136,6 +142,13 @@ public class MusicPlayer extends Player implements Runnable {
             return false;
         }
 
+        return true;
+    }
+
+    public boolean checkLeave() {
+        if (isInProgress()) return false;
+        if (!getGuild().getSelfMember().getVoiceState().inVoiceChannel()) return false;
+        if (!GroovyBot.getInstance().getGuildCache().get(getGuild().getIdLong()).isAutoLeave()) return false;
         return true;
     }
 
@@ -456,32 +469,23 @@ public class MusicPlayer extends Player implements Runnable {
         return player.getPlayingTrack() != null && player.getPlayingTrack().getInfo().title.equals(audioTrack.getInfo().title) || trackQueue.stream().anyMatch(t -> t.getInfo().title.equals(audioTrack.getInfo().title));
     }
 
-    @Override
-    public void run() {
-        if (inProgress) return;
-        if (!GroovyBot.getInstance().getGuildCache().get(guild.getIdLong()).isAutoLeave()) return;
-        if (isPaused())
-            leave(translate("phrases.left.paused"));
-        else if (!isPlaying())
-            leave(translate("phrases.left.notplaying"));
-        else if (guild.getSelfMember().getVoiceState().getChannel().getMembers().size() == 1)
-            leave(translate("phrases.left.alone"));
-    }
-
     @SuppressWarnings("unused")
     @SubscribeEvent
     private void handleDisconnect(GuildVoiceLeaveEvent event) {
         if (event.getMember().equals(event.getGuild().getSelfMember())) {
             skipVotes = 0;
             voiceChannel = null;
+            handlePlayerRunnables(false);
         }
     }
 
     @SuppressWarnings("unused")
     @SubscribeEvent
     private void handleConnect(GuildVoiceJoinEvent event) {
-        if (event.getMember().equals(event.getGuild().getSelfMember()))
+        if (event.getMember().equals(event.getGuild().getSelfMember())) {
             voiceChannel = event.getChannelJoined();
+            handlePlayerRunnables(true);
+        }
     }
 
     public VoteSkipReason voteSkipAvailable() {
@@ -533,5 +537,20 @@ public class MusicPlayer extends Player implements Runnable {
 
         private final String titleTranslationKey;
         private final String descriptionTranslationKey;
+    }
+
+    public void handlePlayerRunnables(boolean activate) {
+        if (activate) {
+            isAloneRunnable = new IsAloneRunnable(this, 5, 5, TimeUnit.MINUTES);
+            isNotPlayingRunnable = new IsNotPlayingRunnable(this, 15, 15, TimeUnit.MINUTES);
+            isPausedRunnable = new IsPausedRunnable(this, 30, 30, TimeUnit.MINUTES);
+        } else {
+            if (isAloneRunnable.getScheduledFuture() != null && !isAloneRunnable.getScheduledFuture().isCancelled())
+                isAloneRunnable.getScheduledFuture().cancel(true);
+            if (isNotPlayingRunnable.getScheduledFuture() != null && !isNotPlayingRunnable.getScheduledFuture().isCancelled())
+                isNotPlayingRunnable.getScheduledFuture().cancel(true);
+            if (isPausedRunnable.getScheduledFuture() != null && !isPausedRunnable.getScheduledFuture().isCancelled())
+                isPausedRunnable.getScheduledFuture().cancel(true);
+        }
     }
 }

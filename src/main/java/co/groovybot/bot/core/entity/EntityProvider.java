@@ -20,14 +20,16 @@
 package co.groovybot.bot.core.entity;
 
 import co.groovybot.bot.GroovyBot;
+import co.groovybot.bot.core.entity.entities.GroovyGuild;
+import co.groovybot.bot.core.entity.entities.GroovyUser;
 
 public class EntityProvider {
 
-    public static User getUser(Long entityId) {
+    public static GroovyUser getUser(Long entityId) {
         return GroovyBot.getInstance().getUserCache().get(entityId);
     }
 
-    public static Guild getGuild(Long entityId) {
+    public static GroovyGuild getGuild(Long entityId) {
         return GroovyBot.getInstance().getGuildCache().get(entityId);
     }
 }
