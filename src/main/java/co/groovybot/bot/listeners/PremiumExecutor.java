@@ -21,7 +21,10 @@ package co.groovybot.bot.listeners;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.command.permission.UserPermissions;
+import co.groovybot.bot.util.EmbedUtil;
+import co.groovybot.bot.util.SafeMessage;
 import lombok.RequiredArgsConstructor;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
@@ -33,7 +36,9 @@ public class PremiumExecutor {
 
     @SubscribeEvent
     private void handleJoin(GuildJoinEvent event) {
-        if (!new UserPermissions(bot.getUserCache().get(event.getGuild().getOwner().getUser().getIdLong()), bot).isAbleToInvite())
+        if (!new UserPermissions(bot.getUserCache().get(event.getGuild().getOwner().getUser().getIdLong()), bot).isAbleToInvite()) {
+            event.getGuild().getTextChannels().stream().filter(TextChannel::canTalk).findFirst().ifPresent(channel -> SafeMessage.sendMessage(channel, EmbedUtil.small(String.format("%s left this server as the owner is not subscribed to premium tier 3. In order to be able to use Groovy Premium Bot you need to donate [here](https://donate.groovybot.co).", event.getJDA().getSelfUser().getName()))));
             event.getGuild().leave().queue();
+        }
     }
 }

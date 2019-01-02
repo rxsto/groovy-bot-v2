@@ -26,6 +26,7 @@ import co.groovybot.bot.core.events.command.CommandFailEvent;
 import co.groovybot.bot.core.events.command.NoPermissionEvent;
 import co.groovybot.bot.util.EmbedUtil;
 import co.groovybot.bot.util.NameThreadFactory;
+import co.groovybot.bot.util.SafeMessage;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.Permission;
@@ -139,6 +140,13 @@ public class CommandManager implements Closeable {
     }
 
     private void callCommand(Command command, CommandEvent commandEvent) {
+        if (commandEvent.getBot().isPremium()) {
+            if (!commandEvent.getBot().getUserCache().get(commandEvent.getGuild().getOwnerIdLong()).getPermissions().isTierThree()) {
+                SafeMessage.sendMessage(commandEvent.getChannel(), EmbedUtil.small(String.format(commandEvent.translate("phrases.left.server"), commandEvent.getJDA().getSelfUser().getName())));
+                commandEvent.getGuild().leave().queue();
+                return;
+            }
+        }
 
         // Check permission
         if (!command.getPermissions().isCovered(bot.getUserCache().get(commandEvent.getAuthor().getIdLong()).getPermissions(), commandEvent)) {
