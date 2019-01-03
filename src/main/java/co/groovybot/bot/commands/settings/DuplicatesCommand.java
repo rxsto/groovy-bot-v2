@@ -28,7 +28,7 @@ import co.groovybot.bot.core.entity.entities.GroovyGuild;
 public class DuplicatesCommand extends Command {
 
     public DuplicatesCommand() {
-        super(new String[]{"duplicates", "duplicate", "dups"}, CommandCategory.SETTINGS, Permissions.everyone(), "Settings related to duplicates in the queue", "");
+        super(new String[]{"duplicates", "dups"}, CommandCategory.SETTINGS, Permissions.everyone(), "Settings related to duplicates in the queue", "");
         this.registerSubCommand(new NoDuplicatesCommand());
         this.registerSubCommand(new RemoveDuplicatesCommand());
     }

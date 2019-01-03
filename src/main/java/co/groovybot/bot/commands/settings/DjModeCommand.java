@@ -27,7 +27,7 @@ import net.dv8tion.jda.core.entities.Role;
 public class DjModeCommand extends Command {
 
     public DjModeCommand() {
-        super(new String[]{"setdj", "dj", "djmode"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Lets you toggle the dj-mode", "");
+        super(new String[]{"djmode", "dj", "setdj"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Lets you toggle the dj-mode", "");
         this.registerSubCommand(new DjRoleCommand());
     }
 

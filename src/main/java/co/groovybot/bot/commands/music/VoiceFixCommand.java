@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class VoiceFixCommand extends SameChannelCommand {
 
     public VoiceFixCommand() {
-        super(new String[]{"voicefix", "fix", "vf"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Lets you change your region in order to fix voice", "");
+        super(new String[]{"voicefix", "fix", "vf"}, CommandCategory.MUSIC, Permissions.adminOnly(), "Lets you change your region in order to fix voice", "");
     }
 
     @Override
