@@ -32,7 +32,7 @@ import net.dv8tion.jda.core.hooks.SubscribeEvent;
  *
  * @author: Stu
  */
-public class GuildMonitor extends ActionMonitor {
+public class GuildMonitor implements ActionMonitor {
 
     private final Gauge guildCount;
     private final Gauge playingCount;

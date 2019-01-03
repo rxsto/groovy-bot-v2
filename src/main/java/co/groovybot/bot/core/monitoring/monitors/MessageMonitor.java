@@ -33,7 +33,7 @@ import java.util.List;
  *
  * @author: Stu
  */
-public class MessageMonitor extends ActionMonitor {
+public class MessageMonitor implements ActionMonitor {
 
     private final Gauge counterGauge;
     private final Gauge lengthGauge;

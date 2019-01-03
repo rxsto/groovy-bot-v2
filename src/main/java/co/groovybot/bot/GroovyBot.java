@@ -49,7 +49,8 @@ import co.groovybot.bot.io.database.PostgreSQL;
 import co.groovybot.bot.listeners.*;
 import co.groovybot.bot.util.YoutubeUtil;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import io.prometheus.client.exporter.HTTPServer;
+import io.prometheus.client.exporter.MetricsServlet;
+import io.prometheus.client.hotspot.DefaultExports;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
@@ -64,11 +65,15 @@ import org.apache.commons.cli.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.graylog2.gelfclient.GelfConfiguration;
 import org.graylog2.gelfclient.GelfMessage;
 import org.graylog2.gelfclient.GelfTransports;
 import org.graylog2.gelfclient.transport.AbstractGelfTransport;
 import org.graylog2.gelfclient.transport.GelfTransport;
+import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.Closeable;
@@ -120,7 +125,7 @@ public class GroovyBot implements Closeable {
     @Getter
     private MonitorManager monitorManager;
     @Getter
-    private HTTPServer prometheusServer;
+    private Server prometheusServer;
     @Getter
     private WebsocketConnection webSocket;
     @Getter
@@ -217,7 +222,23 @@ public class GroovyBot implements Closeable {
         // Starting prometheus server
         if (!noMonitoring) {
             log.info("[Prometheus] Prometheus server is starting...");
-            prometheusServer = new HTTPServer(config.getJSONObject("prometheus").getInt("port"));
+            JSONObject config = this.config.getJSONObject("prometheus");
+            //prometheusServer = new HTTPServer(config.getInt("port"));
+
+            prometheusServer = new Server(InetSocketAddress.createUnresolved(config.getString("bind_address"), config.getInt("port")));
+            ServletContextHandler context = new ServletContextHandler();
+            context.setContextPath("/");
+            prometheusServer.setHandler(context);
+            context.addServlet(new ServletHolder(new MetricsServlet()), "/metrics");
+            DefaultExports.initialize();
+
+            try {
+                prometheusServer.start();
+                prometheusServer.join();
+            } catch (Exception e) {
+                log.error("[Prometheus] Failed to start jetty server.", e);
+            }
+            log.info("[Prometheus] Jetty server successfully started");
         }
 
         httpClient = new OkHttpClient();

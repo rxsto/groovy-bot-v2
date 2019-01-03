@@ -24,6 +24,6 @@ package co.groovybot.bot.core.monitoring;
  *
  * @author: Stu
  */
-public abstract class ActionMonitor {
-    public abstract void action();
+public interface ActionMonitor {
+    void action();
 }

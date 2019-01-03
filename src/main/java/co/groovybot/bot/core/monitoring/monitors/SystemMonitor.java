@@ -30,7 +30,7 @@ import java.lang.management.ManagementFactory;
  *
  * @author: Stu
  */
-public class SystemMonitor extends ActionMonitor {
+public class SystemMonitor implements ActionMonitor {
 
     private final Gauge memoryUsed = Gauge.build().help("Show's used memory").namespace("groovy").name("memory_used").register();
     private final Gauge memoryFree = Gauge.build().help("Show's free memory").namespace("groovy").name("memory_free").register();

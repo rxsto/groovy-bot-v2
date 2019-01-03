@@ -133,6 +133,7 @@ public class ConfigurationSetup {
         configuration.addDefault("voice_rss", voiceRss);
 
         final JSONObject prometheus = new JSONObject()
+                .put("bind_address", "0.0.0.0")
                 .put("port", 3033);
         configuration.addDefault("prometheus", prometheus);
 
