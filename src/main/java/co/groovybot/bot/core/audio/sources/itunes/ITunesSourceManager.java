@@ -65,16 +65,10 @@ public class ITunesSourceManager implements AudioSourceManager {
                 .addId(albumId)
                 .setEntity(Entity.SONG)
                 .execute();
-        List<Result> results = response.getResults();
-        List<Result> filteredResults = results.stream()
+        List<Result> results = response.getResults().stream()
                 .filter(result -> result.getWrapperType().equals("track"))
                 .collect(Collectors.toList());
-        System.out.println(" ");
-        System.out.println(" ");
-        System.out.println(Arrays.toString(filteredResults.toArray()));
-        System.out.println(" ");
-        System.out.println(" ");
-        List<TrackData> trackDataList = getPlaylistTrackData(filteredResults);
+        List<TrackData> trackDataList = getPlaylistTrackData(results);
         List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
         return new BasicAudioPlaylist(results.get(0).getCollectionName(), audioTracks, null, false);
     }

@@ -51,7 +51,7 @@ public class AudioTrackFactory {
             return new YoutubeAudioTrack(audioTrackInfo, new YoutubeAudioSourceManager());
         } catch (IOException e) {
             log.error("[AudioTrackFactory] Failed to convert TrackData to AudioTrack!", e);
+            return null;
         }
-        return null;
     }
 }
