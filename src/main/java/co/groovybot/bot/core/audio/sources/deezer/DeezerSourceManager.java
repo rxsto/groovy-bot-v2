@@ -17,7 +17,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-package co.groovybot.bot.core.audio.deezer.source;
+package co.groovybot.bot.core.audio.sources.deezer;
 
 import co.groovybot.bot.core.audio.AudioTrackFactory;
 import co.groovybot.bot.core.audio.spotify.entities.data.TrackData;

@@ -20,8 +20,8 @@
 package co.groovybot.bot.core.audio;
 
 import co.groovybot.bot.GroovyBot;
-import co.groovybot.bot.core.audio.deezer.source.DeezerSourceManager;
-import co.groovybot.bot.core.audio.spotify.source.SpotifySourceManager;
+import co.groovybot.bot.core.audio.sources.deezer.DeezerSourceManager;
+import co.groovybot.bot.core.audio.sources.spotify.SpotifySourceManager;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;

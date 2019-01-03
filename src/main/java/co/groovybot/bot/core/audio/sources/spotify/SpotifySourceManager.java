@@ -17,10 +17,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-package co.groovybot.bot.core.audio.spotify.source;
+package co.groovybot.bot.core.audio.sources.spotify;
 
 import co.groovybot.bot.core.audio.AudioTrackFactory;
-import co.groovybot.bot.core.audio.spotify.SpotifyManager;
+import co.groovybot.bot.core.audio.sources.spotify.manager.SpotifyManager;
 import co.groovybot.bot.core.audio.spotify.entities.data.TrackData;
 import co.groovybot.bot.core.audio.spotify.entities.keys.AlbumKey;
 import co.groovybot.bot.core.audio.spotify.entities.keys.ArtistKey;
