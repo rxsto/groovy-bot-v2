@@ -16,6 +16,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -44,7 +45,7 @@ public class ITunesSourceManager implements AudioSourceManager {
         if (reference.identifier.startsWith("ytsearch:") || reference.identifier.startsWith("scsearch:")) return null;
         try {
             URL url = new URL(reference.identifier);
-            if (!url.getHost().equalsIgnoreCase("itunes"))
+            if (!url.getHost().equalsIgnoreCase("itunes.apple.com"))
                 return null;
             String rawUrl = url.toString();
             AudioItem audioItem = null;
@@ -65,7 +66,15 @@ public class ITunesSourceManager implements AudioSourceManager {
                 .setEntity(Entity.SONG)
                 .execute();
         List<Result> results = response.getResults();
-        List<TrackData> trackDataList = getPlaylistTrackData(results);
+        List<Result> filteredResults = results.stream()
+                .filter(result -> result.getWrapperType().equals("track"))
+                .collect(Collectors.toList());
+        System.out.println(" ");
+        System.out.println(" ");
+        System.out.println(Arrays.toString(filteredResults.toArray()));
+        System.out.println(" ");
+        System.out.println(" ");
+        List<TrackData> trackDataList = getPlaylistTrackData(filteredResults);
         List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
         return new BasicAudioPlaylist(results.get(0).getCollectionName(), audioTracks, null, false);
     }
