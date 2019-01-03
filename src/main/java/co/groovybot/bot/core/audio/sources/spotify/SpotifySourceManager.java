@@ -26,6 +26,8 @@ import co.groovybot.bot.core.audio.sources.spotify.entities.keys.ArtistKey;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.PlaylistKey;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.UserPlaylistKey;
 import co.groovybot.bot.core.audio.sources.spotify.manager.SpotifyManager;
+import co.groovybot.bot.core.audio.sources.spotify.request.GetNormalPlaylistRequest;
+import co.groovybot.bot.core.audio.sources.spotify.request.GetNormalPlaylistTracksRequest;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -92,9 +94,9 @@ public class SpotifySourceManager implements AudioSourceManager {
     @Getter
     private String retryAfter;
 
-    public SpotifySourceManager(@NonNull SpotifyManager spotifyManager, @NonNull AudioTrackFactory audioTrackFactory) {
+    public SpotifySourceManager(@NonNull SpotifyManager spotifyManager) {
         this.spotifyManager = spotifyManager;
-        this.audioTrackFactory = audioTrackFactory;
+        this.audioTrackFactory = new AudioTrackFactory();
         this.trackLoadingCache = CacheBuilder.newBuilder()
                 .maximumSize(100)
                 .expireAfterWrite(12, TimeUnit.HOURS)
@@ -302,7 +304,7 @@ public class SpotifySourceManager implements AudioSourceManager {
                     this.spotifyManager.refreshAccessToken();
                     URI nextPageUri = new URI(currentPage.getNext());
                     List<NameValuePair> queryPairs = URLEncodedUtils.parse(nextPageUri.toString(), StandardCharsets.UTF_8);
-                    co.groovybot.bot.core.audio.spotify.request.GetNormalPlaylistTracksRequest.Builder builder = new co.groovybot.bot.core.audio.spotify.request.GetNormalPlaylistTracksRequest.Builder(this.spotifyManager.getAccessToken())
+                    GetNormalPlaylistTracksRequest.Builder builder = new GetNormalPlaylistTracksRequest.Builder(this.spotifyManager.getAccessToken())
                             .playlistId(playlist.getId());
                     for (NameValuePair nameValuePair : queryPairs) {
                         builder = builder.setQueryParameter(nameValuePair.getName(), nameValuePair.getValue());
@@ -419,7 +421,7 @@ public class SpotifySourceManager implements AudioSourceManager {
 
     private Playlist getPlaylistById(PlaylistKey playlistKey) {
         this.spotifyManager.refreshAccessToken();
-        co.groovybot.bot.core.audio.spotify.request.GetNormalPlaylistRequest normalPlaylistRequest = new co.groovybot.bot.core.audio.spotify.request.GetNormalPlaylistRequest.Builder(this.spotifyManager.getAccessToken())
+        GetNormalPlaylistRequest normalPlaylistRequest = new GetNormalPlaylistRequest.Builder(this.spotifyManager.getAccessToken())
                 .playlistId(playlistKey.getPlaylistId())
                 .build();
         try {

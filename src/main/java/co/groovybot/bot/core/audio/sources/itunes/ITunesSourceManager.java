@@ -3,14 +3,12 @@ package co.groovybot.bot.core.audio.sources.itunes;
 import be.ceau.itunesapi.Lookup;
 import be.ceau.itunesapi.request.Entity;
 import be.ceau.itunesapi.response.Response;
+import be.ceau.itunesapi.response.Result;
 import co.groovybot.bot.core.audio.AudioTrackFactory;
 import co.groovybot.bot.core.audio.data.TrackData;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.track.AudioItem;
-import com.sedmelluq.discord.lavaplayer.track.AudioReference;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import com.sedmelluq.discord.lavaplayer.track.*;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -18,14 +16,16 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class ITunesSourceManager implements AudioSourceManager {
 
-    private static final Pattern TRACK_PATTERN = Pattern.compile("a");
-    private static final Pattern PLAYLIST_PATTERN = Pattern.compile("a");
+    private static final Pattern ALBUM_PATTERN = Pattern.compile("https?://itunes\\.apple\\.com/.*/album/.*/([0-9]*)");
 
     @Getter
     private AudioTrackFactory audioTrackFactory;
@@ -49,10 +49,8 @@ public class ITunesSourceManager implements AudioSourceManager {
             String rawUrl = url.toString();
             AudioItem audioItem = null;
 
-            if (TRACK_PATTERN.matcher(rawUrl).matches())
-                audioItem = buildTrack(rawUrl);
-//            if (PLAYLIST_PATTERN.matcher(rawUrl).matches())
-//                audioItem = buildPlaylist(rawUrl);
+            if (ALBUM_PATTERN.matcher(rawUrl).matches())
+                audioItem = buildAlbum(rawUrl);
             return audioItem;
         } catch (MalformedURLException e) {
             log.error("Failed to load the item!", e);
@@ -60,29 +58,38 @@ public class ITunesSourceManager implements AudioSourceManager {
         }
     }
 
-    private AudioTrack buildTrack(String url) {
-        String trackId = parseTrackPattern(url);
+    private AudioPlaylist buildAlbum(String url) {
+        String albumId = parseAlbumPattern(url);
         Response response = new Lookup()
-                .addId("")
-                .setEntity(Entity.ALL_TRACK)
+                .addId(albumId)
+                .setEntity(Entity.SONG)
                 .execute();
-        TrackData trackData = null;
-        return this.audioTrackFactory.getAudioTrack(trackData);
+        List<Result> results = response.getResults();
+        List<TrackData> trackDataList = getPlaylistTrackData(results);
+        List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
+        return new BasicAudioPlaylist(results.get(0).getCollectionName(), audioTracks, null, false);
     }
 
-    private String parseTrackPattern(String identifier) {
-        final Matcher matcher = TRACK_PATTERN.matcher(identifier);
-
-        if (!matcher.find())
-            return "noTrackId";
-        return matcher.group(1);
+    private List<TrackData> getPlaylistTrackData(List<Result> playlistTracks) {
+        return playlistTracks.stream()
+                .map(this::getTrackData)
+                .collect(Collectors.toList());
     }
 
-    private String parsePlaylistPattern(String identifier) {
-        final Matcher matcher = PLAYLIST_PATTERN.matcher(identifier);
+    private TrackData getTrackData(Result result) {
+        return new TrackData(
+                result.getTrackName(),
+                result.getFeedUrl(),
+                Collections.singletonList(result.getArtistName()),
+                result.getTrackTimeMillis()
+        );
+    }
+
+    private String parseAlbumPattern(String identifier) {
+        final Matcher matcher = ALBUM_PATTERN.matcher(identifier);
 
         if (!matcher.find())
-            return "noPlaylistId";
+            return "noAlbumId";
         return matcher.group(1);
     }
 
