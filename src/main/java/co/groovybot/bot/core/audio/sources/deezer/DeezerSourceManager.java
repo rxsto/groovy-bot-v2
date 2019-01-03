@@ -20,7 +20,7 @@
 package co.groovybot.bot.core.audio.sources.deezer;
 
 import co.groovybot.bot.core.audio.AudioTrackFactory;
-import co.groovybot.bot.core.audio.spotify.entities.data.TrackData;
+import co.groovybot.bot.core.audio.data.TrackData;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.*;

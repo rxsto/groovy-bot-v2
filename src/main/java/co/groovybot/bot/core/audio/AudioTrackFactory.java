@@ -20,7 +20,7 @@
 package co.groovybot.bot.core.audio;
 
 import co.groovybot.bot.GroovyBot;
-import co.groovybot.bot.core.audio.spotify.entities.data.TrackData;
+import co.groovybot.bot.core.audio.data.TrackData;
 import co.groovybot.bot.util.YoutubeUtil;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
