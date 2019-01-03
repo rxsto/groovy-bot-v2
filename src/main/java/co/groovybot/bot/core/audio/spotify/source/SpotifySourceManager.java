@@ -17,17 +17,17 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-package co.groovybot.bot.core.audio.sources.spotify;
+package co.groovybot.bot.core.audio.spotify.source;
 
 import co.groovybot.bot.core.audio.AudioTrackFactory;
-import co.groovybot.bot.core.audio.data.TrackData;
-import co.groovybot.bot.core.audio.sources.spotify.entities.keys.AlbumKey;
-import co.groovybot.bot.core.audio.sources.spotify.entities.keys.ArtistKey;
-import co.groovybot.bot.core.audio.sources.spotify.entities.keys.PlaylistKey;
-import co.groovybot.bot.core.audio.sources.spotify.entities.keys.UserPlaylistKey;
-import co.groovybot.bot.core.audio.sources.spotify.manager.SpotifyManager;
-import co.groovybot.bot.core.audio.sources.spotify.request.GetNormalPlaylistRequest;
-import co.groovybot.bot.core.audio.sources.spotify.request.GetNormalPlaylistTracksRequest;
+import co.groovybot.bot.core.audio.spotify.SpotifyManager;
+import co.groovybot.bot.core.audio.spotify.entities.data.TrackData;
+import co.groovybot.bot.core.audio.spotify.entities.keys.AlbumKey;
+import co.groovybot.bot.core.audio.spotify.entities.keys.ArtistKey;
+import co.groovybot.bot.core.audio.spotify.entities.keys.PlaylistKey;
+import co.groovybot.bot.core.audio.spotify.entities.keys.UserPlaylistKey;
+import co.groovybot.bot.core.audio.spotify.request.GetNormalPlaylistRequest;
+import co.groovybot.bot.core.audio.spotify.request.GetNormalPlaylistTracksRequest;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -94,9 +94,9 @@ public class SpotifySourceManager implements AudioSourceManager {
     @Getter
     private String retryAfter;
 
-    public SpotifySourceManager(@NonNull SpotifyManager spotifyManager) {
+    public SpotifySourceManager(@NonNull SpotifyManager spotifyManager, @NonNull AudioTrackFactory audioTrackFactory) {
         this.spotifyManager = spotifyManager;
-        this.audioTrackFactory = new AudioTrackFactory();
+        this.audioTrackFactory = audioTrackFactory;
         this.trackLoadingCache = CacheBuilder.newBuilder()
                 .maximumSize(100)
                 .expireAfterWrite(12, TimeUnit.HOURS)
