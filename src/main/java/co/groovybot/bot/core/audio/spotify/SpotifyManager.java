@@ -17,7 +17,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-package co.groovybot.bot.core.audio.sources.spotify.manager;
+package co.groovybot.bot.core.audio.spotify;
 
 import com.wrapper.spotify.SpotifyApi;
 import lombok.Getter;

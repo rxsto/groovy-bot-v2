@@ -44,7 +44,7 @@ public class GraylogAppender extends AbstractAppender {
 
         builder.level(GelfMessageLevel.valueOf(event.getLevel().name()));
         if (event.getSource() != null)
-            builder.additionalField("manager", event.getSource().toString());
+            builder.additionalField("source", event.getSource().toString());
         builder.additionalField("instance", GroovyBot.getInstance().getInstanceName());
         builder.additionalField("level_name", event.getLevel().name());
         try {
