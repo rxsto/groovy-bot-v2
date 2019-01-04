@@ -23,7 +23,7 @@ import co.groovybot.bot.core.GameAnimator;
 import co.groovybot.bot.core.audio.LavalinkManager;
 import co.groovybot.bot.core.audio.MusicPlayerManager;
 import co.groovybot.bot.core.audio.playlists.PlaylistManager;
-import co.groovybot.bot.core.audio.spotify.SpotifyManager;
+import co.groovybot.bot.core.audio.sources.spotify.manager.SpotifyManager;
 import co.groovybot.bot.core.cache.Cache;
 import co.groovybot.bot.core.command.CommandManager;
 import co.groovybot.bot.core.command.CommandRegistry;

@@ -17,19 +17,14 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-package co.groovybot.bot.core.audio.spotify.entities.data;
+package co.groovybot.bot.core.audio.sources.spotify.entities.keys;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.List;
-
 @AllArgsConstructor
 @Getter
-public class TrackData {
+public class PlaylistKey {
 
-    private final String title;
-    private final String uri;
-    private final List<String> artists;
-    private final long duration;
+    private final String playlistId;
 }

@@ -17,7 +17,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-package co.groovybot.bot.core.audio.spotify.request;
+package co.groovybot.bot.core.audio.sources.spotify.request;
 
 import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
