@@ -141,7 +141,7 @@ public class CommandManager implements Closeable {
 
     private void callCommand(Command command, CommandEvent commandEvent) {
         if (commandEvent.getBot().isPremium()) {
-            if (!commandEvent.getBot().getUserCache().get(commandEvent.getGuild().getOwnerIdLong()).getPermissions().isTierThree()) {
+            if (!commandEvent.getBot().getUserCache().get(commandEvent.getGuild().getOwnerIdLong()).getPermissions().isAbleToInvite()) {
                 SafeMessage.sendMessage(commandEvent.getChannel(), EmbedUtil.small(String.format(commandEvent.translate("phrases.left.server"), commandEvent.getJDA().getSelfUser().getName())));
                 commandEvent.getGuild().leave().queue();
                 return;
