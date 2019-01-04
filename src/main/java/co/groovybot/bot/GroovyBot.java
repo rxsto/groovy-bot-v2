@@ -65,7 +65,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.dicordlist.botlistwrapper.BotlistWrapper;
 import org.dicordlist.botlistwrapper.BotlistWrapperBuilder;
 import org.dicordlist.botlistwrapper.core.models.impls.JDAProvider;
-import org.dicordlist.botlistwrapper.core.models.impls.botlists.BotlistSPACE;
 import org.dicordlist.botlistwrapper.core.models.impls.botlists.DiscordBotsORG;
 import org.graylog2.gelfclient.GelfConfiguration;
 import org.graylog2.gelfclient.GelfMessage;
@@ -372,7 +371,6 @@ public class GroovyBot implements Closeable {
                     return json.getString(botlist.getSimpleName());
                 return null;
             })
-                    .registerBotlist(new BotlistSPACE())
                     .registerBotlist(new DiscordBotsORG())
                     .build();
         }

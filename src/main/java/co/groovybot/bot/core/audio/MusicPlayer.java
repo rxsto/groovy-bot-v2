@@ -67,7 +67,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static co.groovybot.bot.util.EmbedUtil.info;
@@ -147,15 +147,16 @@ public class MusicPlayer extends Player {
 
     public boolean checkLeave() {
         if (isInProgress()) return false;
-        if (!getGuild().getSelfMember().getVoiceState().inVoiceChannel()) return false;
         if (!GroovyBot.getInstance().getGuildCache().get(getGuild().getIdLong()).isAutoLeave()) return false;
+        if (!GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()).getSelfMember().getVoiceState().inVoiceChannel()) return false;
         return true;
     }
 
     public void leave() {
         clearQueue();
         stop();
-        LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
+        if (GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()).getSelfMember().getVoiceState().inVoiceChannel())
+            LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
     }
 
     public void leave(String cause) {
@@ -545,12 +546,15 @@ public class MusicPlayer extends Player {
             isNotPlayingRunnable = new IsNotPlayingRunnable(this, 15, 15, TimeUnit.MINUTES);
             isPausedRunnable = new IsPausedRunnable(this, 30, 30, TimeUnit.MINUTES);
         } else {
-            if (isAloneRunnable.getScheduledFuture() != null && !isAloneRunnable.getScheduledFuture().isCancelled())
-                isAloneRunnable.getScheduledFuture().cancel(true);
-            if (isNotPlayingRunnable.getScheduledFuture() != null && !isNotPlayingRunnable.getScheduledFuture().isCancelled())
-                isNotPlayingRunnable.getScheduledFuture().cancel(true);
-            if (isPausedRunnable.getScheduledFuture() != null && !isPausedRunnable.getScheduledFuture().isCancelled())
-                isPausedRunnable.getScheduledFuture().cancel(true);
+            if (isAloneRunnable.getScheduledFuture() != null)
+                if (!isAloneRunnable.getScheduledFuture().isCancelled())
+                    isAloneRunnable.getScheduledFuture().cancel(true);
+            if (isNotPlayingRunnable.getScheduledFuture() != null)
+                if (!isNotPlayingRunnable.getScheduledFuture().isCancelled())
+                    isNotPlayingRunnable.getScheduledFuture().cancel(true);
+            if (isPausedRunnable.getScheduledFuture() != null)
+                if (!isPausedRunnable.getScheduledFuture().isCancelled())
+                    isPausedRunnable.getScheduledFuture().cancel(true);
         }
     }
 }

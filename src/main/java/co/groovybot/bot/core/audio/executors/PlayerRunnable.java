@@ -1,5 +1,6 @@
 package co.groovybot.bot.core.audio.executors;
 
+import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.util.NameThreadFactory;
 import lombok.Getter;
@@ -25,6 +26,12 @@ public abstract class PlayerRunnable implements Runnable {
     @Override
     public void run() {
         if (!musicPlayer.checkLeave()) return;
+
+        if (GroovyBot.getInstance().getShardManager().getGuildById(musicPlayer.getGuild().getIdLong()) == null) {
+            scheduler.shutdown();
+            scheduledFuture.cancel(true);
+        }
+
         execute();
     }
 

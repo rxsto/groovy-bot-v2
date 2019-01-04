@@ -106,11 +106,11 @@ public class ConfigurationSetup {
         configuration.addDefault("influxdb", influxdb);
 
         // Create object for botlists
-        final JSONObject botlists = new JSONObject()
-                .put("DiscordBotsORG", "defaultvalue")
-                .put("BotlistSPACE", "defaultvalue")
-                .put("DiscordBotsGG", "defaultvalue");
-        configuration.addDefault("botlists", botlists);
+//        final JSONObject botlists = new JSONObject()
+//                .put("DiscordBotsORG", "defaultvalue")
+//                .put("BotlistSPACE", "defaultvalue")
+//                .put("DiscordBotsGG", "defaultvalue");
+//        configuration.addDefault("botlists", botlists);
 
         final JSONObject graylog = new JSONObject()
                 .put("host", "localhost")
