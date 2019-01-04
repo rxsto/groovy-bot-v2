@@ -26,7 +26,7 @@ deploy_stage:
     - develop
   script:
     - apt-get update && apt-get install -y -qq sshpass
-    - export SSHPASS=$USER_PASS
+    - export SSHPASS='%{$USER_PASS}'
     - cd target/
     - sshpass -e scp -o stricthostkeychecking=no -r . root@$IP_ADDRESS:/opt/groovy/bots/canary/
     - sshpass -e ssh -t root@$IP_ADDRESS "/opt/groovy/bots/canary/update.sh"
