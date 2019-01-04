@@ -34,6 +34,7 @@ public class ShardsListener {
     @SubscribeEvent
     @SuppressWarnings("unused")
     private void onReady(ReadyEvent event) {
+        log.info("Shard ready");
         ShardManager shardManager = GroovyBot.getInstance().getShardManager();
         tempLoadedShards++;
 

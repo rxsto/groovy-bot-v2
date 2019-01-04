@@ -97,14 +97,6 @@ public class ConfigurationSetup {
         statuspage.put("api_key", "defaultvalue");
         configuration.addDefault("statuspage", statuspage);
 
-        // Create object for influxdb
-        final JSONObject influxdb = new JSONObject();
-        influxdb.put("username", "defaultvalue");
-        influxdb.put("password", "defaultvalue");
-        influxdb.put("host", "defaultvalue");
-        influxdb.put("database", "defaultvalue");
-        configuration.addDefault("influxdb", influxdb);
-
         // Create object for botlists
         final JSONObject botlists = new JSONObject()
                 .put("botlist.space", "defaultvalue")
@@ -134,6 +126,7 @@ public class ConfigurationSetup {
 
         final JSONObject prometheus = new JSONObject()
                 .put("bind_address", "0.0.0.0")
+                .put("token", "defaultvalue")
                 .put("port", 3033);
         configuration.addDefault("prometheus", prometheus);
 

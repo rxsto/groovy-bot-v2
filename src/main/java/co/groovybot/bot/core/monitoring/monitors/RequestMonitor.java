@@ -20,7 +20,7 @@
 package co.groovybot.bot.core.monitoring.monitors;
 
 import co.groovybot.bot.GroovyBot;
-import io.prometheus.client.Gauge;
+import io.prometheus.client.Counter;
 import net.dv8tion.jda.core.events.http.HttpRequestEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
@@ -31,7 +31,7 @@ import net.dv8tion.jda.core.hooks.SubscribeEvent;
  */
 public class RequestMonitor {
 
-    private final Gauge shards = Gauge.build().help("Show's request count").namespace("groovy").name("discord_api_requests").labelNames("shard_id").register();
+    private final Counter shards = Counter.build().help("Show's request count").namespace("groovy").name("discord_api_requests").labelNames("shard_id").register();
 
     public RequestMonitor() {
         //this.requests = new HashMap<>();

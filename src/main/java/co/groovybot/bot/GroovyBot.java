@@ -19,6 +19,7 @@
 
 package co.groovybot.bot;
 
+import co.groovybot.bot.core.CustomMetricsServlet;
 import co.groovybot.bot.core.GameAnimator;
 import co.groovybot.bot.core.KeyManager;
 import co.groovybot.bot.core.audio.LavalinkManager;
@@ -35,7 +36,11 @@ import co.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
 import co.groovybot.bot.core.lyrics.GeniusClient;
 import co.groovybot.bot.core.monitoring.ActionMonitor;
 import co.groovybot.bot.core.monitoring.MonitorManager;
-import co.groovybot.bot.core.monitoring.monitors.*;
+import co.groovybot.bot.core.monitoring.monitors.GuildMonitor;
+import co.groovybot.bot.core.monitoring.monitors.MessageMonitor;
+import co.groovybot.bot.core.monitoring.monitors.RequestMonitor;
+import co.groovybot.bot.core.monitoring.monitors.UserMonitor;
+import co.groovybot.bot.core.monitoring.monitors.internet.InternetMonitor;
 import co.groovybot.bot.core.premium.PremiumHandler;
 import co.groovybot.bot.core.statistics.ServerCountStatistics;
 import co.groovybot.bot.core.statistics.StatusPage;
@@ -49,7 +54,6 @@ import co.groovybot.bot.io.database.PostgreSQL;
 import co.groovybot.bot.listeners.*;
 import co.groovybot.bot.util.YoutubeUtil;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import io.prometheus.client.exporter.MetricsServlet;
 import io.prometheus.client.hotspot.DefaultExports;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -229,12 +233,11 @@ public class GroovyBot implements Closeable {
             ServletContextHandler context = new ServletContextHandler();
             context.setContextPath("/");
             prometheusServer.setHandler(context);
-            context.addServlet(new ServletHolder(new MetricsServlet()), "/metrics");
+            context.addServlet(new ServletHolder(new CustomMetricsServlet()), "/metrics");
             DefaultExports.initialize();
 
             try {
                 prometheusServer.start();
-                prometheusServer.join();
             } catch (Exception e) {
                 log.error("[Prometheus] Failed to start jetty server.", e);
             }
@@ -394,10 +397,11 @@ public class GroovyBot implements Closeable {
         // Register all monitors and start monitoring
         if (prometheusServer != null) {
             monitorManager = new MonitorManager();
+            new InternetMonitor();
             ActionMonitor msgMonitor = new MessageMonitor();
             ActionMonitor guildMonitor = new GuildMonitor();
             shardManager.addEventListener(msgMonitor, guildMonitor, new RequestMonitor(), new UserMonitor());
-            monitorManager.register(guildMonitor, new SystemMonitor(), msgMonitor);
+            monitorManager.register(guildMonitor, msgMonitor);
             monitorManager.start();
             log.info("[MonitoringManager] Monitoring started.");
         } else {

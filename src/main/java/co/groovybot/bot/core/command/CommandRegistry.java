@@ -27,7 +27,6 @@ import co.groovybot.bot.commands.owner.FriendsCommand;
 import co.groovybot.bot.commands.owner.UpdateCommand;
 import co.groovybot.bot.commands.settings.*;
 import co.groovybot.bot.commands.settings.AutoPlayCommand;
-import co.groovybot.bot.commands.settings.SwitchCommand;
 
 public class CommandRegistry {
 
