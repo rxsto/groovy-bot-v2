@@ -19,12 +19,14 @@
 
 package co.groovybot.bot.core.audio.sources.spotify;
 
+import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.AudioTrackFactory;
 import co.groovybot.bot.core.audio.data.TrackData;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.AlbumKey;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.ArtistKey;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.PlaylistKey;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.UserPlaylistKey;
+import co.groovybot.bot.core.audio.sources.spotify.manager.JedisManager;
 import co.groovybot.bot.core.audio.sources.spotify.manager.SpotifyManager;
 import co.groovybot.bot.core.audio.sources.spotify.request.GetNormalPlaylistRequest;
 import co.groovybot.bot.core.audio.sources.spotify.request.GetNormalPlaylistTracksRequest;
@@ -78,6 +80,8 @@ public class SpotifySourceManager implements AudioSourceManager {
     @Getter
     private final SpotifyManager spotifyManager;
     @Getter
+    private JedisManager jedisManager;
+    @Getter
     private final AudioTrackFactory audioTrackFactory;
 
     @Getter
@@ -94,8 +98,10 @@ public class SpotifySourceManager implements AudioSourceManager {
     @Getter
     private String retryAfter;
 
-    public SpotifySourceManager(@NonNull SpotifyManager spotifyManager) {
+    public SpotifySourceManager(@NonNull SpotifyManager spotifyManager, @NonNull JedisManager jedisManager) {
         this.spotifyManager = spotifyManager;
+        this.jedisManager = jedisManager;
+
         this.audioTrackFactory = new AudioTrackFactory();
         this.trackLoadingCache = CacheBuilder.newBuilder()
                 .maximumSize(100)

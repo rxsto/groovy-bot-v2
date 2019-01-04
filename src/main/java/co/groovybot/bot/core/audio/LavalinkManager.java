@@ -58,7 +58,7 @@ public class LavalinkManager {
         log.info("[LavalinkManager] Connecting to Nodes ...");
         this.groovyBot = groovyBot;
         this.audioPlayerManager = new DefaultAudioPlayerManager();
-        audioPlayerManager.registerSourceManager(new SpotifySourceManager(groovyBot.getSpotifyClient()));
+        audioPlayerManager.registerSourceManager(new SpotifySourceManager(groovyBot.getSpotifyManager()));
         audioPlayerManager.registerSourceManager(new DeezerSourceManager());
         audioPlayerManager.registerSourceManager(new ITunesSourceManager());
         audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());

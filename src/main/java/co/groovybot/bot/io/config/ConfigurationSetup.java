@@ -29,80 +29,80 @@ public class ConfigurationSetup {
         Configuration configuration = new Configuration("config/config.json");
 
         // Create object for bot
-        final JSONObject bot = new JSONObject();
-        bot.put("token", "defaultvalue");
-        bot.put("instance", "dev");
+        final JSONObject bot = new JSONObject()
+                .put("token", "defaultvalue")
+                .put("instance", "dev");
         configuration.addDefault("bot", bot);
 
         // Create object for database
-        final JSONObject db = new JSONObject();
-        db.put("host", "defaultvalue");
-        db.put("port", "defaultvalue");
-        db.put("database", "defaultvalue");
-        db.put("username", "defaultvalue");
-        db.put("password", "defaultvalue");
+        final JSONObject db = new JSONObject()
+                .put("host", "defaultvalue")
+                .put("port", "defaultvalue")
+                .put("database", "defaultvalue")
+                .put("username", "defaultvalue")
+                .put("password", "defaultvalue");
         configuration.addDefault("db", db);
 
         // Create object for websocket
-        final JSONObject ws = new JSONObject();
-        ws.put("host", "defaultvalue");
-        ws.put("port", "defaultvalue");
+        final JSONObject ws = new JSONObject()
+                .put("host", "defaultvalue")
+                .put("port", "defaultvalue");
         configuration.addDefault("websocket", ws);
 
         // Create array for lavalink nodes (f*ck schlabbbi)
         configuration.addDefault("lavalink_nodes", new JSONArray().put("name&&ws://host:2333&&passwort"));
 
         // Create array for games
-        final JSONArray games = new JSONArray();
-        games.put("defaultvalue");
+        final JSONArray games = new JSONArray()
+                .put("defaultvalue");
         configuration.addDefault("games", games);
 
         // Create object for settings
-        final JSONObject settings = new JSONObject();
-        settings.put("prefix", "g!");
-        settings.put("shards", 10);
-        settings.put("voice", "default");
+        final JSONObject settings = new JSONObject()
+                .put("prefix", "g!")
+                .put("shards", 10)
+                .put("voice", "default");
         configuration.addDefault("settings", settings);
 
         // Create array for owners
-        final JSONArray owners = new JSONArray();
-        owners.put(264048760580079616L);
-        owners.put(254892085000405004L);
-        owners.put(306480135832338432L);
-        owners.put(207500411907735552L);
-        owners.put(227817074976751616L);
-        owners.put(153507094933274624L);
+        final JSONArray owners = new JSONArray()
+                .put(264048760580079616L)
+                .put(254892085000405004L)
+                .put(306480135832338432L)
+                .put(207500411907735552L)
+                .put(227817074976751616L)
+                .put(153507094933274624L);
         configuration.addDefault("owners", owners);
 
         // Create object for youtube
-        final JSONObject youtube = new JSONObject();
-        youtube.put("apikey", "defaultvalue");
+        final JSONObject youtube = new JSONObject()
+                .put("apikey", "defaultvalue");
         configuration.addDefault("youtube", youtube);
 
         // Create object for spotify
-        final JSONObject spotify = new JSONObject();
-        spotify.put("client_id", "defaultvalue");
-        spotify.put("client_secret", "defaultvalue");
+        final JSONObject spotify = new JSONObject()
+                .put("client_id", "defaultvalue")
+                .put("client_secret", "defaultvalue");
         configuration.addDefault("spotify", spotify);
 
         // Create object for genius
-        final JSONObject genius = new JSONObject();
-        genius.put("token", "defaultvalue");
+        final JSONObject genius = new JSONObject()
+                .put("token", "defaultvalue");
         configuration.addDefault("genius", genius);
 
         // Create object for statuspage
-        final JSONObject statuspage = new JSONObject();
-        statuspage.put("page_id", "defaultvalue");
-        statuspage.put("metric_id", "defaultvalue");
-        statuspage.put("api_key", "defaultvalue");
+        final JSONObject statuspage = new JSONObject()
+                .put("page_id", "defaultvalue")
+                .put("metric_id", "defaultvalue")
+                .put("api_key", "defaultvalue");
         configuration.addDefault("statuspage", statuspage);
 
         // Create object for influxdb
-        final JSONObject influxdb = new JSONObject();
-        influxdb.put("username", "defaultvalue");
-        influxdb.put("password", "defaultvalue");
-        influxdb.put("host", "defaultvalue");
-        influxdb.put("database", "defaultvalue");
+        final JSONObject influxdb = new JSONObject()
+                .put("username", "defaultvalue")
+                .put("password", "defaultvalue")
+                .put("host", "defaultvalue")
+                .put("database", "defaultvalue");
         configuration.addDefault("influxdb", influxdb);
 
         // Create object for botlists
@@ -120,6 +120,11 @@ public class ConfigurationSetup {
         final JSONObject voiceRss = new JSONObject()
                 .put("api_key", "defaultvalue");
         configuration.addDefault("voice_rss", voiceRss);
+
+        final JSONObject redis = new JSONObject()
+                .put("host", "localhost")
+                .put("port", 6380);
+        configuration.addDefault("redis", redis);
 
         // Return config
         return configuration;
