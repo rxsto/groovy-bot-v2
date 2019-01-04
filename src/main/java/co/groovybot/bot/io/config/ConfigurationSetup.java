@@ -123,7 +123,8 @@ public class ConfigurationSetup {
 
         final JSONObject redis = new JSONObject()
                 .put("host", "localhost")
-                .put("port", 6380);
+                .put("port", 6380)
+                .put("password", "defaultvalue");
         configuration.addDefault("redis", redis);
 
         // Return config

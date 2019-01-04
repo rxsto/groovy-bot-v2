@@ -223,7 +223,7 @@ public class GroovyBot implements Closeable {
 
         httpClient = new OkHttpClient();
         spotifyManager = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
-        jedisManager = new JedisManager(config.getJSONObject("redis").getString("host"), config.getJSONObject("redis").getInt("port"));
+        jedisManager = new JedisManager(config.getJSONObject("redis"));
         lavalinkManager = new LavalinkManager(this);
         statusPage = new StatusPage(httpClient, config.getJSONObject("statuspage"));
 

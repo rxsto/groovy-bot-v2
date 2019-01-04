@@ -1,13 +1,15 @@
 package co.groovybot.bot.core.audio.sources.spotify.manager;
 
+import org.json.JSONObject;
 import redis.clients.jedis.Jedis;
 
 public class JedisManager {
 
     private final Jedis jedis;
 
-    public JedisManager(String host, int port) {
-        this.jedis = new Jedis(host, port);
+    public JedisManager(JSONObject jsonObject) {
+        this.jedis = new Jedis(jsonObject.getString("host"), jsonObject.getInt("port"));
+        this.jedis.auth(jsonObject.getString("password"));
     }
 
     public void set(String key, String value) {
