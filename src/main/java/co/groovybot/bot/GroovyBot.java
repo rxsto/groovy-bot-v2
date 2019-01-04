@@ -406,6 +406,8 @@ public class GroovyBot implements Closeable {
                 postgreSQL.close();
             if (shardManager != null)
                 shardManager.shutdown();
+            if (jedisManager != null)
+                jedisManager.close();
         } catch (Exception e) {
             log.error("[Core] Error while closing bot!", e);
         }

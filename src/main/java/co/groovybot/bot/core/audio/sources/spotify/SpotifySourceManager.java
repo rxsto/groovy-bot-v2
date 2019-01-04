@@ -98,9 +98,9 @@ public class SpotifySourceManager implements AudioSourceManager {
     @Getter
     private String retryAfter;
 
-    public SpotifySourceManager(@NonNull SpotifyManager spotifyManager, @NonNull JedisManager jedisManager) {
+    public SpotifySourceManager(@NonNull SpotifyManager spotifyManager) {
         this.spotifyManager = spotifyManager;
-        this.jedisManager = jedisManager;
+        this.jedisManager = GroovyBot.getInstance().getJedisManager();
 
         this.audioTrackFactory = new AudioTrackFactory();
         this.trackLoadingCache = CacheBuilder.newBuilder()
