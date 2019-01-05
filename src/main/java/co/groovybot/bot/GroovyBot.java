@@ -57,6 +57,7 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 import net.dv8tion.jda.core.hooks.IEventManager;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
+import net.dv8tion.jda.core.requests.RestAction;
 import okhttp3.OkHttpClient;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.Level;
@@ -309,6 +310,7 @@ public class GroovyBot implements Closeable {
 
         try {
             shardManager = shardManagerBuilder.build();
+            RestAction.DEFAULT_FAILURE = (action) -> {};
             log.info("[LavalinkManager] Initializing LavalinkManager ...");
             lavalinkManager.initialize();
         } catch (LoginException e) {
