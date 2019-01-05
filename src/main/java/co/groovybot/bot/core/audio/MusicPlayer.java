@@ -21,6 +21,7 @@ package co.groovybot.bot.core.audio;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.commands.music.SearchCommand;
+import co.groovybot.bot.core.audio.player.util.AnnounceReason;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.permission.UserPermissions;
@@ -31,7 +32,6 @@ import co.groovybot.bot.util.FormatUtil;
 import co.groovybot.bot.util.SafeMessage;
 import co.groovybot.bot.util.YoutubeUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
@@ -192,24 +192,24 @@ public class MusicPlayer extends Player {
     }
 
     @Override
-    public Message announceAutoplay() {
-        return SafeMessage.sendMessageBlocking(channel, info(translate("phrases.searching"), translate("phrases.searching.autoplay")));
-    }
-
-    @Override
-    public void announceRequeue(AudioTrack track) {
-        SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.loadfailed"), String.format("[%s](%s)", track.getInfo().title, track.getInfo().uri))));
-    }
-
-    @Override
-    public void announceNotFound(AudioTrack track) {
-        SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.searching.nomatches"), String.format("[%s](%s)", track.getInfo().title, track.getInfo().uri))));
-    }
-
-    @Override
-    public void announceSong(AudioPlayer audioPlayer, AudioTrack track) {
-        if (EntityProvider.getGuild(guild.getIdLong()).isAnnounceSongs())
-            SafeMessage.sendMessage(channel, EmbedUtil.play(translate("phrases.now"), String.format(translate("phrases.now.playing"), track.getInfo().title), track.getDuration()));
+    public void announce(AudioTrack track, AnnounceReason reason) {
+        switch (reason) {
+            case SONG:
+                if (EntityProvider.getGuild(guild.getIdLong()).isAnnounceSongs())
+                    SafeMessage.sendMessage(channel, EmbedUtil.play(translate("phrases.now"), String.format(translate("phrases.now.playing"), track.getInfo().title), track.getDuration()));
+                break;
+            case ERROR:
+                SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.loadfailed"), String.format("[%s](%s)", track.getInfo().title, track.getInfo().uri))));
+                break;
+            case NOT_FOUND:
+                SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.searching.nomatches"), String.format("[%s](%s)", track.getInfo().title, track.getInfo().uri))));
+                break;
+            case NULL:
+                SafeMessage.sendMessage(channel, info(translate("phrases.error"), translate("phrases.loadfailed.null")));
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
