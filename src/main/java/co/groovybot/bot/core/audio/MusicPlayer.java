@@ -52,7 +52,10 @@ import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONArray;
 
@@ -66,34 +69,26 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static co.groovybot.bot.util.EmbedUtil.error;
-import static co.groovybot.bot.util.EmbedUtil.info;
-import static co.groovybot.bot.util.EmbedUtil.success;
+import static co.groovybot.bot.util.EmbedUtil.*;
 import static co.groovybot.bot.util.SafeMessage.sendMessage;
 
 @Log4j2
 public class MusicPlayer extends Player {
 
     public static final Options CLI_OPTIONS = new Options().addOption(
-            Option.builder("F")
+            Option.builder("f")
                     .longOpt("forceplay")
                     .desc("Instantly plays the song")
                     .build()
     )
             .addOption(
-                    Option.builder("T")
+                    Option.builder("t")
                             .longOpt("playtop")
                             .desc("Adds the song to the top of the queue")
                             .build()
             )
             .addOption(
-                    Option.builder("S")
-                            .longOpt("shuffled")
-                            .desc("Adds the song to the queue and enables the shuffle mode")
-                            .build()
-            )
-            .addOption(
-                    Option.builder("SC")
+                    Option.builder("sc")
                             .longOpt("soundcloud")
                             .desc("Searches the song on SoundCloud")
                             .build()
@@ -180,7 +175,7 @@ public class MusicPlayer extends Player {
         getHandler().handlePlayerLeave();
         if (GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()) != null)
             if (GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()).getSelfMember().getVoiceState().inVoiceChannel())
-                 LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
+                LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
     }
 
     public void leave(String cause) {
@@ -254,7 +249,7 @@ public class MusicPlayer extends Player {
             SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.play.argumenterror.title"), String.format(event.translate("phrases.play.argumenterror.title"), e.getMessage(), FormatUtil.formatHelp("play [options] <url/search>", CLI_OPTIONS))));
             return;
         }
-        
+
         UserPermissions userPermissions = EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions();
         Permissions tierTwo = Permissions.tierTwo();
 
@@ -267,31 +262,11 @@ public class MusicPlayer extends Player {
 
         boolean isUrl = true;
 
-        final boolean isSoundcloud = args.hasOption("SC");
-        final boolean isForce = args.hasOption("F");
-        final boolean isTop = args.hasOption("T");
-        final boolean isShuffled = args.hasOption("S");
-
-        /* if (keyword.contains("-soundcloud") || keyword.contains("-sc")) {
-            isSoundcloud = true;
-            keyword = keyword.replaceAll("-soundcloud", "").replaceAll("-sc", "");
-        } else isSoundcloud = false; */
-
-        /*if (keyword.contains("-forceplay") || keyword.contains("-fp") || keyword.contains("-skip") || keyword.contains("-force")) {
-            isForce = true;
-            keyword = keyword.replaceAll("-forceplay", "").replaceAll("-fp", "").replaceAll("-skip", "").replaceAll("-force", "");
-        } else isForce = false;
-        */
-
-        /*if (keyword.contains("-playtop") || keyword.contains("-pt") || keyword.contains("-top")) {
-            isTop = true;
-            keyword = keyword.replaceAll("-playtop", "").replaceAll("-pt", "").replaceAll("-top", "");
-        } else isTop = false;*/
+        final boolean isSoundcloud = args.hasOption("sc");
+        final boolean isForce = args.hasOption("f");
+        final boolean isTop = args.hasOption("t");
 
         Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("phrases.searching"), String.format(event.translate("phrases.searching.description"), keyword)));
-
-        if (isShuffled)
-            getScheduler().setShuffle(true);
 
         if (!keyword.startsWith("http://") && !keyword.startsWith("https://")) {
             if (isSoundcloud) keyword = "scsearch: " + keyword;
