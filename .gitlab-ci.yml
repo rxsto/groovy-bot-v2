@@ -29,4 +29,4 @@ deploy_stage:
     - export SSHPASS=$USER_PASS
     - cd target/
     - sshpass -e scp -o stricthostkeychecking=no -r . $USER_NAME@$IP_ADDRESS:/opt/groovy/bots/canary/
-    - sshpass -e ssh -t $USER_NAME@$IP_ADDRESS "sudo /opt/groovy/groovy.sh canary restart"
+    - sshpass -e ssh -t $USER_NAME@$IP_ADDRESS "/opt/groovy/bots/canary/update.sh"
