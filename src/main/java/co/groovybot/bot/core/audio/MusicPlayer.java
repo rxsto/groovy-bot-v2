@@ -246,7 +246,7 @@ public class MusicPlayer extends Player {
         try {
             args = event.asCli(CLI_OPTIONS);
         } catch (ParseException e) {
-            SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.play.argumenterror.title"), String.format(event.translate("phrases.play.argumenterror.title"), e.getMessage(), FormatUtil.formatHelp("play [options] <url/search>", CLI_OPTIONS))));
+            SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.error"), String.format(event.translate("phrases.error.cli"), e.getMessage(), FormatUtil.formatHelp("play [options] <url/search>", CLI_OPTIONS))));
             return;
         }
 
