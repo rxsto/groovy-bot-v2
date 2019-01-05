@@ -38,6 +38,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.*;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
+import com.wrapper.spotify.exceptions.detailed.TooManyRequestsException;
 import com.wrapper.spotify.model_objects.specification.*;
 import com.wrapper.spotify.requests.data.albums.GetAlbumsTracksRequest;
 import com.wrapper.spotify.requests.data.artists.GetArtistRequest;
@@ -92,7 +93,7 @@ public class SpotifySourceManager implements AudioSourceManager {
     private LoadingCache<AlbumKey, Album> albumLoadingCache;
 
     @Getter
-    private String retryAfter;
+    private long retryAfter;
 
     public SpotifySourceManager(@NonNull SpotifyManager spotifyManager) {
         this.spotifyManager = spotifyManager;
@@ -143,7 +144,7 @@ public class SpotifySourceManager implements AudioSourceManager {
                         return getAlbumById(key);
                     }
                 }, Executors.newCachedThreadPool()));
-        this.retryAfter = "";
+        this.retryAfter = 0;
     }
 
     @Override
@@ -165,10 +166,8 @@ public class SpotifySourceManager implements AudioSourceManager {
             if (!url.getHost().equalsIgnoreCase("open.spotify.com"))
                 return null;
             String rawUrl = url.toString();
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            int statusCode = urlConnection.getResponseCode();
-            if (statusCode == 429) {
-                this.retryAfter = urlConnection.getHeaderField("Retry-After");
+
+            if (retryAfter > System.currentTimeMillis()) {
                 throw new FriendlyException(String.format("We are currently rate-limited. Please try again in `%s`!", retryAfter), FriendlyException.Severity.COMMON, new Throwable());
             }
 
@@ -177,20 +176,41 @@ public class SpotifySourceManager implements AudioSourceManager {
             if (TRACK_PATTERN.matcher(rawUrl).matches())
                 audioItem = buildTrack(rawUrl);
             if (PLAYLIST_PATTERN.matcher(rawUrl).matches())
-                audioItem = buildPlaylist(rawUrl);
+                try {
+                    audioItem = buildPlaylist(rawUrl);
+                } catch (TooManyRequestsException e) {
+                    log.error("Got TooManyRequests exception!", e);
+                    this.retryAfter = (e.getRetryAfter() * 1000) + System.currentTimeMillis();
+                    throw new FriendlyException(String.format("We are currently rate-limited. Please try again in `%s`!", retryAfter), FriendlyException.Severity.COMMON, new Throwable());
+                }
             if (USER_PLAYLIST_PATTERN.matcher(rawUrl).matches())
-                audioItem = buildUserPlaylist(rawUrl);
+                try {
+                    audioItem = buildUserPlaylist(rawUrl);
+                } catch (TooManyRequestsException e) {
+                    log.error("Got TooManyRequests exception!", e);
+                    this.retryAfter = (e.getRetryAfter() * 1000) + System.currentTimeMillis();
+                    throw new FriendlyException(String.format("We are currently rate-limited. Please try again in `%s`!", retryAfter), FriendlyException.Severity.COMMON, new Throwable());
+                }
             if (ALBUM_PATTERN.matcher(rawUrl).matches())
-                audioItem = buildPlaylistFromAlbum(rawUrl);
+                try {
+                    audioItem = buildPlaylistFromAlbum(rawUrl);
+                } catch (TooManyRequestsException e) {
+                    log.error("Got TooManyRequests exception!", e);
+                    this.retryAfter = (e.getRetryAfter() * 1000) + System.currentTimeMillis();
+                    throw new FriendlyException(String.format("We are currently rate-limited. Please try again in `%s`!", retryAfter), FriendlyException.Severity.COMMON, new Throwable());
+                }
             if (TOPTEN_ARTIST_PATTERN.matcher(rawUrl).matches())
-                audioItem = buildTopTenPlaylist(rawUrl);
+                try {
+                    audioItem = buildTopTenPlaylist(rawUrl);
+                } catch (TooManyRequestsException e) {
+                    log.error("Got TooManyRequests exception!", e);
+                    this.retryAfter = (e.getRetryAfter() * 1000) + System.currentTimeMillis();
+                    throw new FriendlyException(String.format("We are currently rate-limited. Please try again in `%s`!", retryAfter), FriendlyException.Severity.COMMON, new Throwable());
+                }
 
             return audioItem;
         } catch (MalformedURLException e) {
             log.error("Failed to load the item!", e);
-            return null;
-        } catch (IOException e) {
-            log.error(e);
             return null;
         }
     }
@@ -200,37 +220,33 @@ public class SpotifySourceManager implements AudioSourceManager {
 
         Track track;
         try {
-            long startTime = System.currentTimeMillis();
-            log.debug("Before: " + startTime);
             track = trackLoadingCache.get(trackId);
-            log.debug("After: " + (System.currentTimeMillis() - startTime));
         } catch (ExecutionException e) {
             log.error(e);
             return null;
         }
+
         TrackData trackData = getTrackData(Objects.requireNonNull(track));
         return this.audioTrackFactory.getAudioTrack(trackData);
     }
 
-    private AudioPlaylist buildPlaylist(String url) {
+    private AudioPlaylist buildPlaylist(String url) throws TooManyRequestsException {
         PlaylistKey playlistKey = parsePlaylistPattern(url);
 
         Playlist playlist;
         try {
-            long startTime = System.currentTimeMillis();
-            log.debug("Before: " + startTime);
             playlist = playlistLoadingCache.get(playlistKey);
-            log.debug("After: " + (System.currentTimeMillis() - startTime));
         } catch (ExecutionException e) {
             log.error(e);
             return null;
         }
+
         List<TrackData> trackDataList = this.getPlaylistTrackDataList(getPlaylistTracks(playlist));
         List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
         return new BasicAudioPlaylist(playlist.getName(), audioTracks, null, false);
     }
 
-    private AudioPlaylist buildUserPlaylist(String url) {
+    private AudioPlaylist buildUserPlaylist(String url) throws TooManyRequestsException {
         UserPlaylistKey userPlaylistKey = parseUserPlaylistPattern(url);
 
         this.spotifyManager.refreshAccessToken();
@@ -238,10 +254,7 @@ public class SpotifySourceManager implements AudioSourceManager {
                 .build();
         Playlist playlist;
         try {
-            long startTime = System.currentTimeMillis();
-            log.debug("Before: " + startTime);
             playlist = getPlaylistRequest.execute();
-            log.debug("After: " + (System.currentTimeMillis() - startTime));
         } catch (IOException | SpotifyWebApiException e) {
             log.error(e);
             return null;
@@ -251,15 +264,12 @@ public class SpotifySourceManager implements AudioSourceManager {
         return new BasicAudioPlaylist(playlist.getName(), audioTracks, null, false);
     }
 
-    private AudioPlaylist buildPlaylistFromAlbum(String url) {
+    private AudioPlaylist buildPlaylistFromAlbum(String url) throws TooManyRequestsException {
         AlbumKey albumKey = parseAlbumPattern(url);
 
         Album album;
         try {
-            long startTime = System.currentTimeMillis();
-            log.debug("Before: " + startTime);
             album = albumLoadingCache.get(albumKey);
-            log.debug("After: " + (System.currentTimeMillis() - startTime));
         } catch (ExecutionException e) {
             log.error(e);
             return null;
@@ -269,7 +279,7 @@ public class SpotifySourceManager implements AudioSourceManager {
         return new BasicAudioPlaylist(album.getName(), audioTracks, null, false);
     }
 
-    private AudioPlaylist buildTopTenPlaylist(String url) {
+    private AudioPlaylist buildTopTenPlaylist(String url) throws TooManyRequestsException {
         ArtistKey artistKey = parseArtistPattern(url);
 
         this.spotifyManager.refreshAccessToken();
@@ -277,10 +287,9 @@ public class SpotifySourceManager implements AudioSourceManager {
                 .build();
         Artist artist;
         try {
-            long startTime = System.currentTimeMillis();
-            log.debug("Before: " + startTime);
             artist = getArtistRequest.execute();
-            log.debug("After: " + (System.currentTimeMillis() - startTime));
+        } catch (TooManyRequestsException e) {
+            throw e;
         } catch (SpotifyWebApiException | IOException e) {
             log.error(e);
             return null;
@@ -290,7 +299,7 @@ public class SpotifySourceManager implements AudioSourceManager {
         return new BasicAudioPlaylist("Top 10 Songs by " + artist.getName(), audioTracks, null, false);
     }
 
-    private List<PlaylistTrack> getPlaylistTracks(Playlist playlist) {
+    private List<PlaylistTrack> getPlaylistTracks(Playlist playlist) throws TooManyRequestsException {
         List<PlaylistTrack> playlistTracks = Lists.newArrayList();
         Paging<PlaylistTrack> currentPage = playlist.getTracks();
 
@@ -312,7 +321,9 @@ public class SpotifySourceManager implements AudioSourceManager {
 
                     currentPage = builder.build().execute();
                     i++;
-                } catch (URISyntaxException e) {
+                } catch (TooManyRequestsException e) {
+                    throw e;
+                }  catch (URISyntaxException e) {
                     log.error("Got invalid 'next page' URI!", e);
                     return Collections.emptyList();
                 } catch (SpotifyWebApiException | IOException e) {
@@ -321,11 +332,11 @@ public class SpotifySourceManager implements AudioSourceManager {
                 }
             }
         } while (currentPage != null);
-        log.debug("UserPlaylist-Requests executed " + i + " times.");
+        log.info("UserPlaylist-Requests executed " + i + " times.");
         return playlistTracks;
     }
 
-    private List<TrackSimplified> getAlbumTracks(Album album) {
+    private List<TrackSimplified> getAlbumTracks(Album album) throws TooManyRequestsException {
         List<TrackSimplified> albumTracks = Lists.newArrayList();
         Paging<TrackSimplified> currentPage = album.getTracks();
 
@@ -343,7 +354,9 @@ public class SpotifySourceManager implements AudioSourceManager {
                     }
 
                     currentPage = builder.build().execute();
-                } catch (URISyntaxException e) {
+                } catch (TooManyRequestsException e) {
+                    throw e;
+                }  catch (URISyntaxException e) {
                     log.error("Got invalid 'next page' URI!", e);
                 } catch (SpotifyWebApiException | IOException e) {
                     log.error("Failed to query Spotify for album tracks!", e);
@@ -353,13 +366,15 @@ public class SpotifySourceManager implements AudioSourceManager {
         return albumTracks;
     }
 
-    private List<Track> getTopTenSongs(Artist artist) {
+    private List<Track> getTopTenSongs(Artist artist) throws TooManyRequestsException {
         List<Track> albumTracks = Lists.newArrayList();
         GetArtistsTopTracksRequest getArtistsTopTracksRequest = this.spotifyManager.getSpotifyApi().getArtistsTopTracks(artist.getId(), CountryCode.US)
                 .build();
         try {
             albumTracks.addAll(Arrays.asList(getArtistsTopTracksRequest.execute()));
-        } catch (IOException | SpotifyWebApiException e) {
+        } catch (TooManyRequestsException e) {
+            throw e;
+        }  catch (IOException | SpotifyWebApiException e) {
             log.error("Failed to query top ten songs from artist!", e);
         }
         return albumTracks;
@@ -413,6 +428,10 @@ public class SpotifySourceManager implements AudioSourceManager {
                     .getTrack(id)
                     .build()
                     .execute();
+        } catch (TooManyRequestsException e) {
+            log.error("Got TooManyRequests exception!", e);
+            this.retryAfter = (e.getRetryAfter() * 1000) + System.currentTimeMillis();
+            return new Track.Builder().build();
         } catch (SpotifyWebApiException | IOException e) {
             log.error(e);
             return new Track.Builder().build();
@@ -426,6 +445,10 @@ public class SpotifySourceManager implements AudioSourceManager {
                 .build();
         try {
             return normalPlaylistRequest.execute();
+        } catch (TooManyRequestsException e) {
+            log.error("Got TooManyRequests exception!", e);
+            this.retryAfter = (e.getRetryAfter() * 1000) + System.currentTimeMillis();
+            return new Playlist.Builder().build();
         } catch (SpotifyWebApiException | IOException e) {
             log.error(e);
             return new Playlist.Builder().build();
@@ -438,6 +461,10 @@ public class SpotifySourceManager implements AudioSourceManager {
                 .build();
         try {
             return getPlaylistRequest.execute();
+        } catch (TooManyRequestsException e) {
+            log.error("Got TooManyRequests exception!", e);
+            this.retryAfter = (e.getRetryAfter() * 1000) + System.currentTimeMillis();
+            return new Playlist.Builder().build();
         } catch (SpotifyWebApiException | IOException e) {
             log.error(e);
             return new Playlist.Builder().build();
@@ -451,6 +478,10 @@ public class SpotifySourceManager implements AudioSourceManager {
                     .getAlbum(albumKey.getAlbumId())
                     .build()
                     .execute();
+        } catch (TooManyRequestsException e) {
+            log.error("Got TooManyRequests exception!", e);
+            this.retryAfter = (e.getRetryAfter() * 1000) + System.currentTimeMillis();
+            return new Album.Builder().build();
         } catch (SpotifyWebApiException | IOException e) {
             log.error(e);
             return new Album.Builder().build();
