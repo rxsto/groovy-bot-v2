@@ -21,10 +21,6 @@ package co.groovybot.bot.core.audio;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.commands.music.SearchCommand;
-import co.groovybot.bot.core.audio.executors.PlayerRunnable;
-import co.groovybot.bot.core.audio.executors.leave.IsAloneRunnable;
-import co.groovybot.bot.core.audio.executors.leave.IsNotPlayingRunnable;
-import co.groovybot.bot.core.audio.executors.leave.IsPausedRunnable;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.permission.UserPermissions;
@@ -67,7 +63,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static co.groovybot.bot.util.EmbedUtil.info;
@@ -98,8 +93,6 @@ public class MusicPlayer extends Player {
     private int skipVotes;
     @Getter
     private boolean inProgress;
-    @Getter
-    private PlayerRunnable isAloneRunnable, isNotPlayingRunnable, isPausedRunnable;
 
     protected MusicPlayer(Guild guild, TextChannel channel, YoutubeUtil youtubeClient) {
         super(youtubeClient);
@@ -119,6 +112,7 @@ public class MusicPlayer extends Player {
     }
 
     public void connect(VoiceChannel channel) {
+        getHandler().handlePlayerJoin();
         link.connect(channel);
         Objects.requireNonNull(link.getGuild()).getAudioManager().setSelfDeafened(true);
     }
@@ -148,15 +142,18 @@ public class MusicPlayer extends Player {
     public boolean checkLeave() {
         if (isInProgress()) return false;
         if (!GroovyBot.getInstance().getGuildCache().get(getGuild().getIdLong()).isAutoLeave()) return false;
-        if (!GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()).getSelfMember().getVoiceState().inVoiceChannel()) return false;
+        if (!GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()).getSelfMember().getVoiceState().inVoiceChannel())
+            return false;
         return true;
     }
 
     public void leave() {
         clearQueue();
         stop();
-        if (GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()).getSelfMember().getVoiceState().inVoiceChannel())
-            LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
+        getHandler().handlePlayerLeave();
+        if (GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()) != null)
+            if (GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()).getSelfMember().getVoiceState().inVoiceChannel())
+                 LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
     }
 
     public void leave(String cause) {
@@ -179,12 +176,12 @@ public class MusicPlayer extends Player {
 
     @Override
     public void announceRequeue(AudioTrack track) {
-        SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.loadfailed"), String.format("[%s](%s)", track.getInfo().title == null ? "null" : track.getInfo().title, track.getInfo().uri == null ? "null" : track.getInfo().uri))));
+        SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.loadfailed"), String.format("[%s](%s)", track.getInfo().title, track.getInfo().uri))));
     }
 
     @Override
     public void announceNotFound(AudioTrack track) {
-        SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.searching.nomatches"), String.format("[%s](%s)", track.getInfo().title == null ? "null" : track.getInfo().title, track.getInfo().uri == null ? "null" : track.getInfo().uri))));
+        SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.searching.nomatches"), String.format("[%s](%s)", track.getInfo().title, track.getInfo().uri))));
     }
 
     @Override
@@ -476,7 +473,6 @@ public class MusicPlayer extends Player {
         if (event.getMember().equals(event.getGuild().getSelfMember())) {
             skipVotes = 0;
             voiceChannel = null;
-            handlePlayerRunnables(false);
         }
     }
 
@@ -485,7 +481,6 @@ public class MusicPlayer extends Player {
     private void handleConnect(GuildVoiceJoinEvent event) {
         if (event.getMember().equals(event.getGuild().getSelfMember())) {
             voiceChannel = event.getChannelJoined();
-            handlePlayerRunnables(true);
         }
     }
 
@@ -538,23 +533,5 @@ public class MusicPlayer extends Player {
 
         private final String titleTranslationKey;
         private final String descriptionTranslationKey;
-    }
-
-    public void handlePlayerRunnables(boolean activate) {
-        if (activate) {
-            isAloneRunnable = new IsAloneRunnable(this, 5, 5, TimeUnit.MINUTES);
-            isNotPlayingRunnable = new IsNotPlayingRunnable(this, 15, 15, TimeUnit.MINUTES);
-            isPausedRunnable = new IsPausedRunnable(this, 30, 30, TimeUnit.MINUTES);
-        } else {
-            if (isAloneRunnable.getScheduledFuture() != null)
-                if (!isAloneRunnable.getScheduledFuture().isCancelled())
-                    isAloneRunnable.getScheduledFuture().cancel(true);
-            if (isNotPlayingRunnable.getScheduledFuture() != null)
-                if (!isNotPlayingRunnable.getScheduledFuture().isCancelled())
-                    isNotPlayingRunnable.getScheduledFuture().cancel(true);
-            if (isPausedRunnable.getScheduledFuture() != null)
-                if (!isPausedRunnable.getScheduledFuture().isCancelled())
-                    isPausedRunnable.getScheduledFuture().cancel(true);
-        }
     }
 }

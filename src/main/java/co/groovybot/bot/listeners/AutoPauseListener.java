@@ -61,6 +61,7 @@ public class AutoPauseListener {
         if (musicPlayer == null)
             return;
         musicPlayer.getPlayer().setPaused(true);
+        musicPlayer.getHandler().handleTrackPause();
     }
 
     private void handleAutopauseStop(GenericGuildVoiceEvent event) {
@@ -71,6 +72,6 @@ public class AutoPauseListener {
         if (musicPlayer == null)
             return;
         musicPlayer.getPlayer().setPaused(false);
+        musicPlayer.getHandler().handleTrackResume();
     }
-
 }
