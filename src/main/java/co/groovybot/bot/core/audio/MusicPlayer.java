@@ -52,6 +52,10 @@ import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONArray;
 
@@ -65,12 +69,30 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static co.groovybot.bot.util.EmbedUtil.info;
-import static co.groovybot.bot.util.EmbedUtil.success;
+import static co.groovybot.bot.util.EmbedUtil.*;
 import static co.groovybot.bot.util.SafeMessage.sendMessage;
 
 @Log4j2
 public class MusicPlayer extends Player {
+
+    public static final Options CLI_OPTIONS = new Options().addOption(
+            Option.builder("f")
+                    .longOpt("forceplay")
+                    .desc("Instantly plays the song")
+                    .build()
+    )
+            .addOption(
+                    Option.builder("t")
+                            .longOpt("playtop")
+                            .desc("Adds the song to the top of the queue")
+                            .build()
+            )
+            .addOption(
+                    Option.builder("sc")
+                            .longOpt("soundcloud")
+                            .desc("Searches the song on SoundCloud")
+                            .build()
+            );
 
     @Getter
     private final AudioPlayerManager audioPlayerManager;
@@ -153,7 +175,7 @@ public class MusicPlayer extends Player {
         getHandler().handlePlayerLeave();
         if (GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()) != null)
             if (GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()).getSelfMember().getVoiceState().inVoiceChannel())
-                 LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
+                LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
     }
 
     public void leave(String cause) {
@@ -220,6 +242,14 @@ public class MusicPlayer extends Player {
             return;
         }
 
+        CommandLine args;
+        try {
+            args = event.asCli(CLI_OPTIONS);
+        } catch (ParseException e) {
+            SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.play.argumenterror.title"), String.format(event.translate("phrases.play.argumenterror.title"), e.getMessage(), FormatUtil.formatHelp("play [options] <url/search>", CLI_OPTIONS))));
+            return;
+        }
+
         UserPermissions userPermissions = EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions();
         Permissions tierTwo = Permissions.tierTwo();
 
@@ -228,28 +258,13 @@ public class MusicPlayer extends Player {
             return;
         }
 
-        String keyword = event.getArguments();
+        String keyword = String.join(" ", args.getArgs());
 
         boolean isUrl = true;
 
-        final boolean isSoundcloud;
-        final boolean isForce;
-        final boolean isTop;
-
-        if (keyword.contains("-soundcloud") || keyword.contains("-sc")) {
-            isSoundcloud = true;
-            keyword = keyword.replaceAll("-soundcloud", "").replaceAll("-sc", "");
-        } else isSoundcloud = false;
-
-        if (keyword.contains("-forceplay") || keyword.contains("-fp") || keyword.contains("-skip") || keyword.contains("-force")) {
-            isForce = true;
-            keyword = keyword.replaceAll("-forceplay", "").replaceAll("-fp", "").replaceAll("-skip", "").replaceAll("-force", "");
-        } else isForce = false;
-
-        if (keyword.contains("-playtop") || keyword.contains("-pt") || keyword.contains("-top")) {
-            isTop = true;
-            keyword = keyword.replaceAll("-playtop", "").replaceAll("-pt", "").replaceAll("-top", "");
-        } else isTop = false;
+        final boolean isSoundcloud = args.hasOption("sc");
+        final boolean isForce = args.hasOption("f");
+        final boolean isTop = args.hasOption("t");
 
         Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("phrases.searching"), String.format(event.translate("phrases.searching.description"), keyword)));
 

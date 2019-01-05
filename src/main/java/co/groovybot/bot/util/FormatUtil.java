@@ -27,8 +27,12 @@ import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.User;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
 import org.apache.commons.text.WordUtils;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -242,5 +246,18 @@ public class FormatUtil {
 
     public static String formatException(Throwable throwable) {
         return String.format("%s:%s", throwable.getClass().getCanonicalName(), throwable.getMessage());
+    }
+
+    /**
+     * Formats CLI help
+     * @param syntax Thea syntax
+     * @param options the options
+     * @return The formatted help
+     */
+    public static String formatHelp(String syntax, Options options) {
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+        new HelpFormatter().printHelp(printWriter, HelpFormatter.DEFAULT_WIDTH, syntax, null, options, HelpFormatter.DEFAULT_LEFT_PAD, HelpFormatter.DEFAULT_DESC_PAD, null, false);
+        return stringWriter.getBuffer().toString();
     }
 }
