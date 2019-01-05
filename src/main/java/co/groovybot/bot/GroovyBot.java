@@ -82,6 +82,7 @@ import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Log4j2
 public class GroovyBot implements Closeable {
@@ -374,9 +375,11 @@ public class GroovyBot implements Closeable {
                 return null;
             })
                     .registerBotlist(new DiscordBotsORG())
+                    .setSuccessHandler(clazz -> log.info("[BotlistWrapper] Successfully posted stats to {}!", clazz.getSimpleName()))
+                    .setLoopInterval(1)
+                    .setLoopTimeUnit(TimeUnit.HOURS)
                     .build();
         }
-
 
         // Register all monitors and start monitoring
         if (influxDB == null) {
