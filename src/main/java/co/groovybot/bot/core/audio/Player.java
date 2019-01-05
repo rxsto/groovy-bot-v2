@@ -36,6 +36,8 @@ public abstract class Player {
     @Getter
     private final Scheduler scheduler;
     @Getter
+    private final PlayerCheckHandler handler;
+    @Getter
     public Queue<AudioTrack> trackQueue;
     @Getter
     public JdaLink link;
@@ -45,7 +47,8 @@ public abstract class Player {
 
     public Player(YoutubeUtil youtubeClient) {
         this.trackQueue = new LinkedList<>();
-        this.scheduler = new Scheduler(this);
+        this.handler = new PlayerCheckHandler(((MusicPlayer) this), 3);
+        this.scheduler = new Scheduler(((MusicPlayer) this));
         this.youtubeClient = youtubeClient;
     }
 
@@ -81,10 +84,12 @@ public abstract class Player {
 
     public void pause() {
         player.setPaused(true);
+        handler.handleTrackPause();
     }
 
     public void resume() {
         player.setPaused(false);
+        handler.handleTrackResume();
     }
 
     public void seekTo(long time) {

@@ -133,10 +133,13 @@ public class ControlCommand extends SameChannelCommand {
             final Scheduler playerScheduler = this.player.getScheduler();
             switch (event.getReaction().getReactionEmote().getName()) {
                 case "⏯":
-                    if (!player.isPaused())
+                    if (!player.isPaused()) {
                         musicPlayer.setPaused(true);
-                    else
+                        this.player.getHandler().handleTrackPause();
+                    } else {
                         musicPlayer.setPaused(false);
+                        this.player.getHandler().handleTrackResume();
+                    }
                     break;
                 case "⏭":
                     this.player.skip();

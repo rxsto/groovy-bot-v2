@@ -179,15 +179,29 @@ public class FormatUtil {
      */
     public static long convertTimestamp(String timestamp) throws ParseException {
         DateFormat dateFormat = null;
-        int count = timestamp.split(":").length;
+        String[] splittedTimestamp = timestamp.split(":");
+        int count = splittedTimestamp.length;
+        String[] fixedTimestamp = new String[count];
+
+        for (int i = 0; i < count; i++) {
+            if (splittedTimestamp[i].length() == 1) {
+                fixedTimestamp[i] = "0" + splittedTimestamp[i];
+            } else if (splittedTimestamp[i].length() > 2 || splittedTimestamp[i].length() < 1) {
+                throw new ParseException("Invalid timestamp, part is longer than 2 chars.", i);
+            } else {
+                fixedTimestamp[i] = splittedTimestamp[i];
+            }
+        }
+
         if (count == 1)
             dateFormat = new SimpleDateFormat("ss");
         else if (count == 2)
             dateFormat = new SimpleDateFormat("mm:ss");
         else if (count > 2)
             dateFormat = new SimpleDateFormat("HH:mm:ss");
+
         assert dateFormat != null;
-        return dateFormat.parse(timestamp).getTime() + TimeUnit.HOURS.toMillis(1);
+        return dateFormat.parse(String.join(":", fixedTimestamp)).getTime() + TimeUnit.HOURS.toMillis(1);
     }
 
     public static String[] formatLyrics(String lyrics) {

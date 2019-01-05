@@ -52,7 +52,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
 
     private static final Pattern TRACK_PATTERN = Pattern.compile("(https?://)?(.*)?youtube\\.com/watch\\?v=([^?/\\s]*)");
 
-    private final Player player;
+    private final MusicPlayer player;
     @Getter
     @Setter
     private boolean loopqueue = false;
@@ -94,7 +94,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
     private void handleTrackEnd(AudioTrack track, AudioTrackEndReason reason) {
         switch (reason) {
             case FINISHED:
-                Guild guild = ((MusicPlayer) player).getGuild();
+                Guild guild = player.getGuild();
 
                 if (guild.getSelfMember().getVoiceState().getChannel() == null) return;
 

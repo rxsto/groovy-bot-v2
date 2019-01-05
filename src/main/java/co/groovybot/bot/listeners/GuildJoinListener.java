@@ -38,6 +38,7 @@ public class GuildJoinListener {
 
     private void joinMessage(Guild guild) {
         TextChannel textChannel = guild.getTextChannels().stream().filter(TextChannel::canTalk).filter(channel -> channel.getName().toLowerCase().contains("bot") || channel.getName().toLowerCase().contains("command") || channel.getName().toLowerCase().contains("music")).findFirst().orElse(guild.getTextChannels().stream().filter(TextChannel::canTalk).findFirst().orElse(null));
-        SafeMessage.sendMessageBlocking(textChannel, EmbedUtil.welcome(guild));
+        if (textChannel != null)
+            SafeMessage.sendMessage(textChannel, EmbedUtil.welcome(guild));
     }
 }
