@@ -34,7 +34,7 @@ import java.util.LinkedList;
 public class RemoveCommand extends SameChannelCommand {
 
     public RemoveCommand() {
-        super(new String[]{"remove", "rm"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you remove a specific song from the queue", "<index>");
+        super(new String[]{"remove", "rm"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you remove a specific song from the queue", "<position>");
     }
 
     @Override

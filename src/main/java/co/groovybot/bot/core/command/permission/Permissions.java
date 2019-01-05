@@ -154,6 +154,7 @@ public class Permissions {
         } catch (SQLException e) {
             log.error("[PermissionProvider] Error while retrieving permissions!", e);
         }
+
         return false;
     }
 }

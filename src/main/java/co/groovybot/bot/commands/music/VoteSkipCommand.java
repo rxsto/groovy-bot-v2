@@ -28,7 +28,7 @@ import co.groovybot.bot.core.command.voice.SameChannelCommand;
 
 public class VoteSkipCommand extends SameChannelCommand {
     public VoteSkipCommand() {
-        super(new String[]{"voteskip", "vs", "vskp"}, CommandCategory.MUSIC, Permissions.everyone(), "Vote for skipping the current song", "");
+        super(new String[]{"voteskip", "vs", "vskip"}, CommandCategory.MUSIC, Permissions.everyone(), "Vote for skipping the current song", "");
     }
 
     @Override

@@ -17,7 +17,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-package co.groovybot.bot.core.audio.spotify.request;
+package co.groovybot.bot.core.audio.sources.spotify.request;
 
 import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
@@ -27,9 +27,9 @@ import com.wrapper.spotify.requests.data.AbstractDataRequest;
 
 import java.io.IOException;
 
-public class GetNormalPlaylistsTracksRequest extends AbstractDataRequest {
+public class GetNormalPlaylistTracksRequest extends AbstractDataRequest {
 
-    private GetNormalPlaylistsTracksRequest(final GetNormalPlaylistsTracksRequest.Builder builder) {
+    private GetNormalPlaylistTracksRequest(final GetNormalPlaylistTracksRequest.Builder builder) {
         super(builder);
     }
 
@@ -46,37 +46,37 @@ public class GetNormalPlaylistsTracksRequest extends AbstractDataRequest {
             super(accessToken);
         }
 
-        public GetNormalPlaylistsTracksRequest.Builder playlistId(final String playlistId) {
+        public GetNormalPlaylistTracksRequest.Builder playlistId(final String playlistId) {
             assert (playlistId != null);
             assert (!playlistId.equals(""));
             return setPathParameter("playlist_id", playlistId);
         }
 
-        public GetNormalPlaylistsTracksRequest.Builder fields(final String fields) {
+        public GetNormalPlaylistTracksRequest.Builder fields(final String fields) {
             assert (fields != null);
             assert (!fields.equals(""));
             return setQueryParameter("fields", fields);
         }
 
-        public GetNormalPlaylistsTracksRequest.Builder limit(final Integer limit) {
+        public GetNormalPlaylistTracksRequest.Builder limit(final Integer limit) {
             assert (1 <= limit && limit <= 100);
             return setQueryParameter("limit", limit);
         }
 
-        public GetNormalPlaylistsTracksRequest.Builder offset(final Integer offset) {
+        public GetNormalPlaylistTracksRequest.Builder offset(final Integer offset) {
             assert (offset >= 0);
             return setQueryParameter("offset", offset);
         }
 
-        public GetNormalPlaylistsTracksRequest.Builder market(final CountryCode market) {
+        public GetNormalPlaylistTracksRequest.Builder market(final CountryCode market) {
             assert (market != null);
             return setQueryParameter("market", market);
         }
 
         @Override
-        public GetNormalPlaylistsTracksRequest build() {
+        public GetNormalPlaylistTracksRequest build() {
             setPath("/v1/playlists/{playlist_id}/tracks");
-            return new GetNormalPlaylistsTracksRequest(this);
+            return new GetNormalPlaylistTracksRequest(this);
         }
     }
 }

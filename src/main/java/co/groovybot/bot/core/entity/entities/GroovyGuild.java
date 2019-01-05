@@ -17,9 +17,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-package co.groovybot.bot.core.entity;
+package co.groovybot.bot.core.entity.entities;
 
 import co.groovybot.bot.GroovyBot;
+import co.groovybot.bot.core.entity.DatabaseEntitiy;
 import lombok.Getter;
 import lombok.ToString;
 import net.dv8tion.jda.core.entities.VoiceChannel;
@@ -32,7 +33,7 @@ import java.util.List;
 
 @Getter
 @ToString
-public class Guild extends DatabaseEntitiy {
+public class GroovyGuild extends DatabaseEntitiy {
 
     private Integer volume = 100;
     private String prefix = GroovyBot.getInstance().getConfig().getJSONObject("settings").getString("prefix");
@@ -49,7 +50,7 @@ public class Guild extends DatabaseEntitiy {
     @Getter
     private long botChannel = 0;
 
-    public Guild(Long entityId) throws Exception {
+    public GroovyGuild(Long entityId) throws Exception {
         super(entityId);
         try (Connection connection = getConnection()) {
 
@@ -69,7 +70,7 @@ public class Guild extends DatabaseEntitiy {
                 preventDups = rs.getBoolean("prevent_dups");
                 deleteMessages = rs.getBoolean("delete_messages");
             } else {
-                PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO guilds (id, prefix, volume, dj_mode, announce_songs, auto_leave, blacklisted_channels, commands_channel, auto_pause, prevent_dups) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO guilds (id, prefix, volume, dj_mode, announce_songs, auto_leave, blacklisted_channels, commands_channel, auto_pause, prevent_dups, delete_messages) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 insertStatement.setLong(1, entityId);
                 insertStatement.setString(2, prefix);
                 insertStatement.setInt(3, volume);
@@ -80,6 +81,7 @@ public class Guild extends DatabaseEntitiy {
                 insertStatement.setLong(8, botChannel);
                 insertStatement.setBoolean(9, autoPause);
                 insertStatement.setBoolean(10, preventDups);
+                insertStatement.setBoolean(11, deleteMessages);
                 insertStatement.execute();
             }
         }
@@ -88,7 +90,7 @@ public class Guild extends DatabaseEntitiy {
     @Override
     public void updateInDatabase() throws Exception {
         try (Connection connection = getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET volume = ?, prefix = ?, dj_mode = ?, announce_songs = ?, auto_leave = ?, commands_channel = ?, blacklisted_channels = ?, auto_pause = ?, auto_join_channel = ?, prevent_dups = ? WHERE id = ?");
+            PreparedStatement ps = connection.prepareStatement("UPDATE guilds SET volume = ?, prefix = ?, dj_mode = ?, announce_songs = ?, auto_leave = ?, commands_channel = ?, blacklisted_channels = ?, auto_pause = ?, auto_join_channel = ?, prevent_dups = ?, delete_messages = ? WHERE id = ?");
             ps.setInt(1, volume);
             ps.setString(2, prefix);
             ps.setBoolean(3, djMode);
@@ -99,7 +101,8 @@ public class Guild extends DatabaseEntitiy {
             ps.setBoolean(8, autoPause);
             ps.setLong(9, autoJoinChannelId);
             ps.setBoolean(10, preventDups);
-            ps.setLong(11, entityId);
+            ps.setBoolean(11, deleteMessages);
+            ps.setLong(12, entityId);
             ps.execute();
         }
     }
@@ -221,5 +224,6 @@ public class Guild extends DatabaseEntitiy {
         autoLeave = true;
         autoPause = false;
         preventDups = false;
+        deleteMessages = false;
     }
 }

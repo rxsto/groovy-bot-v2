@@ -25,7 +25,7 @@ import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.entity.EntityProvider;
-import co.groovybot.bot.core.entity.User;
+import co.groovybot.bot.core.entity.entities.GroovyUser;
 import co.groovybot.bot.core.translation.TranslationManager;
 import co.groovybot.bot.util.Colors;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -40,10 +40,10 @@ public class LanguageCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        User user = EntityProvider.getUser(event.getAuthor().getIdLong());
+        GroovyUser groovyUser = EntityProvider.getUser(event.getAuthor().getIdLong());
 
         if (args.length == 0)
-            return send(new EmbedBuilder().setColor(Colors.DARK_BUT_NOT_BLACK).addField(event.translate("command.language.current"), String.format(" - %s `%s`", user.getLocale().getDisplayName(), user.getLocale()), false).addField(event.translate("command.language.supported"), formatAvailableLanguages(event.getBot().getTranslationManager()), false));
+            return send(new EmbedBuilder().setColor(Colors.DARK_BUT_NOT_BLACK).addField(event.translate("command.language.current"), String.format(" - %s `%s`", groovyUser.getLocale().getDisplayName(), groovyUser.getLocale()), false).addField(event.translate("command.language.supported"), formatAvailableLanguages(event.getBot().getTranslationManager()), false));
 
         Locale locale;
 
@@ -56,7 +56,7 @@ public class LanguageCommand extends Command {
         if (!event.getBot().getTranslationManager().isTranslated(locale))
             return send(error(event.translate("phrases.invalid"), event.translate("phrases.invalid.language")));
 
-        user.setLocale(locale);
+        groovyUser.setLocale(locale);
 
         return send(success(event.translate("phrases.success"), String.format(event.translate("command.language"), locale.getDisplayName())));
     }

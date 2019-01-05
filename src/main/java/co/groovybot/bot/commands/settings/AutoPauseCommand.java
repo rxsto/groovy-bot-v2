@@ -25,7 +25,7 @@ import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.voice.SameChannelCommand;
-import co.groovybot.bot.core.entity.Guild;
+import co.groovybot.bot.core.entity.entities.GroovyGuild;
 
 public class AutoPauseCommand extends SameChannelCommand {
 
@@ -35,8 +35,8 @@ public class AutoPauseCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
-        Guild guild = event.getGroovyGuild();
-        guild.setAutoPause(!guild.isAutoPause());
-        return send(success(event.translate("phrases.success"), String.format(event.translate("command.autopause"), guild.isAutoPause() ? event.translate("phrases.text.enabled") : event.translate("phrases.text.disabled"))));
+        GroovyGuild groovyGuild = event.getGroovyGuild();
+        groovyGuild.setAutoPause(!groovyGuild.isAutoPause());
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.autopause"), groovyGuild.isAutoPause() ? event.translate("phrases.text.enabled") : event.translate("phrases.text.disabled"))));
     }
 }

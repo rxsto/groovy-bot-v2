@@ -30,7 +30,7 @@ import co.groovybot.bot.core.command.voice.SameChannelCommand;
 public class AutoPlayCommand extends SameChannelCommand {
 
     public AutoPlayCommand() {
-        super(new String[]{"autoplay", "auto", "ap"}, CommandCategory.SETTINGS, Permissions.tierOne(), "Lets you toggle autoplay-mode", "");
+        super(new String[]{"autoplay", "ap"}, CommandCategory.SETTINGS, Permissions.tierOne(), "Lets you toggle autoplay-mode", "");
     }
 
     @Override

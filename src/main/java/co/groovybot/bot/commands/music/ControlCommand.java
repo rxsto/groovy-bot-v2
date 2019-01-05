@@ -48,8 +48,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-// TODO: REWORK STRINGS AND MESSAGES
-
 public class ControlCommand extends SameChannelCommand {
 
     private final String[] EMOTES = {"⏯", "⏭", "🔁", "🔀", "🔄", "🔉", "🔊"};
@@ -64,7 +62,7 @@ public class ControlCommand extends SameChannelCommand {
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
 
         if (!event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE))
-            return send(EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
+            return send(EmbedUtil.error(event.translate("phrases.nopermission"), event.translate("phrases.nopermission.manage")));
 
         if (controlPanelExists(event.getGuild().getIdLong())) {
             Message confirmMessage = SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("command.control.alreadyinuse.title"), event.translate("command.control.alreadyinuse.description")));
@@ -118,7 +116,7 @@ public class ControlCommand extends SameChannelCommand {
             this.commandEvent = commandEvent;
             this.channel = author.getGuild().getSelfMember().getVoiceState().getChannel();
             this.player = player;
-            this.scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("command.control"));
+            this.scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("ControlCommand"));
             for (String emote : EMOTES) {
                 JDAUtil.waitForEntity(getInfoMessage().addReaction(emote));
             }
@@ -135,10 +133,13 @@ public class ControlCommand extends SameChannelCommand {
             final Scheduler playerScheduler = this.player.getScheduler();
             switch (event.getReaction().getReactionEmote().getName()) {
                 case "⏯":
-                    if (!player.isPaused())
+                    if (!player.isPaused()) {
                         musicPlayer.setPaused(true);
-                    else
+                        this.player.getHandler().handleTrackPause();
+                    } else {
                         musicPlayer.setPaused(false);
+                        this.player.getHandler().handleTrackResume();
+                    }
                     break;
                 case "⏭":
                     this.player.skip();
@@ -197,6 +198,7 @@ public class ControlCommand extends SameChannelCommand {
             if (player.getPlayer() == null || player.getPlayer().getPlayingTrack() == null) return;
             AudioTrackInfo currentSong = player.getPlayer().getPlayingTrack().getInfo();
             EmbedBuilder controlPanelEmbed = new EmbedBuilder()
+                    .setTitle(commandEvent.translate("command.control.title"))
                     .setDescription(String.format("[%s](%s)", currentSong.title, currentSong.uri))
                     .setColor(Colors.DARK_BUT_NOT_BLACK)
                     .setFooter(buildControlInformation(player).toString(), null);
@@ -213,13 +215,15 @@ public class ControlCommand extends SameChannelCommand {
             scheduler.shutdownNow();
             unregister();
             if (getInfoMessage() != null)
-                getInfoMessage().delete().queue();
+                if (commandEvent.getGroovyGuild().isDeleteMessages())
+                    getInfoMessage().delete().queue();
         }
 
         @Override
         public void onDelete() {
             if (getInfoMessage() != null)
-                getInfoMessage().delete().queue();
+                if (commandEvent.getGroovyGuild().isDeleteMessages())
+                    getInfoMessage().delete().queue();
             if (!scheduler.isShutdown())
                 scheduler.shutdownNow();
         }

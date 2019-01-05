@@ -36,6 +36,8 @@ public abstract class Player {
     @Getter
     private final Scheduler scheduler;
     @Getter
+    private final PlayerCheckHandler handler;
+    @Getter
     public Queue<AudioTrack> trackQueue;
     @Getter
     public JdaLink link;
@@ -45,7 +47,8 @@ public abstract class Player {
 
     public Player(YoutubeUtil youtubeClient) {
         this.trackQueue = new LinkedList<>();
-        this.scheduler = new Scheduler(this);
+        this.handler = new PlayerCheckHandler(((MusicPlayer) this), 3);
+        this.scheduler = new Scheduler(((MusicPlayer) this));
         this.youtubeClient = youtubeClient;
     }
 
@@ -81,10 +84,12 @@ public abstract class Player {
 
     public void pause() {
         player.setPaused(true);
+        handler.handleTrackPause();
     }
 
     public void resume() {
         player.setPaused(false);
+        handler.handleTrackResume();
     }
 
     public void seekTo(long time) {
@@ -106,13 +111,13 @@ public abstract class Player {
         return track;
     }
 
-    public void queueTrack(AudioTrack audioTrack, boolean force, boolean playtop) {
+    public void queueTrack(AudioTrack audioTrack, boolean force, boolean top) {
         if (force) {
             play(audioTrack, false);
             return;
         }
 
-        if (playtop) ((LinkedList<AudioTrack>) trackQueue).addFirst(audioTrack);
+        if (top) ((LinkedList<AudioTrack>) trackQueue).addFirst(audioTrack);
         else trackQueue.add(audioTrack);
 
         if (!isPlaying()) play(pollTrack(), false);
@@ -193,4 +198,6 @@ public abstract class Player {
     }
 
     public abstract void resetSkipVotes();
+
+    public abstract String translate(String key);
 }

@@ -52,7 +52,7 @@ public class LyricsCommand extends Command {
                 String lyricsUrl = getLyricsUrl(String.join(" ", args), geniusClient);
 
                 if (lyricsUrl == null)
-                    editMessage(infoMessage, error(event.translate("phrases.searching.nomatches.title"), event.translate("command.lyrics.notfound")));
+                    editMessage(infoMessage, error(event.translate("phrases.nothingfound"), event.translate("command.lyrics.notfound")));
                 else {
                     editMessage(infoMessage, getLyricsEmbed(geniusClient, lyricsUrl));
                 }
@@ -63,7 +63,7 @@ public class LyricsCommand extends Command {
                 String lyricsUrl = getLyricsUrl(player.getPlayer().getPlayingTrack().getInfo().title, geniusClient);
 
                 if (lyricsUrl == null)
-                    editMessage(infoMessage, error(event.translate("phrases.searching.nomatches.title"), event.translate("command.lyrics.notfound")));
+                    editMessage(infoMessage, error(event.translate("phrases.nothingfound"), event.translate("command.lyrics.notfound")));
                 else
                     editMessage(infoMessage, getLyricsEmbed(geniusClient, lyricsUrl, player.getPlayer().getPlayingTrack().getInfo().title));
             } else {
@@ -71,7 +71,7 @@ public class LyricsCommand extends Command {
                 String lyricsUrl = getLyricsUrl(String.join(" ", args), geniusClient);
 
                 if (lyricsUrl == null)
-                    editMessage(infoMessage, error(event.translate("phrases.searching.nomatches.title"), event.translate("command.lyrics.notfound")));
+                    editMessage(infoMessage, error(event.translate("phrases.nothingfound"), event.translate("command.lyrics.notfound")));
                 else
                     editMessage(infoMessage, getLyricsEmbed(geniusClient, lyricsUrl));
             }

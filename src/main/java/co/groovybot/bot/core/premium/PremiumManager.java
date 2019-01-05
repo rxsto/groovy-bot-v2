@@ -19,56 +19,56 @@
 
 package co.groovybot.bot.core.premium;
 
-import co.groovybot.bot.core.entity.User;
+import co.groovybot.bot.core.entity.entities.GroovyUser;
 
 public class PremiumManager {
 
     /**
-     * Gives a user Premium for a specified time
+     * Gives a groovyUser Premium for a specified time
      *
-     * @param user The user
+     * @param groovyUser The groovyUser
      */
-    public static void givePremium(User user) {
-        user.setVoted(System.currentTimeMillis() + Constants.PREMIUM_TIME, System.currentTimeMillis() + Constants.VOTE_AGAIN);
+    public static void givePremium(GroovyUser groovyUser) {
+        groovyUser.setVoted(System.currentTimeMillis() + Constants.PREMIUM_TIME, System.currentTimeMillis() + Constants.VOTE_AGAIN);
     }
 
     /**
-     * Checks if a user has voted
+     * Checks if a groovyUser has voted
      *
-     * @param user The user that needs to be checked
-     * @return if the user used the command or not
+     * @param groovyUser The groovyUser that needs to be checked
+     * @return if the groovyUser used the command or not
      */
-    public static boolean hasVoted(User user) {
-        return user.hasVoted();
+    public static boolean hasVoted(GroovyUser groovyUser) {
+        return groovyUser.hasVoted();
     }
 
     /**
-     * Checks if a user has already voted
+     * Checks if a groovyUser has already voted
      *
-     * @param user The user that needs to be checked
-     * @return if the user used the command or not
+     * @param groovyUser The groovyUser that needs to be checked
+     * @return if the groovyUser used the command or not
      */
-    public static boolean hasAlreadyVoted(User user) {
-        return user.hasAlreadyVoted();
+    public static boolean hasAlreadyVoted(GroovyUser groovyUser) {
+        return groovyUser.hasAlreadyVoted();
     }
 
     /**
-     * Checks if a user has already voted
+     * Checks if a groovyUser has already voted
      *
-     * @param user The user that needs to be checked
-     * @return if the user used the command or not
+     * @param groovyUser The groovyUser that needs to be checked
+     * @return if the groovyUser used the command or not
      */
-    public static boolean isAbleToVote(User user) {
-        return user.isAbleToVote();
+    public static boolean isAbleToVote(GroovyUser groovyUser) {
+        return groovyUser.isAbleToVote();
     }
 
     /**
-     * Checks if a user has already voted
+     * Checks if a groovyUser has already voted
      *
-     * @param user The user that needs to be checked
-     * @return if the user used the command or not
+     * @param groovyUser The groovyUser that needs to be checked
+     * @return if the groovyUser used the command or not
      */
-    public static long getVoteAgainIn(User user) {
-        return user.getAgain() - System.currentTimeMillis();
+    public static long getVoteAgainIn(GroovyUser groovyUser) {
+        return groovyUser.getAgain() - System.currentTimeMillis();
     }
 }

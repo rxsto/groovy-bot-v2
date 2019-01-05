@@ -20,17 +20,16 @@
 package co.groovybot.bot;
 
 import co.groovybot.bot.core.GameAnimator;
-import co.groovybot.bot.core.KeyManager;
 import co.groovybot.bot.core.audio.LavalinkManager;
 import co.groovybot.bot.core.audio.MusicPlayerManager;
 import co.groovybot.bot.core.audio.playlists.PlaylistManager;
-import co.groovybot.bot.core.audio.spotify.SpotifyManager;
+import co.groovybot.bot.core.audio.sources.spotify.manager.SpotifyManager;
 import co.groovybot.bot.core.cache.Cache;
 import co.groovybot.bot.core.command.CommandManager;
 import co.groovybot.bot.core.command.CommandRegistry;
 import co.groovybot.bot.core.command.interaction.InteractionManager;
-import co.groovybot.bot.core.entity.Guild;
-import co.groovybot.bot.core.entity.User;
+import co.groovybot.bot.core.entity.entities.GroovyGuild;
+import co.groovybot.bot.core.entity.entities.GroovyUser;
 import co.groovybot.bot.core.events.bot.AllShardsLoadedEvent;
 import co.groovybot.bot.core.influx.InfluxDBManager;
 import co.groovybot.bot.core.lyrics.GeniusClient;
@@ -38,7 +37,6 @@ import co.groovybot.bot.core.monitoring.Monitor;
 import co.groovybot.bot.core.monitoring.MonitorManager;
 import co.groovybot.bot.core.monitoring.monitors.*;
 import co.groovybot.bot.core.premium.PremiumHandler;
-import co.groovybot.bot.core.statistics.ServerCountStatistics;
 import co.groovybot.bot.core.statistics.StatusPage;
 import co.groovybot.bot.core.translation.TranslationManager;
 import co.groovybot.bot.io.FileManager;
@@ -59,17 +57,23 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 import net.dv8tion.jda.core.hooks.IEventManager;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
+import net.dv8tion.jda.core.requests.RestAction;
 import okhttp3.OkHttpClient;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.dicordlist.botlistwrapper.BotlistWrapper;
+import org.dicordlist.botlistwrapper.BotlistWrapperBuilder;
+import org.dicordlist.botlistwrapper.core.models.impls.JDAProvider;
+import org.dicordlist.botlistwrapper.core.models.impls.botlists.DiscordBotsORG;
 import org.graylog2.gelfclient.GelfConfiguration;
 import org.graylog2.gelfclient.GelfMessage;
 import org.graylog2.gelfclient.GelfTransports;
 import org.graylog2.gelfclient.transport.AbstractGelfTransport;
 import org.graylog2.gelfclient.transport.GelfTransport;
 import org.influxdb.InfluxDB;
+import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.Closeable;
@@ -97,15 +101,11 @@ public class GroovyBot implements Closeable {
     @Getter
     private final StatusPage statusPage;
     @Getter
-    private final ServerCountStatistics serverCountStatistics;
-    @Getter
     private final MusicPlayerManager musicPlayerManager;
     @Getter
     private final InteractionManager interactionManager;
     @Getter
     private final EventWaiter eventWaiter;
-    @Getter
-    private final KeyManager keyManager;
     @Getter
     private final YoutubeUtil youtubeClient;
     @Getter
@@ -134,6 +134,7 @@ public class GroovyBot implements Closeable {
     private final boolean noMonitoring;
     @Getter
     private final boolean noCentralizedLogging;
+    private final boolean disableBotlist;
     @Getter
     private PostgreSQL postgreSQL;
     @Getter
@@ -151,9 +152,11 @@ public class GroovyBot implements Closeable {
     @Getter
     private GelfTransport gelfTransport;
     @Getter
-    private Cache<Guild> guildCache;
+    private BotlistWrapper botlistWrapper;
     @Getter
-    private Cache<User> userCache;
+    private Cache<GroovyGuild> guildCache;
+    @Getter
+    private Cache<GroovyUser> userCache;
     @Getter
     private net.dv8tion.jda.core.entities.Guild supportGuild;
     @Getter
@@ -178,6 +181,7 @@ public class GroovyBot implements Closeable {
         noMonitoring = args.hasOption("no-monitoring");
         configNodes = args.hasOption("config-nodes");
         noCentralizedLogging = args.hasOption("no-centralized-logging");
+        disableBotlist = args.hasOption("no-stats");
 
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
@@ -192,8 +196,8 @@ public class GroovyBot implements Closeable {
         instanceName = config.getJSONObject("bot").has("instance") ? config.getJSONObject("bot").getString("instance") : "dev";
 
         // Creating cache
-        guildCache = new Cache<>(Guild.class);
-        userCache = new Cache<>(User.class);
+        guildCache = new Cache<>(GroovyGuild.class);
+        userCache = new Cache<>(GroovyUser.class);
 
         if (!noCentralizedLogging) {
             final GelfConfiguration gelfConfiguration = new GelfConfiguration(new InetSocketAddress(config.getJSONObject("graylog").getString("host"), config.getJSONObject("graylog").getInt("port")));
@@ -224,8 +228,6 @@ public class GroovyBot implements Closeable {
         new DatabaseGenerator(postgreSQL);
 
         commandManager = new CommandManager(config.getJSONObject("settings").getString("prefix"), this);
-        serverCountStatistics = new ServerCountStatistics(config.getJSONObject("botlists"));
-        keyManager = new KeyManager(postgreSQL.getDataSource());
         interactionManager = new InteractionManager();
         eventWaiter = new EventWaiter();
         premiumHandler = new PremiumHandler();
@@ -244,6 +246,7 @@ public class GroovyBot implements Closeable {
     public static void main(String[] args) throws IOException {
         if (instance != null)
             throw new RuntimeException("[Core] Groovy was already initialized in this VM!");
+
         Options options = new Options();
         options.addOption("L", "log-level", true, "Let's you set the loglevel of groovy");
         options.addOption("D", "debug", false, "Let's you enable debug mode");
@@ -254,13 +257,17 @@ public class GroovyBot implements Closeable {
         options.addOption("NM", "no-monitoring", false, "Disables InfluxDB monitoring");
         options.addOption("NP", "no-patrons", false, "Disable patrons feature");
         options.addOption("NCL", "no-centralized-logging", false, "Disabled centralized logging");
+        options.addOption("NS", "no-stats", false, "Disables the botlist stats posting");
+
         CommandLine cmd = null;
+
         try {
             cmd = new DefaultParser().parse(options, args);
         } catch (ParseException e) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(e.getMessage(), options);
         }
+
         new GroovyBot(cmd);
     }
 
@@ -279,10 +286,10 @@ public class GroovyBot implements Closeable {
                         this,
                         new ShardsListener(),
                         new SelfMentionListener(),
-                        new JoinGuildListener(),
+                        new GuildJoinListener(),
                         new CommandLogger(),
                         new BlacklistWatcher(guildCache),
-                        new AutopauseListener(),
+                        new AutoPauseListener(),
                         new GuildLeaveListener(),
                         new AutoJoinExecutor(this),
                         new AutoQueueListener(this),
@@ -294,12 +301,16 @@ public class GroovyBot implements Closeable {
 
         if (!noWebsocket)
             shardManagerBuilder.addEventListeners(new WebsiteStatsListener());
+
         if (!noPatrons)
             shardManagerBuilder.addEventListeners(new PremiumListener(premiumHandler));
+
         if (premium)
             shardManagerBuilder.addEventListeners(new PremiumExecutor(this));
+
         try {
             shardManager = shardManagerBuilder.build();
+            RestAction.DEFAULT_FAILURE = (action) -> {};
             log.info("[LavalinkManager] Initializing LavalinkManager ...");
             lavalinkManager.initialize();
         } catch (LoginException e) {
@@ -349,13 +360,23 @@ public class GroovyBot implements Closeable {
                 log.error("[WebSocket] Error while initializing WebSocket!", e);
             }
 
-        // Initializing statuspage and servercountstatistics
+        // Initializing statuspage
         if (!debugMode) {
-            log.info("[StatusPage] Initializing StatusPage ...");
             statusPage.start();
-            log.info("[ServerCountStatistics] Initializing ServerCountStatistics ...");
-            serverCountStatistics.start();
         }
+
+        // Initializing servercountstats
+        if (!disableBotlist) {
+            botlistWrapper = new BotlistWrapperBuilder(new JDAProvider(this.getShardManager()), botlist -> {
+                JSONObject json = config.getJSONObject("botlists");
+                if (json.has(botlist.getSimpleName()))
+                    return json.getString(botlist.getSimpleName());
+                return null;
+            })
+                    .registerBotlist(new DiscordBotsORG())
+                    .build();
+        }
+
 
         // Register all monitors and start monitoring
         if (influxDB == null) {
@@ -366,7 +387,7 @@ public class GroovyBot implements Closeable {
             shardManager.addEventListener(msgMonitor);
             monitorManager.register(new SystemMonitor(), new GuildMonitor(), new RequestMonitor(), msgMonitor, new UserMonitor());
             monitorManager.start();
-            log.info("[MonitoringManager] Monitoring started.");
+            log.info("[MonitoringManager] Monitoring started!");
         }
 
         // Now Groovy is ready

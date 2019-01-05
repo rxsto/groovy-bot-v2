@@ -25,19 +25,17 @@ import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-// TODO: REWRITE STRINGS AND MESSAGES
-
 @Log4j2
 public class TextToSpeechCommand extends SemiInChannelCommand {
 
     private final Options options;
 
     public TextToSpeechCommand() {
-        super(new String[]{"tts"}, CommandCategory.GENERAL, Permissions.tierOne(), "Converts text into spoken voice.", "[-S <speed>] [-L <language>] -T text");
+        super(new String[]{"tts"}, CommandCategory.GENERAL, Permissions.tierOne(), "Lets you convert text to speech", "[-S <speed>] [-L <language>] -T text");
         options = new Options();
-        options.addRequiredOption("T", "text", true, "Set's the text");
-        options.addOption("S", "speed", true, "Set's the speed");
-        options.addOption("L", "language", true, "Set's the language");
+        options.addRequiredOption("T", "text", true, "Sets the text");
+        options.addOption("S", "speed", true, "Sets the speed");
+        options.addOption("L", "language", true, "Sets the language");
     }
 
     @Override
@@ -51,43 +49,41 @@ public class TextToSpeechCommand extends SemiInChannelCommand {
             cmd = new DefaultParser().parse(options, args);
         } catch (ParseException e) {
             log.error(e);
-            return send(error(event.translate("command.tts.parseexception.title"), String.format(event.translate("command.tts.parseexception.description"), e.getMessage())));
+            return send(error(event.translate("phrases.error"), String.format("```%s```", e.getMessage())));
         }
 
         String text = String.join(" ", cmd.getOptionValues("text")) + " " + String.join(" ", cmd.getArgs());
         OptionalInt speed = cmd.hasOption("speed") ? getNumberFromString(cmd.getOptionValue("speed")) : OptionalInt.of(0);
-        if (!speed.isPresent()) {
-            return send(error(event.translate("command.tts.nan.title"), event.translate("command.tts.nan.description")));
-        }
 
-        if (speed.getAsInt() > 10 || speed.getAsInt() < -10) {
-            return send(error(event.translate("command.tts.invalidnumber.title"), event.translate("command.tts.invalidnumber.description")));
-        }
+        if (!speed.isPresent() || speed.getAsInt() > 10 || speed.getAsInt() < -10)
+            return send(error(event.translate("phrases.invalid"), event.translate("phrases.invalid.number")));
 
         Language language = cmd.hasOption("language") ? Language.fromCode(cmd.getOptionValue("language").toLowerCase()) : Language.EN_US;
-        if (language == Language.UNKNOWN) {
-            return send(error(event.translate("command.tts.invalidlang.title"), String.format(event.translate("command.tts.invalidlang.description"),
+
+        if (language == Language.UNKNOWN)
+            return send(error(event.translate("phrases.invalid"), String.format(event.translate("phrases.invalid.language"),
                     Stream.of(Language.values()).filter(l -> l != Language.UNKNOWN).map(l -> "`" + l.code + "`").collect(Collectors.joining(", ")))));
-        }
 
         String url;
         try {
             url = buildUrl(text, language, speed.getAsInt());
         } catch (UnsupportedEncodingException e) {
             log.error(e);
-            return send(error(event.translate("phrases.error.unknown.title"), event.translate("phrases.error.unknown.description")));
+            return send(error(event.translate("phrases.error"), event.translate("phrases.error.unknown")));
         }
 
-        Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("command.tts.loading.title"), event.translate("command.tts.loading.description")));
+        Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), small(event.translate("phrases.loading")));
 
         player.stop();
+
         if (!player.checkConnect(event))
             player.connect(event.getMember().getVoiceState().getChannel());
+
         player.getAudioPlayerManager().loadItem(url, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
                 player.play(track);
-                SafeMessage.editMessage(infoMessage, success(event.translate("command.tts.loaded.title"), event.translate("command.tts.loaded.description")));
+                SafeMessage.editMessage(infoMessage, success(event.translate("phrases.loaded"), event.translate("command.texttospeech")));
             }
 
             @Override
@@ -96,12 +92,12 @@ public class TextToSpeechCommand extends SemiInChannelCommand {
 
             @Override
             public void noMatches() {
-                SafeMessage.editMessage(infoMessage, error(event.translate("phrases.error.unknown.title"), event.translate("phrases.error.unknown.description")));
+                SafeMessage.editMessage(infoMessage, error(event.translate("phrases.error"), event.translate("phrases.error.unknown")));
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                SafeMessage.editMessage(infoMessage, error(event.translate("phrases.error.unknown.title"), event.translate("phrases.error.unknown.description")));
+                SafeMessage.editMessage(infoMessage, error(event.translate("phrases.error"), event.translate("phrases.error.unknown")));
             }
         });
 

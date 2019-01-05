@@ -70,6 +70,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.discordlist.org/api/v4/projects/26/packages/maven</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -148,7 +152,7 @@
         <dependency>
             <groupId>com.github.GroovyDevs</groupId>
             <artifactId>deezer-api-client</artifactId>
-            <version>296ea7da3c</version>
+            <version>32853ffd41</version>
         </dependency>
         <dependency>
             <groupId>org.java-websocket</groupId>
@@ -194,6 +198,16 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.discordlist</groupId>
+            <artifactId>botlist-wrapper</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>be.ceau</groupId>
+            <artifactId>itunes-api</artifactId>
+            <version>4.1</version>
         </dependency>
     </dependencies>
 

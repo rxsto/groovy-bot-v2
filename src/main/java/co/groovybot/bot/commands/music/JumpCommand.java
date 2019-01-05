@@ -31,7 +31,7 @@ import net.dv8tion.jda.core.utils.Helpers;
 public class JumpCommand extends SameChannelCommand {
 
     public JumpCommand() {
-        super(new String[]{"jump", "jumpto"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you seek forwards or backwards", "[-]<seconds>");
+        super(new String[]{"jump", "jumpto", "jp"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you seek forwards or backwards", "[-]<seconds>");
     }
 
     @Override

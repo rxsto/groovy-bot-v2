@@ -24,6 +24,8 @@ import co.groovybot.bot.core.command.CommandEvent;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 
+import java.time.Instant;
+
 public class EmbedUtil extends SafeMessage {
 
     /**
@@ -55,7 +57,7 @@ public class EmbedUtil extends SafeMessage {
      * @return an EmbedBuilder
      */
     public static EmbedBuilder error(CommandEvent event) {
-        return error(event.translate("phrases.error.unknown.title"), event.translate("phrases.error.unknown.description"));
+        return error(event.translate("phrases.error"), event.translate("phrases.error.unknown"));
     }
 
     /**
@@ -93,13 +95,13 @@ public class EmbedUtil extends SafeMessage {
     /**
      * Creates a welcome embed
      *
-     * @param guild The guild Groovy joined
      * @return an EmbedBuiler
      */
     public static EmbedBuilder welcome(Guild guild) {
         String prefix = GroovyBot.getInstance().getConfig().getJSONObject("settings").getString("prefix");
-        String title = "\uD83C\uDFB6 **Hey, I'm Groovy, the best music-bot on Discord!**";
-        String description = title + "\n" + String.format("▫ My **prefix** on this guild **is** **`%s`**\n▫ **Change** my **prefix** with **`%sprefix`**\n▫ For a **list** of **all commands** type **`%shelp`**\n▫ You **want** to **play** music? **Right now?** Try **`%splay`**\n▫ **Join** our **support-server** at **https://discord.gg/5s5TsW2**", prefix, prefix, prefix, prefix);
-        return new EmbedBuilder().setDescription(description).setColor(Colors.BLURPLE).setThumbnail(guild.getSelfMember().getUser().getAvatarUrl()).setFooter("Let's enjoy some good music!", guild.getSelfMember().getUser().getAvatarUrl());
+        String title = String.format("**Hey!** My name is %s, and I'm the best bot on Discord! **Seriously.**", guild.getJDA().getSelfUser().getName());
+        String description = String.format("**-** %s's prefix is **`%s`**", guild.getJDA().getSelfUser().getName(), prefix) + "\n" + String.format("**-** You want to customize %s? Change his prefix with **`%sprefix`**", guild.getJDA().getSelfUser().getName(), prefix) + "\n" + String.format("**-** %s got an enormous amount of features! List all commands with **`%shelp`**", guild.getJDA().getSelfUser().getName(), prefix) + "\n" + String.format("**-** You wanna start listening to some good music right now? Use **`%splay`**", prefix) + "\n" + "**-** Need help? Join the support at **https://discord.gg/5s5TsW2**";
+        String footer = "https://groovybot.co";
+        return new EmbedBuilder().setTitle(title).setDescription(description).setFooter(footer, null).setColor(Colors.DARK_BUT_NOT_BLACK).setTimestamp(Instant.now());
     }
 }

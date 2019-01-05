@@ -17,7 +17,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-package co.groovybot.bot.core.entity;
+package co.groovybot.bot.core.entity.entities;
 
 import co.groovybot.bot.GroovyBot;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -38,7 +38,7 @@ import java.util.List;
 @Log4j2
 @ToString
 @Getter
-public class Playlist {
+public class GroovyPlaylist {
 
     private Long id;
     private Long authorId;
@@ -47,7 +47,7 @@ public class Playlist {
     private int count;
     private List<AudioTrack> songs;
 
-    public Playlist(ResultSet rs) {
+    public GroovyPlaylist(ResultSet rs) {
         try {
             this.authorId = rs.getLong("author_id");
             this.songs = decodeTracks(new JSONArray(rs.getString("tracks")));
@@ -56,11 +56,11 @@ public class Playlist {
             this.count = rs.getInt("count");
             this.isPublic = rs.getBoolean("public");
         } catch (SQLException e) {
-            log.error("[Playlist] Error while retrieving playlist", e);
+            log.error("[GroovyPlaylist] Error while retrieving playlist", e);
         }
     }
 
-    public Playlist(String name, Long id, Long authorId, List<AudioTrack> songs) {
+    public GroovyPlaylist(String name, Long id, Long authorId, List<AudioTrack> songs) {
         this.name = name;
         this.authorId = authorId;
         this.id = id;
@@ -74,7 +74,7 @@ public class Playlist {
             ps.setLong(4, this.id);
             ps.execute();
         } catch (SQLException e) {
-            log.error("[Playlist] Error while saving playlist", e);
+            log.error("[GroovyPlaylist] Error while saving playlist", e);
         }
     }
 
@@ -90,7 +90,7 @@ public class Playlist {
             ps.setLong(5, id);
             ps.execute();
         } catch (SQLException e) {
-            log.error("[Playlist] Error while saving playlist", e);
+            log.error("[GroovyPlaylist] Error while saving playlist", e);
         }
     }
 
@@ -125,7 +125,7 @@ public class Playlist {
             try {
                 tracks.put(LavalinkUtil.toMessage(track));
             } catch (IOException e) {
-                log.warn("[Playlist] Error while encoding song", e);
+                log.warn("[GroovyPlaylist] Error while encoding song", e);
             }
         });
         return tracks;
@@ -137,7 +137,7 @@ public class Playlist {
             try {
                 tracks.add(LavalinkUtil.toAudioTrack((String) identifier));
             } catch (IOException e) {
-                log.warn("[Playlist] Error while decoding song", e);
+                log.warn("[GroovyPlaylist] Error while decoding song", e);
             }
         }
         return tracks;

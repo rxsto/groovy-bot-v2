@@ -13,26 +13,30 @@ import net.dv8tion.jda.core.entities.Message;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-// TODO: REWRITE STRINGS AND MESSAGES
-
 public class VoiceFixCommand extends SameChannelCommand {
 
     public VoiceFixCommand() {
-        super(new String[]{"voicefix", "fix"}, CommandCategory.SETTINGS, Permissions.adminOnly(), "Changes your voice region to a random one and back", "");
+        super(new String[]{"voicefix", "fix", "vf"}, CommandCategory.MUSIC, Permissions.adminOnly(), "Lets you change your region in order to fix voice", "");
     }
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
-        if (!event.getGuild().getSelfMember().hasPermission(Permission.MANAGE_SERVER) && !event.getGuild().getSelfMember().hasPermission(Permission.ADMINISTRATOR))
-            return send(error("phrases.nopermission.title", event.translate("phrases.nopermission.manageserver")));
+        if (!event.getGuild().getSelfMember().hasPermission(Permission.MANAGE_SERVER))
+            return send(error("phrases.nopermission", event.translate("phrases.nopermission.manageserver")));
+
         Region oldRegion = event.getGuild().getRegion();
-        Message msg = SafeMessage.sendMessageBlocking(event.getChannel(), success(event.translate("command.voicefix.step1.title"), event.translate("command.voicefix.step1.description")));
+
+        Message msg = SafeMessage.sendMessageBlocking(event.getChannel(), success(String.format(event.translate("command.voicefix.step"), "1"), event.translate("command.voicefix.step.get")));
+
         Region randomRegion = getRandomRegion(event.getGuild().getRegion());
-        SafeMessage.editMessage(msg, success(event.translate("command.voicefix.step2.title"), String.format(event.translate("command.voicefix.step3.description"), randomRegion.getName())));
+
+        SafeMessage.editMessage(msg, success(String.format(event.translate("command.voicefix.step"), "2"), String.format(event.translate("command.voicefix.step.set"), randomRegion.getName())));
+
         event.getGuild().getManager().setRegion(randomRegion).queue(r -> {
-            SafeMessage.editMessage(msg, success(event.translate("command.voicefix.step3.title"), String.format(event.translate("command.voicefix.step3.description"), oldRegion.getName())));
-            event.getGuild().getManager().setRegion(oldRegion).queue(rr -> SafeMessage.editMessage(msg, success("Success!", "Your voice should be fixed now.")));
+            SafeMessage.editMessage(msg, success(String.format(event.translate("command.voicefix.step"), "3"), String.format(event.translate("command.voicefix.step.back"), oldRegion.getName())));
+            event.getGuild().getManager().setRegion(oldRegion).queue(rr -> SafeMessage.editMessage(msg, success(event.translate("phrases.success"), event.translate("command.voicefix"))));
         });
+
         return null;
     }
 

@@ -23,12 +23,12 @@ import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.command.*;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.voice.SemiInChannelSubCommand;
-import co.groovybot.bot.core.entity.Guild;
+import co.groovybot.bot.core.entity.entities.GroovyGuild;
 
 public class DuplicatesCommand extends Command {
 
     public DuplicatesCommand() {
-        super(new String[]{"duplicates", "duplicate", "dups"}, CommandCategory.SETTINGS, Permissions.everyone(), "Settings related to duplicates in the queue", "");
+        super(new String[]{"duplicates", "dups"}, CommandCategory.SETTINGS, Permissions.everyone(), "Settings related to duplicates in the queue", "");
         this.registerSubCommand(new NoDuplicatesCommand());
         this.registerSubCommand(new RemoveDuplicatesCommand());
     }
@@ -46,9 +46,9 @@ public class DuplicatesCommand extends Command {
 
         @Override
         public Result run(String[] args, CommandEvent event) {
-            Guild guild = event.getGroovyGuild();
-            guild.setPreventDups(!guild.isPreventDups());
-            return send(success(event.translate("phrases.success"), String.format(event.translate("command.noduplicates"), guild.isPreventDups() ? event.translate("phrases.text.enabled") : event.translate("phrases.text.disabled"))));
+            GroovyGuild groovyGuild = event.getGroovyGuild();
+            groovyGuild.setPreventDups(!groovyGuild.isPreventDups());
+            return send(success(event.translate("phrases.success"), String.format(event.translate("command.noduplicates"), groovyGuild.isPreventDups() ? event.translate("phrases.text.enabled") : event.translate("phrases.text.disabled"))));
         }
     }
 
