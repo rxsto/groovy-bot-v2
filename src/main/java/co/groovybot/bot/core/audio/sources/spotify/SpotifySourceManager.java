@@ -54,7 +54,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -94,6 +97,8 @@ public class SpotifySourceManager implements AudioSourceManager {
 
     @Getter
     private long retryAfter;
+
+    private int userPlaylistRequestExecutionCount = 0;
 
     public SpotifySourceManager(@NonNull SpotifyManager spotifyManager) {
         this.spotifyManager = spotifyManager;
@@ -259,7 +264,7 @@ public class SpotifySourceManager implements AudioSourceManager {
             log.error(e);
             return null;
         }
-        List<TrackData> trackDataList = getPlaylistTrackDataList(Objects.requireNonNull(getPlaylistTracks(playlist)));
+        List<TrackData> trackDataList = getPlaylistTrackDataList(getPlaylistTracks(playlist));
         List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
         return new BasicAudioPlaylist(playlist.getName(), audioTracks, null, false);
     }
@@ -302,13 +307,12 @@ public class SpotifySourceManager implements AudioSourceManager {
     private List<PlaylistTrack> getPlaylistTracks(Playlist playlist) throws TooManyRequestsException {
         List<PlaylistTrack> playlistTracks = Lists.newArrayList();
         Paging<PlaylistTrack> currentPage = playlist.getTracks();
-
-        int i = 0;
         do {
             playlistTracks.addAll(Arrays.asList(currentPage.getItems()));
-            if (currentPage.getNext() == null)
+            if (currentPage.getNext() == null) {
                 currentPage = null;
-            else {
+                userPlaylistRequestExecutionCount++;
+            } else {
                 try {
                     this.spotifyManager.refreshAccessToken();
                     URI nextPageUri = new URI(currentPage.getNext());
@@ -320,10 +324,10 @@ public class SpotifySourceManager implements AudioSourceManager {
                     }
 
                     currentPage = builder.build().execute();
-                    i++;
+                    userPlaylistRequestExecutionCount++;
                 } catch (TooManyRequestsException e) {
                     throw e;
-                }  catch (URISyntaxException e) {
+                } catch (URISyntaxException e) {
                     log.error("Got invalid 'next page' URI!", e);
                     return Collections.emptyList();
                 } catch (SpotifyWebApiException | IOException e) {
@@ -332,7 +336,7 @@ public class SpotifySourceManager implements AudioSourceManager {
                 }
             }
         } while (currentPage != null);
-        log.info("UserPlaylist-Requests executed " + i + " times.");
+        log.info("PlaylistTracksRequest executed " + userPlaylistRequestExecutionCount + " times.");
         return playlistTracks;
     }
 
@@ -356,7 +360,7 @@ public class SpotifySourceManager implements AudioSourceManager {
                     currentPage = builder.build().execute();
                 } catch (TooManyRequestsException e) {
                     throw e;
-                }  catch (URISyntaxException e) {
+                } catch (URISyntaxException e) {
                     log.error("Got invalid 'next page' URI!", e);
                 } catch (SpotifyWebApiException | IOException e) {
                     log.error("Failed to query Spotify for album tracks!", e);
@@ -374,7 +378,7 @@ public class SpotifySourceManager implements AudioSourceManager {
             albumTracks.addAll(Arrays.asList(getArtistsTopTracksRequest.execute()));
         } catch (TooManyRequestsException e) {
             throw e;
-        }  catch (IOException | SpotifyWebApiException e) {
+        } catch (IOException | SpotifyWebApiException e) {
             log.error("Failed to query top ten songs from artist!", e);
         }
         return albumTracks;
