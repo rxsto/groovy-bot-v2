@@ -44,6 +44,7 @@ public abstract class Player {
     @Getter
     protected IPlayer player;
     protected YoutubeUtil youtubeClient;
+    private AudioTrack lastFailedTrack;
 
     public Player(YoutubeUtil youtubeClient) {
         this.trackQueue = new LinkedList<>();
@@ -60,13 +61,13 @@ public abstract class Player {
     protected abstract AudioPlayerManager getAudioPlayerManager();
 
     public void play(AudioTrack track, boolean fail) {
-        if (fail)
-            announceRequeue(track);
-
         if (track == null) {
             onEnd(false);
             return;
         }
+
+        if (fail)
+            announceRequeue(track);
 
         if (player.isPaused())
             resume();
