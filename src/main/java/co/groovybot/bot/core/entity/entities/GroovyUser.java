@@ -22,7 +22,6 @@ package co.groovybot.bot.core.entity.entities;
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.command.permission.UserPermissions;
 import co.groovybot.bot.core.entity.DatabaseEntitiy;
-import co.groovybot.bot.core.entity.entities.GroovyPlaylist;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
