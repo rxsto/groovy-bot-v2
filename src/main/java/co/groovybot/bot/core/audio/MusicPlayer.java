@@ -383,7 +383,11 @@ public class MusicPlayer extends Player {
                 if (track.getInfo().isStream) {
                     SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.loaded.stream"), track.getInfo().title)));
                 } else {
-                    SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.loaded.track"), track.getInfo().title)).setFooter(String.format("%s: %s", translate("phrases.estimated"), getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(getQueueLengthMillis())), null));
+                    SafeMessage.editMessage(infoMessage,
+                            EmbedUtil.success(event.translate("phrases.loaded"),
+                                    String.format(event.translate("phrases.loaded.track"),
+                                            track.getInfo().title)).setFooter(String.format("%s: %s", translate("phrases.estimated"),
+                                    getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(getQueueLengthMillis())), null));
                 }
 
                 inProgress = false;
