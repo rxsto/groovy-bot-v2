@@ -308,7 +308,7 @@ public class SpotifySourceManager implements AudioSourceManager {
         List<PlaylistTrack> playlistTracks = Lists.newArrayList();
         Paging<PlaylistTrack> currentPage = playlist.getTracks();
         do {
-            playlistTracks.addAll(Arrays.asList(currentPage.getItems()));
+            playlistTracks.addAll(Arrays.stream(currentPage.getItems()).filter(playlistTrack -> !playlistTrack.getIsLocal()).collect(Collectors.toList()));
             if (currentPage.getNext() == null) {
                 currentPage = null;
                 userPlaylistRequestExecutionCount++;
