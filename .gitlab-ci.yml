@@ -1,4 +1,4 @@
-image: maven:latest
+image: theleede/dlo-runner:groovy
 
 cache:
   paths:
@@ -25,7 +25,6 @@ deploy to canary:
   only:
     - develop
   script:
-    - apt-get update && apt-get install -y -qq sshpass
     - export SSHPASS=$USER_PASS
     - cd target/
     - sshpass -e scp -o stricthostkeychecking=no -r . $USER_NAME@$IP_ADDRESS:/opt/groovy/bots/canary/
