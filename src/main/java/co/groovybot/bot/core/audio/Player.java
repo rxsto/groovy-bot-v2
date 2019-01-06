@@ -74,8 +74,7 @@ public abstract class Player {
             resume();
 
         if (track == null) {
-            announce(null, AnnounceReason.NULL);
-            player.playTrack(pollTrack());
+            onEnd(true);
         } else {
             player.playTrack(track);
         }
