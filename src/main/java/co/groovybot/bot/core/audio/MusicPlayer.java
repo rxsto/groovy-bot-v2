@@ -451,10 +451,12 @@ public class MusicPlayer extends Player {
 
                 @Override
                 public void noMatches() {
+                    return;
                 }
 
                 @Override
                 public void loadFailed(FriendlyException exception) {
+                    return;
                 }
             });
         }
