@@ -16,7 +16,6 @@ build:
   script:
     - mvn $MAVEN_CLI_OPTS clean package
   artifacts:
-    name: "groovybot.jar"
     paths:
       - target/*.jar
     expire_in: 1 week
