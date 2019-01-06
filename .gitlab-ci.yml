@@ -28,5 +28,5 @@ deploy_stage:
     - apt-get update && apt-get install -y -qq sshpass
     - export SSHPASS=$USER_PASS
     - cd target/
-    - sshpass -e scp -o stricthostkeychecking=no -r . root@$IP_ADDRESS:/opt/groovy/bots/canary/
-    - sshpass -e ssh -t root@$IP_ADDRESS "/opt/groovy/bots/canary/update.sh"
+    - sshpass -e scp -o stricthostkeychecking=no -r . $USER_NAME@$IP_ADDRESS:/opt/groovy/bots/canary/
+    - sshpass -e ssh -t $USER_NAME@$IP_ADDRESS "/opt/groovy/bots/canary/update.sh"
