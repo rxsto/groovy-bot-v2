@@ -38,7 +38,6 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import lavalink.client.LavalinkUtil;
-import lavalink.client.io.Lavalink;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavaplayerPlayerWrapper;
 import lombok.Getter;
@@ -114,6 +113,7 @@ public class MusicPlayer extends Player {
     @Setter
     private String bassboost = "off";
     @Getter
+    @Setter
     private int skipVotes;
     @Getter
     private boolean inProgress;
@@ -414,63 +414,39 @@ public class MusicPlayer extends Player {
         });
     }
 
-    public void update() throws SQLException, IOException {
+    public void update() {
         inProgress = true;
 
-        if (channel != null)
-            if (channel.canTalk())
-                SafeMessage.sendMessageBlocking(channel, EmbedUtil.small(translate("phrases.updating")));
+        if (channel.canTalk())
+            SafeMessage.sendMessageBlocking(channel, EmbedUtil.small(translate("phrases.updating")));
+
+        if (!isPlaying() || voiceChannel == null)
+            return;
+
+        // guild_id, current_track, current_position, queue, channel_id, text_channel_id, volume, bass_boost, skip_votes, loop_queue, loop, shuffle, auto_play
 
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
-            // Initialize preparedstatement
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO queues (guild_id, current_track, current_position, queue, channel_id, text_channel_id, volume) VALUES (?,?,?,?,?,?,?)");
-
-            // Checking if able to update
-            if (player.getPlayingTrack() == null || guild.getSelfMember().getVoiceState().getChannel() == null)
-                return;
-
-            // Set values for preparedstatement
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO queues (guild_id, current_track, current_position, queue, channel_id, text_channel_id, volume, bassboost, skip_votes, loop_queue, loop, shuffle, auto_play) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
             ps.setLong(1, guild.getIdLong());
             ps.setString(2, LavalinkUtil.toMessage(player.getPlayingTrack()));
             ps.setLong(3, player.getTrackPosition());
             ps.setString(4, getBuildedQueue());
-            ps.setLong(5, guild.getSelfMember().getVoiceState().getChannel().getIdLong());
+            ps.setLong(5, voiceChannel.getIdLong());
             ps.setLong(6, channel.getIdLong());
             ps.setInt(7, player.getVolume());
+            ps.setString(8, bassboost);
+            ps.setInt(9, skipVotes);
+            ps.setBoolean(10, getScheduler().isLoopqueue());
+            ps.setBoolean(11, getScheduler().isLoop());
+            ps.setBoolean(12, getScheduler().isShuffle());
+            ps.setBoolean(13, getScheduler().isAutoPlay());
             ps.execute();
-
-            this.clearQueue();
-            getScheduler().setShuffle(false);
-            getScheduler().setLoopqueue(false);
-            getScheduler().setLoop(false);
-            setVolume(100);
-            stop();
-
-            if (isPaused())
-                resume();
-
-            getAudioPlayerManager().loadItem("https://cdn.groovybot.co/sounds/update.mp3", new AudioLoadResultHandler() {
-                @Override
-                public void trackLoaded(AudioTrack track) {
-                    queueTrack(track, true, false);
-                }
-
-                @Override
-                public void playlistLoaded(AudioPlaylist playlist) {
-                    queueTrack(playlist.getTracks().get(0), true, false);
-                }
-
-                @Override
-                public void noMatches() {
-                    return;
-                }
-
-                @Override
-                public void loadFailed(FriendlyException exception) {
-                    return;
-                }
-            });
+        } catch (SQLException | IOException e) {
+            SafeMessage.sendMessage(channel, EmbedUtil.error(translate("phrases.error"), translate("phrases.updating.error")).setFooter(translate("phrases.redirect.to.devs"), null));
+            log.error("[MusicPlayer] Error while updating!", e);
         }
+
+        leave();
     }
 
     public String removeQueryFromUrl(String url) {

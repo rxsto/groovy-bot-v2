@@ -55,7 +55,6 @@ public class UpdateCommand extends Command {
 
                     confirmMessage.clearReactions().queue();
                 });
-
         return null;
     }
 }
