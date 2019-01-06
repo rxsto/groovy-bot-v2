@@ -9,7 +9,7 @@ variables:
 
 stages:
   - build
-  - deploy
+  - staging
 
 build:
   stage: build
@@ -20,8 +20,8 @@ build:
       - target/*.jar
     expire_in: 1 week
 
-deploy_stage:
-  stage: deploy
+deploy to canary:
+  stage: staging
   only:
     - develop
   script:
