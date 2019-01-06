@@ -22,6 +22,7 @@ package co.groovybot.bot.core.audio;
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.commands.music.SearchCommand;
 import co.groovybot.bot.core.audio.player.util.AnnounceReason;
+import co.groovybot.bot.core.audio.sources.spotify.SpotifySourceManager;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.permission.UserPermissions;
@@ -37,6 +38,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import lavalink.client.LavalinkUtil;
+import lavalink.client.io.Lavalink;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavaplayerPlayerWrapper;
 import lombok.Getter;
@@ -207,6 +209,9 @@ public class MusicPlayer extends Player {
             case NULL:
                 SafeMessage.sendMessage(channel, info(translate("phrases.error"), translate("phrases.loadfailed.null")));
                 break;
+            case LOCAL_SONGS:
+                SafeMessage.sendMessage(channel, info(translate("phrases.warning"), String.format(translate("phrases.loadskipped.local"), Integer.valueOf(track.getInfo().title))));
+                break;
             default:
                 break;
         }
@@ -280,6 +285,8 @@ public class MusicPlayer extends Player {
 
         if (isUrl && keyword.matches("(https?://)?(.*)?spotify\\.com.*"))
             keyword = removeQueryFromUrl(keyword);
+
+        GroovyBot.getInstance().getLavalinkManager().getAudioPlayerManager().source(SpotifySourceManager.class).setPlayer(this);
 
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override

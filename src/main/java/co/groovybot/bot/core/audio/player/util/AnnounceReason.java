@@ -5,5 +5,6 @@ public enum AnnounceReason {
     NOT_FOUND,
     ERROR,
     SONG,
-    NULL
+    NULL,
+    LOCAL_SONGS
 }

@@ -19,8 +19,11 @@
 
 package co.groovybot.bot.core.audio.sources.spotify;
 
+import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.AudioTrackFactory;
+import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.audio.data.TrackData;
+import co.groovybot.bot.core.audio.player.util.AnnounceReason;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.AlbumKey;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.ArtistKey;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.PlaylistKey;
@@ -35,6 +38,7 @@ import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.*;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
@@ -46,6 +50,7 @@ import com.wrapper.spotify.requests.data.artists.GetArtistsTopTracksRequest;
 import com.wrapper.spotify.requests.data.playlists.GetPlaylistRequest;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -96,9 +101,13 @@ public class SpotifySourceManager implements AudioSourceManager {
     private LoadingCache<AlbumKey, Album> albumLoadingCache;
 
     @Getter
-    private long retryAfter;
+    @Setter
+    private MusicPlayer player;
 
-    private int userPlaylistRequestExecutionCount = 0;
+    @Getter
+    private long retryAfter;
+    private int playlistRequestExecutionCount = 0;
+    private int filteredLocalTracks = 0;
 
     public SpotifySourceManager(@NonNull SpotifyManager spotifyManager) {
         this.spotifyManager = spotifyManager;
@@ -212,7 +221,6 @@ public class SpotifySourceManager implements AudioSourceManager {
                     this.retryAfter = (e.getRetryAfter() * 1000) + System.currentTimeMillis();
                     throw new FriendlyException(String.format("We are currently rate-limited. Please try again in `%s`!", retryAfter), FriendlyException.Severity.COMMON, new Throwable());
                 }
-
             return audioItem;
         } catch (MalformedURLException e) {
             log.error("Failed to load the item!", e);
@@ -307,11 +315,13 @@ public class SpotifySourceManager implements AudioSourceManager {
     private List<PlaylistTrack> getPlaylistTracks(Playlist playlist) throws TooManyRequestsException {
         List<PlaylistTrack> playlistTracks = Lists.newArrayList();
         Paging<PlaylistTrack> currentPage = playlist.getTracks();
+        filteredLocalTracks = 0;
         do {
             playlistTracks.addAll(Arrays.stream(currentPage.getItems()).filter(playlistTrack -> !playlistTrack.getIsLocal()).collect(Collectors.toList()));
+            filteredLocalTracks = currentPage.getTotal() - playlistTracks.size();
             if (currentPage.getNext() == null) {
                 currentPage = null;
-                userPlaylistRequestExecutionCount++;
+                playlistRequestExecutionCount++;
             } else {
                 try {
                     this.spotifyManager.refreshAccessToken();
@@ -324,7 +334,7 @@ public class SpotifySourceManager implements AudioSourceManager {
                     }
 
                     currentPage = builder.build().execute();
-                    userPlaylistRequestExecutionCount++;
+                    playlistRequestExecutionCount++;
                 } catch (TooManyRequestsException e) {
                     throw e;
                 } catch (URISyntaxException e) {
@@ -336,7 +346,11 @@ public class SpotifySourceManager implements AudioSourceManager {
                 }
             }
         } while (currentPage != null);
-        log.info("PlaylistTracksRequest executed " + userPlaylistRequestExecutionCount + " times.");
+        log.info("PlaylistTracksRequest executed " + playlistRequestExecutionCount + " times.");
+
+        if (filteredLocalTracks != 0)
+            player.announce(new YoutubeAudioTrack(new AudioTrackInfo(String.valueOf(filteredLocalTracks), "", 0, "", false, ""), null), AnnounceReason.LOCAL_SONGS);
+
         return playlistTracks;
     }
 
