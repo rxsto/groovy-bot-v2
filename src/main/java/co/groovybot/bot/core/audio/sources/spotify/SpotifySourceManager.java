@@ -19,7 +19,6 @@
 
 package co.groovybot.bot.core.audio.sources.spotify;
 
-import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.AudioTrackFactory;
 import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.audio.data.TrackData;
@@ -30,7 +29,6 @@ import co.groovybot.bot.core.audio.sources.spotify.entities.keys.PlaylistKey;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.UserPlaylistKey;
 import co.groovybot.bot.core.audio.sources.spotify.manager.SpotifyManager;
 import co.groovybot.bot.core.audio.sources.spotify.request.GetNormalPlaylistRequest;
-import co.groovybot.bot.core.audio.sources.spotify.request.GetNormalPlaylistTracksRequest;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -48,6 +46,7 @@ import com.wrapper.spotify.requests.data.albums.GetAlbumsTracksRequest;
 import com.wrapper.spotify.requests.data.artists.GetArtistRequest;
 import com.wrapper.spotify.requests.data.artists.GetArtistsTopTracksRequest;
 import com.wrapper.spotify.requests.data.playlists.GetPlaylistRequest;
+import com.wrapper.spotify.requests.data.playlists.GetPlaylistsTracksRequest;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -327,8 +326,7 @@ public class SpotifySourceManager implements AudioSourceManager {
                     this.spotifyManager.refreshAccessToken();
                     URI nextPageUri = new URI(currentPage.getNext());
                     List<NameValuePair> queryPairs = URLEncodedUtils.parse(nextPageUri.toString(), StandardCharsets.UTF_8);
-                    GetNormalPlaylistTracksRequest.Builder builder = new GetNormalPlaylistTracksRequest.Builder(this.spotifyManager.getAccessToken())
-                            .playlistId(playlist.getId());
+                    GetPlaylistsTracksRequest.Builder builder = this.spotifyManager.getSpotifyApi().getPlaylistsTracks(playlist.getOwner().getId(), playlist.getId());
                     for (NameValuePair nameValuePair : queryPairs) {
                         builder = builder.setQueryParameter(nameValuePair.getName(), nameValuePair.getValue());
                     }
