@@ -116,7 +116,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>3.8.1_447</version>
+            <version>3.8.1_454</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -163,11 +163,6 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>27.0-jre</version>
-        </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.11</version>
         </dependency>
         <dependency>
             <groupId>com.relops</groupId>

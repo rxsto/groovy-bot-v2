@@ -83,7 +83,7 @@ public class PlayerCheckHandler {
 
     private void cancelFuture(Future future) {
         if (!future.isDone() && !future.isCancelled())
-            future.cancel(true);
+            future.cancel(false);
     }
 
     public void handlePlayerLeave() {

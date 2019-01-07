@@ -19,6 +19,7 @@
 
 package co.groovybot.bot.core.audio;
 
+import co.groovybot.bot.core.audio.player.util.AnnounceReason;
 import co.groovybot.bot.util.EmbedUtil;
 import co.groovybot.bot.util.SafeMessage;
 import com.google.api.services.youtube.model.SearchResult;
@@ -46,6 +47,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static co.groovybot.bot.util.EmbedUtil.info;
+
 @Log4j2
 @RequiredArgsConstructor
 public class Scheduler extends AudioEventAdapterWrapped {
@@ -68,13 +71,13 @@ public class Scheduler extends AudioEventAdapterWrapped {
 
     @Override
     public void onTrackStart(AudioPlayer audioPlayer, AudioTrack track) {
-        player.announceSong(audioPlayer, track);
+        player.announce(track, AnnounceReason.SONG);
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if (endReason == AudioTrackEndReason.LOAD_FAILED) {
-            this.player.play(this.player.pollTrack(), false);
+            this.player.play(this.player.pollTrack());
             return;
         }
 
@@ -84,7 +87,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
         if (exception.getCause().getMessage().equalsIgnoreCase("Unable to play this YouTube track.")) {
-            this.player.announceNotFound(track);
+            this.player.announce(track, AnnounceReason.NOT_FOUND);
             return;
         }
 
@@ -130,15 +133,15 @@ public class Scheduler extends AudioEventAdapterWrapped {
                 if (!shuffle) nextTrack = player.pollTrack();
 
                 // Set previous-track to ended song
-                if (!loopqueue) ((MusicPlayer) player).setPreviousTrack(track);
+                if (!loopqueue) player.setPreviousTrack(track);
 
                 // If no nexttrack end and leave else play nexttrack
                 if (nextTrack == null) player.onEnd(true);
-                else player.play(nextTrack, false);
+                else player.play(nextTrack);
                 break;
 
             case LOAD_FAILED:
-                player.play(player.pollTrack(), true);
+                player.play(player.pollTrack(), true, track);
                 break;
 
             case REPLACED:
@@ -158,7 +161,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
     }
 
     private void runAutoplay(AudioTrack track) {
-        Message infoMessage = player.announceAutoplay();
+        Message infoMessage = SafeMessage.sendMessageBlocking(player.getChannel(), info(player.translate("phrases.searching"), player.translate("phrases.searching.autoplay")));
 
         final Matcher matcher = TRACK_PATTERN.matcher(track.getInfo().uri);
 

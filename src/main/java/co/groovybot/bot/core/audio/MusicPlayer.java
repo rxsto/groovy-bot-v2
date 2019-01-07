@@ -21,6 +21,8 @@ package co.groovybot.bot.core.audio;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.commands.music.SearchCommand;
+import co.groovybot.bot.core.audio.player.util.AnnounceReason;
+import co.groovybot.bot.core.audio.sources.spotify.SpotifySourceManager;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.permission.UserPermissions;
@@ -31,7 +33,6 @@ import co.groovybot.bot.util.FormatUtil;
 import co.groovybot.bot.util.SafeMessage;
 import co.groovybot.bot.util.YoutubeUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
@@ -52,6 +53,10 @@ import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONArray;
 
@@ -65,12 +70,30 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static co.groovybot.bot.util.EmbedUtil.info;
-import static co.groovybot.bot.util.EmbedUtil.success;
+import static co.groovybot.bot.util.EmbedUtil.*;
 import static co.groovybot.bot.util.SafeMessage.sendMessage;
 
 @Log4j2
 public class MusicPlayer extends Player {
+
+    public static final Options CLI_OPTIONS = new Options().addOption(
+            Option.builder("f")
+                    .longOpt("forceplay")
+                    .desc("Instantly plays the song")
+                    .build()
+    )
+            .addOption(
+                    Option.builder("t")
+                            .longOpt("playtop")
+                            .desc("Adds the song to the top of the queue")
+                            .build()
+            )
+            .addOption(
+                    Option.builder("sc")
+                            .longOpt("soundcloud")
+                            .desc("Searches the song on SoundCloud")
+                            .build()
+            );
 
     @Getter
     private final AudioPlayerManager audioPlayerManager;
@@ -90,6 +113,7 @@ public class MusicPlayer extends Player {
     @Setter
     private String bassboost = "off";
     @Getter
+    @Setter
     private int skipVotes;
     @Getter
     private boolean inProgress;
@@ -153,7 +177,7 @@ public class MusicPlayer extends Player {
         getHandler().handlePlayerLeave();
         if (GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()) != null)
             if (GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()).getSelfMember().getVoiceState().inVoiceChannel())
-                 LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
+                LavalinkManager.getLavalink().getLink(guild.getId()).disconnect();
     }
 
     public void leave(String cause) {
@@ -170,24 +194,27 @@ public class MusicPlayer extends Player {
     }
 
     @Override
-    public Message announceAutoplay() {
-        return SafeMessage.sendMessageBlocking(channel, info(translate("phrases.searching"), translate("phrases.searching.autoplay")));
-    }
-
-    @Override
-    public void announceRequeue(AudioTrack track) {
-        SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.loadfailed"), String.format("[%s](%s)", track.getInfo().title, track.getInfo().uri))));
-    }
-
-    @Override
-    public void announceNotFound(AudioTrack track) {
-        SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.searching.nomatches"), String.format("[%s](%s)", track.getInfo().title, track.getInfo().uri))));
-    }
-
-    @Override
-    public void announceSong(AudioPlayer audioPlayer, AudioTrack track) {
-        if (EntityProvider.getGuild(guild.getIdLong()).isAnnounceSongs())
-            SafeMessage.sendMessage(channel, EmbedUtil.play(translate("phrases.now"), String.format(translate("phrases.now.playing"), track.getInfo().title), track.getDuration()));
+    public void announce(AudioTrack track, AnnounceReason reason) {
+        switch (reason) {
+            case SONG:
+                if (EntityProvider.getGuild(guild.getIdLong()).isAnnounceSongs())
+                    SafeMessage.sendMessage(channel, EmbedUtil.play(translate("phrases.now"), String.format(translate("phrases.now.playing"), track.getInfo().title), track.getDuration()));
+                break;
+            case ERROR:
+                SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.loadfailed"), String.format("[%s](%s)", track.getInfo().title, track.getInfo().uri))));
+                break;
+            case NOT_FOUND:
+                SafeMessage.sendMessage(channel, info(translate("phrases.error"), String.format(translate("phrases.searching.nomatches"), String.format("[%s](%s)", track.getInfo().title, track.getInfo().uri))));
+                break;
+            case NULL:
+                SafeMessage.sendMessage(channel, info(translate("phrases.error"), translate("phrases.loadfailed.null")));
+                break;
+            case LOCAL_SONGS:
+                SafeMessage.sendMessage(channel, info(translate("phrases.warning"), String.format(translate("phrases.loadskipped.local"), Integer.valueOf(track.getInfo().title))));
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -220,6 +247,14 @@ public class MusicPlayer extends Player {
             return;
         }
 
+        CommandLine args;
+        try {
+            args = event.asCli(CLI_OPTIONS);
+        } catch (ParseException e) {
+            SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.error"), String.format(event.translate("phrases.error.cli"), e.getMessage(), FormatUtil.formatHelp("play [options] <url/search>", CLI_OPTIONS))));
+            return;
+        }
+
         UserPermissions userPermissions = EntityProvider.getUser(event.getAuthor().getIdLong()).getPermissions();
         Permissions tierTwo = Permissions.tierTwo();
 
@@ -228,28 +263,13 @@ public class MusicPlayer extends Player {
             return;
         }
 
-        String keyword = event.getArguments();
+        String keyword = String.join(" ", args.getArgs());
 
         boolean isUrl = true;
 
-        final boolean isSoundcloud;
-        final boolean isForce;
-        final boolean isTop;
-
-        if (keyword.contains("-soundcloud") || keyword.contains("-sc")) {
-            isSoundcloud = true;
-            keyword = keyword.replaceAll("-soundcloud", "").replaceAll("-sc", "");
-        } else isSoundcloud = false;
-
-        if (keyword.contains("-forceplay") || keyword.contains("-fp") || keyword.contains("-skip") || keyword.contains("-force")) {
-            isForce = true;
-            keyword = keyword.replaceAll("-forceplay", "").replaceAll("-fp", "").replaceAll("-skip", "").replaceAll("-force", "");
-        } else isForce = false;
-
-        if (keyword.contains("-playtop") || keyword.contains("-pt") || keyword.contains("-top")) {
-            isTop = true;
-            keyword = keyword.replaceAll("-playtop", "").replaceAll("-pt", "").replaceAll("-top", "");
-        } else isTop = false;
+        final boolean isSoundcloud = args.hasOption("sc");
+        final boolean isForce = args.hasOption("f");
+        final boolean isTop = args.hasOption("t");
 
         Message infoMessage = SafeMessage.sendMessageBlocking(event.getChannel(), info(event.translate("phrases.searching"), String.format(event.translate("phrases.searching.description"), keyword)));
 
@@ -265,6 +285,8 @@ public class MusicPlayer extends Player {
 
         if (isUrl && keyword.matches("(https?://)?(.*)?spotify\\.com.*"))
             keyword = removeQueryFromUrl(keyword);
+
+        GroovyBot.getInstance().getLavalinkManager().getAudioPlayerManager().source(SpotifySourceManager.class).setPlayer(this);
 
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override
@@ -368,7 +390,11 @@ public class MusicPlayer extends Player {
                 if (track.getInfo().isStream) {
                     SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.loaded.stream"), track.getInfo().title)));
                 } else {
-                    SafeMessage.editMessage(infoMessage, EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.loaded.track"), track.getInfo().title)).setFooter(String.format("%s: %s", translate("phrases.estimated"), getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(getQueueLengthMillis())), null));
+                    SafeMessage.editMessage(infoMessage,
+                            EmbedUtil.success(event.translate("phrases.loaded"),
+                                    String.format(event.translate("phrases.loaded.track"),
+                                            track.getInfo().title)).setFooter(String.format("%s: %s", translate("phrases.estimated"),
+                                    getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(getQueueLengthMillis())), null));
                 }
 
                 inProgress = false;
@@ -388,61 +414,39 @@ public class MusicPlayer extends Player {
         });
     }
 
-    public void update() throws SQLException, IOException {
+    public void update() {
         inProgress = true;
 
-        if (channel != null)
-            if (channel.canTalk())
-                SafeMessage.sendMessageBlocking(channel, EmbedUtil.small(translate("phrases.updating")));
+        if (channel.canTalk())
+            SafeMessage.sendMessageBlocking(channel, EmbedUtil.small(translate("phrases.updating")));
+
+        if (!isPlaying() || voiceChannel == null)
+            return;
+
+        // guild_id, current_track, current_position, queue, channel_id, text_channel_id, volume, bass_boost, skip_votes, loop_queue, loop, shuffle, auto_play
 
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
-            // Initialize preparedstatement
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO queues (guild_id, current_track, current_position, queue, channel_id, text_channel_id, volume) VALUES (?,?,?,?,?,?,?)");
-
-            // Checking if able to update
-            if (player.getPlayingTrack() == null || guild.getSelfMember().getVoiceState().getChannel() == null)
-                return;
-
-            // Set values for preparedstatement
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO queues (guild_id, current_track, current_position, queue, channel_id, text_channel_id, volume, bassboost, skip_votes, loop_queue, loop, shuffle, auto_play) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
             ps.setLong(1, guild.getIdLong());
             ps.setString(2, LavalinkUtil.toMessage(player.getPlayingTrack()));
             ps.setLong(3, player.getTrackPosition());
             ps.setString(4, getBuildedQueue());
-            ps.setLong(5, guild.getSelfMember().getVoiceState().getChannel().getIdLong());
+            ps.setLong(5, voiceChannel.getIdLong());
             ps.setLong(6, channel.getIdLong());
             ps.setInt(7, player.getVolume());
+            ps.setString(8, bassboost);
+            ps.setInt(9, skipVotes);
+            ps.setBoolean(10, getScheduler().isLoopqueue());
+            ps.setBoolean(11, getScheduler().isLoop());
+            ps.setBoolean(12, getScheduler().isShuffle());
+            ps.setBoolean(13, getScheduler().isAutoPlay());
             ps.execute();
-
-            this.clearQueue();
-            getScheduler().setShuffle(false);
-            getScheduler().setLoopqueue(false);
-            getScheduler().setLoop(false);
-            setVolume(100);
-            stop();
-
-            if (isPaused())
-                resume();
-
-            getAudioPlayerManager().loadItem("https://cdn.groovybot.co/sounds/update.mp3", new AudioLoadResultHandler() {
-                @Override
-                public void trackLoaded(AudioTrack track) {
-                    queueTrack(track, true, false);
-                }
-
-                @Override
-                public void playlistLoaded(AudioPlaylist playlist) {
-                    queueTrack(playlist.getTracks().get(0), true, false);
-                }
-
-                @Override
-                public void noMatches() {
-                }
-
-                @Override
-                public void loadFailed(FriendlyException exception) {
-                }
-            });
+        } catch (SQLException | IOException e) {
+            SafeMessage.sendMessage(channel, EmbedUtil.error(translate("phrases.error"), translate("phrases.updating.error")).setFooter(translate("phrases.redirect.to.devs"), null));
+            log.error("[MusicPlayer] Error while updating!", e);
         }
+
+        leave();
     }
 
     public String removeQueryFromUrl(String url) {

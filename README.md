@@ -1,6 +1,6 @@
 ![Groovy](https://cdn.groovybot.co/images/readme.png)
 
-# Groovy [![Crowdin](https://d322cqt584bo4o.cloudfront.net/groovy/localized.svg)](https://i18n.groovybot.co/project/groovy) [![Discord Bots](https://discordbots.org/api/widget/status/402116404301660181.svg?noavatar=true)](https://discordbots.org/bot/402116404301660181)
+# Groovy [![pipeline status](https://gitlab.discordlist.org/groovy/bot/badges/develop/pipeline.svg)](https://gitlab.discordlist.org/groovy/bot/commits/develop) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/groovy/localized.svg)](https://i18n.groovybot.co/project/groovy) [![Discord Bots](https://discordbots.org/api/widget/status/402116404301660181.svg?noavatar=true)](https://discordbots.org/bot/402116404301660181)
 
 Groovy is a **feature-rich** and **experienced** music-bot for [Discord](https://discord.gg). Supports **YouTube**, **SoundCloud**, **Deezer** and **Spotify**!
 

@@ -37,6 +37,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import lombok.extern.log4j.Log4j2;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -79,13 +80,14 @@ public class SearchCommand extends SemiInChannelCommand {
     }
 
     private static void removeReactions(Message message) {
-        message.clearReactions().queue();
+        if (message.getGuild().getSelfMember().hasPermission(message.getTextChannel(), Permission.MESSAGE_MANAGE))
+            message.clearReactions().queue();
     }
 
     @Override
     public Result executeCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (args.length == 0)
-            return send(info(event.translate("phrases.noquery.title"), event.translate("phrases.noquery.description")));
+            return send(info(event.translate("phrases.error"), event.translate("phrases.error.noquery")));
 
         String keyword = "ytsearch: " + event.getArguments();
 
@@ -97,7 +99,7 @@ public class SearchCommand extends SemiInChannelCommand {
                 else
                     SafeMessage.sendMessage(event.getChannel(), EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.loaded.track"), track.getInfo().title)).setFooter(String.format("Estimated: %s", player.getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(player.getQueueLengthMillis())), null));
 
-                player.play(track, false);
+                player.play(track);
             }
 
             @Override

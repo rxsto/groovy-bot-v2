@@ -21,7 +21,9 @@ package co.groovybot.bot.core.audio.sources.spotify;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.AudioTrackFactory;
+import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.audio.data.TrackData;
+import co.groovybot.bot.core.audio.player.util.AnnounceReason;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.AlbumKey;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.ArtistKey;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.PlaylistKey;
@@ -37,6 +39,7 @@ import com.google.common.collect.Lists;
 import com.neovisionaries.i18n.CountryCode;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.*;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
@@ -48,6 +51,7 @@ import com.wrapper.spotify.requests.data.artists.GetArtistsTopTracksRequest;
 import com.wrapper.spotify.requests.data.playlists.GetPlaylistRequest;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -56,7 +60,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -97,7 +104,13 @@ public class SpotifySourceManager implements AudioSourceManager {
     private LoadingCache<AlbumKey, Album> albumLoadingCache;
 
     @Getter
+    @Setter
+    private MusicPlayer player;
+
+    @Getter
     private long retryAfter;
+    private int playlistRequestExecutionCount = 0;
+    private int filteredLocalTracks = 0;
 
     public SpotifySourceManager(@NonNull SpotifyManager spotifyManager) {
         this.spotifyManager = spotifyManager;
@@ -213,7 +226,6 @@ public class SpotifySourceManager implements AudioSourceManager {
                     this.retryAfter = (e.getRetryAfter() * 1000) + System.currentTimeMillis();
                     throw new FriendlyException(String.format("We are currently rate-limited. Please try again in `%s`!", retryAfter), FriendlyException.Severity.COMMON, new Throwable());
                 }
-
             return audioItem;
         } catch (MalformedURLException e) {
             log.error("Failed to load the item!", e);
@@ -265,7 +277,7 @@ public class SpotifySourceManager implements AudioSourceManager {
             log.error(e);
             return null;
         }
-        List<TrackData> trackDataList = getPlaylistTrackDataList(Objects.requireNonNull(getPlaylistTracks(playlist)));
+        List<TrackData> trackDataList = getPlaylistTrackDataList(getPlaylistTracks(playlist));
         List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
         return new BasicAudioPlaylist(playlist.getName(), audioTracks, null, false);
     }
@@ -308,13 +320,14 @@ public class SpotifySourceManager implements AudioSourceManager {
     private List<PlaylistTrack> getPlaylistTracks(Playlist playlist) throws TooManyRequestsException {
         List<PlaylistTrack> playlistTracks = Lists.newArrayList();
         Paging<PlaylistTrack> currentPage = playlist.getTracks();
-
-        int i = 0;
+        filteredLocalTracks = 0;
         do {
-            playlistTracks.addAll(Arrays.asList(currentPage.getItems()));
-            if (currentPage.getNext() == null)
+            playlistTracks.addAll(Arrays.stream(currentPage.getItems()).filter(playlistTrack -> !playlistTrack.getIsLocal()).collect(Collectors.toList()));
+            filteredLocalTracks = currentPage.getTotal() - playlistTracks.size();
+            if (currentPage.getNext() == null) {
                 currentPage = null;
-            else {
+                playlistRequestExecutionCount++;
+            } else {
                 try {
                     this.spotifyManager.refreshAccessToken();
                     URI nextPageUri = new URI(currentPage.getNext());
@@ -326,10 +339,10 @@ public class SpotifySourceManager implements AudioSourceManager {
                     }
 
                     currentPage = builder.build().execute();
-                    i++;
+                    playlistRequestExecutionCount++;
                 } catch (TooManyRequestsException e) {
                     throw e;
-                }  catch (URISyntaxException e) {
+                } catch (URISyntaxException e) {
                     log.error("Got invalid 'next page' URI!", e);
                     return Collections.emptyList();
                 } catch (SpotifyWebApiException | IOException e) {
@@ -338,7 +351,11 @@ public class SpotifySourceManager implements AudioSourceManager {
                 }
             }
         } while (currentPage != null);
-        log.info("UserPlaylist-Requests executed " + i + " times.");
+        log.info("PlaylistTracksRequest executed " + playlistRequestExecutionCount + " times.");
+
+        if (filteredLocalTracks != 0)
+            player.announce(new YoutubeAudioTrack(new AudioTrackInfo(String.valueOf(filteredLocalTracks), "", 0, "", false, ""), null), AnnounceReason.LOCAL_SONGS);
+
         return playlistTracks;
     }
 
@@ -362,7 +379,7 @@ public class SpotifySourceManager implements AudioSourceManager {
                     currentPage = builder.build().execute();
                 } catch (TooManyRequestsException e) {
                     throw e;
-                }  catch (URISyntaxException e) {
+                } catch (URISyntaxException e) {
                     log.error("Got invalid 'next page' URI!", e);
                 } catch (SpotifyWebApiException | IOException e) {
                     log.error("Failed to query Spotify for album tracks!", e);
@@ -380,7 +397,7 @@ public class SpotifySourceManager implements AudioSourceManager {
             albumTracks.addAll(Arrays.asList(getArtistsTopTracksRequest.execute()));
         } catch (TooManyRequestsException e) {
             throw e;
-        }  catch (IOException | SpotifyWebApiException e) {
+        } catch (IOException | SpotifyWebApiException e) {
             log.error("Failed to query top ten songs from artist!", e);
         }
         return albumTracks;

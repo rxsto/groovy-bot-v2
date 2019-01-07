@@ -1,4 +1,4 @@
-image: maven:latest
+image: theleede/dlo-runner:groovy
 
 cache:
   paths:
@@ -9,7 +9,7 @@ variables:
 
 stages:
   - build
-  - deploy
+  - staging
 
 build:
   stage: build
@@ -20,13 +20,12 @@ build:
       - target/*.jar
     expire_in: 1 week
 
-deploy_stage:
-  stage: deploy
+deploy to canary:
+  stage: staging
   only:
     - develop
   script:
-    - apt-get update && apt-get install -y -qq sshpass
     - export SSHPASS=$USER_PASS
     - cd target/
-    - sshpass -e scp -o stricthostkeychecking=no -r . root@$IP_ADDRESS:/opt/groovy/bots/canary/
-    - sshpass -e ssh -t root@$IP_ADDRESS "/opt/groovy/bots/canary/update.sh"
+    - sshpass -e scp -o stricthostkeychecking=no -r . $USER_NAME@$IP_ADDRESS:/opt/groovy/bots/canary/
+    - sshpass -e ssh -t $USER_NAME@$IP_ADDRESS "/opt/groovy/groovy.sh canary update"
