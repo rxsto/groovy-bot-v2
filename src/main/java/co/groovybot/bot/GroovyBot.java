@@ -112,7 +112,7 @@ public class GroovyBot implements Closeable {
     @Getter
     private final GeniusClient geniusClient;
     @Getter
-    private final SpotifyManager spotifyClient;
+    private final SpotifyManager spotifyManager;
     @Getter
     private final PremiumHandler premiumHandler;
     @Getter
@@ -221,7 +221,7 @@ public class GroovyBot implements Closeable {
         if (!noMonitoring) influxDB = new InfluxDBManager(config).build();
 
         httpClient = new OkHttpClient();
-        spotifyClient = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
+        spotifyManager = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
         lavalinkManager = new LavalinkManager(this);
         statusPage = new StatusPage(httpClient, config.getJSONObject("statuspage"));
 

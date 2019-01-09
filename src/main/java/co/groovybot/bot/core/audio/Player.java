@@ -184,6 +184,7 @@ public abstract class Player {
     }
 
     public long getQueueLengthMillis() {
+        if (trackQueue == null) return 0;
         AtomicLong millis = new AtomicLong();
         trackQueue.forEach(track -> millis.addAndGet(track.getDuration()));
         if (trackQueue.toArray().length > 0) {

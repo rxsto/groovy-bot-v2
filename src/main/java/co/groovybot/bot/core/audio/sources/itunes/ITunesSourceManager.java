@@ -36,7 +36,7 @@ public class ITunesSourceManager implements AudioSourceManager {
 
     @Override
     public String getSourceName() {
-        return "iTunes Source Manager";
+        return "iTunesSourceManager";
     }
 
     @Override

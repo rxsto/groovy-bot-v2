@@ -60,7 +60,7 @@ public class DeezerSourceManager implements AudioSourceManager {
 
     @Override
     public String getSourceName() {
-        return "Deezer Source Manager";
+        return "DeezerSourceManager";
     }
 
     @Override
