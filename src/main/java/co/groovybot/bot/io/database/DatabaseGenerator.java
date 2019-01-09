@@ -30,24 +30,16 @@ public class DatabaseGenerator {
                 "  prefix               varchar,\n" +
                 "  volume               integer,\n" +
                 "  dj_mode              boolean default false not null,\n" +
-                "  dj_role              bigint default null,\n"+
+                "  dj_role              bigint default null,\n" +
                 "  announce_songs       boolean default true,\n" +
                 "  blacklisted_channels varchar default '[]' :: character varying,\n" +
                 "  commands_channel     bigint,\n" +
                 "  auto_leave           boolean default true  not null,\n" +
                 "  auto_pause           boolean default false  not null,\n" +
                 "  auto_join_channel    bigint,\n" +
+                "  search_play          boolean default false not null,\n" +
                 "  prevent_dups         boolean default false  not null,\n" +
                 "  delete_messages      boolean default true not null\n" +
-                ");");
-
-        postgreSQL.addDefault(() -> "create table if not exists keys\n" +
-                "(\n" +
-                "  id   serial not null\n" +
-                "    constraint keys_pkey\n" +
-                "    primary key,\n" +
-                "  type varchar,\n" +
-                "  key  varchar\n" +
                 ");");
 
         postgreSQL.addDefault(() -> "create table if not exists lavalink\n" +
@@ -72,27 +64,29 @@ public class DatabaseGenerator {
 
         postgreSQL.addDefault(() -> "create table if not exists premium\n" +
                 "(\n" +
-                "  user_id       bigint                                      not null\n" +
+                "  user_id bigint  not null\n" +
                 "    constraint premium_pkey\n" +
-                "    primary key,\n" +
-                "  patreon_token varchar,\n" +
-                "  type          varchar default 'NONE' :: character varying not null,\n" +
-                "  \"check\"       boolean default true                        not null,\n" +
-                "  refresh_token varchar,\n" +
-                "  patreon_id    varchar\n" +
+                "      primary key,\n" +
+                "  type    varchar not null\n" +
                 ");");
 
         postgreSQL.addDefault(() -> "create table if not exists queues\n" +
                 "(\n" +
-                "  guild_id         bigint              not null\n" +
+                "  guild_id         bigint not null\n" +
                 "    constraint table_name_pkey\n" +
-                "    primary key,\n" +
+                "      primary key,\n" +
                 "  current_track    varchar,\n" +
                 "  current_position bigint,\n" +
                 "  queue            varchar,\n" +
                 "  channel_id       bigint,\n" +
                 "  text_channel_id  bigint,\n" +
-                "  volume           integer default 100 not null\n" +
+                "  volume           integer,\n" +
+                "  bassboost        varchar(7),\n" +
+                "  skip_votes       integer,\n" +
+                "  loop_queue       boolean,\n" +
+                "  loop             boolean,\n" +
+                "  shuffle          boolean,\n" +
+                "  auto_play        boolean\n" +
                 ");");
 
         postgreSQL.addDefault(() -> "create table if not exists users\n" +

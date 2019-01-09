@@ -34,22 +34,30 @@ import java.text.ParseException;
 public class SeekCommand extends SameChannelCommand {
 
     public SeekCommand() {
-        super(new String[]{"seek", "seekto"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you seek to a specific position", "[HH]:[mm]:<ss>");
+        super(new String[]{"seek", "seekto", "sk"}, CommandCategory.MUSIC, Permissions.djMode(), "Lets you seek to a specific position", "[HH]:[mm]:<ss>");
     }
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (args.length == 0)
             return sendHelp();
+
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
+
         long position;
+
         try {
             position = FormatUtil.convertTimestamp(event.getArguments());
         } catch (ParseException e) {
-            return send(error(event.translate("command.seek.invalidinput.title"), event.translate("command.seek.invalidinput.description")));
+            return send(error(event.translate("phrases.invalid"), event.translate("phrases.invalid.timestamp")));
         }
+
         player.seekTo(position);
-        return send(success(event.translate("command.seek.success.title"), String.format(event.translate("command.seek.success.description"), FormatUtil.formatTimestamp(position))));
+
+        if (position > player.getPlayer().getPlayingTrack().getDuration())
+            return send(info(event.translate("phrases.skipped"), event.translate("command.seek.skipped")));
+
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.seek"), FormatUtil.formatTimestamp(player.getPlayer().getTrackPosition()), FormatUtil.formatTimestamp(position))));
     }
 }

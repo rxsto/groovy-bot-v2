@@ -37,12 +37,14 @@ public class PreviousCommand extends SameChannelCommand {
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (player.getPreviousTrack() == null)
-            return send(error(event.translate("command.previous.notrack.title"), event.translate("command.previous.notrack.description")));
+            return send(error(event.translate("phrases.error"), event.translate("command.previous.notrack")));
 
         ((LinkedList<AudioTrack>) player.getTrackQueue()).addFirst(player.getPlayer().getPlayingTrack());
 
         player.play(player.getPreviousTrack());
+
         player.setPreviousTrack(null);
-        return send(success(event.translate("command.previous.title"), event.translate("command.previous.description")));
+
+        return send(success(event.translate("phrases.success"), event.translate("command.previous")));
     }
 }

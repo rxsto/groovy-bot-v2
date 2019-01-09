@@ -24,18 +24,35 @@ import co.groovybot.bot.core.command.CommandCategory;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
+import co.groovybot.bot.util.EmbedUtil;
 import co.groovybot.bot.util.SafeMessage;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 
 public class CloseCommand extends Command {
 
     public CloseCommand() {
-        super(new String[]{"close", "stopbot", "botstop"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Lets you close Groovy", "");
+        super(new String[]{"close", "stopbot", "shutdown"}, CommandCategory.DEVELOPER, Permissions.ownerOnly(), "Lets you close Groovy", "");
     }
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        SafeMessage.sendMessageBlocking(event.getChannel(), success("Stopped bot!", "Successfully stopped bot!"));
-        System.exit(0);
+        Message confirmMessage = SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.small(event.translate("command.close.confirmation")));
+        confirmMessage.addReaction("✅").queue();
+        confirmMessage.addReaction("❌").queue();
+        event.getBot().getEventWaiter().waitForEvent(GuildMessageReactionAddEvent.class, e -> confirmMessage.getIdLong() == e.getMessageIdLong() && e.getGuild().equals(event.getGuild()) && !e.getUser().isBot(),
+                e -> {
+
+                    if (e.getReactionEmote().getName().equals("✅")) {
+                        SafeMessage.sendMessageBlocking(event.getChannel(), success(event.translate("phrases.success"), event.translate("command.close")));
+                        confirmMessage.delete().complete();
+                        System.exit(0);
+                    }
+
+                    confirmMessage.clearReactions().queue();
+                    SafeMessage.editMessage(confirmMessage, small(event.translate("command.close.cancel")));
+                });
+
         return null;
     }
 }

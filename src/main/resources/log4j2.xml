@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
   ~ Groovy Bot - The core component of the Groovy Discord music bot
   ~
@@ -28,11 +29,11 @@
         </Console>
         <File name="LatestLog" append="false">
             <FileName>logs/latest.log</FileName>
-            <PatternLayout pattern="[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} » %msg%n"/>
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} - %msg%n"/>
         </File>
         <File name="Log">
             <FileName>logs/bot-${fileDate}.log</FileName>
-            <PatternLayout pattern="[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} » %msg%n"/>
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} - %msg%n"/>
         </File>
         <Graylog name="Graylog"/>
         <Async name="Async">
@@ -45,7 +46,6 @@
         <Root>
             <AppenderRef ref="Console"/>
             <AppenderRef ref="Async"/>
-
             <JDAFilter/>
             <GraylogFilter/>
         </Root>

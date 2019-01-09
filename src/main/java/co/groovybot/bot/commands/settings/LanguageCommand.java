@@ -25,8 +25,10 @@ import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.entity.EntityProvider;
-import co.groovybot.bot.core.entity.User;
+import co.groovybot.bot.core.entity.entities.GroovyUser;
 import co.groovybot.bot.core.translation.TranslationManager;
+import co.groovybot.bot.util.Colors;
+import net.dv8tion.jda.core.EmbedBuilder;
 
 import java.util.Locale;
 
@@ -38,29 +40,30 @@ public class LanguageCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        User user = EntityProvider.getUser(event.getAuthor().getIdLong());
+        GroovyUser groovyUser = EntityProvider.getUser(event.getAuthor().getIdLong());
 
         if (args.length == 0)
-            return send(info(event.translate("command.language.info.title"), String.format(event.translate("command.language.info.description"), user.getLocale().getLanguage(), formatAvailableLanguages(event.getBot().getTranslationManager()))));
+            return send(new EmbedBuilder().setColor(Colors.DARK_BUT_NOT_BLACK).addField(event.translate("command.language.current"), String.format(" - %s `%s`", groovyUser.getLocale().getDisplayName(), groovyUser.getLocale()), false).addField(event.translate("command.language.supported"), formatAvailableLanguages(event.getBot().getTranslationManager()), false));
 
         Locale locale;
 
         try {
             locale = Locale.forLanguageTag(args[0].replace("_", "-"));
         } catch (Exception e) {
-            return send(error(event.translate("command.language.invalid.title"), event.translate("command.language.invalid.description")));
+            return send(error(event.translate("phrases.invalid"), event.translate("phrases.invalid.language")));
         }
 
         if (!event.getBot().getTranslationManager().isTranslated(locale))
-            return send(error(event.translate("command.language.nottranslated.title"), event.translate("command.language.nottranslated.description")));
+            return send(error(event.translate("phrases.invalid"), event.translate("phrases.invalid.language")));
 
-        user.setLocale(locale);
-        return send(success(event.translate("command.language.set.title"), String.format(event.translate("command.language.set.description"), locale.getLanguage())));
+        groovyUser.setLocale(locale);
+
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.language"), locale.getDisplayName())));
     }
 
     private String formatAvailableLanguages(TranslationManager translationManager) {
         StringBuilder builder = new StringBuilder();
-        translationManager.getLocales().forEach(locale -> builder.append(locale.getLanguageName()).append("(`").append(locale.getLocale().toLanguageTag().replace("-", "_")).append("`)").append("\n"));
+        translationManager.getLocales().forEach(locale -> builder.append(" - ").append(locale.getLanguageName()).append(" `").append(locale.getLocale().toLanguageTag().replace("-", "_")).append("`").append("\n"));
         return builder.toString();
     }
 }

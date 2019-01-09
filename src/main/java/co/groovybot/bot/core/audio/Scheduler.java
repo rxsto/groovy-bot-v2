@@ -19,6 +19,7 @@
 
 package co.groovybot.bot.core.audio;
 
+import co.groovybot.bot.core.audio.player.util.AnnounceReason;
 import co.groovybot.bot.util.EmbedUtil;
 import co.groovybot.bot.util.SafeMessage;
 import com.google.api.services.youtube.model.SearchResult;
@@ -46,14 +47,15 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static co.groovybot.bot.util.EmbedUtil.info;
 
 @Log4j2
 @RequiredArgsConstructor
 public class Scheduler extends AudioEventAdapterWrapped {
 
-    private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.youtube\\.com/watch\\?v=([^?/&]*)");
+    private static final Pattern TRACK_PATTERN = Pattern.compile("(https?://)?(.*)?youtube\\.com/watch\\?v=([^?/\\s]*)");
 
-    private final Player player;
+    private final MusicPlayer player;
     @Getter
     @Setter
     private boolean loopqueue = false;
@@ -69,23 +71,33 @@ public class Scheduler extends AudioEventAdapterWrapped {
 
     @Override
     public void onTrackStart(AudioPlayer audioPlayer, AudioTrack track) {
-        player.announceSong(audioPlayer, track);
+        player.announce(track, AnnounceReason.SONG);
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+        if (endReason == AudioTrackEndReason.LOAD_FAILED) {
+            this.player.play(this.player.pollTrack());
+            return;
+        }
+
         handleTrackEnd(track, endReason);
     }
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
+        if (exception.getCause().getMessage().equalsIgnoreCase("Unable to play this YouTube track.")) {
+            this.player.announce(track, AnnounceReason.NOT_FOUND);
+            return;
+        }
+
         handleTrackEnd(track, AudioTrackEndReason.LOAD_FAILED);
     }
 
     private void handleTrackEnd(AudioTrack track, AudioTrackEndReason reason) {
         switch (reason) {
             case FINISHED:
-                Guild guild = ((MusicPlayer) player).getGuild();
+                Guild guild = player.getGuild();
 
                 if (guild.getSelfMember().getVoiceState().getChannel() == null) return;
 
@@ -110,8 +122,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
                 if (shuffle) {
                     if (player.trackQueue.isEmpty()) {
                         player.onEnd(true);
-                    }
-                    else {
+                    } else {
                         final int index = ThreadLocalRandom.current().nextInt(player.trackQueue.size());
                         nextTrack = ((LinkedList<AudioTrack>) player.trackQueue).get(index);
                         ((LinkedList<AudioTrack>) player.trackQueue).remove(index);
@@ -122,15 +133,15 @@ public class Scheduler extends AudioEventAdapterWrapped {
                 if (!shuffle) nextTrack = player.pollTrack();
 
                 // Set previous-track to ended song
-                if (!loopqueue) ((MusicPlayer) player).setPreviousTrack(track);
+                if (!loopqueue) player.setPreviousTrack(track);
 
                 // If no nexttrack end and leave else play nexttrack
                 if (nextTrack == null) player.onEnd(true);
-                else player.play(nextTrack, false);
+                else player.play(nextTrack);
                 break;
 
             case LOAD_FAILED:
-                player.play(player.pollTrack(), true);
+                player.play(player.pollTrack(), true, track);
                 break;
 
             case REPLACED:
@@ -144,25 +155,26 @@ public class Scheduler extends AudioEventAdapterWrapped {
             default:
                 break;
         }
+
         player.resetSkipVotes();
     }
 
     private void runAutoplay(AudioTrack track) {
-        Message infoMessage = player.announceAutoplay();
+        Message infoMessage = SafeMessage.sendMessageBlocking(player.getChannel(), info(player.translate("phrases.searching"), player.translate("phrases.searching.autoplay")));
 
         final Matcher matcher = TRACK_PATTERN.matcher(track.getInfo().uri);
 
         if (!matcher.find()) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error("Not a YouTube-Track!", "We **couldn't search** for a AutoPlay-Track as the **previous** track was **not a YouTube-Track**!"));
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error(player.translate("phrases.error"), player.translate("phrases.loadfailed.autoplay.previous")));
             return;
         }
 
         try {
             SearchResult result = player.youtubeClient.retrieveRelatedVideos(track.getIdentifier());
-            SafeMessage.editMessage(infoMessage, EmbedUtil.success("Loaded video", String.format("Successfully loaded video `%s`", result.getSnippet().getTitle())));
+            SafeMessage.editMessage(infoMessage, EmbedUtil.success(player.translate("phrases.loaded"), String.format(player.translate("phrases.loaded.track"), result.getSnippet().getTitle())));
             queueSearchResult(result, infoMessage);
         } catch (IOException e) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error("Unknown error", "An **unknown error** occurred while **retrieving** the next video!"));
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error(player.translate("phrases.error"), player.translate("phrases.error.unknown")));
             log.error("[Scheduler] Error while retrieving autoplay video", e);
         }
     }
@@ -176,8 +188,8 @@ public class Scheduler extends AudioEventAdapterWrapped {
             AudioTrack track = new YoutubeAudioTrack(trackInfo, new YoutubeAudioSourceManager());
             player.play(track);
         } catch (IOException e) {
-            SafeMessage.editMessage(infoMessage, EmbedUtil.error("Unknown error", "An **unknown error** occurred while **queueing** song!"));
-            log.error("[AutoPlay] Error while queueing song", e);
+            SafeMessage.editMessage(infoMessage, EmbedUtil.error(player.translate("phrases.error"), player.translate("phrases.error.unknown")));
+            log.error("[Scheduler] Error while queueing song", e);
         }
     }
 }

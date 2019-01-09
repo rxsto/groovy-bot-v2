@@ -24,8 +24,7 @@ import co.groovybot.bot.core.command.CommandCategory;
 import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
-import co.groovybot.bot.core.entity.EntityProvider;
-import co.groovybot.bot.core.entity.Guild;
+import co.groovybot.bot.core.entity.entities.GroovyGuild;
 
 public class AnnounceCommand extends Command {
 
@@ -35,12 +34,8 @@ public class AnnounceCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        Guild guild = EntityProvider.getGuild(event.getGuild().getIdLong());
-        if (guild.isAnnounceSongs()) {
-            guild.setAnnounceSongs(false);
-            return send(success(event.translate("command.announce.disabled.title"), event.translate("command.announce.disabled.description")));
-        }
-        guild.setAnnounceSongs(true);
-        return send(success(event.translate("command.announce.enabled.title"), event.translate("command.announce.enabled.description")));
+        GroovyGuild groovyGuild = event.getGroovyGuild();
+        groovyGuild.setAnnounceSongs(!groovyGuild.isAnnounceSongs());
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.announce"), groovyGuild.isAnnounceSongs() ? event.translate("phrases.text.enabled") : event.translate("phrases.text.disabled"))));
     }
 }

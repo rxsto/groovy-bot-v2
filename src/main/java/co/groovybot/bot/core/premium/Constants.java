@@ -23,4 +23,7 @@ public class Constants {
 
     public static final long PREMIUM_TIME = 1000 * 60 * 60;
     public static final long VOTE_AGAIN = 1000 * 60 * 60 * 12;
+
+    public static final long SONG_DURATION = 1000 * 60 * 60;
+    public static final long QUEUE_LENGTH = 50;
 }

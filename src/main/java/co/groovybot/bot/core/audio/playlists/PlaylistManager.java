@@ -19,7 +19,7 @@
 
 package co.groovybot.bot.core.audio.playlists;
 
-import co.groovybot.bot.core.entity.Playlist;
+import co.groovybot.bot.core.entity.entities.GroovyPlaylist;
 import com.relops.snowflake.Snowflake;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.zaxxer.hikari.HikariDataSource;
@@ -41,34 +41,34 @@ public class PlaylistManager {
     private final HikariDataSource dataSource;
     private final Snowflake generator = new Snowflake(1);
 
-    public Playlist createPlaylist(String name, Long ownerId, List<AudioTrack> tracks) {
-        return new Playlist(name, generator.next(), ownerId, tracks);
+    public GroovyPlaylist createPlaylist(String name, Long ownerId, List<AudioTrack> tracks) {
+        return new GroovyPlaylist(name, generator.next(), ownerId, tracks);
     }
 
-    public Map<String, Playlist> getPlaylist(Long authorId) {
-        Map<String, Playlist> playlists = new HashMap<>();
+    public Map<String, GroovyPlaylist> getPlaylist(Long authorId) {
+        Map<String, GroovyPlaylist> playlists = new HashMap<>();
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM playlists WHERE author_id = ?");
             ps.setLong(1, authorId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Playlist playlist = new Playlist(rs);
-                playlists.put(playlist.getName().toLowerCase(), playlist);
+                GroovyPlaylist groovyPlaylist = new GroovyPlaylist(rs);
+                playlists.put(groovyPlaylist.getName().toLowerCase(), groovyPlaylist);
             }
         } catch (SQLException e) {
-            log.error("[Playlist] Error while retrieving playlist", e);
+            log.error("[GroovyPlaylist] Error while retrieving playlist", e);
         }
         return playlists;
     }
 
-    public Playlist getPlaylistById(Long id) {
+    public GroovyPlaylist getPlaylistById(Long id) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM playlists WHERE id = ?");
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) return new Playlist(rs);
+            if (rs.next()) return new GroovyPlaylist(rs);
         } catch (SQLException e) {
-            log.error("[Playlist] Error while retrieving playlist", e);
+            log.error("[GroovyPlaylist] Error while retrieving playlist", e);
         }
         return null;
     }
@@ -80,23 +80,23 @@ public class PlaylistManager {
             ps.setString(2, name);
             ps.execute();
         } catch (SQLException e) {
-            log.error("[Playlist] Error while deleting playlist", e);
+            log.error("[GroovyPlaylist] Error while deleting playlist", e);
         }
     }
 
-    public Map<Integer, Playlist> getTopPlaylists() {
-        Map<Integer, Playlist> topPlaylists = new HashMap<>();
+    public Map<Integer, GroovyPlaylist> getTopPlaylists() {
+        Map<Integer, GroovyPlaylist> topPlaylists = new HashMap<>();
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM playlists WHERE public = TRUE ORDER BY count DESC LIMIT 3");
             ResultSet rs = ps.executeQuery();
             int rank = 1;
             while (rs.next()) {
-                Playlist playlist = new Playlist(rs);
-                topPlaylists.put(rank, playlist);
+                GroovyPlaylist groovyPlaylist = new GroovyPlaylist(rs);
+                topPlaylists.put(rank, groovyPlaylist);
                 rank++;
             }
         } catch (SQLException e) {
-            log.error("[Playlist] Error while retrieving playlist", e);
+            log.error("[GroovyPlaylist] Error while retrieving playlist", e);
         }
         return topPlaylists;
     }

@@ -38,23 +38,16 @@ public class SkipCommand extends SameChannelCommand {
 
         player.setPreviousTrack(player.getPlayer().getPlayingTrack());
 
-        int skipTo;
+        int skipTo = 1;
 
-        if (args.length == 0)
-            skipTo = 1;
-        else {
+        if (args.length > 0)
             try {
                 skipTo = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                return send(error(event.translate("phrases.invalidnumber.title"), event.translate("phrases.invalidnumber.description")));
+                return send(error(event.translate("phrases.invalid"), event.translate("phrases.invalid.number")));
             }
-        }
 
         player.skipTo(skipTo);
-
-        if (args.length > 0)
-            return send(success(event.translate("command.skip.success.title"), String.format(event.translate("command.skip.success.more.description"), skipTo)));
-
-        return send(success(event.translate("command.skip.success.title"), (event.translate("command.skip.success.one.description"))));
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.skip"), player.getPlayer().getPlayingTrack().getInfo().title, skipTo)));
     }
 }

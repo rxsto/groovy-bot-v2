@@ -64,7 +64,7 @@ public class Permissions {
      * @return a Permission object
      */
     public static Permissions ownerOnly() {
-        return new Permissions(false, true, false, false,false, false, false, false, "Owner");
+        return new Permissions(false, true, false, false, false, false, false, false, "Owner");
     }
 
     /**
@@ -154,6 +154,7 @@ public class Permissions {
         } catch (SQLException e) {
             log.error("[PermissionProvider] Error while retrieving permissions!", e);
         }
+
         return false;
     }
 }

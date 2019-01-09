@@ -53,15 +53,18 @@ public class SafeMessage extends JDAUtil {
         return channel.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage(EmbedUtil.error("No permissions!", String.format("I am unable to write in %s on your guild!", channel.getAsMention())).build());
     }
 
-    public static void editMessage(Message prevoiusMessage, EmbedBuilder builder) {
-        getEditAction(prevoiusMessage, buildMessage(builder)).queue();
+    public static void editMessage(Message previousMessage, EmbedBuilder builder) {
+        if (previousMessage == null) return;
+        getEditAction(previousMessage, buildMessage(builder)).queue();
     }
 
-    public static void editMessage(Message prevoiusMessage, String content) {
-        getEditAction(prevoiusMessage, buildMessage(content)).queue();
+    public static void editMessage(Message previousMessage, String content) {
+        if (previousMessage == null) return;
+        getEditAction(previousMessage, buildMessage(content)).queue();
     }
 
     public static void sendMessage(TextChannel channel, Message message) {
+        if (message == null) return;
         getAction(channel, message).queue();
     }
 
@@ -70,10 +73,12 @@ public class SafeMessage extends JDAUtil {
     }
 
     public static void sendMessage(TextChannel channel, Message message, Integer delTime) {
+        if (message == null) return;
         getAction(channel, message).queue(msg -> msg.delete().queueAfter(delTime, TimeUnit.SECONDS));
     }
 
     public static void sendMessage(TextChannel channel, EmbedBuilder embed, Integer delTime) {
+        if (channel == null) return;
         getAction(channel, buildMessage(embed)).queue(msg -> msg.delete().queueAfter(delTime, TimeUnit.SECONDS));
     }
 

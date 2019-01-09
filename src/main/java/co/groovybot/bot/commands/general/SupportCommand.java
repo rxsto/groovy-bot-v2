@@ -32,6 +32,6 @@ public class SupportCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return send(noTitle(String.format("**[%s](https://discord.gg/5s5TsW2)**", event.translate("command.support"))));
+        return send(small(String.format("**[%s](https://discord.gg/5s5TsW2)**", event.translate("command.support"))));
     }
 }

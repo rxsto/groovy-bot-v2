@@ -19,7 +19,8 @@
 
 package co.groovybot.bot.listeners;
 
-import net.dv8tion.jda.core.EmbedBuilder;
+import co.groovybot.bot.GroovyBot;
+import co.groovybot.bot.util.EmbedUtil;
 import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
 
@@ -30,8 +31,9 @@ public class GuildLeaveListener {
 
     @SubscribeEvent
     private void handleGuildKick(GuildLeaveEvent event) {
-        event.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(new EmbedBuilder().setTitle("Oh no!").setDescription("We are sorry that Groovy does not fit your expectations! If there is anything we can do better please let us know! Join our support-guild: https://support.groovybot.co").setFooter("Help us improving Groovy!", null).setTimestamp(Instant.now()).build()).queue(ignored -> {
-        }, ignored2 -> {
-        }));
+        if (!GroovyBot.getInstance().isPremium())
+            event.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(EmbedUtil.small("We're sorry that Groovy couldn't fulfill your expectations! If there is anything we should do better let us know in our support guild at https://discord.gg/5s5TsW2").build()).queue(ignored -> {
+            }, ignored2 -> {
+            }));
     }
 }

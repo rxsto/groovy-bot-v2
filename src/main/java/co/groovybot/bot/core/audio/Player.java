@@ -19,14 +19,13 @@
 
 package co.groovybot.bot.core.audio;
 
+import co.groovybot.bot.core.audio.player.util.AnnounceReason;
 import co.groovybot.bot.util.YoutubeUtil;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import lavalink.client.io.jda.JdaLink;
 import lavalink.client.player.IPlayer;
 import lombok.Getter;
-import net.dv8tion.jda.core.entities.Message;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -35,6 +34,8 @@ public abstract class Player {
 
     @Getter
     private final Scheduler scheduler;
+    @Getter
+    private final PlayerCheckHandler handler;
     @Getter
     public Queue<AudioTrack> trackQueue;
     @Getter
@@ -45,7 +46,8 @@ public abstract class Player {
 
     public Player(YoutubeUtil youtubeClient) {
         this.trackQueue = new LinkedList<>();
-        this.scheduler = new Scheduler(this);
+        this.handler = new PlayerCheckHandler(((MusicPlayer) this), 3);
+        this.scheduler = new Scheduler(((MusicPlayer) this));
         this.youtubeClient = youtubeClient;
     }
 
@@ -56,22 +58,27 @@ public abstract class Player {
 
     protected abstract AudioPlayerManager getAudioPlayerManager();
 
-    public void play(AudioTrack track, boolean fail) {
+    public void play(AudioTrack next, boolean fail, AudioTrack track) {
         if (fail)
-            announceRequeue(track);
+            announce(track, AnnounceReason.ERROR);
 
-        if (track == null) {
-            onEnd(false);
-            return;
+        if (next == null) {
+            onEnd(true);
+        } else {
+            play(next);
         }
+    }
 
+    public void play(AudioTrack track) {
         if (player.isPaused())
             resume();
 
-        player.playTrack(track);
+        if (track == null) {
+            onEnd(true);
+        } else {
+            player.playTrack(track);
+        }
     }
-
-    public abstract void announceRequeue(AudioTrack track);
 
     public void stop() {
         player.stopTrack();
@@ -79,10 +86,12 @@ public abstract class Player {
 
     public void pause() {
         player.setPaused(true);
+        handler.handleTrackPause();
     }
 
     public void resume() {
         player.setPaused(false);
+        handler.handleTrackResume();
     }
 
     public void seekTo(long time) {
@@ -104,35 +113,35 @@ public abstract class Player {
         return track;
     }
 
-    public void queueTrack(AudioTrack audioTrack, boolean force, boolean playtop) {
+    public void queueTrack(AudioTrack audioTrack, boolean force, boolean top) {
         if (force) {
-            play(audioTrack, false);
+            play(audioTrack);
             return;
         }
 
-        if (playtop) ((LinkedList<AudioTrack>) trackQueue).addFirst(audioTrack);
+        if (top) ((LinkedList<AudioTrack>) trackQueue).addFirst(audioTrack);
         else trackQueue.add(audioTrack);
 
-        if (!isPlaying()) play(pollTrack(), false);
+        if (!isPlaying()) play(pollTrack());
     }
 
     public void queueTracks(AudioTrack... tracks) {
         List<AudioTrack> trackList = new ArrayList<>();
         Collections.addAll(trackList, tracks);
         trackQueue.addAll(trackList);
-        if (!isPlaying()) play(pollTrack(), false);
+        if (!isPlaying()) play(pollTrack());
     }
 
     public void skipTo(int delimiter) {
         if (scheduler.isLoopqueue()) trackQueue.add(player.getPlayingTrack());
 
         if (delimiter == 1) {
-            play(pollTrack(), false);
+            play(pollTrack());
             return;
         }
 
         for (int i = 1; i < delimiter; i++) pollTrack();
-        play(pollTrack(), false);
+        play(pollTrack());
     }
 
 
@@ -142,7 +151,7 @@ public abstract class Player {
         return trackQueue.size();
     }
 
-    public abstract void announceSong(AudioPlayer audioPlayer, AudioTrack track);
+    public abstract void announce(AudioTrack track, AnnounceReason reason);
 
     public abstract void onEnd(boolean announce);
 
@@ -174,13 +183,8 @@ public abstract class Player {
         trackQueue.clear();
     }
 
-    public abstract Message announceAutoplay();
-
-    public void play(AudioTrack track) {
-        play(track, false);
-    }
-
     public long getQueueLengthMillis() {
+        if (trackQueue == null) return 0;
         AtomicLong millis = new AtomicLong();
         trackQueue.forEach(track -> millis.addAndGet(track.getDuration()));
         if (trackQueue.toArray().length > 0) {
@@ -191,4 +195,6 @@ public abstract class Player {
     }
 
     public abstract void resetSkipVotes();
+
+    public abstract String translate(String key);
 }

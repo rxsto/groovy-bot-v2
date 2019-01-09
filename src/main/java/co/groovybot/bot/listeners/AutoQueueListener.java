@@ -30,10 +30,12 @@ public class AutoQueueListener {
 
     @SubscribeEvent
     private void handleURLMessage(GuildMessageReceivedEvent event) {
-        if (!event.getMessage().getContentDisplay().matches("(https?://)?(.*)?spotify\\.com.*") || !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?youtube\\.com.*") || !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?youtu\\.be.*") || !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?soundcloud\\.com.*") || !event.getMessage().getContentDisplay().matches("(https?://)?(.*)?twitch\\.tv.*"))
+        if (!event.getMessage().getContentStripped().matches("https?://?(.*)?spotify\\.com[^\\s]+") && !event.getMessage().getContentRaw().matches("https?://?(.*)?youtube\\.com[^\\s]+") && !event.getMessage().getContentDisplay().matches("https?://?(.*)?youtu\\.be[^\\s]+") && !event.getMessage().getContentDisplay().matches("https?://?(.*)?soundcloud\\.com[^\\s]+") && !event.getMessage().getContentDisplay().matches("https?://?(.*)?twitch\\.tv[^\\s]+"))
             return;
-        if(!Permissions.tierOne().isCovered(new UserPermissions(EntityProvider.getUser(event.getAuthor().getIdLong()),bot),new CommandEvent(event,bot,new String[]{},"listenerFillingSystem")))
+
+        if (!Permissions.tierOne().isCovered(new UserPermissions(EntityProvider.getUser(event.getAuthor().getIdLong()), bot), new CommandEvent(event, bot, new String[]{}, "listenerFillingSystem")))
             return;
+
         MusicPlayer player = bot.getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
         if (player == null)
             return;
@@ -43,9 +45,9 @@ public class AutoQueueListener {
             searchItem = player.removeQueryFromUrl(event.getMessage().getContentDisplay());
         else
             searchItem = event.getMessage().getContentDisplay();
+
         event.getMessage().addReaction("⏯").complete();
         new ReactionMenu(event.getMessage(), event.getChannel(), event.getMember(), event.getAuthor().getIdLong(), searchItem, event, player);
-
     }
 
     private class ReactionMenu extends InteractableMessage {
@@ -72,16 +74,14 @@ public class AutoQueueListener {
             final String reactionRaw = event.getReactionEmote().getName();
             if (reactionRaw.equals("⏯")) {
                 CommandEvent eve = new CommandEvent(this.e, bot, new String[]{searchItem}, "listenerFillingSystem");
-                if(player.checkConnect(eve)) {
+                if (player.checkConnect(eve)) {
                     player.connect(eve.getMember().getVoiceState().getChannel());
                     player.queueSongs(eve);
-                }else {
-                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(translate(event.getUser(),"phrases.notconnected.title"), translate(event.getUser(), "phrases.notconnected.description")), 10);
+                } else {
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(translate(event.getUser(), "phrases.notconnected.title"), translate(event.getUser(), "phrases.notconnected.description")), 10);
                 }
-
             }
             this.unregister();
         }
     }
-
 }

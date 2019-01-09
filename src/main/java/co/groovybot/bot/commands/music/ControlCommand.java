@@ -58,8 +58,12 @@ public class ControlCommand extends SameChannelCommand {
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
+        if (!player.isPlaying())
+            return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
+
         if (!event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE))
-            return send(EmbedUtil.error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
+            return send(EmbedUtil.error(event.translate("phrases.nopermission"), event.translate("phrases.nopermission.manage")));
+
         if (controlPanelExists(event.getGuild().getIdLong())) {
             Message confirmMessage = SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.info(event.translate("command.control.alreadyinuse.title"), event.translate("command.control.alreadyinuse.description")));
             confirmMessage.addReaction("✅").queue();
@@ -69,7 +73,7 @@ public class ControlCommand extends SameChannelCommand {
                         if (e.getReactionEmote().getName().equals("✅")) {
                             ControlPanel panel = getControlPanel(event.getGuild().getIdLong());
                             if (!panel.isWhitelisted(e.getMember())) {
-                                SafeMessage.sendMessage(e.getChannel(), EmbedUtil.error(event.translate("command.control.alreadyinuse.nopermission.title"), event.translate("command.control.alreadyinuse.nopermission.description")), 5);
+                                SafeMessage.sendMessage(e.getChannel(), EmbedUtil.error(event.translate("phrases.notsamechannel.title"), event.translate("phrases.notsamechannel.description")), 5);
                                 return;
                             } else {
                                 new ControlPanel(event, sendInfoMessage(event), event.getChannel(), event.getMember(), player);
@@ -84,7 +88,7 @@ public class ControlCommand extends SameChannelCommand {
     }
 
     private Message sendInfoMessage(CommandEvent event) {
-        return SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.noTitle(event.translate("phrases.loading")));
+        return SafeMessage.sendMessageBlocking(event.getChannel(), EmbedUtil.small(event.translate("phrases.loading")));
     }
 
     private List<InteractableMessage> getControlPanels() {
@@ -112,7 +116,7 @@ public class ControlCommand extends SameChannelCommand {
             this.commandEvent = commandEvent;
             this.channel = author.getGuild().getSelfMember().getVoiceState().getChannel();
             this.player = player;
-            this.scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("command.control"));
+            this.scheduler = Executors.newScheduledThreadPool(1, new NameThreadFactory("ControlCommand"));
             for (String emote : EMOTES) {
                 JDAUtil.waitForEntity(getInfoMessage().addReaction(emote));
             }
@@ -129,10 +133,13 @@ public class ControlCommand extends SameChannelCommand {
             final Scheduler playerScheduler = this.player.getScheduler();
             switch (event.getReaction().getReactionEmote().getName()) {
                 case "⏯":
-                    if (!player.isPaused())
+                    if (!player.isPaused()) {
                         musicPlayer.setPaused(true);
-                    else
+                        this.player.getHandler().handleTrackPause();
+                    } else {
                         musicPlayer.setPaused(false);
+                        this.player.getHandler().handleTrackResume();
+                    }
                     break;
                 case "⏭":
                     this.player.skip();
@@ -191,13 +198,14 @@ public class ControlCommand extends SameChannelCommand {
             if (player.getPlayer() == null || player.getPlayer().getPlayingTrack() == null) return;
             AudioTrackInfo currentSong = player.getPlayer().getPlayingTrack().getInfo();
             EmbedBuilder controlPanelEmbed = new EmbedBuilder()
-                    .setDescription(String.format("\uD83D\uDE80 [%s](%s) (%s)", currentSong.title, currentSong.uri, currentSong.author))
+                    .setTitle(commandEvent.translate("command.control.title"))
+                    .setDescription(String.format("[%s](%s)", currentSong.title, currentSong.uri))
                     .setColor(Colors.DARK_BUT_NOT_BLACK)
-                    .setFooter(buildDescription(player).toString(), null);
+                    .setFooter(buildControlInformation(player).toString(), null);
             SafeMessage.editMessage(getInfoMessage(), controlPanelEmbed);
         }
 
-        private CharSequence buildDescription(MusicPlayer player) {
+        private CharSequence buildControlInformation(MusicPlayer player) {
             final AudioTrack playingTrack = player.getPlayer().getPlayingTrack();
             final long trackPosition = player.getPlayer().getTrackPosition();
             return String.format("%s %s %s %s %s [%s] 🔊 %s", player.isPaused() ? "\u23F8" : "", player.loopEnabled() ? "\uD83D\uDD02" : "", player.loopQueueEnabled() ? "\uD83D\uDD01" : "", player.shuffleEnabled() ? "\uD83D\uDD00" : "", FormatUtil.formatProgressBar(trackPosition, playingTrack.getDuration()), playingTrack.getInfo().isStream ? commandEvent.translate("phrases.text.stream") : String.format("%s/%s", FormatUtil.formatTimestamp(trackPosition), FormatUtil.formatTimestamp(playingTrack.getDuration())), player.getPlayer().getVolume() + "%");
@@ -207,13 +215,15 @@ public class ControlCommand extends SameChannelCommand {
             scheduler.shutdownNow();
             unregister();
             if (getInfoMessage() != null)
-                getInfoMessage().delete().queue();
+                if (commandEvent.getGroovyGuild().isDeleteMessages())
+                    getInfoMessage().delete().queue();
         }
 
         @Override
         public void onDelete() {
             if (getInfoMessage() != null)
-                getInfoMessage().delete().queue();
+                if (commandEvent.getGroovyGuild().isDeleteMessages())
+                    getInfoMessage().delete().queue();
             if (!scheduler.isShutdown())
                 scheduler.shutdownNow();
         }

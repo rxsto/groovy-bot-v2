@@ -21,7 +21,8 @@ package co.groovybot.bot.core.command.permission;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.entity.EntityProvider;
-import co.groovybot.bot.core.entity.User;
+import co.groovybot.bot.core.entity.entities.GroovyGuild;
+import co.groovybot.bot.core.entity.entities.GroovyUser;
 import co.groovybot.bot.core.premium.Tier;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -43,26 +44,25 @@ import java.sql.SQLException;
 @Log4j2
 public class UserPermissions {
 
-    private final User user;
+    private final GroovyUser groovyUser;
     private final Boolean isOwner;
 
-    public UserPermissions(User user, GroovyBot bot) {
-        this.user = user;
-        this.isOwner = bot.getConfig().getJSONArray("owners").toString().contains(user.getEntityId().toString());
+    public UserPermissions(GroovyUser groovyUser, GroovyBot bot) {
+        this.groovyUser = groovyUser;
+        this.isOwner = bot.getConfig().getJSONArray("owners").toString().contains(groovyUser.getEntityId().toString());
     }
 
     public boolean isAdmin(Guild guild) {
-        return guild.getMemberById(user.getEntityId()).hasPermission(Permission.MANAGE_SERVER, Permission.ADMINISTRATOR);
+        if (isOwner) return true;
+        return guild.getMemberById(groovyUser.getEntityId()).hasPermission(Permission.MANAGE_SERVER, Permission.ADMINISTRATOR);
     }
 
     public boolean isTierOne() {
-        Tier tier = retrievePatreonTier();
-        return tier == Tier.ONE || tier == Tier.TWO || tier == Tier.THREE;
+        return retrievePatreonTier() == Tier.ONE || retrievePatreonTier() == Tier.TWO || retrievePatreonTier() == Tier.THREE;
     }
 
     public boolean isTierTwo() {
-        Tier tier = retrievePatreonTier();
-        return tier == Tier.TWO || tier == Tier.THREE;
+        return retrievePatreonTier() == Tier.TWO || retrievePatreonTier() == Tier.THREE;
     }
 
     public boolean isTierThree() {
@@ -73,21 +73,14 @@ public class UserPermissions {
         if (isOwner) return Tier.THREE;
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             PreparedStatement premium = connection.prepareStatement("SELECT type FROM premium WHERE user_id = ?");
-            premium.setLong(1, user.getEntityId());
+            premium.setLong(1, groovyUser.getEntityId());
             ResultSet premiumSet = premium.executeQuery();
             if (premiumSet.next())
                 if (Tier.valueOf(premiumSet.getString("type")) != Tier.NONE)
                     return Tier.valueOf(premiumSet.getString("type"));
 
-            PreparedStatement friend = connection.prepareStatement("SELECT friend FROM users WHERE user_id = ?");
-            friend.setLong(1, user.getEntityId());
-            ResultSet friendSet = friend.executeQuery();
-            if (friendSet.next())
-                if (friendSet.getBoolean("friend"))
-                    return Tier.TWO;
-
             PreparedStatement voted = connection.prepareStatement("SELECT expiration FROM users WHERE user_id = ?");
-            voted.setLong(1, user.getEntityId());
+            voted.setLong(1, groovyUser.getEntityId());
             ResultSet votedSet = voted.executeQuery();
             if (votedSet.next())
                 if (votedSet.getLong("expiration") > System.currentTimeMillis())
@@ -103,16 +96,10 @@ public class UserPermissions {
         if (isOwner) return true;
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             PreparedStatement premium = connection.prepareStatement("SELECT type FROM premium WHERE user_id = ?");
-            premium.setLong(1, user.getEntityId());
+            premium.setLong(1, groovyUser.getEntityId());
             ResultSet premiumSet = premium.executeQuery();
             if (premiumSet.next())
                 return Tier.valueOf(premiumSet.getString("type")) != Tier.NONE;
-
-            PreparedStatement friend = connection.prepareStatement("SELECT friend FROM users WHERE user_id = ?");
-            friend.setLong(1, user.getEntityId());
-            ResultSet friendSet = friend.executeQuery();
-            if (friendSet.next())
-                return friendSet.getBoolean("friend");
         } catch (SQLException e) {
             log.error("[PermissionProvider] Error while retrieving permissions!", e);
         }
@@ -122,18 +109,24 @@ public class UserPermissions {
 
     public boolean isDj(Guild guild) {
         if (isOwner) return true;
-        co.groovybot.bot.core.entity.Guild gguild = EntityProvider.getGuild(guild.getIdLong());
-        if (!gguild.isDjMode())
+
+        GroovyGuild groovyGuild = EntityProvider.getGuild(guild.getIdLong());
+        if (!groovyGuild.isDjMode())
             return true;
-        if (guild.getMemberById(user.getEntityId()).getVoiceState().inVoiceChannel())
-            if (guild.getMemberById(user.getEntityId()).getVoiceState().getChannel().getMembers().size() == 2)
+
+        if (guild.getMemberById(groovyUser.getEntityId()).getVoiceState().inVoiceChannel())
+            if (guild.getMemberById(groovyUser.getEntityId()).getVoiceState().getChannel().getMembers().size() == 2)
                 return true;
-        for (Role role : guild.getMemberById(user.getEntityId()).getRoles()) {
-            log.debug(role.getIdLong());
-            log.debug(gguild.getDjRole());
-            if (role.getIdLong() == gguild.getDjRole())
+
+        if (groovyGuild.getDjRole() == 0)
+            if (guild.getMemberById(groovyUser.entityId).getRoles().stream().anyMatch(role -> role.getName().toLowerCase().equals("dj")))
+                return true;
+
+        for (Role role : guild.getMemberById(groovyUser.getEntityId()).getRoles()) {
+            if (role.getIdLong() == groovyGuild.getDjRole())
                 return true;
         }
+
         return false;
     }
 
@@ -143,7 +136,7 @@ public class UserPermissions {
                         .scheme("https")
                         .host("discordbots.org")
                         .addPathSegments(String.format("api/bots/%s/check", "402116404301660181"))
-                        .addQueryParameter("userId", String.valueOf(user.getEntityId()))
+                        .addQueryParameter("userId", String.valueOf(groovyUser.getEntityId()))
                         .build())
                 .addHeader("Authorization", GroovyBot.getInstance().getConfig().getJSONObject("botlists").getString("discordbots.org"))
                 .get()

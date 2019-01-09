@@ -33,6 +33,6 @@ public class UptimeCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return send(noTitle(String.format("<:online:449207830105554964> " + event.translate("command.uptime.description"), FormatUtil.parseUptime(System.currentTimeMillis() - event.getBot().getStartupTime()))));
+        return send(small(String.format(event.translate("command.uptime.description"), FormatUtil.parseUptime(System.currentTimeMillis() - event.getBot().getStartupTime()))));
     }
 }

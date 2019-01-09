@@ -49,7 +49,8 @@ public class NowPlayingCommand extends Command {
         AudioTrack playingTrack = player.getPlayer().getPlayingTrack();
         final long trackPosition = player.getPlayer().getTrackPosition();
 
-        builder.setDescription(String.format("\uD83C\uDFA4 [%s](%s) (%s)", playingTrack.getInfo().title, playingTrack.getInfo().uri, playingTrack.getInfo().author));
+        builder.setTitle(event.translate("command.now"));
+        builder.setDescription(String.format("[%s](%s)", playingTrack.getInfo().title, playingTrack.getInfo().uri));
         builder.setFooter(String.format("%s [%s]", FormatUtil.formatProgressBar(trackPosition, playingTrack.getDuration()), playingTrack.getInfo().isStream ? event.translate("phrases.text.stream") : String.format("%s/%s", FormatUtil.formatTimestamp(trackPosition), FormatUtil.formatTimestamp(playingTrack.getDuration()))), null);
         return send(builder);
     }

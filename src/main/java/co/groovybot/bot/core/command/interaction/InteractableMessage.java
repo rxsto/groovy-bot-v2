@@ -21,12 +21,14 @@ package co.groovybot.bot.core.command.interaction;
 
 import co.groovybot.bot.GroovyBot;
 import lombok.Getter;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 
 public abstract class InteractableMessage {
 
@@ -39,11 +41,22 @@ public abstract class InteractableMessage {
     @Getter
     private final long identifier;
 
-    public InteractableMessage(Message infoMessage, TextChannel channel, Member author, long identifier) {
+    /**
+     * Constructs a new interactable message
+     *
+     * @param infoMessage The messages which show the user information about the interactive action
+     * @param channel     The channel were the action is in
+     * @param author      The executor of the command
+     * @param identifier  The identifier for the action
+     * @throws InsufficientPermissionException When the bot user has not the needed permission {@link Permission#MESSAGE_ADD_REACTION} {@link Permission#MESSAGE_MANAGE}
+     */
+    public InteractableMessage(Message infoMessage, TextChannel channel, Member author, long identifier) throws InsufficientPermissionException {
         this.infoMessage = infoMessage;
         this.channel = channel;
         this.author = author;
         this.identifier = identifier;
+        if (!infoMessage.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_MANAGE))
+            throw new InsufficientPermissionException(Permission.MESSAGE_MANAGE);
         GroovyBot.getInstance().getInteractionManager().register(this);
     }
 
@@ -53,15 +66,16 @@ public abstract class InteractableMessage {
 
     protected void unregister() {
         onDelete();
+        infoMessage.clearReactions().queue();
         GroovyBot.getInstance().getInteractionManager().unregister(this);
     }
 
     protected void handleReaction(GuildMessageReactionAddEvent event) {
-
+        // Empty method
     }
 
     protected void handleMessage(GuildMessageReceivedEvent event) {
-
+        // Empty method
     }
 
     protected String translate(User user, String key) {
@@ -69,6 +83,6 @@ public abstract class InteractableMessage {
     }
 
     public void onDelete() {
-        //Empty method
+        // Empty method
     }
 }

@@ -29,18 +29,22 @@ import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.voice.SemiInChannelCommand;
 import co.groovybot.bot.core.events.command.CommandFailEvent;
 import co.groovybot.bot.util.EmbedUtil;
+import co.groovybot.bot.util.FormatUtil;
+import co.groovybot.bot.util.SafeMessage;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import lombok.extern.log4j.Log4j2;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.utils.Helpers;
 
 import java.util.List;
@@ -52,48 +56,82 @@ import java.util.stream.Collectors;
 @Log4j2
 public class SearchCommand extends SemiInChannelCommand {
 
-    private final SearchCommand instance;
     public static final String[] EMOTES = {"\u0031\u20E3", "\u0032\u20E3", "\u0033\u20E3", "\u0034\u20E3", "\u0035\u20E3"};
+    private final SearchCommand instance;
+    private Message infoMessage;
 
     public SearchCommand() {
         super(new String[]{"search", "find"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you search for songs", "<song>");
         instance = this;
     }
 
+    public static String buildTrackDescription(List<AudioTrack> results) {
+        final String[] NUMBERS = {"`1.`", "`2.`", "`3.`", "`4.`", "`5.`", "`6.`"};
+
+        StringBuilder resultBuilder = new StringBuilder();
+        AtomicInteger count = new AtomicInteger(0);
+
+        results.forEach(track -> {
+            final AudioTrackInfo info = track.getInfo();
+            resultBuilder.append(NUMBERS[count.getAndAdd(1)]).append(" [").append(info.title).append(" - ").append(info.author).append("](").append(info.uri).append(")").append("\n");
+        });
+
+        return resultBuilder.toString();
+    }
+
+    private static void removeReactions(Message message) {
+        if (message.getGuild().getSelfMember().hasPermission(message.getTextChannel(), Permission.MESSAGE_MANAGE))
+            message.clearReactions().queue();
+    }
 
     @Override
     public Result executeCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (args.length == 0)
-            return send(info(event.translate("phrases.noquery.title"), event.translate("phrases.noquery.description")));
+            return send(info(event.translate("phrases.error"), event.translate("phrases.error.noquery")));
+
         String keyword = "ytsearch: " + event.getArguments();
+
         player.getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                sendMessage(event.getChannel(), EmbedUtil.success(event.translate("phrases.searching.trackloaded.title"), String.format(event.translate("command.search.oneresult.description"), track.getInfo().title)));
-                player.play(track, false);
+                if (track.getInfo().isStream)
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.loaded.stream"), track.getInfo().title)));
+                else
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.success(event.translate("phrases.loaded"), String.format(event.translate("phrases.loaded.track"), track.getInfo().title)).setFooter(String.format("Estimated: %s", player.getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(player.getQueueLengthMillis())), null));
+
+                player.play(track);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
                 final List<AudioTrack> tracks = playlist.getTracks();
                 List<AudioTrack> results = tracks.stream().limit(tracks.size() < 5 ? tracks.size() : 5).collect(Collectors.toList());
-                Message infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("command.search.results.title"), buildTrackDescription(results)).setFooter(event.translate("command.search.results.footer"), null));
-                for(int i=0;i<results.size();i++) {
+                infoMessage = sendMessageBlocking(event.getChannel(), info(event.translate("phrases.results"), buildTrackDescription(results)));
+
+                for (int i = 0; i < results.size(); i++) {
                     infoMessage.addReaction(EMOTES[i]).complete();
                 }
-                new MusicResult(infoMessage, event.getChannel(), event.getMember(), results, player);
+
+                try {
+                    new MusicResult(infoMessage, event.getChannel(), event.getMember(), results, player);
+                } catch (InsufficientPermissionException e) {
+                    editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.nopermission"), event.translate("phrases.nopermission.manage")));
+                    removeReactions(infoMessage);
+                }
             }
 
 
             @Override
             public void noMatches() {
-                sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.searching.nomatches.title"), event.translate("phrases.searching.nomatches.description")), 10);
+                editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.nothingfound"), event.translate("phrases.searching.nomatches")));
+                removeReactions(infoMessage);
                 leave();
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                sendMessage(event.getChannel(), error(event), 10);
+                editMessage(infoMessage, error(event));
+                removeReactions(infoMessage);
                 event.getBot().getEventManager().handle(new CommandFailEvent(event, instance, exception));
                 leave();
             }
@@ -103,18 +141,8 @@ public class SearchCommand extends SemiInChannelCommand {
                     player.leave();
             }
         });
-        return null;
-    }
 
-    public static String buildTrackDescription(List<AudioTrack> results) {
-        final String[] NUMBERS = {"**1:**", "**2:**", "**3:**", "**4:**", "**5:**", "**6:**"};
-        StringBuilder resultBuilder = new StringBuilder();
-        AtomicInteger count = new AtomicInteger(0);
-        results.forEach(track -> {
-            final AudioTrackInfo info = track.getInfo();
-            resultBuilder.append(NUMBERS[count.getAndAdd(1)]).append(" [").append(info.title).append(" - ").append(info.author).append("](").append(info.uri).append(")").append("\n");
-        });
-        return resultBuilder.toString();
+        return null;
     }
 
     public static class MusicResult extends InteractableMessage {
@@ -138,54 +166,73 @@ public class SearchCommand extends SemiInChannelCommand {
         protected void handleMessage(GuildMessageReceivedEvent event) {
             final String contentRaw = event.getMessage().getContentRaw();
             final User author = event.getAuthor();
+
             if (!Helpers.isNumeric(contentRaw)) {
-                sendMessage(event.getChannel(), error(translate(author, "phrases.invalidnumber.title"), translate(author, "phrases.invalidnumber.description")), 8);
+                editMessage(getInfoMessage(), error(translate(author, "phrases.invalid"), translate(author, "phrases.invalid.number")));
                 unregister();
                 return;
             }
+
             int song = Integer.parseInt(contentRaw);
+
             if (song > 5 || (song - 1) > searchResults.size()) {
-                sendMessage(event.getChannel(), error(translate(author, "phrases.invalidnumber.title"), translate(author, "phrases.invalidnumber.description")), 8);
+                editMessage(getInfoMessage(), error(translate(author, "phrases.invalid"), translate(author, "phrases.invalid.number")));
                 unregister();
                 return;
             }
+
             AudioTrack track = searchResults.get(song - 1);
             player.queueTrack(track, false, false);
-            sendMessage(event.getChannel(), EmbedUtil.success(translate(author, "phrases.searching.trackloaded.title"), String.format(translate(author, "phrases.searching.trackloaded.description"), track.getInfo().title)));
+
+            if (track.getInfo().isStream)
+                SafeMessage.editMessage(getInfoMessage(), EmbedUtil.success(translate(author, "phrases.loaded"), String.format(translate(author, "phrases.loaded.stream"), track.getInfo().title)));
+            else
+                SafeMessage.editMessage(getInfoMessage(), EmbedUtil.success(translate(author, "phrases.loaded"), String.format(translate(author, "phrases.loaded.track"), track.getInfo().title)).setFooter(String.format("Estimated: %s", player.getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(player.getQueueLengthMillis())), null));
+
             unregister();
         }
 
         @Override
         protected void handleReaction(GuildMessageReactionAddEvent event) {
+            final User author = event.getUser();
             final String reactionRaw = event.getReactionEmote().getName();
+
             int song = 0;
+
             switch (reactionRaw) {
                 case "\u0031\u20E3":
-                    song=1;
+                    song = 1;
                     break;
                 case "\u0032\u20E3":
-                    song=2;
+                    song = 2;
                     break;
                 case "\u0033\u20E3":
-                    song=3;
+                    song = 3;
                     break;
                 case "\u0034\u20E3":
-                    song=4;
+                    song = 4;
                     break;
                 case "\u0035\u20E3":
-                    song=5;
+                    song = 5;
                     break;
                 default:
-                    sendMessage(event.getChannel(), error(translate(event.getUser(), "phrases.invalidnumber.title"), translate(event.getUser(), "phrases.invalidnumber.description")), 8);
+                    editMessage(getInfoMessage(), error(translate(event.getUser(), "phrases.invalid"), translate(event.getUser(), "phrases.invalid.number")));
             }
-            if (song > 5 || (song - 1) > searchResults.size()) {
-                sendMessage(event.getChannel(), error(translate(event.getUser(), "phrases.invalidnumber.title"), translate(event.getUser(), "phrases.invalidnumber.description")), 8);
+
+            if (song - 1 > searchResults.size()) {
+                editMessage(getInfoMessage(), error(translate(event.getUser(), "phrases.invalid"), translate(event.getUser(), "phrases.invalid.number")));
                 unregister();
                 return;
             }
+
             AudioTrack track = searchResults.get(song - 1);
             player.queueTrack(track, false, false);
-            sendMessage(event.getChannel(), EmbedUtil.success(translate(event.getUser(), "phrases.searching.trackloaded.title"), String.format(translate(event.getUser(), "phrases.searching.trackloaded.description"), track.getInfo().title)));
+
+            if (track.getInfo().isStream)
+                SafeMessage.editMessage(getInfoMessage(), EmbedUtil.success(translate(author, "phrases.loaded"), String.format(translate(author, "phrases.loaded.stream"), track.getInfo().title)));
+            else
+                SafeMessage.editMessage(getInfoMessage(), EmbedUtil.success(translate(author, "phrases.loaded"), String.format(translate(author, "phrases.loaded.track"), track.getInfo().title)).setFooter(String.format("Estimated: %s", player.getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(player.getQueueLengthMillis())), null));
+
             unregister();
         }
     }

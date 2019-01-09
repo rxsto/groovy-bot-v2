@@ -36,7 +36,8 @@ public class ClearCommand extends SameChannelCommand {
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
+
         player.purgeQueue();
-        return send(success(event.translate("command.clear.cleared.title"), event.translate("command.clear.cleared.description")));
+        return send(success(event.translate("phrases.success"), event.translate("command.clear")));
     }
 }

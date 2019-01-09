@@ -19,6 +19,7 @@
 
 package co.groovybot.bot.commands.music;
 
+import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.command.Command;
 import co.groovybot.bot.core.command.CommandCategory;
@@ -48,36 +49,44 @@ public class QueueCommand extends Command {
         super(new String[]{"queue", "q"}, CommandCategory.MUSIC, Permissions.everyone(), "Shows you a list of all queued songs", "");
     }
 
-    public static EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, AudioTrack currentTrack, int currentPage, int totalPages) {
+    public static EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, int currentPage, int totalPages) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle("🎶 " + String.format(event.translate("command.queue.title"), event.getBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size()))
-                .setDescription(generateQueueDescription(tracks, startNumber, currentTrack))
+                .setTitle(event.translate("command.queue"))
+                .setDescription(generateQueueDescription(tracks, startNumber))
                 .setColor(Colors.DARK_BUT_NOT_BLACK);
+
         if (currentPage != 0 && totalPages != 0)
-            builder.setFooter(String.format("%s %s", event.translate("phrases.text.site"), String.format("%s/%s", currentPage, totalPages)), null);
+            builder.setFooter(String.format("%s %s - %s %s", GroovyBot.getInstance().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()).getTrackQueue().size(), event.translate("phrases.text.songs"), event.translate("phrases.text.site"), String.format("%s/%s", currentPage, totalPages)), null);
+
         return builder;
     }
 
-    private static String generateQueueDescription(List<AudioTrack> tracks, int startNumber, AudioTrack currentTrack) {
+    private static String generateQueueDescription(List<AudioTrack> tracks, int startNumber) {
         StringBuilder queueMessage = new StringBuilder();
         AtomicInteger trackCount = new AtomicInteger(startNumber);
-        if (currentTrack != null)
-            queueMessage.append(String.format("**[Now]** [%s](%s) - %s\n\n", currentTrack.getInfo().title, currentTrack.getInfo().uri, currentTrack.getInfo().author));
-        tracks.forEach(track -> queueMessage.append(String.format("▫ `%s.` [%s](%s) - %s\n", trackCount.addAndGet(1), track.getInfo().title != null ? track.getInfo().title : "none", track.getInfo().uri != null ? track.getInfo().uri : "none", track.getInfo().author != null ? track.getInfo().author : "none")));
+        tracks.forEach(track -> queueMessage.append(String.format("`%s.` [%s](%s)\n", trackCount.addAndGet(1), track.getInfo().title != null ? track.getInfo().title : "none", track.getInfo().uri != null ? track.getInfo().uri : "none")));
         return queueMessage.toString();
     }
 
     @Override
     public Result run(String[] args, CommandEvent event) {
         MusicPlayer player = event.getBot().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel());
+
         if (!player.isPlaying())
             return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
+
+        if (player.getTrackQueue().size() == 0)
+            return send(error(event.translate("phrases.error"), event.translate("command.queue.empty")));
+
         if (player.getQueueSize() <= PAGE_SIZE)
-            return new Result(formatQueue((LinkedList<AudioTrack>) player.getTrackQueue(), event, 0, player.getPlayer().getPlayingTrack(), 1, 1));
+            return new Result(formatQueue((LinkedList<AudioTrack>) player.getTrackQueue(), event, 0, 1, 1));
+
         if (!event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE))
-            return send(error(event.translate("phrases.nopermission.title"), event.translate("phrases.nopermission.manage")));
-        Message infoMessage = sendMessageBlocking(event.getChannel(), noTitle(event.translate("phrases.loading")));
-        new QueueMessage(infoMessage, event.getChannel(), event.getMember(), player.getTrackQueue(), event, player.getPlayer().getPlayingTrack());
+            return send(error(event.translate("phrases.nopermission"), event.translate("phrases.nopermission.manage")));
+
+        Message infoMessage = sendMessageBlocking(event.getChannel(), small(event.translate("phrases.loading")));
+
+        new QueueMessage(infoMessage, event.getChannel(), event.getMember(), player.getTrackQueue(), event);
         return null;
     }
 
@@ -86,15 +95,13 @@ public class QueueCommand extends Command {
         private final Queue<AudioTrack> queue;
         private final int pages;
         private final CommandEvent commandEvent;
-        private final AudioTrack currentTrack;
         private int currentPage = 1;
 
-        private QueueMessage(Message infoMessage, TextChannel channel, Member author, Queue<AudioTrack> queue, CommandEvent event, AudioTrack currentTrack) {
+        private QueueMessage(Message infoMessage, TextChannel channel, Member author, Queue<AudioTrack> queue, CommandEvent event) {
             super(infoMessage, channel, author, infoMessage.getIdLong());
             this.queue = queue;
             this.pages = queue.size() >= PAGE_SIZE ? queue.size() / PAGE_SIZE : 1;
             this.commandEvent = event;
-            this.currentTrack = currentTrack;
             updateEmotes(true);
             updateMessage();
         }
@@ -118,19 +125,21 @@ public class QueueCommand extends Command {
 
         private void updateMessage() {
             List<AudioTrack> subQueue = ((LinkedList<AudioTrack>) queue).subList((currentPage - 1) * PAGE_SIZE, ((currentPage - 1) * PAGE_SIZE + PAGE_SIZE) > queue.size() ? queue.size() : (currentPage - 1) * PAGE_SIZE + PAGE_SIZE);
-            editMessage(getInfoMessage(), formatQueue(subQueue, commandEvent, (currentPage * PAGE_SIZE - 10), currentPage == 1 ? currentTrack : null, currentPage, pages + 1));
+            editMessage(getInfoMessage(), formatQueue(subQueue, commandEvent, (currentPage * PAGE_SIZE - 10), currentPage, pages + 1));
         }
 
         private void updateEmotes(boolean first) {
             if (!first && currentPage == 1)
                 getChannel().removeReactionById(getInfoMessage().getIdLong(), "⬅").queue();
+
             if (currentPage > pages)
                 getChannel().removeReactionById(getInfoMessage().getIdLong(), "➡").queue();
+
             if (currentPage > 1)
                 getInfoMessage().addReaction("⬅").queue();
-            if (currentPage <= pages) {
+
+            if (currentPage <= pages)
                 getInfoMessage().addReaction("➡").queue();
-            }
         }
     }
 }

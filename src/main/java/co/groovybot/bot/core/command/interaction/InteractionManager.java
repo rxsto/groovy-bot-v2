@@ -55,8 +55,8 @@ public class InteractionManager {
     private void onReaction(GuildMessageReactionAddEvent event) {
         if (event.getUser().isBot())
             return;
-        if (!isInteractable(event.getUser().getIdLong())) return;
-        InteractableMessage interactableMessage = interactionStorage.get(event.getUser().getIdLong());
+        if (!isInteractable(event.getMessageIdLong())) return;
+        InteractableMessage interactableMessage = interactionStorage.get(event.getMessageIdLong());
         event.getReaction().removeReaction(event.getUser()).queue();
         if (!checkAuthor(interactableMessage, event.getUser())) return;
         interactableMessage.handleReaction(event);

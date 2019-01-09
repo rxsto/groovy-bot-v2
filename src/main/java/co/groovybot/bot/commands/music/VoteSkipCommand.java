@@ -28,18 +28,28 @@ import co.groovybot.bot.core.command.voice.SameChannelCommand;
 
 public class VoteSkipCommand extends SameChannelCommand {
     public VoteSkipCommand() {
-        super(new String[] {"voteskip", "vs", "vskp"}, CommandCategory.MUSIC, Permissions.everyone(), "Vote for skipping the current song", "");
+        super(new String[]{"voteskip", "vs", "vskip"}, CommandCategory.MUSIC, Permissions.everyone(), "Vote for skipping the current song", "");
     }
 
     @Override
     public Result runCommand(String[] args, CommandEvent event, MusicPlayer player) {
+        if (!player.isPlaying())
+            return send(error(event.translate("phrases.notplaying.title"), event.translate("phrases.notplaying.description")));
+
         MusicPlayer.VoteSkipReason reason = player.voteSkipAvailable();
+
+        if (reason == MusicPlayer.VoteSkipReason.ALONE) {
+            player.skip();
+            return send(success(event.translate("phrases.success"), (String.format(event.translate("command.skip"), player.getPlayer().getPlayingTrack().getInfo().title))));
+        }
+
         if (reason != MusicPlayer.VoteSkipReason.ALLOWED)
             return send(error(event.translate(reason.getTitleTranslationKey()), event.translate(reason.getDescriptionTranslationKey())));
-        if (!player.incrementSkipVotes()) {
-            return send(success(event.translate("command.voteskip.voted.title"), String.format(event.translate("command.voteskip.voted.description"), player.getSkipVotes(), player.getNeededSkipVotes())));
-        }
+
+        if (!player.incrementSkipVotes())
+            return send(success(event.translate("phrases.success"), event.translate("command.voteskip.add")).setFooter(String.format("%s/%s %s", player.getSkipVotes(), player.getNeededSkipVotes(), event.translate("phrases.text.votes")), null));
+
         player.skip();
-        return send(success(event.translate("command.voteskip.success.title"), event.translate("command.voteskip.success.description")));
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.voteskip"), player.getPlayer().getPlayingTrack().getInfo().title)));
     }
 }

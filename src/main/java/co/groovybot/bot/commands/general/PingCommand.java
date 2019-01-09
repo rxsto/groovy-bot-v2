@@ -25,6 +25,8 @@ import co.groovybot.bot.core.command.CommandEvent;
 import co.groovybot.bot.core.command.Result;
 import co.groovybot.bot.core.command.permission.Permissions;
 
+import java.time.Duration;
+
 public class PingCommand extends Command {
 
     public PingCommand() {
@@ -33,6 +35,10 @@ public class PingCommand extends Command {
 
     @Override
     public Result run(String[] args, CommandEvent event) {
-        return send(noTitle(String.format("**%s** ms", Math.ceil(event.getBot().getShardManager().getAveragePing()))));
+        event.getChannel().sendMessage(event.translate("phrases.calculating")).queue(message -> {
+            long ping = Duration.between(event.getMessage().getCreationTime(), message.getCreationTime()).toMillis();
+            message.editMessage(String.format("%sms", ping)).queue();
+        });
+        return null;
     }
 }

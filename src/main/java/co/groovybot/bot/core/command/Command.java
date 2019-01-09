@@ -25,6 +25,10 @@ import co.groovybot.bot.util.FormatUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.core.EmbedBuilder;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,6 +44,7 @@ public abstract class Command extends EmbedUtil {
     private final String description;
     private final String usage;
     private final Map<String, SubCommand> subCommandAssociations = new HashMap<>();
+    private final CommandLineParser cliParser = new DefaultParser();
 
     public Command(String[] aliases, CommandCategory commandCategory, Permissions permissions, String description) {
         this(aliases, commandCategory, permissions, description, "");

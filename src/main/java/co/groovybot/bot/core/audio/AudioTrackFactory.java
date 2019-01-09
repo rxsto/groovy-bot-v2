@@ -20,7 +20,7 @@
 package co.groovybot.bot.core.audio;
 
 import co.groovybot.bot.GroovyBot;
-import co.groovybot.bot.core.audio.spotify.entities.track.TrackData;
+import co.groovybot.bot.core.audio.data.TrackData;
 import co.groovybot.bot.util.YoutubeUtil;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
@@ -45,11 +45,11 @@ public class AudioTrackFactory {
     public AudioTrack getAudioTrack(TrackData trackData) {
         try {
             String identifier = Objects.requireNonNull(YoutubeUtil.create(GroovyBot.getInstance())).getVideoId(trackData.getArtists().get(0) + " " + trackData.getTitle());
-            AudioTrackInfo audioTrackInfo = new AudioTrackInfo(trackData.getTitle(), trackData.getArtists().get(0), trackData.getDuration(), identifier, false, trackData.getUri());
+            AudioTrackInfo audioTrackInfo = new AudioTrackInfo(trackData.getTitle(), trackData.getArtists().get(0), trackData.getDuration(), identifier, false, trackData.getUri().equals("") || trackData.getUri().isEmpty() || trackData.getUri() == null ? "null" : trackData.getUri());
             return new YoutubeAudioTrack(audioTrackInfo, new YoutubeAudioSourceManager());
         } catch (IOException e) {
             log.error("[AudioTrackFactory] Failed to convert TrackData to AudioTrack!", e);
+            return null;
         }
-        return null;
     }
 }
