@@ -48,6 +48,10 @@ public class SkipCommand extends SameChannelCommand {
             }
 
         player.skipTo(skipTo);
-        return send(success(event.translate("phrases.success"), String.format(event.translate("command.skip"), player.getPlayer().getPlayingTrack().getInfo().title, skipTo)));
+
+        if (player.getPlayer().getPlayingTrack() != null)
+            return send(success(event.translate("phrases.success"), String.format(event.translate("command.skip"), player.getPlayer().getPlayingTrack().getInfo().title, skipTo)));
+
+        return null;
     }
 }
