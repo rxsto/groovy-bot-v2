@@ -418,7 +418,7 @@ public class MusicPlayer extends Player {
         inProgress = true;
 
         if (channel.canTalk())
-            SafeMessage.sendMessageBlocking(channel, EmbedUtil.small(translate("phrases.updating")));
+            SafeMessage.sendMessage(channel, EmbedUtil.small(translate("phrases.updating")));
 
         if (!isPlaying() || voiceChannel == null)
             return;
