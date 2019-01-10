@@ -30,12 +30,16 @@ import java.util.List;
 public class PremiumUtil {
 
     public static Tier getTier(Member member, Guild guild) {
+        if (member == null || guild == null)
+            return Tier.NONE;
+
         if (member.getRoles().contains(guild.getRoleById(525727475364265985L)))
             return Tier.ONE;
         if (member.getRoles().contains(guild.getRoleById(525727525037408260L)))
             return Tier.TWO;
         if (member.getRoles().contains(guild.getRoleById(525727573301526538L)))
             return Tier.THREE;
+
         return Tier.NONE;
     }
 
