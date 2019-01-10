@@ -533,7 +533,7 @@ public class MusicPlayer extends Player {
         ALLOWED(null, null),
         ALONE("phrases.skipped", "command.skip"),
         DJ_IN_CHANNEL("phrases.nopermission", "command.voteskip.dj"),
-        ERROR("phrases.error", "phrases.internal.error");
+        ERROR("phrases.error", "phrases.error.internal");
 
         private final String titleTranslationKey;
         private final String descriptionTranslationKey;
