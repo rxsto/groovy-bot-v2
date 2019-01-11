@@ -29,6 +29,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Log4j2
 public class PremiumHandler {
@@ -38,13 +39,19 @@ public class PremiumHandler {
 
     public void initializePatrons(Guild guild, Connection connection) {
         this.connection = connection;
+        AtomicInteger patronCount = new AtomicInteger();
         guild.getMembers().forEach(member -> {
             Tier tier = PremiumUtil.getTier(member, guild);
-            if (tier != Tier.NONE)
+            if (tier != Tier.NONE) {
+                patronCount.addAndGet(1);
                 patrons.put(member.getUser().getIdLong(), tier);
+            }
         });
 
         try {
+            PreparedStatement remove = connection.prepareStatement("TRUNCATE premium");
+            remove.execute();
+
             PreparedStatement premium = connection.prepareStatement("SELECT * FROM premium");
             ResultSet premiumSet = premium.executeQuery();
 
