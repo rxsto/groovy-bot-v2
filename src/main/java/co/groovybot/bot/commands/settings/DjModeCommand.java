@@ -24,6 +24,9 @@ import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.entity.entities.GroovyGuild;
 import net.dv8tion.jda.core.entities.Role;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DjModeCommand extends Command {
 
     public DjModeCommand() {
@@ -55,7 +58,12 @@ public class DjModeCommand extends Command {
                 return send(error(event.translate("phrases.error"), event.translate("command.djmode.disabled")));
 
             if (event.getMessage().getMentionedRoles().isEmpty()) {
-                Role role = event.getGuild().getRolesByName(args[0], true).get(0);
+                List<Role> roles = event.getGuild().getRolesByName(args[0], true);
+
+                if (roles.isEmpty())
+                    return send(error(event.translate("phrases.error"), event.translate("phrases.invalid.role")));
+
+                Role role = roles.get(0);
 
                 if (role == null)
                     return send(error(event.translate("phrases.error"), event.translate("phrases.invalid.role")));
