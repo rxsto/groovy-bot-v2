@@ -40,6 +40,10 @@ public class SwitchCommand extends InChannelCommand {
 
         TextChannel text = player.getChannel();
         VoiceChannel voice = player.getVoiceChannel();
+
+        if (text == null || voice == null || event.getChannel() == null)
+            return send(error(event.translate("phrases.error"), event.translate("phrases.invalidarguments.description")));
+
         player.setChannel(event.getChannel());
 
         if (event.getMember().getVoiceState().getChannel() != event.getGuild().getSelfMember().getVoiceState().getChannel()) {
