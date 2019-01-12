@@ -41,7 +41,7 @@ public class AutoJoinCommand extends Command {
             if (!groovyGuild.hasAutoJoinChannel())
                 return send(error(event.translate("phrases.error"), event.translate("command.autojoin.nochannel")));
             else
-                return send(info(event.translate("phrases.current"), String.format(event.translate("command.autojoin.info"), groovyGuild.getAutoJoinChannel().getName())));
+                return send(info(event.translate("phrases.info"), String.format(event.translate("command.autojoin.info"), groovyGuild.getAutoJoinChannel().getName())));
         }
 
         VoiceChannel target;
