@@ -190,11 +190,6 @@
             <version>1.4</version>
         </dependency>
         <dependency>
-            <groupId>org.graylog2</groupId>
-            <artifactId>gelfclient</artifactId>
-            <version>1.4.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>1.6</version>
@@ -208,6 +203,11 @@
             <groupId>be.ceau</groupId>
             <artifactId>itunes-api</artifactId>
             <version>4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry</artifactId>
+            <version>1.7.16</version>
         </dependency>
     </dependencies>
 

@@ -48,6 +48,8 @@ import co.groovybot.bot.io.database.PostgreSQL;
 import co.groovybot.bot.listeners.*;
 import co.groovybot.bot.util.YoutubeUtil;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import com.sun.javaws.exceptions.InvalidArgumentException;
+import io.sentry.Sentry;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
@@ -67,18 +69,13 @@ import org.dicordlist.botlistwrapper.BotlistWrapper;
 import org.dicordlist.botlistwrapper.BotlistWrapperBuilder;
 import org.dicordlist.botlistwrapper.core.models.impls.JDAProvider;
 import org.dicordlist.botlistwrapper.core.models.impls.botlists.DiscordBotsORG;
-import org.graylog2.gelfclient.GelfConfiguration;
-import org.graylog2.gelfclient.GelfMessage;
-import org.graylog2.gelfclient.GelfTransports;
-import org.graylog2.gelfclient.transport.AbstractGelfTransport;
-import org.graylog2.gelfclient.transport.GelfTransport;
 import org.influxdb.InfluxDB;
 import org.json.JSONObject;
+import sun.plugin.dom.exception.InvalidAccessException;
 
 import javax.security.auth.login.LoginException;
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -151,8 +148,6 @@ public class GroovyBot implements Closeable {
     @Getter
     private PlaylistManager playlistManager;
     @Getter
-    private GelfTransport gelfTransport;
-    @Getter
     private BotlistWrapper botlistWrapper;
     @Getter
     private Cache<GroovyGuild> guildCache;
@@ -201,16 +196,8 @@ public class GroovyBot implements Closeable {
         userCache = new Cache<>(GroovyUser.class);
 
         if (!noCentralizedLogging) {
-            final GelfConfiguration gelfConfiguration = new GelfConfiguration(new InetSocketAddress(config.getJSONObject("graylog").getString("host"), config.getJSONObject("graylog").getInt("port")));
-            gelfConfiguration.transport(GelfTransports.TCP).queueSize(512).connectTimeout(5000).reconnectDelay(1000).tcpNoDelay(true).sendBufferSize(32768);
-            gelfTransport = GelfTransports.create(gelfConfiguration);
-            try {
-                gelfTransport.send(new GelfMessage("HELLO"));
-                log.info("[Graylog] Successfully connected to Graylog!");
-            } catch (InterruptedException e) {
-                gelfTransport = null;
-                log.warn("[Graylog] Connection failed!");
-            }
+            Sentry.init(config.getJSONObject("settings").getString("sentry_dsn"));
+            log.info(String.format("[Sentry] Successfully connected to Sentry via %s", config.getJSONObject("settings").getString("sentry_dsn")));
         }
 
         // Initializing database
@@ -311,7 +298,8 @@ public class GroovyBot implements Closeable {
 
         try {
             shardManager = shardManagerBuilder.build();
-            RestAction.DEFAULT_FAILURE = (action) -> {};
+            RestAction.DEFAULT_FAILURE = (action) -> {
+            };
             log.info("[LavalinkManager] Initializing LavalinkManager ...");
             lavalinkManager.initialize();
         } catch (LoginException e) {
@@ -322,7 +310,6 @@ public class GroovyBot implements Closeable {
 
     private void initLogger(CommandLine args) throws IOException {
         Configurator.setRootLevel(Level.toLevel(args.getOptionValue("log-level", "INFO")));
-        Configurator.setLevel(AbstractGelfTransport.class.getName(), Level.INFO);
         Configurator.initialize(ClassLoader.getSystemClassLoader(), new ConfigurationSource(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("log4j2.xml"))));
     }
 
@@ -331,6 +318,12 @@ public class GroovyBot implements Closeable {
     private void onReady(AllShardsLoadedEvent event) {
         // Initializing gameanimator
         new GameAnimator(this);
+
+        try {
+            throw new InvalidArgumentException(new String[]{"nah"});
+        } catch (InvalidArgumentException e) {
+            log.error("Ayyyy", e);
+        }
 
         // Initializing players
         try {
