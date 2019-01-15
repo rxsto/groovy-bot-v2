@@ -83,6 +83,7 @@ public class CommandEvent extends GuildMessageReceivedEvent {
 
     /**
      * Let's you parse the arguments as CLI options
+     *
      * @param options All available Options {@link org.apache.commons.cli.Options}
      * @return The parsed arguments as a CommandLine {@link org.apache.commons.cli.CommandLine} option
      * @throws ParseException When the syntax was invalid

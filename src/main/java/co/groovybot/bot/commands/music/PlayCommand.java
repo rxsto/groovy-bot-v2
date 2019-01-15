@@ -27,14 +27,12 @@ import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.voice.SemiInChannelCommand;
 import co.groovybot.bot.util.FormatUtil;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
 
 @Log4j2
 public class PlayCommand extends SemiInChannelCommand {
 
     public PlayCommand() {
-        super(new String[]{"play", "p", "add"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you play any music you want",  FormatUtil.formatHelp("play [options] <url/search>", MusicPlayer.CLI_OPTIONS));
+        super(new String[]{"play", "p", "add"}, CommandCategory.MUSIC, Permissions.everyone(), "Lets you play any music you want", FormatUtil.formatHelp("play [options] <url/search>", MusicPlayer.CLI_OPTIONS));
     }
 
     @Override

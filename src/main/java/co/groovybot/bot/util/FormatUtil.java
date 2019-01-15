@@ -250,7 +250,8 @@ public class FormatUtil {
 
     /**
      * Formats CLI help
-     * @param syntax Thea syntax
+     *
+     * @param syntax  Thea syntax
      * @param options the options
      * @return The formatted help
      */

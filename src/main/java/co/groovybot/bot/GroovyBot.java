@@ -71,7 +71,6 @@ import org.dicordlist.botlistwrapper.core.models.impls.JDAProvider;
 import org.dicordlist.botlistwrapper.core.models.impls.botlists.DiscordBotsORG;
 import org.influxdb.InfluxDB;
 import org.json.JSONObject;
-import sun.plugin.dom.exception.InvalidAccessException;
 
 import javax.security.auth.login.LoginException;
 import java.io.Closeable;

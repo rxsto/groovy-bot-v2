@@ -24,7 +24,6 @@ import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.entity.entities.GroovyGuild;
 import net.dv8tion.jda.core.entities.Role;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DjModeCommand extends Command {
