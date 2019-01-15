@@ -48,7 +48,6 @@ import co.groovybot.bot.io.database.PostgreSQL;
 import co.groovybot.bot.listeners.*;
 import co.groovybot.bot.util.YoutubeUtil;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import io.sentry.Sentry;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -317,12 +316,6 @@ public class GroovyBot implements Closeable {
     private void onReady(AllShardsLoadedEvent event) {
         // Initializing gameanimator
         new GameAnimator(this);
-
-        try {
-            throw new InvalidArgumentException(new String[]{"nah"});
-        } catch (InvalidArgumentException e) {
-            log.error("Ayyyy", e);
-        }
 
         // Initializing players
         try {
