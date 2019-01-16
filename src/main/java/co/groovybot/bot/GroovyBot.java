@@ -46,6 +46,7 @@ import co.groovybot.bot.io.config.ConfigurationSetup;
 import co.groovybot.bot.io.database.DatabaseGenerator;
 import co.groovybot.bot.io.database.PostgreSQL;
 import co.groovybot.bot.listeners.*;
+import co.groovybot.bot.util.FormatUtil;
 import co.groovybot.bot.util.YoutubeUtil;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.sentry.Sentry;
@@ -179,8 +180,7 @@ public class GroovyBot implements Closeable {
 
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
-
-        log.info("[Core] Starting Groovy ...");
+        System.out.println("Starting Groovy ...");
 
         // Initializing filemanager
         new FileManager();
@@ -193,13 +193,10 @@ public class GroovyBot implements Closeable {
         guildCache = new Cache<>(GroovyGuild.class);
         userCache = new Cache<>(GroovyUser.class);
 
-        if (!noCentralizedLogging) {
+        if (!noCentralizedLogging)
             Sentry.init(config.getJSONObject("settings").getString("sentry_dsn"));
-            log.info(String.format("[Sentry] Successfully connected to Sentry via %s", config.getJSONObject("settings").getString("sentry_dsn")));
-        }
 
         // Initializing database
-        log.info("[Database] Initializing Database ...");
         postgreSQL = new PostgreSQL();
 
         // Check for --no-monitoring and initialize InfluxDB if not
@@ -296,12 +293,10 @@ public class GroovyBot implements Closeable {
 
         try {
             shardManager = shardManagerBuilder.build();
-            RestAction.DEFAULT_FAILURE = (action) -> {
-            };
-            log.info("[LavalinkManager] Initializing LavalinkManager ...");
+            RestAction.DEFAULT_FAILURE = (action) -> {};
             lavalinkManager.initialize();
         } catch (LoginException e) {
-            log.error("[Core] Could not initialize bot!", e);
+            log.error("Could not initialize bot!", e);
             Runtime.getRuntime().exit(1);
         }
     }
@@ -319,7 +314,6 @@ public class GroovyBot implements Closeable {
 
         // Initializing players
         try {
-            log.info("[MusicPlayerManager] Initializing MusicPlayers ...");
             musicPlayerManager.initPlayers(noJoin);
         } catch (SQLException | IOException e) {
             log.error("[MusicPlayerManager] Error while initializing MusicPlayers!", e);
@@ -330,7 +324,6 @@ public class GroovyBot implements Closeable {
         // Register all Donators
         if (!noPatrons) {
             try {
-                log.info("[PremiumHandler] Initializing Patrons ...");
                 premiumHandler.initializePatrons(supportGuild, postgreSQL.getDataSource().getConnection());
             } catch (SQLException | NullPointerException e) {
                 log.error("[PremiumHandler] Error while initializing Patrons!", e);
@@ -340,10 +333,9 @@ public class GroovyBot implements Closeable {
         // Initializing webSocket
         if (!noWebsocket)
             try {
-                log.info("[WebSocket] Initializing WebSocket ...");
                 webSocket = new WebsocketConnection();
             } catch (URISyntaxException e) {
-                log.error("[WebSocket] Error while initializing WebSocket!", e);
+                log.error("[Websocket] Error while initializing WebSocket!", e);
             }
 
         // Initializing statuspage
@@ -368,7 +360,7 @@ public class GroovyBot implements Closeable {
 
         // Register all monitors and start monitoring
         if (influxDB == null) {
-            log.info("[MonitoringManager] Monitoring disabled, because there is no connection to InfluxDB!");
+            log.info("[MonitoringManager] Monitoring disabled!");
         } else {
             monitorManager = new MonitorManager(influxDB);
             Monitor msgMonitor = new MessageMonitor();
@@ -380,7 +372,7 @@ public class GroovyBot implements Closeable {
 
         // Now Groovy is ready
         allShardsInitialized = true;
-        log.info("[Core] Successfully launched Groovy!");
+        log.info("Successfully launched Groovy in {}!", FormatUtil.formatDuration(System.currentTimeMillis() - startupTime));
     }
 
     @Override
@@ -393,7 +385,7 @@ public class GroovyBot implements Closeable {
             if (shardManager != null)
                 shardManager.shutdown();
         } catch (Exception e) {
-            log.error("[Core] Error while closing bot!", e);
+            log.error("Error while stopping bot!", e);
         }
     }
 }
