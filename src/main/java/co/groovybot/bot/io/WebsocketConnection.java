@@ -43,7 +43,7 @@ public class WebsocketConnection extends WebSocketClient {
 
     public WebsocketConnection() throws URISyntaxException {
         super(new URI(String.format("%s:%s", GroovyBot.getInstance().getConfig().getJSONObject("websocket").getString("host"), GroovyBot.getInstance().getConfig().getJSONObject("websocket").getInt("port"))));
-        log.info("[WebSocket] Connecting to WebSocket ...");
+        log.info("[Websocket] Connecting to Websocket ...");
         this.connect();
         this.dataSource = GroovyBot.getInstance().getPostgreSQL().getDataSource();
     }
@@ -66,7 +66,7 @@ public class WebsocketConnection extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake serverHandshake) {
-        log.info("[WebSocket] WebSocketConnection opened!");
+        log.info("[Websocket] Successfully connected to Websocket!");
         authorize();
         reconnectingTimeout = 2000L;
         this.send(WebsocketConnection.parseMessage("bot", "poststats", WebsocketConnection.parseStats(LavalinkManager.countPlayers(), GroovyBot.getInstance().getShardManager().getGuilds().size(), GroovyBot.getInstance().getShardManager().getUsers().size())).toString());
@@ -80,7 +80,7 @@ public class WebsocketConnection extends WebSocketClient {
             return;
 
         if (object.get("type").equals("error"))
-            log.error("[WebSocket] An error occurred! " + object.getJSONObject("data").getString("text"));
+            log.error("[Websocket] An error occurred! " + object.getJSONObject("data").getString("text"));
 
         if (object.get("type").equals("forbidden"))
             authorize();
@@ -91,19 +91,19 @@ public class WebsocketConnection extends WebSocketClient {
 
     @Override
     public void onClose(int i, String s, boolean b) {
-        log.info(String.format("[WebSocket] WebSocketConnection closed! Trying to reconnect in %s seconds ...", reconnectingTimeout));
+        log.info(String.format("[Websocket] Connection closed! Trying to reconnect in %s seconds ...", reconnectingTimeout));
         try {
             Thread.sleep(reconnectingTimeout);
             new Thread(this::reconnect, "WebSocketThread").start();
             reconnectingTimeout = reconnectingTimeout + 2000L;
         } catch (InterruptedException e) {
-            log.error("[WebSocket] Error while reconnecting!");
+            log.error("[Websocket] Error while reconnecting!");
         }
     }
 
     @Override
     public void onError(Exception e) {
-        log.error("[WebSocket] Error in WebSocketConnection!", e);
+        log.error("[Websocket] Error in Connection!", e);
     }
 
     public void authorize() {
@@ -115,7 +115,7 @@ public class WebsocketConnection extends WebSocketClient {
             while (rs.next())
                 token = rs.getString("token");
         } catch (SQLException e) {
-            log.error("[WebSocket] Error while authorizing!", e);
+            log.error("[Websocket] Error while authorizing!", e);
         }
 
         this.send(parseMessage("bot", "authorization", new JSONObject().put("token", token)).toString());

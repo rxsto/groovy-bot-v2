@@ -38,6 +38,8 @@ public class PremiumHandler {
     private Connection connection;
 
     public void initializePatrons(Guild guild, Connection connection) {
+        log.info("[PremiumHandler] Initializing PremiumHandler ...");
+
         this.connection = connection;
         AtomicInteger patronCount = new AtomicInteger();
         guild.getMembers().forEach(member -> {
@@ -71,7 +73,7 @@ public class PremiumHandler {
             log.error("[PremiumHandler] Error while initializing Patrons!", e);
         }
 
-        log.info("[PremiumHandler] Successfully initialized Patrons!");
+        log.info("[PremiumHandler] Successfully initialized PremiumHandler!");
     }
 
     public void addPatron(long id, Tier tier) {

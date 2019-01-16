@@ -46,11 +46,13 @@ public class PostgreSQL implements Closeable {
         defaults = new ArrayList<>();
         JSONObject configuration = GroovyBot.getInstance().getConfig().getJSONObject("db");
         HikariConfig hikariConfig = new HikariConfig();
+
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             log.error("[Database] Error while connecting to database!", e);
         }
+
         hikariConfig.setJdbcUrl(String.format("jdbc:postgresql://%s:%d/%s?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false", configuration.getString("host"), configuration.getInt("port"), configuration.getString("database")));
         hikariConfig.setUsername(configuration.getString("username"));
         hikariConfig.setPassword(configuration.getString("password"));
@@ -66,7 +68,7 @@ public class PostgreSQL implements Closeable {
             return;
         }
 
-        log.info("[Database] Connected!");
+        log.info("[Database] Successfully connected to Database!");
     }
 
     public void createDatabases() {

@@ -76,6 +76,8 @@ public class MusicPlayerManager {
     public void initPlayers(boolean noJoin) throws SQLException, IOException {
         int initializedPlayersCount = 0;
 
+        log.info("[MusicPlayerManager] Initializing MusicPlayers ...");
+
         try (Connection connection = GroovyBot.getInstance().getPostgreSQL().getDataSource().getConnection()) {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM queues");
             ResultSet rs = ps.executeQuery();
