@@ -68,6 +68,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static co.groovybot.bot.util.EmbedUtil.*;
@@ -163,12 +164,10 @@ public class MusicPlayer extends Player {
         return true;
     }
 
-    public boolean checkLeave() {
+    boolean checkLeave() {
         if (isInProgress()) return false;
         if (!GroovyBot.getInstance().getGuildCache().get(getGuild().getIdLong()).isAutoLeave()) return false;
-        if (!GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()).getSelfMember().getVoiceState().inVoiceChannel())
-            return false;
-        return true;
+        return GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()).getSelfMember().getVoiceState().inVoiceChannel();
     }
 
     public void leave() {
@@ -265,7 +264,7 @@ public class MusicPlayer extends Player {
 
         String keyword = String.join(" ", args.getArgs());
 
-        boolean isUrl = true;
+        AtomicBoolean isUrl = new AtomicBoolean(true);
 
         final boolean isSoundcloud = args.hasOption("sc");
         final boolean isForce = args.hasOption("f");
@@ -276,14 +275,12 @@ public class MusicPlayer extends Player {
         if (!keyword.startsWith("http://") && !keyword.startsWith("https://")) {
             if (isSoundcloud) keyword = "scsearch: " + keyword;
             else keyword = "ytsearch: " + keyword;
-            isUrl = false;
+            isUrl.set(false);
         }
-
-        final boolean isURL = isUrl;
 
         inProgress = true;
 
-        if (isUrl && keyword.matches("(https?://)?(.*)?spotify\\.com.*"))
+        if (keyword.matches("(https?://)?(.*)?spotify\\.com.*") || keyword.matches("(https?://)?(.*)?deezer\\.com.*") || keyword.matches("(https?://)?itunes\\.apple\\.com.*"))
             keyword = removeQueryFromUrl(keyword);
 
         GroovyBot.getInstance().getLavalinkManager().getAudioPlayerManager().source(SpotifySourceManager.class).setPlayer(this);
@@ -299,7 +296,7 @@ public class MusicPlayer extends Player {
                 List<AudioTrack> tracks = audioPlaylist.getTracks();
 
                 if (tracks.isEmpty()) {
-                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event));
+                    SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.error"), event.translate("phrases.nothingfound")));
                     inProgress = false;
                     return;
                 }
@@ -328,7 +325,7 @@ public class MusicPlayer extends Player {
 
                 List<AudioTrack> duplicates = new ArrayList<>();
 
-                if (isURL) {
+                if (isUrl.get()) {
                     if (EntityProvider.getGuild(guild.getIdLong()).isPreventDups()) {
                         List<AudioTrack> filtered = new ArrayList<>();
                         tracks.forEach(t -> {

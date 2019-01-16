@@ -167,7 +167,7 @@ public class SpotifySourceManager implements AudioSourceManager {
 
     @Override
     public AudioItem loadItem(DefaultAudioPlayerManager manager, AudioReference reference) {
-        if (reference.identifier.startsWith("ytsearch:") || reference.identifier.startsWith("scsearch:")) return null;
+        if (!reference.identifier.matches("(https?://)?(.*)?spotify\\.com.*")) return null;
 
         if (spotifyManager.getAccessTokenExpires() < System.currentTimeMillis()) {
             spotifyManager.refreshAccessToken();
