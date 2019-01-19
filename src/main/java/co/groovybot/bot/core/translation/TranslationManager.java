@@ -52,9 +52,9 @@ public class TranslationManager {
         locales = new ArrayList<>();
         locales.add(defaultLocale);
         locales.add(new TranslationLocale(this, new Locale("zh", "TW"), "Chinese (Traditional)"));
+        locales.add(new TranslationLocale(this, new Locale("fr", "FR"), "French (France)"));
         //locales.add(new TranslationLocale(this, new Locale("nl", "NL"), "Dutch (Netherlands)"));
-        //locales.add(new TranslationLocale(this, new Locale("de", "DE"), "Deutsch (Deutschland)"));
-        //locales.add(new TranslationLocale(this, new Locale("fr", "FR"), "French (France)"));
+        //locales.add(new TranslationLocale(this, new Locale("de", "DE"), "German (Germany)"));
     }
 
     public TranslationLocale getLocaleByLocale(Locale locale) {

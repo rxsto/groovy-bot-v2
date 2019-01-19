@@ -21,10 +21,7 @@ package co.groovybot.bot.core.command;
 
 import co.groovybot.bot.commands.general.*;
 import co.groovybot.bot.commands.music.*;
-import co.groovybot.bot.commands.owner.CloseCommand;
-import co.groovybot.bot.commands.owner.CreateInviteCommand;
-import co.groovybot.bot.commands.owner.EvalCommand;
-import co.groovybot.bot.commands.owner.UpdateCommand;
+import co.groovybot.bot.commands.owner.*;
 import co.groovybot.bot.commands.settings.*;
 
 public class CommandRegistry {
@@ -89,7 +86,8 @@ public class CommandRegistry {
                 new VoiceFixCommand(),
                 new TextToSpeechCommand(),
                 new CreateInviteCommand(),
-                new PlaySearchCommand()
+                new PlaySearchCommand(),
+                new TestCommand()
         );
     }
 }

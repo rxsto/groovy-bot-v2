@@ -36,7 +36,7 @@ public class EmbedUtil extends SafeMessage {
      * @return an EmbedBuiler
      */
     public static EmbedBuilder success(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle(title).setColor(Colors.GREEN);
+        return new EmbedBuilder().setDescription(description).setTitle(String.format("<:success:535827110552666112> %s", title)).setColor(Colors.GREEN);
     }
 
     /**
@@ -47,7 +47,7 @@ public class EmbedUtil extends SafeMessage {
      * @return an EmbedBuiler
      */
     public static EmbedBuilder error(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle(title).setColor(Colors.RED);
+        return new EmbedBuilder().setDescription(description).setTitle(String.format("<:error:535827110489620500> %s", title)).setColor(Colors.RED);
     }
 
     /**
@@ -68,7 +68,7 @@ public class EmbedUtil extends SafeMessage {
      * @return an EmbedBuiler
      */
     public static EmbedBuilder info(String title, String description) {
-        return new EmbedBuilder().setDescription(description).setTitle(title).setColor(Colors.DARK_BUT_NOT_BLACK);
+        return new EmbedBuilder().setDescription(description).setTitle(String.format("<:info:535828529573789696> %s", title)).setColor(Colors.DARK_BUT_NOT_BLACK);
     }
 
     /**
@@ -79,7 +79,7 @@ public class EmbedUtil extends SafeMessage {
      * @return an EmbedBuiler
      */
     public static EmbedBuilder play(String title, String description, long duration) {
-        return new EmbedBuilder().setDescription(description).setTitle(title).setColor(Colors.DARK_BUT_NOT_BLACK).setFooter("Duration: " + FormatUtil.formatDuration(duration), null);
+        return new EmbedBuilder().setDescription(description).setTitle(String.format("<:playing:535833712181510164> %s", title)).setColor(Colors.DARK_BUT_NOT_BLACK).setFooter("Duration: " + FormatUtil.formatDuration(duration), null);
     }
 
     /**

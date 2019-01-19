@@ -138,7 +138,7 @@ public class UserPermissions {
                         .addPathSegments(String.format("api/bots/%s/check", "402116404301660181"))
                         .addQueryParameter("userId", String.valueOf(groovyUser.getEntityId()))
                         .build())
-                .addHeader("Authorization", GroovyBot.getInstance().getConfig().getJSONObject("botlists").getString("discordbots.org"))
+                .addHeader("Authorization", GroovyBot.getInstance().getConfig().getJSONObject("botlists").getString("DiscordBotsORG"))
                 .get()
                 .build();
         try (Response response = GroovyBot.getInstance().getHttpClient().newCall(request).execute()) {

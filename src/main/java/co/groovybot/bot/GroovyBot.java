@@ -294,7 +294,7 @@ public class GroovyBot implements Closeable {
         try {
             shardManager = shardManagerBuilder.build();
             RestAction.DEFAULT_FAILURE = (action) -> {};
-            lavalinkManager.initialize();
+            //lavalinkManager.initialize(); TODO: FIX
         } catch (LoginException e) {
             log.error("Could not initialize bot!", e);
             Runtime.getRuntime().exit(1);
@@ -312,63 +312,60 @@ public class GroovyBot implements Closeable {
         // Initializing gameanimator
         new GameAnimator(this);
 
-        // Initializing players
-        try {
-            musicPlayerManager.initPlayers(noJoin);
-        } catch (SQLException | IOException e) {
-            log.error("[MusicPlayerManager] Error while initializing MusicPlayers!", e);
-        }
-
-        supportGuild = shardManager.getGuildById(403882830225997825L);
-
-        // Register all Donators
-        if (!noPatrons) {
-            try {
-                premiumHandler.initializePatrons(supportGuild, postgreSQL.getDataSource().getConnection());
-            } catch (SQLException | NullPointerException e) {
-                log.error("[PremiumHandler] Error while initializing Patrons!", e);
-            }
-        }
-
-        // Initializing webSocket
-        if (!noWebsocket)
-            try {
-                webSocket = new WebsocketConnection();
-            } catch (URISyntaxException e) {
-                log.error("[Websocket] Error while initializing WebSocket!", e);
-            }
-
-        // Initializing statuspage
-        if (!debugMode) {
-            statusPage.start();
-        }
-
-        // Initializing servercountstats
-        if (!disableBotlist) {
-            botlistWrapper = new BotlistWrapperBuilder(new JDAProvider(this.getShardManager()), botlist -> {
-                JSONObject json = config.getJSONObject("botlists");
-                if (json.has(botlist.getSimpleName()))
-                    return json.getString(botlist.getSimpleName());
-                return null;
-            })
-                    .registerBotlist(new DiscordBotsORG())
-                    .setSuccessHandler(clazz -> log.info("[BotlistWrapper] Successfully posted stats to {}!", clazz.getSimpleName()))
-                    .setLoopInterval(1)
-                    .setLoopTimeUnit(TimeUnit.HOURS)
-                    .build();
-        }
-
-        // Register all monitors and start monitoring
-        if (influxDB == null) {
-            log.info("[MonitoringManager] Monitoring disabled!");
-        } else {
-            monitorManager = new MonitorManager(influxDB);
-            Monitor msgMonitor = new MessageMonitor();
-            shardManager.addEventListener(msgMonitor);
-            monitorManager.register(new SystemMonitor(), new GuildMonitor(), new RequestMonitor(), msgMonitor, new UserMonitor());
-            monitorManager.start();
-            log.info("[MonitoringManager] Monitoring started!");
-        }
+//        // Initializing players
+//        try {
+//            musicPlayerManager.initPlayers(noJoin);
+//        } catch (SQLException | IOException e) {
+//            log.error("[MusicPlayerManager] Error while initializing MusicPlayers!", e);
+//        }
+//
+//        supportGuild = shardManager.getGuildById(403882830225997825L);
+//
+//        // Register all Donators
+//        if (!noPatrons)
+//            try {
+//                premiumHandler.initializePatrons(supportGuild, postgreSQL.getDataSource().getConnection());
+//            } catch (SQLException | NullPointerException e) {
+//                log.error("[PremiumHandler] Error while initializing Patrons!", e);
+//            }
+//
+//        // Initializing webSocket
+//        if (!noWebsocket)
+//            try {
+//                webSocket = new WebsocketConnection();
+//            } catch (URISyntaxException e) {
+//                log.error("[Websocket] Error while initializing WebSocket!", e);
+//            }
+//
+//        // Initializing statuspage
+//        if (!debugMode)
+//            statusPage.start();
+//
+//        // Initializing servercountstats
+//        if (!disableBotlist)
+//            botlistWrapper = new BotlistWrapperBuilder(new JDAProvider(this.getShardManager()), botlist -> {
+//                JSONObject json = config.getJSONObject("botlists");
+//                if (json.has(botlist.getSimpleName()))
+//                    return json.getString(botlist.getSimpleName());
+//                return null;
+//            })
+//                    .registerBotlist(new DiscordBotsORG())
+//                    .setSuccessHandler(clazz -> log.info("[BotlistWrapper] Successfully posted stats to {}!", clazz.getSimpleName()))
+//                    .setLoopInterval(1)
+//                    .setLoopTimeUnit(TimeUnit.HOURS)
+//                    .build();
+//
+//        // Register all monitors and start monitoring
+//        if (influxDB == null) {
+//            log.info("[MonitoringManager] Monitoring disabled!");
+//        } else {
+//            monitorManager = new MonitorManager(influxDB);
+//            Monitor msgMonitor = new MessageMonitor();
+//            shardManager.addEventListener(msgMonitor);
+//            monitorManager.register(new SystemMonitor(), new GuildMonitor(), new RequestMonitor(), msgMonitor, new UserMonitor());
+//            monitorManager.start();
+//            log.info("[MonitoringManager] Monitoring started!");
+//        }
 
         // Now Groovy is ready
         allShardsInitialized = true;
