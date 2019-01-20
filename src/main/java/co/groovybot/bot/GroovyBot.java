@@ -76,11 +76,6 @@ import javax.security.auth.login.LoginException;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -298,7 +293,8 @@ public class GroovyBot implements Closeable {
 
         try {
             shardManager = shardManagerBuilder.build();
-            RestAction.DEFAULT_FAILURE = (action) -> {};
+            RestAction.DEFAULT_FAILURE = (action) -> {
+            };
             lavalinkManager.initialize();
         } catch (LoginException e) {
             log.error("Could not initialize bot!", e);
@@ -338,7 +334,7 @@ public class GroovyBot implements Closeable {
         if (!noWebsocket)
             try {
                 webSocket = new WebsocketConnection();
-            } catch (IOException | CertificateException | NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException | KeyManagementException | URISyntaxException e) {
+            } catch (URISyntaxException e) {
                 log.error("[Websocket] Error while initializing WebSocket!", e);
             }
 

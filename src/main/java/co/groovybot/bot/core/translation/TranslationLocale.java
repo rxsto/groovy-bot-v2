@@ -49,7 +49,7 @@ public class TranslationLocale {
 
     private ResourceBundle getBundle() {
         try {
-            return new PropertyResourceBundle(new InputStreamReader(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(String.format("translation_%s_%s.properties",locale.getLanguage(),locale.getCountry()))), StandardCharsets.UTF_8));
+            return new PropertyResourceBundle(new InputStreamReader(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(String.format("translation_%s_%s.properties", locale.getLanguage(), locale.getCountry()))), StandardCharsets.UTF_8));
         } catch (IOException e) {
             log.catching(e);
             return null;
