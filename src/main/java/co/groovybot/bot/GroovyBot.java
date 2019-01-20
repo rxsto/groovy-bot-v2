@@ -76,6 +76,11 @@ import javax.security.auth.login.LoginException;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -333,7 +338,7 @@ public class GroovyBot implements Closeable {
         if (!noWebsocket)
             try {
                 webSocket = new WebsocketConnection();
-            } catch (URISyntaxException e) {
+            } catch (IOException | CertificateException | NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException | KeyManagementException | URISyntaxException e) {
                 log.error("[Websocket] Error while initializing WebSocket!", e);
             }
 

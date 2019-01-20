@@ -38,7 +38,9 @@ public class StatusPage extends StatsPoster {
     }
 
     public synchronized void start() {
+        log.info("[StatusPage] Connecting to StatusPage ...");
         scheduler.scheduleAtFixedRate(this, 0, 30, TimeUnit.SECONDS);
+        log.info("[StatusPage] Successfully connected to StatusPage!");
     }
 
     @Override

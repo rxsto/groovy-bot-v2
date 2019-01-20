@@ -97,3 +97,4 @@ buildNumber.properties
 /update.mp3
 
 *.log
+/sfdcsec.ks
