@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,18 +27,8 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONObject;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.*;
-import java.security.cert.CertificateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,40 +41,10 @@ public class WebsocketConnection extends WebSocketClient {
     private HikariDataSource dataSource;
     private long reconnectingTimeout = 2000L;
 
-    public WebsocketConnection() throws URISyntaxException, IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException, UnrecoverableKeyException, CertificateException {
-        super(new URI(String.format("%s:%s", GroovyBot.getInstance().getConfig().getJSONObject("websocket").getString("host"), GroovyBot.getInstance().getConfig().getJSONObject("websocket").getInt("port"))));
-
-        // load up the key store
-
-        JSONObject ws = GroovyBot.getInstance().getConfig().getJSONObject("websocket");
-
-        String STORETYPE = ws.getString("storetype");
-        String KEYSTORE = ws.getString("keystore");
-        String STOREPASSWORD = ws.getString("password");
-        String KEYPASSWORD = ws.getString("keypassword");
-
-        KeyStore ks = KeyStore.getInstance(STORETYPE);
-        File kf = new File(KEYSTORE);
-        ks.load(new FileInputStream(kf), STOREPASSWORD.toCharArray());
-
-        KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-        kmf.init(ks, KEYPASSWORD.toCharArray());
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-        tmf.init(ks);
-
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
-
-        SSLSocketFactory factory = sslContext.getSocketFactory();
-
-        setSocket(factory.createSocket());
-
-
-
+    public WebsocketConnection() throws URISyntaxException {
+        super(new URI(String.format("%s", GroovyBot.getInstance().getConfig().getJSONObject("websocket").getString("host"))));
         log.info("[Websocket] Connecting to Websocket ...");
-
         this.connect();
-
         this.dataSource = GroovyBot.getInstance().getPostgreSQL().getDataSource();
     }
 
@@ -146,7 +106,7 @@ public class WebsocketConnection extends WebSocketClient {
         log.error("[Websocket] Error in Connection!", e);
     }
 
-    public void authorize() {
+    private void authorize() {
         String token = null;
 
         try (Connection connection = dataSource.getConnection()) {
