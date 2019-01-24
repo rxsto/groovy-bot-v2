@@ -116,8 +116,6 @@ public class MusicPlayer extends Player {
     @Getter
     @Setter
     private int skipVotes;
-    @Getter
-    private boolean inProgress;
 
     protected MusicPlayer(Guild guild, TextChannel channel, YoutubeUtil youtubeClient) {
         super(youtubeClient);
@@ -126,7 +124,6 @@ public class MusicPlayer extends Player {
         this.guild = guild;
         this.channel = channel;
         this.previousTrack = null;
-        this.inProgress = false;
         this.voiceChannel = guild.getSelfMember().getVoiceState().getChannel();
 
         instanciatePlayer(LavalinkManager.getLavalink().getLink(guild));
@@ -165,7 +162,6 @@ public class MusicPlayer extends Player {
     }
 
     boolean checkLeave() {
-        if (isInProgress()) return false;
         if (!GroovyBot.getInstance().getGuildCache().get(getGuild().getIdLong()).isAutoLeave()) return false;
         return GroovyBot.getInstance().getShardManager().getGuildById(getGuild().getIdLong()).getSelfMember().getVoiceState().inVoiceChannel();
     }
@@ -241,11 +237,6 @@ public class MusicPlayer extends Player {
         latestEvent = event;
         guild = event.getGuild();
 
-        if (inProgress) {
-            SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.error"), event.translate("phrases.progress")));
-            return;
-        }
-
         CommandLine args;
         try {
             args = event.asCli(CLI_OPTIONS);
@@ -278,8 +269,6 @@ public class MusicPlayer extends Player {
             isUrl.set(false);
         }
 
-        inProgress = true;
-
         if (keyword.matches("(https?://)?(.*)?spotify\\.com.*") || keyword.matches("(https?://)?(.*)?deezer\\.com.*") || keyword.matches("(https?://)?itunes\\.apple\\.com.*"))
             keyword = removeQueryFromUrl(keyword);
 
@@ -297,7 +286,6 @@ public class MusicPlayer extends Player {
 
                 if (tracks.isEmpty()) {
                     SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.error"), event.translate("phrases.nothingfound")));
-                    inProgress = false;
                     return;
                 }
 
@@ -308,7 +296,6 @@ public class MusicPlayer extends Player {
 
                 if (tracks.isEmpty()) {
                     SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.error"), event.translate("phrases.premium.queuefull")));
-                    inProgress = false;
                     return;
                 }
 
@@ -319,7 +306,6 @@ public class MusicPlayer extends Player {
 
                 if (tracks.isEmpty()) {
                     SafeMessage.sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.error"), event.translate("phrases.premium.songduration")));
-                    inProgress = false;
                     return;
                 }
 
@@ -345,7 +331,6 @@ public class MusicPlayer extends Player {
                     else
                         SafeMessage.editMessage(infoMessage, success(event.translate("phrases.loaded"), String.format(event.translate("phrases.loaded.playlist"), tracks.size(), audioPlaylist.getName())));
 
-                    inProgress = false;
                     return;
                 }
 
@@ -358,10 +343,8 @@ public class MusicPlayer extends Player {
                     }
 
                     try {
-                        inProgress = false;
                         new SearchCommand.MusicResult(infoMessage, event.getChannel(), event.getMember(), tracks, GroovyBot.getInstance().getMusicPlayerManager().getPlayer(event.getGuild(), event.getChannel()));
                     } catch (InsufficientPermissionException e) {
-                        inProgress = false;
                         sendMessage(event.getChannel(), EmbedUtil.error(event.translate("phrases.nopermission"), event.translate("phrases.nopermission.manage")));
                     }
                 } else {
@@ -372,13 +355,11 @@ public class MusicPlayer extends Player {
             private void queueWithChecks(AudioTrack track) {
                 if (track.getDuration() > Constants.SONG_DURATION && !Permissions.tierTwo().isCovered(userPermissions, event)) {
                     SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.premium"), event.translate("phrases.premium.songduration")).setFooter(event.translate("phrases.premium.footer"), null));
-                    inProgress = false;
                     return;
                 }
 
                 if (checkDups(track)) {
                     SafeMessage.editMessage(infoMessage, info(event.translate("phrases.warning"), String.format(event.translate("phrases.duplicates.single"), EntityProvider.getGuild(guild.getIdLong()).getPrefix())));
-                    inProgress = false;
                     return;
                 }
 
@@ -393,27 +374,21 @@ public class MusicPlayer extends Player {
                                             track.getInfo().title)).setFooter(String.format("%s: %s", translate("phrases.estimated"),
                                     getQueueLengthMillis() == 0 ? "Now!" : FormatUtil.formatDuration(getQueueLengthMillis())), null));
                 }
-
-                inProgress = false;
             }
 
             @Override
             public void noMatches() {
-                inProgress = false;
                 SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.nothingfound"), event.translate("phrases.searching.nomatches")));
             }
 
             @Override
             public void loadFailed(FriendlyException e) {
-                inProgress = false;
                 SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.error"), e.getCause() != null ? String.format("%s\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("%s", e.getMessage())));
             }
         });
     }
 
     public void update() {
-        inProgress = true;
-
         if (channel.canTalk())
             SafeMessage.sendMessage(channel, EmbedUtil.small(translate("phrases.updating")));
 
