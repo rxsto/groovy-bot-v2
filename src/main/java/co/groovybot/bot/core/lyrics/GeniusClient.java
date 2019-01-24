@@ -68,6 +68,7 @@ public class GeniusClient {
             document.select("br").append("\\n");
             document.select("p").prepend("\\n\\n");
             Element element = document.selectFirst(".lyrics");
+            if (!element.hasText()) return "Something went wrong while fetching lyrics ...";
             return Jsoup.clean(element.html(), "", Whitelist.none(), new Document.OutputSettings().prettyPrint(false)).replace("\\n", "\n");
         } catch (IOException e) {
             log.error("[GeniusClient] An error occurred while getting lyrics!", e);
