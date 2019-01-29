@@ -63,7 +63,7 @@ public class LavalinkManager {
         audioPlayerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
         audioPlayerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
         audioPlayerManager.getConfiguration().setOutputFormat(StandardAudioDataFormats.DISCORD_OPUS);
-        audioPlayerManager.registerSourceManager(new SpotifySourceManager(groovyBot.getSpotifyManager()));
+        audioPlayerManager.registerSourceManager(new SpotifySourceManager());
         audioPlayerManager.registerSourceManager(new DeezerSourceManager());
         audioPlayerManager.registerSourceManager(new iTunesSourceManager());
         audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());

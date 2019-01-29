@@ -23,8 +23,6 @@ import co.groovybot.bot.core.GameAnimator;
 import co.groovybot.bot.core.audio.LavalinkManager;
 import co.groovybot.bot.core.audio.MusicPlayerManager;
 import co.groovybot.bot.core.audio.playlists.PlaylistManager;
-import co.groovybot.bot.core.audio.sources.spotify.manager.JedisManager;
-import co.groovybot.bot.core.audio.sources.spotify.manager.SpotifyManager;
 import co.groovybot.bot.core.cache.Cache;
 import co.groovybot.bot.core.command.CommandManager;
 import co.groovybot.bot.core.command.CommandRegistry;
@@ -108,10 +106,6 @@ public class GroovyBot implements Closeable {
     private final YoutubeUtil youtubeClient;
     @Getter
     private final GeniusClient geniusClient;
-    @Getter
-    private final SpotifyManager spotifyManager;
-    @Getter
-    private final JedisManager jedisManager;
     @Getter
     private final PremiumHandler premiumHandler;
     @Getter
@@ -206,7 +200,6 @@ public class GroovyBot implements Closeable {
         if (!noMonitoring) influxDB = new InfluxDBManager(config).build();
 
         httpClient = new OkHttpClient();
-        spotifyManager = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
         lavalinkManager = new LavalinkManager(this);
         statusPage = new StatusPage(httpClient, config.getJSONObject("statuspage"));
 
@@ -385,8 +378,6 @@ public class GroovyBot implements Closeable {
                 postgreSQL.close();
             if (shardManager != null)
                 shardManager.shutdown();
-            if (jedisManager != null)
-                jedisManager.close();
         } catch (Exception e) {
             log.error("Error while stopping bot!", e);
         }

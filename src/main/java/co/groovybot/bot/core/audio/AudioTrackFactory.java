@@ -51,7 +51,7 @@ public class AudioTrackFactory {
                     trackData.getArtists().get(0),
                     trackData.getDuration(),
                     identifier, false,
-                    trackData.getUri()
+                    trackData.getUrl()
             );
             return new YoutubeAudioTrack(audioTrackInfo, new YoutubeAudioSourceManager());
         } catch (IOException e) {
