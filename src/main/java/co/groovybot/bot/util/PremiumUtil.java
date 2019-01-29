@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,12 +30,16 @@ import java.util.List;
 public class PremiumUtil {
 
     public static Tier getTier(Member member, Guild guild) {
+        if (member == null || guild == null)
+            return Tier.NONE;
+
         if (member.getRoles().contains(guild.getRoleById(525727475364265985L)))
             return Tier.ONE;
         if (member.getRoles().contains(guild.getRoleById(525727525037408260L)))
             return Tier.TWO;
         if (member.getRoles().contains(guild.getRoleById(525727573301526538L)))
             return Tier.THREE;
+
         return Tier.NONE;
     }
 

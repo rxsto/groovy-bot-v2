@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,10 +27,12 @@ import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.command.voice.SameChannelCommand;
 import co.groovybot.bot.util.EmbedUtil;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.core.utils.Helpers;
 
 import java.util.LinkedList;
 
+@Log4j2
 public class RemoveCommand extends SameChannelCommand {
 
     public RemoveCommand() {
@@ -48,7 +50,13 @@ public class RemoveCommand extends SameChannelCommand {
         if (!Helpers.isNumeric(args[0]))
             return send(EmbedUtil.error(event.translate("phrases.invalid"), event.translate("phrases.invalid.number")));
 
-        int query = Integer.parseInt(args[0]);
+        int query;
+
+        try {
+            query = Integer.parseInt(args[0]);
+        } catch (NumberFormatException e) {
+            return send(EmbedUtil.error(event.translate("phrases.invalid"), event.translate("phrases.invalid.number")));
+        }
 
         if (query > player.trackQueue.size() || query < 1)
             return send(EmbedUtil.error(event.translate("phrases.error"), event.translate("command.remove.notinqueue")));

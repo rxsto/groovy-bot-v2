@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,10 @@ public class SkipCommand extends SameChannelCommand {
             }
 
         player.skipTo(skipTo);
-        return send(success(event.translate("phrases.success"), String.format(event.translate("command.skip"), player.getPlayer().getPlayingTrack().getInfo().title, skipTo)));
+
+        if (player.getPlayer().getPlayingTrack() != null)
+            return send(success(event.translate("phrases.success"), String.format(event.translate("command.skip"), player.getPlayer().getPlayingTrack().getInfo().title, skipTo)));
+
+        return null;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,9 +51,11 @@ public class TranslationManager {
 
         locales = new ArrayList<>();
         locales.add(defaultLocale);
+        locales.add(new TranslationLocale(this, new Locale("fr", "FR"), "French (France)"));
+        locales.add(new TranslationLocale(this, new Locale("zh", "CN"), "Chinese (Simplified)"));
+        locales.add(new TranslationLocale(this, new Locale("zh", "TW"), "Chinese (Traditional)"));
         //locales.add(new TranslationLocale(this, new Locale("nl", "NL"), "Dutch (Netherlands)"));
-        //locales.add(new TranslationLocale(this, new Locale("de", "DE"), "Deutsch (Deutschland)"));
-        //locales.add(new TranslationLocale(this, new Locale("fr", "FR"), "French (France)"));
+        //locales.add(new TranslationLocale(this, new Locale("de", "DE"), "German (Germany)"));
     }
 
     public TranslationLocale getLocaleByLocale(Locale locale) {
@@ -67,5 +69,4 @@ public class TranslationManager {
     public TranslationLocale getLocaleByUser(String userId) {
         return getLocaleByLocale(EntityProvider.getUser(Long.parseLong(userId)).getLocale());
     }
-
 }

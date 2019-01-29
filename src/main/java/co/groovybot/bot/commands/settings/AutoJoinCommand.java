@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ public class AutoJoinCommand extends Command {
             if (!groovyGuild.hasAutoJoinChannel())
                 return send(error(event.translate("phrases.error"), event.translate("command.autojoin.nochannel")));
             else
-                return send(info(event.translate("phrases.current"), String.format(event.translate("command.autojoin.info"), groovyGuild.getAutoJoinChannel().getName())));
+                return send(info(event.translate("phrases.info"), String.format(event.translate("command.autojoin.info"), groovyGuild.getAutoJoinChannel().getName())));
         }
 
         VoiceChannel target;
@@ -57,7 +57,7 @@ public class AutoJoinCommand extends Command {
             return send(error(event.translate("phrases.notfound"), event.translate("command.autojoin.notfound")));
 
         groovyGuild.setAutoJoinChannel(target);
-        return send(success(event.translate("phrases.success"), String.format(event.translate("command.autojoin.success"), target.getName())));
+        return send(success(event.translate("phrases.success"), String.format(event.translate("command.autojoin"), target.getName())));
     }
 
     private class DisableCommand extends SubCommand {

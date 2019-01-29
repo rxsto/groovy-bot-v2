@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,10 @@ public class SwitchCommand extends InChannelCommand {
 
         TextChannel text = player.getChannel();
         VoiceChannel voice = player.getVoiceChannel();
+
+        if (text == null || voice == null || event.getChannel() == null)
+            return send(error(event.translate("phrases.error"), event.translate("phrases.invalidarguments.description")));
+
         player.setChannel(event.getChannel());
 
         if (event.getMember().getVoiceState().getChannel() != event.getGuild().getSelfMember().getVoiceState().getChannel()) {

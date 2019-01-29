@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,6 +83,7 @@ public class CommandEvent extends GuildMessageReceivedEvent {
 
     /**
      * Let's you parse the arguments as CLI options
+     *
      * @param options All available Options {@link org.apache.commons.cli.Options}
      * @return The parsed arguments as a CommandLine {@link org.apache.commons.cli.CommandLine} option
      * @throws ParseException When the syntax was invalid

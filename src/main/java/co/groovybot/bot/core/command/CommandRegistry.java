@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +21,7 @@ package co.groovybot.bot.core.command;
 
 import co.groovybot.bot.commands.general.*;
 import co.groovybot.bot.commands.music.*;
-import co.groovybot.bot.commands.owner.CloseCommand;
-import co.groovybot.bot.commands.owner.CreateInviteCommand;
-import co.groovybot.bot.commands.owner.EvalCommand;
-import co.groovybot.bot.commands.owner.UpdateCommand;
+import co.groovybot.bot.commands.owner.*;
 import co.groovybot.bot.commands.settings.*;
 
 public class CommandRegistry {
@@ -89,7 +86,8 @@ public class CommandRegistry {
                 new VoiceFixCommand(),
                 new TextToSpeechCommand(),
                 new CreateInviteCommand(),
-                new PlaySearchCommand()
+                new PlaySearchCommand(),
+                new TestCommand()
         );
     }
 }

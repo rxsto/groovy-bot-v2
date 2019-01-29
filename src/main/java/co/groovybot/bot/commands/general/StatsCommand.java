@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ public class StatsCommand extends Command {
         builder.addField(event.translate("command.stats.text.members"), String.format("`%s` %s", event.getBot().getShardManager().getUsers().size(), event.translate("phrases.text.users")), true);
         builder.addField(event.translate("command.stats.text.latency"), String.format("`%s` ms", event.getJDA().getPing()), true);
         builder.addField(event.translate("command.stats.text.shards"), String.format("`%s` %s", event.getBot().getShardManager().getShardsTotal(), event.translate("phrases.text.shards")), true);
-        builder.addField(event.translate("command.stats.text.cpu"), String.format("`%s`", Math.round(operatingSystemMXBean.getSystemCpuLoad()  * 100) + "%"), true);
+        builder.addField(event.translate("command.stats.text.cpu"), String.format("`%s`", Math.round(operatingSystemMXBean.getSystemCpuLoad() * 100) + "%"), true);
         builder.addField(event.translate("command.stats.text.memory"), String.format("`%s`", FormatUtil.humanReadableByteCount(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())), true);
         builder.addField(event.translate("command.stats.text.threads"), String.format("`%s` %s", Thread.getAllStackTraces().size(), event.translate("phrases.text.threads")), true);
         builder.addField(event.translate("command.stats.text.uptime"), String.format("`%s`", FormatUtil.parseUptime(System.currentTimeMillis() - event.getBot().getStartupTime())), true);

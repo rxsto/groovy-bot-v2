@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
@@ -48,7 +49,7 @@ public class TranslationLocale {
 
     private ResourceBundle getBundle() {
         try {
-            return new PropertyResourceBundle(new InputStreamReader(ClassLoader.getSystemClassLoader().getResourceAsStream(String.format("translation_%s_%s.properties", locale.getLanguage(), locale.getCountry())), StandardCharsets.UTF_8));
+            return new PropertyResourceBundle(new InputStreamReader(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream(String.format("translation_%s_%s.properties", locale.getLanguage(), locale.getCountry()))), StandardCharsets.UTF_8));
         } catch (IOException e) {
             log.catching(e);
             return null;

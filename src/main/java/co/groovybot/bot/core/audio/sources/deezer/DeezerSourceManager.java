@@ -60,12 +60,13 @@ public class DeezerSourceManager implements AudioSourceManager {
 
     @Override
     public String getSourceName() {
-        return "Deezer Source Manager";
+        return "DeezerSourceManager";
     }
 
     @Override
     public AudioItem loadItem(DefaultAudioPlayerManager manager, AudioReference reference) {
-        if (reference.identifier.startsWith("ytsearch:") || reference.identifier.startsWith("scsearch:")) return null;
+        if (!reference.identifier.matches("(https?://)?(.*)?deezer\\.com.*")) return null;
+
         try {
             URL url = new URL(reference.identifier);
             if (!url.getHost().equalsIgnoreCase("www.deezer.com"))

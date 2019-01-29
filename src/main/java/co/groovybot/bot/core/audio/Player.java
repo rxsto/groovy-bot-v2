@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,6 +184,7 @@ public abstract class Player {
     }
 
     public long getQueueLengthMillis() {
+        if (trackQueue == null) return 0;
         AtomicLong millis = new AtomicLong();
         trackQueue.forEach(track -> millis.addAndGet(track.getDuration()));
         if (trackQueue.toArray().length > 0) {

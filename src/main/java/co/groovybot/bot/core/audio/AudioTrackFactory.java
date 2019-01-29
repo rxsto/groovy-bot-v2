@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,8 +44,15 @@ public class AudioTrackFactory {
 
     public AudioTrack getAudioTrack(TrackData trackData) {
         try {
-            String identifier = Objects.requireNonNull(YoutubeUtil.create(GroovyBot.getInstance())).getVideoId(trackData.getArtists().get(0) + " " + trackData.getTitle());
-            AudioTrackInfo audioTrackInfo = new AudioTrackInfo(trackData.getTitle(), trackData.getArtists().get(0), trackData.getDuration(), identifier, false, trackData.getUri().equals("") || trackData.getUri().isEmpty() || trackData.getUri() == null ? "null" : trackData.getUri());
+            String identifier = Objects.requireNonNull(YoutubeUtil.create(GroovyBot.getInstance())).getVideoId(trackData.getArtists().get(0) + " " +
+                    trackData.getTitle());
+            AudioTrackInfo audioTrackInfo = new AudioTrackInfo(
+                    trackData.getTitle(),
+                    trackData.getArtists().get(0),
+                    trackData.getDuration(),
+                    identifier, false,
+                    trackData.getUri()
+            );
             return new YoutubeAudioTrack(audioTrackInfo, new YoutubeAudioSourceManager());
         } catch (IOException e) {
             log.error("[AudioTrackFactory] Failed to convert TrackData to AudioTrack!", e);

@@ -3,7 +3,7 @@
 <!--
   ~ Groovy Bot - The core component of the Groovy Discord music bot
   ~
-  ~ Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+  ~ Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -35,11 +35,11 @@
             <FileName>logs/bot-${fileDate}.log</FileName>
             <PatternLayout pattern="[%d{HH:mm:ss}] [%-5level] [%t - %tid] %c{36} - %msg%n"/>
         </File>
-        <Graylog name="Graylog"/>
+        <Sentry name="Sentry"/>
         <Async name="Async">
             <AppenderRef ref="Log"/>
             <AppenderRef ref="LatestLog"/>
-            <AppenderRef ref="Graylog"/>
+            <AppenderRef ref="Sentry"/>
         </Async>
     </Appenders>
     <Loggers>
@@ -47,7 +47,6 @@
             <AppenderRef ref="Console"/>
             <AppenderRef ref="Async"/>
             <JDAFilter/>
-            <GraylogFilter/>
         </Root>
     </Loggers>
 </Configuration>

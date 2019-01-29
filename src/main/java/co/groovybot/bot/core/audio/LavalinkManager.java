@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ package co.groovybot.bot.core.audio;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.sources.deezer.DeezerSourceManager;
-import co.groovybot.bot.core.audio.sources.itunes.ITunesSourceManager;
+import co.groovybot.bot.core.audio.sources.itunes.iTunesSourceManager;
 import co.groovybot.bot.core.audio.sources.spotify.SpotifySourceManager;
 import com.sedmelluq.discord.lavaplayer.format.StandardAudioDataFormats;
 import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
@@ -57,15 +57,15 @@ public class LavalinkManager {
     private GroovyBot groovyBot;
 
     public LavalinkManager(GroovyBot groovyBot) {
-        log.info("[LavalinkManager] Connecting to Nodes ...");
+        log.info("[Lavalink] Connecting to Nodes ...");
         this.groovyBot = groovyBot;
         this.audioPlayerManager = new DefaultAudioPlayerManager();
         audioPlayerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
         audioPlayerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
         audioPlayerManager.getConfiguration().setOutputFormat(StandardAudioDataFormats.DISCORD_OPUS);
-        audioPlayerManager.registerSourceManager(new SpotifySourceManager(groovyBot.getSpotifyClient()));
+        audioPlayerManager.registerSourceManager(new SpotifySourceManager(groovyBot.getSpotifyManager()));
         audioPlayerManager.registerSourceManager(new DeezerSourceManager());
-        audioPlayerManager.registerSourceManager(new ITunesSourceManager());
+        audioPlayerManager.registerSourceManager(new iTunesSourceManager());
         audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());
         audioPlayerManager.registerSourceManager(new SoundCloudAudioSourceManager());
         audioPlayerManager.registerSourceManager(new VimeoAudioSourceManager());
@@ -88,8 +88,6 @@ public class LavalinkManager {
     }
 
     public void initialize() {
-        log.info("[LavalinkManager] Initializing Lavalink and trying to connect to Nodes ...");
-
         lavalink = new JdaLavalink(
                 groovyBot.getShardManager().getApplicationInfo().complete().getId(),
                 groovyBot.getShardManager().getShardsTotal(),
@@ -109,12 +107,12 @@ public class LavalinkManager {
                 while (rs.next())
                     lavalink.addNode(URI.create(rs.getString("uri")), rs.getString("password"));
             } catch (SQLException e) {
-                log.error("[LavalinkManager] Error while loading Lavalink!");
+                log.error("[Lavalink] Error while loading Lavalink!");
                 return;
             }
         }
 
-        log.info(String.format("[LavalinkManager] Successfully initialized Lavalink with %s %s!", lavalink.getNodes().size(), lavalink.getNodes().size() == 1 ? "Node" : "Nodes"));
+        log.info(String.format("[Lavalink] Successfully connected to %s %s!", lavalink.getNodes().size(), lavalink.getNodes().size() == 1 ? "Node" : "Nodes"));
     }
 
     @SubscribeEvent

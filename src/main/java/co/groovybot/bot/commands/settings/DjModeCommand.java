@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@ import co.groovybot.bot.core.command.*;
 import co.groovybot.bot.core.command.permission.Permissions;
 import co.groovybot.bot.core.entity.entities.GroovyGuild;
 import net.dv8tion.jda.core.entities.Role;
+
+import java.util.List;
 
 public class DjModeCommand extends Command {
 
@@ -55,7 +57,12 @@ public class DjModeCommand extends Command {
                 return send(error(event.translate("phrases.error"), event.translate("command.djmode.disabled")));
 
             if (event.getMessage().getMentionedRoles().isEmpty()) {
-                Role role = event.getGuild().getRolesByName(args[0], true).get(0);
+                List<Role> roles = event.getGuild().getRolesByName(args[0], true);
+
+                if (roles.isEmpty())
+                    return send(error(event.translate("phrases.error"), event.translate("phrases.invalid.role")));
+
+                Role role = roles.get(0);
 
                 if (role == null)
                     return send(error(event.translate("phrases.error"), event.translate("phrases.invalid.role")));

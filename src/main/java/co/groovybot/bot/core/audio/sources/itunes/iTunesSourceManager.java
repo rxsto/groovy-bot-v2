@@ -16,6 +16,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -23,25 +24,26 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Log4j2
-public class ITunesSourceManager implements AudioSourceManager {
+public class iTunesSourceManager implements AudioSourceManager {
 
     private static final Pattern ALBUM_PATTERN = Pattern.compile("https?://itunes\\.apple\\.com/.*/album/.*/([0-9]*)");
 
     @Getter
     private AudioTrackFactory audioTrackFactory;
 
-    public ITunesSourceManager() {
+    public iTunesSourceManager() {
         this.audioTrackFactory = new AudioTrackFactory();
     }
 
     @Override
     public String getSourceName() {
-        return "iTunes Source Manager";
+        return "iTunesSourceManager";
     }
 
     @Override
     public AudioItem loadItem(DefaultAudioPlayerManager manager, AudioReference reference) {
-        if (reference.identifier.startsWith("ytsearch:") || reference.identifier.startsWith("scsearch:")) return null;
+        if (!reference.identifier.matches("(https?://)?itunes\\.apple\\.com.*")) return null;
+
         try {
             URL url = new URL(reference.identifier);
             if (!url.getHost().equalsIgnoreCase("itunes.apple.com"))
@@ -64,9 +66,12 @@ public class ITunesSourceManager implements AudioSourceManager {
                 .addId(albumId)
                 .setEntity(Entity.SONG)
                 .execute();
+        System.out.println(Arrays.toString(response.getResults().toArray()));
         List<Result> results = response.getResults().stream()
                 .filter(result -> result.getWrapperType().equals("track"))
                 .collect(Collectors.toList());
+        if (results.size() == 0)
+            return null;
         List<TrackData> trackDataList = getPlaylistTrackData(results);
         List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
         return new BasicAudioPlaylist(results.get(0).getCollectionName(), audioTracks, null, false);

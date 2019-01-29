@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +68,7 @@ public class GeniusClient {
             document.select("br").append("\\n");
             document.select("p").prepend("\\n\\n");
             Element element = document.selectFirst(".lyrics");
+            if (!element.hasText()) return "Something went wrong while fetching lyrics ...";
             return Jsoup.clean(element.html(), "", Whitelist.none(), new Document.OutputSettings().prettyPrint(false)).replace("\\n", "\n");
         } catch (IOException e) {
             log.error("[GeniusClient] An error occurred while getting lyrics!", e);

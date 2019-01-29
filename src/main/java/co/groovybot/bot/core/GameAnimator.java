@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ package co.groovybot.bot.core;
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.LavalinkManager;
 import co.groovybot.bot.util.NameThreadFactory;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.bot.sharding.ShardManager;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
@@ -33,6 +34,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
+@Log4j2
 public class GameAnimator implements Runnable {
 
     private final ShardManager shardManager;
@@ -40,6 +42,7 @@ public class GameAnimator implements Runnable {
     private Game[] games;
 
     public GameAnimator(GroovyBot groovyBot) {
+        log.info("[GameAnimator] Initializing GameAnimator ...");
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new NameThreadFactory("GameAnimator"));
         List<Game> gameList = new ArrayList<>();
         this.groovyBot = groovyBot;
@@ -48,6 +51,7 @@ public class GameAnimator implements Runnable {
         this.games = gameList.toArray(new Game[0]);
         shardManager.setStatus(OnlineStatus.ONLINE);
         scheduler.scheduleAtFixedRate(this, 0, 30, TimeUnit.SECONDS);
+        log.info("[GameAnimator] Successfully initialized GameAnimator!");
     }
 
     @Override

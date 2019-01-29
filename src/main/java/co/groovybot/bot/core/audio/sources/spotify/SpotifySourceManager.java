@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 
 package co.groovybot.bot.core.audio.sources.spotify;
 
-import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.AudioTrackFactory;
 import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.audio.data.TrackData;
@@ -31,7 +30,6 @@ import co.groovybot.bot.core.audio.sources.spotify.entities.keys.UserPlaylistKey
 import co.groovybot.bot.core.audio.sources.spotify.manager.JedisManager;
 import co.groovybot.bot.core.audio.sources.spotify.manager.SpotifyManager;
 import co.groovybot.bot.core.audio.sources.spotify.request.GetNormalPlaylistRequest;
-import co.groovybot.bot.core.audio.sources.spotify.request.GetNormalPlaylistTracksRequest;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -49,6 +47,7 @@ import com.wrapper.spotify.requests.data.albums.GetAlbumsTracksRequest;
 import com.wrapper.spotify.requests.data.artists.GetArtistRequest;
 import com.wrapper.spotify.requests.data.artists.GetArtistsTopTracksRequest;
 import com.wrapper.spotify.requests.data.playlists.GetPlaylistRequest;
+import com.wrapper.spotify.requests.data.playlists.GetPlaylistsTracksRequest;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -168,12 +167,12 @@ public class SpotifySourceManager implements AudioSourceManager {
 
     @Override
     public String getSourceName() {
-        return "Spotify Source Manager";
+        return "SpotifySourceManager";
     }
 
     @Override
     public AudioItem loadItem(DefaultAudioPlayerManager manager, AudioReference reference) {
-        if (reference.identifier.startsWith("ytsearch:") || reference.identifier.startsWith("scsearch:")) return null;
+        if (!reference.identifier.matches("(https?://)?(.*)?spotify\\.com.*")) return null;
 
         if (spotifyManager.getAccessTokenExpires() < System.currentTimeMillis()) {
             spotifyManager.refreshAccessToken();
@@ -332,8 +331,7 @@ public class SpotifySourceManager implements AudioSourceManager {
                     this.spotifyManager.refreshAccessToken();
                     URI nextPageUri = new URI(currentPage.getNext());
                     List<NameValuePair> queryPairs = URLEncodedUtils.parse(nextPageUri.toString(), StandardCharsets.UTF_8);
-                    GetNormalPlaylistTracksRequest.Builder builder = new GetNormalPlaylistTracksRequest.Builder(this.spotifyManager.getAccessToken())
-                            .playlistId(playlist.getId());
+                    GetPlaylistsTracksRequest.Builder builder = this.spotifyManager.getSpotifyApi().getPlaylistsTracks(playlist.getOwner().getId(), playlist.getId());
                     for (NameValuePair nameValuePair : queryPairs) {
                         builder = builder.setQueryParameter(nameValuePair.getName(), nameValuePair.getValue());
                     }

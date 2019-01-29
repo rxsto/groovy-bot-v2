@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ public class ShardsListener {
         tempLoadedShards++;
 
         if (tempLoadedShards == shardManager.getShardsTotal()) {
-            log.info(String.format("[ShardManager] Successfully launched %s %s! Finishing Startup ...", shardManager.getShardsTotal(), shardManager.getShardsTotal() == 1 ? "Shard" : "Shards"));
+            log.info(String.format("[ShardingManager] Successfully launched %s %s!", shardManager.getShardsTotal(), shardManager.getShardsTotal() == 1 ? "Shard" : "Shards"));
             GroovyBot.getInstance().getEventManager().handle(new AllShardsLoadedEvent(event.getJDA(), event.getResponseNumber()));
         }
     }

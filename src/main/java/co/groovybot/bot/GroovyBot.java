@@ -1,7 +1,7 @@
 /*
  * Groovy Bot - The core component of the Groovy Discord music bot
  *
- * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergeij Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
+ * Copyright (C) 2018  Oskar Lang & Michael Rittmeister & Sergej Herdt & Yannick Seeger & Justus Kliem & Leon Kappes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,8 +47,10 @@ import co.groovybot.bot.io.config.ConfigurationSetup;
 import co.groovybot.bot.io.database.DatabaseGenerator;
 import co.groovybot.bot.io.database.PostgreSQL;
 import co.groovybot.bot.listeners.*;
+import co.groovybot.bot.util.FormatUtil;
 import co.groovybot.bot.util.YoutubeUtil;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import io.sentry.Sentry;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
@@ -68,18 +70,12 @@ import org.dicordlist.botlistwrapper.BotlistWrapper;
 import org.dicordlist.botlistwrapper.BotlistWrapperBuilder;
 import org.dicordlist.botlistwrapper.core.models.impls.JDAProvider;
 import org.dicordlist.botlistwrapper.core.models.impls.botlists.DiscordBotsORG;
-import org.graylog2.gelfclient.GelfConfiguration;
-import org.graylog2.gelfclient.GelfMessage;
-import org.graylog2.gelfclient.GelfTransports;
-import org.graylog2.gelfclient.transport.AbstractGelfTransport;
-import org.graylog2.gelfclient.transport.GelfTransport;
 import org.influxdb.InfluxDB;
 import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -154,8 +150,6 @@ public class GroovyBot implements Closeable {
     @Getter
     private PlaylistManager playlistManager;
     @Getter
-    private GelfTransport gelfTransport;
-    @Getter
     private BotlistWrapper botlistWrapper;
     @Getter
     private Cache<GroovyGuild> guildCache;
@@ -189,8 +183,7 @@ public class GroovyBot implements Closeable {
 
         // Adding shutdownhook
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
-
-        log.info("[Core] Starting Groovy ...");
+        System.out.println("Starting Groovy ...");
 
         // Initializing filemanager
         new FileManager();
@@ -203,21 +196,10 @@ public class GroovyBot implements Closeable {
         guildCache = new Cache<>(GroovyGuild.class);
         userCache = new Cache<>(GroovyUser.class);
 
-        if (!noCentralizedLogging) {
-            final GelfConfiguration gelfConfiguration = new GelfConfiguration(new InetSocketAddress(config.getJSONObject("graylog").getString("host"), config.getJSONObject("graylog").getInt("port")));
-            gelfConfiguration.transport(GelfTransports.TCP).queueSize(512).connectTimeout(5000).reconnectDelay(1000).tcpNoDelay(true).sendBufferSize(32768);
-            gelfTransport = GelfTransports.create(gelfConfiguration);
-            try {
-                gelfTransport.send(new GelfMessage("HELLO"));
-                log.info("[Graylog] Successfully connected to Graylog!");
-            } catch (InterruptedException e) {
-                gelfTransport = null;
-                log.warn("[Graylog] Connection failed!");
-            }
-        }
+        if (!noCentralizedLogging)
+            Sentry.init(config.getJSONObject("settings").getString("sentry_dsn"));
 
         // Initializing database
-        log.info("[Database] Initializing Database ...");
         postgreSQL = new PostgreSQL();
 
         // Check for --no-monitoring and initialize InfluxDB if not
@@ -225,7 +207,6 @@ public class GroovyBot implements Closeable {
 
         httpClient = new OkHttpClient();
         spotifyManager = new SpotifyManager(config.getJSONObject("spotify").getString("client_id"), config.getJSONObject("spotify").getString("client_secret"));
-        jedisManager = new JedisManager(config.getJSONObject("redis"));
         lavalinkManager = new LavalinkManager(this);
         statusPage = new StatusPage(httpClient, config.getJSONObject("statuspage"));
 
@@ -315,18 +296,17 @@ public class GroovyBot implements Closeable {
 
         try {
             shardManager = shardManagerBuilder.build();
-            RestAction.DEFAULT_FAILURE = (action) -> {};
-            log.info("[LavalinkManager] Initializing LavalinkManager ...");
+            RestAction.DEFAULT_FAILURE = (action) -> {
+            };
             lavalinkManager.initialize();
         } catch (LoginException e) {
-            log.error("[Core] Could not initialize bot!", e);
+            log.error("Could not initialize bot!", e);
             Runtime.getRuntime().exit(1);
         }
     }
 
     private void initLogger(CommandLine args) throws IOException {
         Configurator.setRootLevel(Level.toLevel(args.getOptionValue("log-level", "INFO")));
-        Configurator.setLevel(AbstractGelfTransport.class.getName(), Level.INFO);
         Configurator.initialize(ClassLoader.getSystemClassLoader(), new ConfigurationSource(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("log4j2.xml"))));
     }
 
@@ -338,7 +318,6 @@ public class GroovyBot implements Closeable {
 
         // Initializing players
         try {
-            log.info("[MusicPlayerManager] Initializing MusicPlayers ...");
             musicPlayerManager.initPlayers(noJoin);
         } catch (SQLException | IOException e) {
             log.error("[MusicPlayerManager] Error while initializing MusicPlayers!", e);
@@ -347,31 +326,27 @@ public class GroovyBot implements Closeable {
         supportGuild = shardManager.getGuildById(403882830225997825L);
 
         // Register all Donators
-        if (!noPatrons) {
+        if (!noPatrons)
             try {
-                log.info("[PremiumHandler] Initializing Patrons ...");
                 premiumHandler.initializePatrons(supportGuild, postgreSQL.getDataSource().getConnection());
             } catch (SQLException | NullPointerException e) {
                 log.error("[PremiumHandler] Error while initializing Patrons!", e);
             }
-        }
 
         // Initializing webSocket
         if (!noWebsocket)
             try {
-                log.info("[WebSocket] Initializing WebSocket ...");
                 webSocket = new WebsocketConnection();
             } catch (URISyntaxException e) {
-                log.error("[WebSocket] Error while initializing WebSocket!", e);
+                log.error("[Websocket] Error while initializing WebSocket!", e);
             }
 
         // Initializing statuspage
-        if (!debugMode) {
+        if (!debugMode)
             statusPage.start();
-        }
 
         // Initializing servercountstats
-        if (!disableBotlist) {
+        if (!disableBotlist)
             botlistWrapper = new BotlistWrapperBuilder(new JDAProvider(this.getShardManager()), botlist -> {
                 JSONObject json = config.getJSONObject("botlists");
                 if (json.has(botlist.getSimpleName()))
@@ -383,11 +358,10 @@ public class GroovyBot implements Closeable {
                     .setLoopInterval(1)
                     .setLoopTimeUnit(TimeUnit.HOURS)
                     .build();
-        }
 
         // Register all monitors and start monitoring
         if (influxDB == null) {
-            log.info("[MonitoringManager] Monitoring disabled, because there is no connection to InfluxDB!");
+            log.info("[MonitoringManager] Monitoring disabled!");
         } else {
             monitorManager = new MonitorManager(influxDB);
             Monitor msgMonitor = new MessageMonitor();
@@ -399,7 +373,7 @@ public class GroovyBot implements Closeable {
 
         // Now Groovy is ready
         allShardsInitialized = true;
-        log.info("[Core] Successfully launched Groovy!");
+        log.info("Successfully launched Groovy in {}!", FormatUtil.formatDuration(System.currentTimeMillis() - startupTime));
     }
 
     @Override
@@ -414,7 +388,7 @@ public class GroovyBot implements Closeable {
             if (jedisManager != null)
                 jedisManager.close();
         } catch (Exception e) {
-            log.error("[Core] Error while closing bot!", e);
+            log.error("Error while stopping bot!", e);
         }
     }
 }
