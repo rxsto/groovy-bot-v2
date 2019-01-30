@@ -21,12 +21,13 @@ package co.groovybot.bot.core.audio.sources.spotify;
 
 import co.groovybot.bot.core.audio.AudioTrackFactory;
 import co.groovybot.bot.core.audio.MusicPlayer;
+import co.groovybot.bot.core.audio.data.AlbumData;
+import co.groovybot.bot.core.audio.data.ArtistData;
 import co.groovybot.bot.core.audio.data.PlaylistData;
 import co.groovybot.bot.core.audio.data.TrackData;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.AlbumKey;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.ArtistKey;
 import co.groovybot.bot.core.audio.sources.spotify.entities.keys.PlaylistKey;
-import co.groovybot.bot.core.audio.sources.spotify.entities.keys.UserPlaylistKey;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.*;
@@ -53,7 +54,6 @@ import java.util.regex.Pattern;
 @Log4j2
 public class SpotifySourceManager implements AudioSourceManager {
 
-    private static final Pattern USER_PLAYLIST_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/user/(.*)/playlists?/([^?/\\s]*)");
     private static final Pattern PLAYLIST_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/playlists?/([^?/\\s]*)");
     private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/tracks?/([^?/\\s]*)");
     private static final Pattern ALBUM_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/albums?/([^?/\\s]*)");
@@ -96,12 +96,10 @@ public class SpotifySourceManager implements AudioSourceManager {
                 audioItem = buildTrack(rawUrl);
             if (PLAYLIST_PATTERN.matcher(rawUrl).matches())
                 audioItem = buildPlaylist(rawUrl);
-//            if (USER_PLAYLIST_PATTERN.matcher(rawUrl).matches())
-//                audioItem = buildUserPlaylist(rawUrl);
-//            if (ALBUM_PATTERN.matcher(rawUrl).matches())
-//                audioItem = buildPlaylistFromAlbum(rawUrl);
-//            if (TOPTEN_ARTIST_PATTERN.matcher(rawUrl).matches())
-//                audioItem = buildTopTenPlaylist(rawUrl);
+            if (ALBUM_PATTERN.matcher(rawUrl).matches())
+                audioItem = buildAlbum(rawUrl);
+            if (TOPTEN_ARTIST_PATTERN.matcher(rawUrl).matches())
+                audioItem = buildTopTenPlaylist(rawUrl);
             return audioItem;
         } catch (MalformedURLException e) {
             log.error("Failed to load the item!", e);
@@ -126,30 +124,26 @@ public class SpotifySourceManager implements AudioSourceManager {
         List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
         return new BasicAudioPlaylist(playlistData.getName(), audioTracks, null, false);
     }
-//
-//    private AudioPlaylist buildUserPlaylist(String url) {
-//        UserPlaylistKey userPlaylistKey = parseUserPlaylistPattern(url);
-//
-//        List<TrackData> trackDataList = getPlaylistTrackDataList(getPlaylistTracks(playlist));
-//        List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
-//        return new BasicAudioPlaylist(playlist.getName(), audioTracks, null, false);
-//    }
-//
-//    private AudioPlaylist buildPlaylistFromAlbum(String url) {
-//        AlbumKey albumKey = parseAlbumPattern(url);
-//
-//        List<TrackData> trackDataList = getTrackDataListSimplified(getAlbumTracks(album));
-//        List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
-//        return new BasicAudioPlaylist(album.getName(), audioTracks, null, false);
-//    }
-//
-//    private AudioPlaylist buildTopTenPlaylist(String url) {
-//        ArtistKey artistKey = parseArtistPattern(url);
-//
-//        List<TrackData> trackDataList = getTrackDataList(getTopTenSongs(artist));
-//        List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
-//        return new BasicAudioPlaylist("Top 10 Songs by " + artist.getName(), audioTracks, null, false);
-//    }
+
+    private AudioPlaylist buildAlbum(String url) {
+        AlbumKey albumKey = parseAlbumPattern(url);
+
+        JSONObject jsonAlbum = getAlbumById(albumKey);
+        AlbumData albumData = getAlbumData(Objects.requireNonNull(jsonAlbum));
+        List<TrackData> trackDataList = albumData.getTracks();
+        List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
+        return new BasicAudioPlaylist(albumData.getName(), audioTracks, null, false);
+    }
+
+    private AudioPlaylist buildTopTenPlaylist(String url) {
+        ArtistKey artistKey = parseArtistPattern(url);
+
+        JSONObject jsonArtist = getArtistById(artistKey);
+        AlbumData albumData = getAlbumData(Objects.requireNonNull(jsonArtist));
+        List<TrackData> trackDataList = albumData.getTracks();
+        List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
+        return new BasicAudioPlaylist(albumData.getName(), audioTracks, null, false);
+    }
 
     private TrackData getTrackData(@NotNull JSONObject jsonObject) {
         JSONObject dataObject = jsonObject.has("data") ? jsonObject.getJSONObject("data") : jsonObject;
@@ -175,7 +169,7 @@ public class SpotifySourceManager implements AudioSourceManager {
 
     private PlaylistData getPlaylistData(@NotNull JSONObject jsonObject) {
         JSONObject dataObject = jsonObject.has("data") ? jsonObject.getJSONObject("data") : jsonObject;
-        String title = dataObject.getString("name"),
+        String name = dataObject.getString("name"),
                 url = dataObject.getString("url"),
                 owner = dataObject.getString("owner");
         List<TrackData> tracks = new ArrayList<>();
@@ -184,9 +178,47 @@ public class SpotifySourceManager implements AudioSourceManager {
             tracks.add(getTrackData(jsonTrack));
         });
         return new PlaylistData(
-                title,
+                name,
                 url,
                 owner,
+                tracks
+        );
+    }
+
+    private AlbumData getAlbumData(@NotNull JSONObject jsonObject) {
+        JSONObject dataObject = jsonObject.has("data") ? jsonObject.getJSONObject("data") : jsonObject;
+        String name = dataObject.getString("name"),
+                url = dataObject.getString("url");
+        List<String> artists = new ArrayList<>();
+        dataObject.getJSONArray("artists").forEach(o -> {
+            JSONObject jsonArtist = (JSONObject) o;
+            artists.add(jsonArtist.getString("name"));
+        });
+        List<TrackData> tracks = new ArrayList<>();
+        dataObject.getJSONArray("tracks").forEach(o -> {
+            JSONObject jsonTrack = (JSONObject) o;
+            tracks.add(getTrackData(jsonTrack));
+        });
+        return new AlbumData(
+                name,
+                artists,
+                url,
+                tracks
+        );
+    }
+
+    private ArtistData getArtistData(@NotNull JSONObject jsonObject) {
+        JSONObject dataObject = jsonObject.has("data") ? jsonObject.getJSONObject("data") : jsonObject;
+        String name = dataObject.getString("name"),
+                url = dataObject.getString("url");
+        List<TrackData> tracks = new ArrayList<>();
+        dataObject.getJSONArray("tracks").forEach(o -> {
+            JSONObject jsonTrack = (JSONObject) o;
+            tracks.add(getTrackData(jsonTrack));
+        });
+        return new ArtistData(
+                name,
+                url,
                 tracks
         );
     }
@@ -207,7 +239,7 @@ public class SpotifySourceManager implements AudioSourceManager {
             return null;
         }
         long end = System.currentTimeMillis() - start;
-        System.out.println(end);
+        System.out.println(end + "ms");
         return jsonObject;
     }
 
@@ -227,36 +259,49 @@ public class SpotifySourceManager implements AudioSourceManager {
             return null;
         }
         long end = System.currentTimeMillis() - start;
-        System.out.println(end);
+        System.out.println(end + "ms");
         return jsonObject;
     }
 
-    private JSONObject getUserPlaylistById(UserPlaylistKey userPlaylistKey) {
-        return null;
-    }
-
     private JSONObject getAlbumById(AlbumKey albumKey) {
-        return null;
+        long start = System.currentTimeMillis();
+        JSONObject jsonObject = null;
+        Request request = new Request.Builder()
+                .url(SERVICE_BASE_URL + "/albums/" + albumKey.getAlbumId())
+                .get()
+                .build();
+        try (Response response = this.httpClient.newCall(request).execute()) {
+            if (response.body() != null) {
+                jsonObject = new JSONObject(response.body().string());
+            }
+        } catch (IOException e) {
+            log.error("An error occurred while executing a GET request for looking up an album", e);
+            return null;
+        }
+        long end = System.currentTimeMillis() - start;
+        System.out.println(end + "ms");
+        return jsonObject;
     }
 
-//    private Playlist convertListToPlaylist(List<Track> tracks) {
-//        List<PlaylistTrack> playlistTracks = Lists.newArrayList();
-//        tracks.forEach(track -> {
-//            PlaylistTrack playlistTrack = new PlaylistTrack.Builder()
-//                    .setTrack(track)
-//                    .setIsLocal(false)
-//                    .build();
-//            playlistTracks.add(playlistTrack);
-//        });
-//        Paging<PlaylistTrack> trackPaging = new Paging.Builder<PlaylistTrack>()
-//                .setTotal(playlistTracks.size())
-//                .setItems(playlistTracks.toArray(new PlaylistTrack[0]))
-//                .build();
-//        return new Playlist.Builder()
-//                .setTracks(trackPaging)
-//                .setId(tracks.get(0).getArtists()[0].getId())
-//                .build();
-//    }
+    private JSONObject getArtistById(ArtistKey artistKey) {
+        long start = System.currentTimeMillis();
+        JSONObject jsonObject = null;
+        Request request = new Request.Builder()
+                .url(SERVICE_BASE_URL + "/artists/" + artistKey.getArtistId())
+                .get()
+                .build();
+        try (Response response = this.httpClient.newCall(request).execute()) {
+            if (response.body() != null) {
+                jsonObject = new JSONObject(response.body().string());
+            }
+        } catch (IOException e) {
+            log.error("An error occurred while executing a GET request for looking up an artist", e);
+            return null;
+        }
+        long end = System.currentTimeMillis() - start;
+        System.out.println(end + "ms");
+        return jsonObject;
+    }
 
     private String parseTrackPattern(String identifier) {
         final Matcher matcher = TRACK_PATTERN.matcher(identifier);
@@ -270,15 +315,6 @@ public class SpotifySourceManager implements AudioSourceManager {
         if (!matcher.find())
             return new PlaylistKey("noPlaylistId");
         return new PlaylistKey(matcher.group(1));
-    }
-
-    private UserPlaylistKey parseUserPlaylistPattern(String identifier) {
-        final Matcher matcher = USER_PLAYLIST_PATTERN.matcher(identifier);
-        if (!matcher.find())
-            return new UserPlaylistKey("noUserId", "noPlaylistId");
-        String userId = matcher.group(1);
-        String playlistId = matcher.group(2);
-        return new UserPlaylistKey(userId, playlistId);
     }
 
     private AlbumKey parseAlbumPattern(String identifier) {
