@@ -213,6 +213,11 @@
             <artifactId>itunes-api</artifactId>
             <version>4.1</version>
         </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.0.1</version>
+        </dependency>
     </dependencies>
 
     <build>
