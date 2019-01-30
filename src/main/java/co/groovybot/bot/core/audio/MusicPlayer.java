@@ -77,12 +77,13 @@ import static co.groovybot.bot.util.SafeMessage.sendMessage;
 @Log4j2
 public class MusicPlayer extends Player {
 
-    public static final Options CLI_OPTIONS = new Options().addOption(
-            Option.builder("f")
-                    .longOpt("forceplay")
-                    .desc("Instantly plays the song")
-                    .build()
-    )
+    public static final Options CLI_OPTIONS = new Options()
+            .addOption(
+                    Option.builder("f")
+                            .longOpt("forceplay")
+                            .desc("Instantly plays the song")
+                            .build()
+            )
             .addOption(
                     Option.builder("t")
                             .longOpt("playtop")
