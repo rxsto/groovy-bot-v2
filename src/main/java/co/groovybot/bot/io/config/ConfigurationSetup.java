@@ -79,11 +79,10 @@ public class ConfigurationSetup {
                 .put("apikey", "defaultvalue");
         configuration.addDefault("youtube", youtube);
 
-        // Create object for spotify
-        final JSONObject spotify = new JSONObject()
-                .put("client_id", "defaultvalue")
-                .put("client_secret", "defaultvalue");
-        configuration.addDefault("spotify", spotify);
+        // Create object for kereru
+        final JSONObject kereru = new JSONObject()
+                .put("host", "http://127.0.0.1:1337/v1");
+        configuration.addDefault("kereru", kereru);
 
         // Create object for genius
         final JSONObject genius = new JSONObject()

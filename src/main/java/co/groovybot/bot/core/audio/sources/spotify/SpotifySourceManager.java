@@ -19,6 +19,7 @@
 
 package co.groovybot.bot.core.audio.sources.spotify;
 
+import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.AudioTrackFactory;
 import co.groovybot.bot.core.audio.MusicPlayer;
 import co.groovybot.bot.core.audio.data.AlbumData;
@@ -58,7 +59,7 @@ public class SpotifySourceManager implements AudioSourceManager {
     private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/tracks?/([^?/\\s]*)");
     private static final Pattern ALBUM_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/albums?/([^?/\\s]*)");
     private static final Pattern TOPTEN_ARTIST_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/artists?/([^?/\\s]*)");
-    private static final String SERVICE_BASE_URL = "http://127.0.0.1:1337/v1";
+    private static final String SERVICE_BASE_URL = GroovyBot.getInstance().getConfig().getJSONObject("kereru").getString("host");
 
     @Getter
     private final OkHttpClient httpClient;
