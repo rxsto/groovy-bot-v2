@@ -139,7 +139,7 @@ public class SpotifySourceManager implements AudioSourceManager {
         ArtistKey artistKey = parseArtistPattern(url);
 
         JSONObject jsonArtist = getArtistById(artistKey);
-        AlbumData albumData = getAlbumData(Objects.requireNonNull(jsonArtist));
+        ArtistData albumData = getArtistData(Objects.requireNonNull(jsonArtist));
         List<TrackData> trackDataList = albumData.getTracks();
         List<AudioTrack> audioTracks = this.audioTrackFactory.getAudioTracks(trackDataList);
         return new BasicAudioPlaylist(albumData.getName(), audioTracks, null, false);
@@ -212,7 +212,7 @@ public class SpotifySourceManager implements AudioSourceManager {
         String name = dataObject.getString("name"),
                 url = dataObject.getString("url");
         List<TrackData> tracks = new ArrayList<>();
-        dataObject.getJSONArray("tracks").forEach(o -> {
+        dataObject.getJSONArray("topTracks").forEach(o -> {
             JSONObject jsonTrack = (JSONObject) o;
             tracks.add(getTrackData(jsonTrack));
         });
