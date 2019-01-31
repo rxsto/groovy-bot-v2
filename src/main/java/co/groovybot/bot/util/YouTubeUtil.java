@@ -26,22 +26,30 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.YouTubeRequest;
 import com.google.api.services.youtube.YouTubeRequestInitializer;
-import com.google.api.services.youtube.model.SearchListResponse;
-import com.google.api.services.youtube.model.SearchResult;
-import com.google.api.services.youtube.model.Video;
-import com.google.api.services.youtube.model.VideoListResponse;
+import com.google.api.services.youtube.model.*;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Log4j2
-public class YoutubeUtil {
+public class YouTubeUtil {
 
     private final YouTube client;
     private final GroovyBot bot;
 
-    private YoutubeUtil(GroovyBot bot) throws GeneralSecurityException, IOException {
+    private static final String PROTOCOL_REGEX = "(https?://)?";
+    private static final String YOUTUBE_BASE_URL = PROTOCOL_REGEX + "((?:www\\.|m\\.|music\\.|)youtube\\.com/.*|(?:www\\.|)youtu\\.be/.*)";
+//    private static final Pattern PLAYLIST_ID_REGEX = Pattern.compile(YOUTUBE_BASE_URL + "(?<list>(PL|LL|FL|UU)[a-zA-Z0-9_-]+)");
+    private static final Pattern PLAYLIST_ID_REGEX = Pattern.compile(YOUTUBE_BASE_URL + "(?<list>(PL|LL|FL|UU)[a-zA-Z0-9_-]+)");
+    private static final Pattern VIDEO_ID_REGEX = Pattern.compile(YOUTUBE_BASE_URL + "(?<v>[a-zA-Z0-9_-]{11})");
+
+    private YouTubeUtil(GroovyBot bot) throws GeneralSecurityException, IOException {
         this.bot = bot;
         this.client = new YouTube.Builder(
                 GoogleNetHttpTransport.newTrustedTransport(),
@@ -55,14 +63,14 @@ public class YoutubeUtil {
     }
 
     /**
-     * Construcs a new Youtube util instance
+     * Constructs a new Youtube util instance
      *
      * @param bot the current GroovyBot instance
-     * @return a new YoutubeUtil instance
+     * @return a new YouTubeUtil instance
      */
-    public static YoutubeUtil create(GroovyBot bot) {
+    public static YouTubeUtil create(GroovyBot bot) {
         try {
-            return new YoutubeUtil(bot);
+            return new YouTubeUtil(bot);
         } catch (GeneralSecurityException | IOException e) {
             log.error("[YouTube] Error while establishing connection to YouTube", e);
         }
@@ -72,7 +80,7 @@ public class YoutubeUtil {
     /**
      * Retrieves the next video for the autoplay function
      *
-     * @param videoId the ID of the prevoius video
+     * @param videoId the ID of the previous video
      * @return The new videos SearchResult
      * @throws IOException          when an IO error occurred
      * @throws NullPointerException When no video where found
@@ -101,7 +109,7 @@ public class YoutubeUtil {
     }
 
     /**
-     * Search for youtube Videos by it's ide
+     * Search for youtube Videos by it's id
      *
      * @param videoId The id of the video
      * @return an VideoListResponse {@link com.google.api.services.youtube.model.VideoListResponse}
@@ -114,13 +122,33 @@ public class YoutubeUtil {
     /**
      * Gets the first video from an VideoListResponse
      *
-     * @param videoId The yotube video id
+     * @param videoId The youtube video id
      * @return The first Video {@link com.google.api.services.youtube.model.Video} of the {@link com.google.api.services.youtube.model.VideoListResponse}
      * @throws IOException When YoutubeRequest returns an error
-     * @see YoutubeUtil#getVideoById(String)
+     * @see YouTubeUtil#getVideoById(String)
      */
     public Video getFirstVideoById(String videoId) throws IOException {
         return getVideoById(videoId).getItems().get(0);
+    }
+
+    public List<String> getVideoIdsFromPlaylist(String playlistUrl) throws IOException {
+        List<String> idList = new ArrayList<>();
+        if (PLAYLIST_ID_REGEX.matcher(playlistUrl).matches()) {
+            String playlistId = parsePlaylistUrl(playlistUrl);
+            YouTube.PlaylistItems.List list = client.playlistItems().list("id,snippet").setFields("items(snippet/resourceId/videoId)").setPlaylistId(playlistId);
+            PlaylistItemListResponse playlistItemListResponse = list.execute();
+            playlistItemListResponse.getItems().forEach(playlistItem -> idList.add(playlistItem.getSnippet().getResourceId().getVideoId()));
+
+            System.out.println(Arrays.toString(idList.toArray()));
+        }
+        return idList;
+    }
+
+    private String parsePlaylistUrl(String playlistUrl) {
+        final Matcher matcher = PLAYLIST_ID_REGEX.matcher(playlistUrl);
+        if (!matcher.find())
+            return "";
+        return matcher.group("list");
     }
 
     private class RequestInitializer extends YouTubeRequestInitializer {

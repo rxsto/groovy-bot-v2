@@ -46,7 +46,7 @@ import co.groovybot.bot.io.database.DatabaseGenerator;
 import co.groovybot.bot.io.database.PostgreSQL;
 import co.groovybot.bot.listeners.*;
 import co.groovybot.bot.util.FormatUtil;
-import co.groovybot.bot.util.YoutubeUtil;
+import co.groovybot.bot.util.YouTubeUtil;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import io.sentry.Sentry;
 import lombok.Getter;
@@ -103,7 +103,7 @@ public class GroovyBot implements Closeable {
     @Getter
     private final EventWaiter eventWaiter;
     @Getter
-    private final YoutubeUtil youtubeClient;
+    private final YouTubeUtil youTubeClient;
     @Getter
     private final GeniusClient geniusClient;
     @Getter
@@ -185,6 +185,7 @@ public class GroovyBot implements Closeable {
         // Initializing config
         config = ConfigurationSetup.setupConfig().init();
         instanceName = config.getJSONObject("bot").has("instance") ? config.getJSONObject("bot").getString("instance") : "dev";
+        YouTubeUtil.create(this).getVideoIdsFromPlaylist("https://www.youtube.com/watch?v=vahui4LpJ9E&list=PLDAHA9VSoYmwBV4Pjfu0yh93yHEvUE37n");
 
         // Creating cache
         guildCache = new Cache<>(GroovyGuild.class);
@@ -217,7 +218,7 @@ public class GroovyBot implements Closeable {
         musicPlayerManager = new MusicPlayerManager();
         translationManager = new TranslationManager();
         playlistManager = new PlaylistManager(postgreSQL.getDataSource());
-        youtubeClient = YoutubeUtil.create(this);
+        youTubeClient = YouTubeUtil.create(this);
         geniusClient = new GeniusClient(config.getJSONObject("genius").getString("token"));
         new CommandRegistry(commandManager);
     }

@@ -31,7 +31,7 @@ import co.groovybot.bot.core.premium.Constants;
 import co.groovybot.bot.util.EmbedUtil;
 import co.groovybot.bot.util.FormatUtil;
 import co.groovybot.bot.util.SafeMessage;
-import co.groovybot.bot.util.YoutubeUtil;
+import co.groovybot.bot.util.YouTubeUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
@@ -118,8 +118,8 @@ public class MusicPlayer extends Player {
     @Setter
     private int skipVotes;
 
-    protected MusicPlayer(Guild guild, TextChannel channel, YoutubeUtil youtubeClient) {
-        super(youtubeClient);
+    protected MusicPlayer(Guild guild, TextChannel channel, YouTubeUtil youTubeClient) {
+        super(youTubeClient);
         LavalinkManager lavalinkManager = GroovyBot.getInstance().getLavalinkManager();
 
         this.guild = guild;

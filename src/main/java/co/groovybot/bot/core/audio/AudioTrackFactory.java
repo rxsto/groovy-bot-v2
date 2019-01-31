@@ -21,7 +21,7 @@ package co.groovybot.bot.core.audio;
 
 import co.groovybot.bot.GroovyBot;
 import co.groovybot.bot.core.audio.data.TrackData;
-import co.groovybot.bot.util.YoutubeUtil;
+import co.groovybot.bot.util.YouTubeUtil;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -44,7 +44,7 @@ public class AudioTrackFactory {
 
     public AudioTrack getAudioTrack(TrackData trackData) {
         try {
-            String identifier = Objects.requireNonNull(YoutubeUtil.create(GroovyBot.getInstance())).getVideoId(trackData.artists().get(0) + " " +
+            String identifier = Objects.requireNonNull(YouTubeUtil.create(GroovyBot.getInstance())).getVideoId(trackData.artists().get(0) + " " +
                     trackData.title());
             AudioTrackInfo audioTrackInfo = new AudioTrackInfo(
                     trackData.title(),

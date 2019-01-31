@@ -171,7 +171,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
         }
 
         try {
-            SearchResult result = player.youtubeClient.retrieveRelatedVideos(track.getIdentifier());
+            SearchResult result = player.youTubeClient.retrieveRelatedVideos(track.getIdentifier());
             SafeMessage.editMessage(infoMessage, EmbedUtil.success(player.translate("phrases.loaded"), String.format(player.translate("phrases.loaded.track"), result.getSnippet().getTitle())));
             queueSearchResult(result, infoMessage);
         } catch (IOException e) {
@@ -183,7 +183,7 @@ public class Scheduler extends AudioEventAdapterWrapped {
     private void queueSearchResult(SearchResult result, Message infoMessage) {
         String videoId = result.getId().getVideoId();
         try {
-            Video video = player.youtubeClient.getFirstVideoById(videoId);
+            Video video = player.youTubeClient.getFirstVideoById(videoId);
             VideoSnippet info = video.getSnippet();
             AudioTrackInfo trackInfo = new AudioTrackInfo(info.getTitle(), info.getChannelTitle(), Duration.parse(video.getContentDetails().getDuration()).toMillis(), videoId, false, String.format("https://youtu.be/%s", videoId));
             AudioTrack track = new YoutubeAudioTrack(trackInfo, new YoutubeAudioSourceManager());
