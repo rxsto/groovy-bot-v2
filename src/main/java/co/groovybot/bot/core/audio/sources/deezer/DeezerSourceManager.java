@@ -108,12 +108,12 @@ public class DeezerSourceManager implements AudioSourceManager {
     }
 
     private TrackData getTrackData(Track track) {
-        return new TrackData(
-                track.getTitle(),
-                track.getLink(),
-                Collections.singletonList(track.getArtist().getName()),
-                track.getDuration()
-        );
+        return TrackData.builder()
+                .title(track.getTitle())
+                .url(track.getLink())
+                .artists(Collections.singletonList(track.getArtist().getName()))
+                .duration(track.getDuration())
+                .build();
     }
 
     private String parseTrackPattern(String identifier) {

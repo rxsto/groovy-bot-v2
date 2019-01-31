@@ -19,12 +19,14 @@
 
 package co.groovybot.bot.core.audio.data;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
-@AllArgsConstructor
+@Builder
+@Accessors(fluent = true)
 @Getter
 public class TrackData {
 
@@ -34,11 +36,4 @@ public class TrackData {
     private final long duration;
     private boolean local;
     private boolean explicit;
-
-    public TrackData(String title, String url, List<String> artists, long duration) {
-        this.title = title;
-        this.url = url;
-        this.artists = artists;
-        this.duration = duration;
-    }
 }

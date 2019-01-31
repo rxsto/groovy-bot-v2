@@ -84,12 +84,12 @@ public class iTunesSourceManager implements AudioSourceManager {
     }
 
     private TrackData getTrackData(Result result) {
-        return new TrackData(
-                result.getTrackName(),
-                result.getFeedUrl(),
-                Collections.singletonList(result.getArtistName()),
-                result.getTrackTimeMillis()
-        );
+        return TrackData.builder()
+                .title(result.getTrackName())
+                .url(result.getFeedUrl())
+                .artists(Collections.singletonList(result.getArtistName()))
+                .duration(result.getTrackTimeMillis())
+                .build();
     }
 
     private String parseAlbumPattern(String identifier) {

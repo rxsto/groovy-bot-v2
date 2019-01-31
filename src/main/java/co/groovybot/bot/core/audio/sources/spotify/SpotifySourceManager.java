@@ -158,14 +158,14 @@ public class SpotifySourceManager implements AudioSourceManager {
         boolean local = dataObject.getBoolean("local"),
                 explicit = dataObject.getBoolean("explicit");
         long duration = dataObject.getLong("durationTimeMillis");
-        return new TrackData(
-                name,
-                url,
-                artists,
-                duration,
-                local,
-                explicit
-        );
+        return TrackData.builder()
+                .title(name)
+                .url(url)
+                .artists(artists)
+                .duration(duration)
+                .local(local)
+                .explicit(explicit)
+                .build();
     }
 
     private PlaylistData getPlaylistData(@NotNull JSONObject jsonObject) {

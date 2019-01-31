@@ -44,14 +44,14 @@ public class AudioTrackFactory {
 
     public AudioTrack getAudioTrack(TrackData trackData) {
         try {
-            String identifier = Objects.requireNonNull(YoutubeUtil.create(GroovyBot.getInstance())).getVideoId(trackData.getArtists().get(0) + " " +
-                    trackData.getTitle());
+            String identifier = Objects.requireNonNull(YoutubeUtil.create(GroovyBot.getInstance())).getVideoId(trackData.artists().get(0) + " " +
+                    trackData.title());
             AudioTrackInfo audioTrackInfo = new AudioTrackInfo(
-                    trackData.getTitle(),
-                    trackData.getArtists().get(0),
-                    trackData.getDuration(),
+                    trackData.title(),
+                    trackData.artists().get(0),
+                    trackData.duration(),
                     identifier, false,
-                    trackData.getUrl()
+                    trackData.url()
             );
             return new YoutubeAudioTrack(audioTrackInfo, new YoutubeAudioSourceManager());
         } catch (IOException e) {
