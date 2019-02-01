@@ -27,5 +27,5 @@ deploy to canary:
   script:
     - export SSHPASS=$USER_PASS
     - cd target/
-    - sshpass -e scp -o stricthostkeychecking=no -r . $USER_NAME@$IP_ADDRESS:/opt/groovy/bots/canary/
-    - sshpass -e ssh -t $USER_NAME@$IP_ADDRESS "/opt/groovy/groovy.sh canary update"
+    - sshpass -e scp -o stricthostkeychecking=no -r . $USER_NAME@$IP_ADDRESS:/opt/bots/groovy/canary/
+    - sshpass -e ssh -t $USER_NAME@$IP_ADDRESS "/opt/groovy.sh canary update"
