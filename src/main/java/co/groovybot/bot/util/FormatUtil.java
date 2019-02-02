@@ -163,10 +163,10 @@ public class FormatUtil {
     }
 
     public static String parseUptime(long time) {
-        int days = (int) (time / 24 / 60 / 60 / 1000);
-        int hours = (int) ((time - days * 86400000) / 60 / 60 / 1000);
-        int mins = (int) ((time - days * 86400000 - hours * 3600000) / 60 / 1000);
-        int secs = (int) ((time - days * 86400000 - hours * 3600000 - mins * 60000) / 1000);
+        long days = time / 24 / 60 / 60 / 1000;
+        long hours = (time - days * 86400000) / 60 / 60 / 1000;
+        long mins = (time - days * 86400000 - hours * 3600000) / 60 / 1000;
+        long secs = (time - days * 86400000 - hours * 3600000 - mins * 60000) / 1000;
         return String.format("%sd, %sh, %smin, %ss", days, hours, mins, secs);
     }
 

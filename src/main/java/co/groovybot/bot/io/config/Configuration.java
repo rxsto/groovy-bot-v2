@@ -46,9 +46,9 @@ public class Configuration extends JSONObject {
 
     public Configuration init() {
         String content = null;
-        try {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(configFile))) {
             if (configFile.exists())
-                content = new BufferedReader(new FileReader(configFile)).lines().collect(Collectors.joining("\n"));
+                content = bufferedReader.lines().collect(Collectors.joining("\n"));
         } catch (IOException e) {
             log.error("[Configuration] Error while loading config!", e);
         }

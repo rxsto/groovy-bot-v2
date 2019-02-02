@@ -38,9 +38,9 @@ public class BotChannelCommand extends Command {
         return sendHelp();
     }
 
-    private class SetCommand extends SubCommand {
+    private static class SetCommand extends SubCommand {
 
-        public SetCommand() {
+        SetCommand() {
             super(new String[]{"set"}, Permissions.adminOnly(), "Lets you set the botchannel", "<#channel>");
         }
 
@@ -63,9 +63,9 @@ public class BotChannelCommand extends Command {
         }
     }
 
-    private class DisableCommand extends SubCommand {
+    private static class DisableCommand extends SubCommand {
 
-        public DisableCommand() {
+        DisableCommand() {
             super(new String[]{"disable"}, Permissions.adminOnly(), "Disables the botchannel", "");
         }
 

@@ -44,7 +44,7 @@ public class CommandLogger {
         log.error(String.format("[Command] %s - %s#%s | %s (%s)", failEvent.getCommand().getName(), failEvent.getAuthor().getName(), failEvent.getAuthor().getDiscriminator(), failEvent.getGuild().getName(), failEvent.getGuild().getIdLong()), failEvent.getThrowable());
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("❌ " + failEvent.translate("phrases.error.internal"))
-                .setDescription(String.format("We're sorry, but an internal error occured\n```%s```", failEvent.getThrowable().getClass().getCanonicalName() + ": " + failEvent.getThrowable().getMessage()))
+                .setDescription(String.format("We're sorry, but an internal error occured %n```%s```", failEvent.getThrowable().getClass().getCanonicalName() + ": " + failEvent.getThrowable().getMessage()))
                 .setColor(Colors.RED);
         SafeMessage.sendMessage(failEvent.getChannel(), builder);
     }

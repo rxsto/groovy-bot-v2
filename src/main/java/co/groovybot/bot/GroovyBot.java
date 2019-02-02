@@ -245,6 +245,7 @@ public class GroovyBot implements Closeable {
         } catch (ParseException e) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(e.getMessage(), options);
+            Runtime.getRuntime().exit(1);
         }
 
         new GroovyBot(cmd);
