@@ -63,7 +63,7 @@ public class YouTubeUtil {
     }
 
     /**
-     * Constructs a new Youtube util instance
+     * Constructs a new YouTube util instance
      *
      * @param bot the current GroovyBot instance
      * @return a new YouTubeUtil instance
@@ -78,12 +78,12 @@ public class YouTubeUtil {
     }
 
     /**
-     * Retrieves the next video for the autoplay function
+     * Retrieves the next video for the autoplay feature
      *
-     * @param videoId the ID of the previous video
-     * @return The new videos SearchResult
-     * @throws IOException          when an IO error occurred
-     * @throws NullPointerException When no video where found
+     * @param videoId the id of the previous video
+     * @return a SearchResult with the related videos
+     * @throws IOException          if an IO error occurred
+     * @throws NullPointerException if no video where found
      */
     public SearchResult retrieveRelatedVideos(String videoId) throws IOException, NullPointerException {
         YouTube.Search.List search = client.search().list("id,snippet")
@@ -109,11 +109,11 @@ public class YouTubeUtil {
     }
 
     /**
-     * Search for youtube Videos by it's id
+     * Search for YouTube videos by it's id
      *
-     * @param videoId The id of the video
+     * @param videoId the id of the video
      * @return an VideoListResponse {@link com.google.api.services.youtube.model.VideoListResponse}
-     * @throws IOException When YoutubeRequest returns an error
+     * @throws IOException if YouTubeRequest returns an error
      */
     public VideoListResponse getVideoById(String videoId) throws IOException {
         return client.videos().list("snippet,localizations,contentDetails").setId(videoId).execute();
@@ -122,9 +122,9 @@ public class YouTubeUtil {
     /**
      * Gets the first video from an VideoListResponse
      *
-     * @param videoId The youtube video id
-     * @return The first Video {@link com.google.api.services.youtube.model.Video} of the {@link com.google.api.services.youtube.model.VideoListResponse}
-     * @throws IOException When YoutubeRequest returns an error
+     * @param videoId the YouTube video id
+     * @return the first Video {@link com.google.api.services.youtube.model.Video} of the {@link com.google.api.services.youtube.model.VideoListResponse}
+     * @throws IOException if YouTubeRequest returns an error
      * @see YouTubeUtil#getVideoById(String)
      */
     public Video getFirstVideoById(String videoId) throws IOException {
