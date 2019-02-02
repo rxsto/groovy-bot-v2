@@ -84,7 +84,7 @@ public class SpotifySourceManager implements AudioSourceManager {
 
     @Override
     public AudioItem loadItem(DefaultAudioPlayerManager manager, AudioReference reference) {
-        if (!reference.identifier.matches("(https?://)?(.*)?spotify\\.com.*")) return null;
+        if (reference.identifier.startsWith("ytsearch:") || reference.identifier.startsWith("scsearch")) return null;
 
         try {
             URL url = new URL(reference.identifier);
