@@ -44,7 +44,7 @@ public class AudioTrackFactory {
 
     public AudioTrack getAudioTrack(TrackData trackData) {
         try {
-            String identifier = Objects.requireNonNull(YoutubeUtil.create(GroovyBot.getInstance())).getVideoId(trackData.getArtists().get(0) + " " +
+            String identifier = GroovyBot.getInstance().getYoutubeClient().getVideoId(trackData.getArtists().get(0) + " " +
                     trackData.getTitle());
             AudioTrackInfo audioTrackInfo = new AudioTrackInfo(
                     trackData.getTitle(),
