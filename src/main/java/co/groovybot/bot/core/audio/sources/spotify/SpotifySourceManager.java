@@ -225,7 +225,6 @@ public class SpotifySourceManager implements AudioSourceManager {
     }
 
     private JSONObject getTrackById(String id) {
-        long start = System.currentTimeMillis();
         JSONObject jsonObject = null;
         Request request = new Request.Builder()
                 .url(SERVICE_BASE_URL + "/tracks/" + id)
@@ -239,13 +238,10 @@ public class SpotifySourceManager implements AudioSourceManager {
             log.error("An error occurred while executing a GET request for looking up an track", e);
             return null;
         }
-        long end = System.currentTimeMillis() - start;
-        System.out.println(end + "ms");
         return jsonObject;
     }
 
     private JSONObject getPlaylistById(PlaylistKey playlistKey) {
-        long start = System.currentTimeMillis();
         JSONObject jsonObject = null;
         Request request = new Request.Builder()
                 .url(SERVICE_BASE_URL + "/playlists/" + playlistKey.getPlaylistId())
@@ -259,13 +255,10 @@ public class SpotifySourceManager implements AudioSourceManager {
             log.error("An error occurred while executing a GET request for looking up an playlist", e);
             return null;
         }
-        long end = System.currentTimeMillis() - start;
-        System.out.println(end + "ms");
         return jsonObject;
     }
 
     private JSONObject getAlbumById(AlbumKey albumKey) {
-        long start = System.currentTimeMillis();
         JSONObject jsonObject = null;
         Request request = new Request.Builder()
                 .url(SERVICE_BASE_URL + "/albums/" + albumKey.getAlbumId())
@@ -279,13 +272,10 @@ public class SpotifySourceManager implements AudioSourceManager {
             log.error("An error occurred while executing a GET request for looking up an album", e);
             return null;
         }
-        long end = System.currentTimeMillis() - start;
-        System.out.println(end + "ms");
         return jsonObject;
     }
 
     private JSONObject getArtistById(ArtistKey artistKey) {
-        long start = System.currentTimeMillis();
         JSONObject jsonObject = null;
         Request request = new Request.Builder()
                 .url(SERVICE_BASE_URL + "/artists/" + artistKey.getArtistId())
@@ -299,8 +289,6 @@ public class SpotifySourceManager implements AudioSourceManager {
             log.error("An error occurred while executing a GET request for looking up an artist", e);
             return null;
         }
-        long end = System.currentTimeMillis() - start;
-        System.out.println(end + "ms");
         return jsonObject;
     }
 
