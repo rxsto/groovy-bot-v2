@@ -45,7 +45,7 @@ public class BlackListCommand extends Command {
 
                 StringBuilder channelNames = new StringBuilder();
                 groovyGuild.getBlacklistedChannels().forEach(channelObject -> {
-                    long channelId = Long.valueOf(channelObject.toString());
+                    long channelId = Long.parseLong(channelObject.toString());
                     TextChannel channel = event.getGuild().getTextChannelById(channelId);
 
                     if (channel == null) {
@@ -65,9 +65,9 @@ public class BlackListCommand extends Command {
         return sendHelp();
     }
 
-    private class AddCommand extends SubCommand {
+    private static class AddCommand extends SubCommand {
 
-        public AddCommand() {
+        AddCommand() {
             super(new String[]{"add"}, Permissions.adminOnly(), "Lets you add a textchannel to the blacklist", "<#channel>");
         }
 
@@ -92,9 +92,9 @@ public class BlackListCommand extends Command {
         }
     }
 
-    private class RemoveCommand extends SubCommand {
+    private static class RemoveCommand extends SubCommand {
 
-        public RemoveCommand() {
+        RemoveCommand() {
             super(new String[]{"remove", "rm"}, Permissions.adminOnly(), "Lets you remove a textchannel from the blacklist", "<#channel>");
         }
 

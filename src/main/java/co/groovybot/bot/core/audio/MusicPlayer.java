@@ -384,7 +384,7 @@ public class MusicPlayer extends Player {
 
             @Override
             public void loadFailed(FriendlyException e) {
-                SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.error"), e.getCause() != null ? String.format("%s\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("%s", e.getMessage())));
+                SafeMessage.editMessage(infoMessage, EmbedUtil.error(event.translate("phrases.error"), e.getCause() != null ? String.format("%s%n%s", e.getMessage(), e.getCause().getMessage()) : String.format("%s", e.getMessage())));
             }
         });
     }

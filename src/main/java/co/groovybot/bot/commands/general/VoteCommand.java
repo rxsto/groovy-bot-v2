@@ -36,9 +36,9 @@ public class VoteCommand extends Command {
         return send(small(String.format("**[%s](https://vote.groovybot.co)**", event.translate("command.vote"))));
     }
 
-    private class CheckCommand extends SubCommand {
+    private static class CheckCommand extends SubCommand {
 
-        public CheckCommand() {
+        CheckCommand() {
             super(new String[]{"check", "activate"}, Permissions.everyone(), "Lets you activate your premium trial", "");
         }
 

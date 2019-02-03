@@ -43,13 +43,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class QueueCommand extends Command {
 
-    private final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 10;
 
     public QueueCommand() {
         super(new String[]{"queue", "q"}, CommandCategory.MUSIC, Permissions.everyone(), "Shows you a list of all queued songs", "");
     }
 
-    public static EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, int currentPage, int totalPages) {
+    private static EmbedBuilder formatQueue(List<AudioTrack> tracks, CommandEvent event, int startNumber, int currentPage, int totalPages) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle(event.translate("command.queue"))
                 .setDescription(generateQueueDescription(tracks, startNumber))
@@ -64,7 +64,7 @@ public class QueueCommand extends Command {
     private static String generateQueueDescription(List<AudioTrack> tracks, int startNumber) {
         StringBuilder queueMessage = new StringBuilder();
         AtomicInteger trackCount = new AtomicInteger(startNumber);
-        tracks.forEach(track -> queueMessage.append(String.format("`%s.` [%s](%s)\n", trackCount.addAndGet(1), track.getInfo().title != null ? track.getInfo().title : "none", track.getInfo().uri != null ? track.getInfo().uri : "none")));
+        tracks.forEach(track -> queueMessage.append(String.format("`%s.` [%s](%s)%n", trackCount.addAndGet(1), track.getInfo().title != null ? track.getInfo().title : "none", track.getInfo().uri != null ? track.getInfo().uri : "none")));
         return queueMessage.toString();
     }
 
@@ -90,7 +90,7 @@ public class QueueCommand extends Command {
         return null;
     }
 
-    private class QueueMessage extends InteractableMessage {
+    private static class QueueMessage extends InteractableMessage {
 
         private final Queue<AudioTrack> queue;
         private final int pages;

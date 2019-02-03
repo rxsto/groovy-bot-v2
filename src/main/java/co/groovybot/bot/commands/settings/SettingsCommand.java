@@ -51,9 +51,9 @@ public class SettingsCommand extends Command {
         return send(embedBuilder);
     }
 
-    private class ResetCommand extends SubCommand {
+    private static class ResetCommand extends SubCommand {
 
-        public ResetCommand() {
+        ResetCommand() {
             super(new String[]{"reset"}, Permissions.adminOnly(), "Lets you reset all settings", "");
         }
 

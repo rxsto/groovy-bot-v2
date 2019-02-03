@@ -38,9 +38,9 @@ public class DuplicatesCommand extends Command {
         return sendHelp();
     }
 
-    public class NoDuplicatesCommand extends SubCommand {
+    public static class NoDuplicatesCommand extends SubCommand {
 
-        public NoDuplicatesCommand() {
+        NoDuplicatesCommand() {
             super(new String[]{"prevent", "no", "deny"}, Permissions.tierOne(), "Toggles the option whether you want to queue duplicated songs or not", "");
         }
 
@@ -52,9 +52,9 @@ public class DuplicatesCommand extends Command {
         }
     }
 
-    public class RemoveDuplicatesCommand extends SemiInChannelSubCommand {
+    public static class RemoveDuplicatesCommand extends SemiInChannelSubCommand {
 
-        public RemoveDuplicatesCommand() {
+        RemoveDuplicatesCommand() {
             super(new String[]{"remove", "rm"}, Permissions.djMode(), "Removes all duplicates from the queue.", "");
         }
 

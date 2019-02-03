@@ -60,9 +60,9 @@ public class AutoJoinCommand extends Command {
         return send(success(event.translate("phrases.success"), String.format(event.translate("command.autojoin"), target.getName())));
     }
 
-    private class DisableCommand extends SubCommand {
+    private static class DisableCommand extends SubCommand {
 
-        private DisableCommand() {
+        DisableCommand() {
             super(new String[]{"disable", "delete"}, Permissions.adminOnly(), "Lets you disable the AutoJoin channel");
         }
 

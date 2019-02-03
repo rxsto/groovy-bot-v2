@@ -43,9 +43,7 @@ public class AutoJoinExecutor {
     @SubscribeEvent
     private void handleVoiceChannelLeave(GuildVoiceLeaveEvent event) {
         GroovyGuild groovyGuild = bot.getGuildCache().get(event.getGuild());
-        Member member = event.getMember();
-        VoiceChannel channel = event.getChannelLeft();
-        if (!event.getMember().getUser().isBot() && groovyGuild.hasAutoJoinChannel() && channel.getIdLong() == groovyGuild.getAutoJoinChannelId() && groovyGuild.getAutoJoinChannel().getMembers().contains(event.getGuild().getSelfMember()) && channel.getMembers().size() == 1) {
+        if (!event.getMember().getUser().isBot() && groovyGuild.hasAutoJoinChannel() && event.getChannelLeft().getIdLong() == groovyGuild.getAutoJoinChannelId() && groovyGuild.getAutoJoinChannel().getMembers().contains(event.getGuild().getSelfMember()) && event.getChannelLeft().getMembers().size() == 1) {
             MusicPlayer player = bot.getMusicPlayerManager().getExistingPlayer(event.getGuild());
             player.leave(player.translate("phrases.left.autojoin"));
         }

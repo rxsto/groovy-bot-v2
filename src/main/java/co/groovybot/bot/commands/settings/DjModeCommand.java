@@ -40,9 +40,9 @@ public class DjModeCommand extends Command {
         return send(success(event.translate("phrases.success"), String.format(event.translate("command.djmode"), groovyGuild.isDjMode() ? event.translate("phrases.text.enabled") : event.translate("phrases.text.disabled"))));
     }
 
-    public class DjRoleCommand extends SubCommand {
+    public static class DjRoleCommand extends SubCommand {
 
-        public DjRoleCommand() {
+        DjRoleCommand() {
             super(new String[]{"role", "setrole"}, Permissions.adminOnly(), "Lets you set the dj-role", "<role-name>/<@role>");
         }
 

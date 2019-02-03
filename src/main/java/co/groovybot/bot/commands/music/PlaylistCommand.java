@@ -58,9 +58,9 @@ public class PlaylistCommand extends Command {
         return sendHelp();
     }
 
-    private class LoadCommand extends SemiInChannelSubCommand {
+    private static class LoadCommand extends SemiInChannelSubCommand {
 
-        public LoadCommand() {
+        LoadCommand() {
             super(new String[]{"load", "l", "play"}, Permissions.everyone(), "Loads a playlist", "[user] <name>/<id>");
         }
 
@@ -110,9 +110,9 @@ public class PlaylistCommand extends Command {
         }
     }
 
-    private class SaveCommand extends SemiInChannelSubCommand {
+    private static class SaveCommand extends SemiInChannelSubCommand {
 
-        public SaveCommand() {
+        SaveCommand() {
             super(new String[]{"save"}, Permissions.everyone(), "Saves the queue to a playlist", "<name>");
         }
 
@@ -147,9 +147,9 @@ public class PlaylistCommand extends Command {
         }
     }
 
-    private class DeleteCommand extends SubCommand {
+    private static class DeleteCommand extends SubCommand {
 
-        public DeleteCommand() {
+        DeleteCommand() {
             super(new String[]{"delete", "del"}, Permissions.everyone(), "Deletes a playlist", "<name>");
         }
 
@@ -169,9 +169,9 @@ public class PlaylistCommand extends Command {
         }
     }
 
-    private class RenameCommand extends SubCommand {
+    private static class RenameCommand extends SubCommand {
 
-        public RenameCommand() {
+        RenameCommand() {
             super(new String[]{"rename", "rn"}, Permissions.everyone(), "Renames a playlist", "<name> <new name>");
         }
 
@@ -195,9 +195,9 @@ public class PlaylistCommand extends Command {
         }
     }
 
-    private class AddCommand extends SemiInChannelSubCommand {
+    private static class AddCommand extends SemiInChannelSubCommand {
 
-        public AddCommand() {
+        AddCommand() {
             super(new String[]{"add"}, Permissions.everyone(), "Adds a track to a playlist", "<name> <url>");
         }
 
@@ -240,16 +240,16 @@ public class PlaylistCommand extends Command {
 
                 @Override
                 public void loadFailed(FriendlyException e) {
-                    SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.error"), e.getCause() != null ? String.format("**%s**\n%s", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));
+                    SafeMessage.sendMessage(event.getChannel(), error(event.translate("phrases.error"), e.getCause() != null ? String.format("**%s**%n%s", e.getMessage(), e.getCause().getMessage()) : String.format("**%s**", e.getMessage())));
                 }
             });
             return null;
         }
     }
 
-    private class RemoveCommand extends SubCommand {
+    private static class RemoveCommand extends SubCommand {
 
-        public RemoveCommand() {
+        RemoveCommand() {
             super(new String[]{"remove", "rm"}, Permissions.everyone(), "Removes a song from a playlist", "<name> <position>");
         }
 
@@ -262,7 +262,7 @@ public class PlaylistCommand extends Command {
             String name = args[0];
 
             if (!Helpers.isNumeric(args[1]))
-                return send(error(event.translate("phrase.invalid"), event.translate("phrases.invalid.number")));
+                return send(error(event.translate("phrases.invalid"), event.translate("phrases.invalid.number")));
 
             int track = Integer.parseInt(args[1]);
 
@@ -270,7 +270,7 @@ public class PlaylistCommand extends Command {
                 return send(error(event.translate("command.playlist.not.exists.title"), event.translate("command.playlist.not.exists.description")));
 
             if (groovyUser.getPlaylists().get(name).getSongs().size() < track)
-                return send(error(event.translate("phrase.invalid"), event.translate("phrases.invalid.number")));
+                return send(error(event.translate("phrases.invalid"), event.translate("phrases.invalid.number")));
 
             String trackName = groovyUser.getPlaylists().get(name).getSongs().get(track - 1).getInfo().title;
             String playlistName = groovyUser.getPlaylists().get(name).getName();
@@ -280,9 +280,9 @@ public class PlaylistCommand extends Command {
         }
     }
 
-    private class ListCommand extends SubCommand {
+    private static class ListCommand extends SubCommand {
 
-        public ListCommand() {
+        ListCommand() {
             super(new String[]{"list"}, Permissions.everyone(), "Shows all playlists of an user", "[user]");
         }
 
@@ -301,7 +301,7 @@ public class PlaylistCommand extends Command {
 
                 groovyUser.getPlaylists().forEach((name, groovyPlaylist) -> {
                     if (groovyPlaylist.isPublic())
-                        builder.addField(String.format("%s **%s**", "\uD83D\uDD13", groovyPlaylist.getName()), String.format(" - Includes **%s** songs\n - Loaded **%s** times\n - ID: `%s`", groovyPlaylist.getSongs().size(), groovyPlaylist.getCount(), groovyPlaylist.getId()), false);
+                        builder.addField(String.format("%s **%s**", "\uD83D\uDD13", groovyPlaylist.getName()), String.format(" - Includes **%s** songs %n - Loaded **%s** times %n - ID: `%s`", groovyPlaylist.getSongs().size(), groovyPlaylist.getCount(), groovyPlaylist.getId()), false);
                 });
                 return send(builder);
 
@@ -316,15 +316,15 @@ public class PlaylistCommand extends Command {
                         .setColor(Colors.DARK_BUT_NOT_BLACK)
                         .setFooter(String.format("%s Playlists", groovyUser.getPlaylists().size()), event.getAuthor().getAvatarUrl());
 
-                groovyUser.getPlaylists().forEach((name, groovyPlaylist) -> builder.addField(String.format("%s **%s**", groovyPlaylist.isPublic() ? "\uD83D\uDD13" : "\uD83D\uDD12", groovyPlaylist.getName()), String.format(" - Includes **%s** songs\n - Loaded **%s** times\n - ID: `%s`", groovyPlaylist.getSongs().size(), groovyPlaylist.getCount(), groovyPlaylist.getId()), false));
+                groovyUser.getPlaylists().forEach((name, groovyPlaylist) -> builder.addField(String.format("%s **%s**", groovyPlaylist.isPublic() ? "\uD83D\uDD13" : "\uD83D\uDD12", groovyPlaylist.getName()), String.format(" - Includes **%s** songs %n - Loaded **%s** times %n - ID: `%s`", groovyPlaylist.getSongs().size(), groovyPlaylist.getCount(), groovyPlaylist.getId()), false));
                 return send(builder);
             }
         }
     }
 
-    private class SongsCommand extends SubCommand {
+    private static class SongsCommand extends SubCommand {
 
-        public SongsCommand() {
+        SongsCommand() {
             super(new String[]{"songs"}, Permissions.everyone(), "Shows all songs of a playlist", "[user] <name>/<id>");
         }
 
@@ -375,9 +375,9 @@ public class PlaylistCommand extends Command {
         }
     }
 
-    private class ToggleVisibilityCommand extends SubCommand {
+    private static class ToggleVisibilityCommand extends SubCommand {
 
-        public ToggleVisibilityCommand() {
+        ToggleVisibilityCommand() {
             super(new String[]{"toggle", "togglevisibility", "tv"}, Permissions.everyone(), "Toggles the visibility of a playlist", "<name>");
         }
 

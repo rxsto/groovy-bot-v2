@@ -34,9 +34,9 @@ public class ShardCommand extends Command {
         return send(small(String.format(event.translate("command.shard"), event.getJDA().getShardInfo().getShardId() + 1)));
     }
 
-    private class ListCommand extends SubCommand {
+    private static class ListCommand extends SubCommand {
 
-        public ListCommand() {
+        ListCommand() {
             super(new String[]{"list", "l", "-l", "--list"}, Permissions.adminOnly(), "Shows you information about every shard", "");
         }
 

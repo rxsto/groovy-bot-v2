@@ -24,20 +24,20 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Log4j2
-public class iTunesSourceManager implements AudioSourceManager {
+public class ITunesSourceManager implements AudioSourceManager {
 
     private static final Pattern ALBUM_PATTERN = Pattern.compile("https?://itunes\\.apple\\.com/.*/album/.*/([0-9]*)");
 
     @Getter
     private AudioTrackFactory audioTrackFactory;
 
-    public iTunesSourceManager() {
+    public ITunesSourceManager() {
         this.audioTrackFactory = new AudioTrackFactory();
     }
 
     @Override
     public String getSourceName() {
-        return "iTunesSourceManager";
+        return "ITunesSourceManager";
     }
 
     @Override
