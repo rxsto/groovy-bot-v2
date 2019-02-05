@@ -24,6 +24,8 @@ import lombok.Getter;
 
 import java.util.List;
 
+// TODO: Create general class for handling items in queue
+
 @AllArgsConstructor
 @Getter
 public class TrackData {

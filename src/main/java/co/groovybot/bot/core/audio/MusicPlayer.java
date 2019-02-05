@@ -234,6 +234,8 @@ public class MusicPlayer extends Player {
         return dups.size();
     }
 
+    // TODO: Improve this method
+
     public void queueSongs(final CommandEvent event) {
         latestEvent = event;
         guild = event.getGuild();
@@ -274,6 +276,10 @@ public class MusicPlayer extends Player {
             keyword = removeQueryFromUrl(keyword);
 
         GroovyBot.getInstance().getLavalinkManager().getAudioPlayerManager().source(SpotifySourceManager.class).setPlayer(this);
+
+        // TODO: Remove this part and restructure it for being able to queue track data
+
+        // TODO: Analyze tracks here for being able to differentiate various track sources (YT, Spotify)
 
         getAudioPlayerManager().loadItem(keyword, new AudioLoadResultHandler() {
             @Override
@@ -444,6 +450,8 @@ public class MusicPlayer extends Player {
         return player.getPlayingTrack() != null && player.getPlayingTrack().getInfo().title.equals(audioTrack.getInfo().title) || trackQueue.stream().anyMatch(t -> t.getInfo().title.equals(audioTrack.getInfo().title));
     }
 
+    // TODO: Voteskip handler for that | reduce methods in this class (probably only in rewrite)
+
     @SuppressWarnings("unused")
     @SubscribeEvent
     private void handleDisconnect(GuildVoiceLeaveEvent event) {
@@ -487,6 +495,8 @@ public class MusicPlayer extends Player {
     public void resetSkipVotes() {
         skipVotes = 0;
     }
+
+    // TODO: For rewrite find better way to handle this
 
     @Override
     public String translate(String key) {

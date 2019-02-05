@@ -94,6 +94,8 @@ public class Scheduler extends AudioEventAdapterWrapped {
         handleTrackEnd(track, AudioTrackEndReason.LOAD_FAILED);
     }
 
+    // TODO: Rewrite for being able to handle this with trackdata
+
     private void handleTrackEnd(AudioTrack track, AudioTrackEndReason reason) {
         switch (reason) {
             case FINISHED:

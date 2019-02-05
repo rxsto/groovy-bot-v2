@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+// TODO: Make this static and public for being able to process various data
+
 @Log4j2
 public class AudioTrackFactory {
 

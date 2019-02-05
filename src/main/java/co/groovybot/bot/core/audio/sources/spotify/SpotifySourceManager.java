@@ -52,6 +52,8 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// TODO: Make methods static and create extra class for these calls | eventually
+
 @Log4j2
 public class SpotifySourceManager implements AudioSourceManager {
 

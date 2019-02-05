@@ -69,6 +69,8 @@ public abstract class Player {
         }
     }
 
+    // TODO: Handle "3-cool-tracks" (previous, current and next track) | load items via YTSourceManager (Soundcloud later also Streams later)
+
     public void play(AudioTrack track) {
         if (player.isPaused())
             resume();
