@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
 @Log4j2
 public class SpotifySourceManager implements AudioSourceManager {
 
-    private static final Pattern PLAYLIST_PATTERN = Pattern.compile("https?://.*\.spotify\.com/(users?/.*/)?playlists?/([^?/\s]*)");
+    private static final Pattern PLAYLIST_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/(users?/.*/)?playlists?/([^?/\\s]*)");
     private static final Pattern TRACK_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/tracks?/([^?/\\s]*)");
     private static final Pattern ALBUM_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/albums?/([^?/\\s]*)");
     private static final Pattern TOPTEN_ARTIST_PATTERN = Pattern.compile("https?://.*\\.spotify\\.com/artists?/([^?/\\s]*)");
